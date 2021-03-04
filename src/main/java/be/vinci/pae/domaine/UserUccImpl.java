@@ -47,7 +47,7 @@ public class UserUccImpl implements UserUCC {
     }
 
     // Try to login
-    User user = (User) this.userDao.getUser(username); // TODO Autorise ????
+    User user = (User) this.userDao.getUser(username);
     if (user == null || !user.checkPassword(password)) {
       return Response.status(Status.UNAUTHORIZED).entity("Pseudo or password incorrect")
           .type(MediaType.TEXT_PLAIN).build();
