@@ -13,21 +13,21 @@ public class UserImpl implements User {
   @JsonView(Views.Public.class)
   private String username;
 
-  @JsonView(Views.Boss.class)
+  @JsonView(Views.Internal.class)
   private String lastName;
-  @JsonView(Views.Boss.class)
+  @JsonView(Views.Internal.class)
   private String firstName;
-  @JsonView(Views.Boss.class)
+  @JsonView(Views.Internal.class)
   private int adressID;
-  @JsonView(Views.Boss.class)
+  @JsonView(Views.Internal.class)
   private String email;
-  @JsonView(Views.Boss.class)
+  @JsonView(Views.Internal.class)
   private boolean isBoss;
-  @JsonView(Views.Boss.class)
+  @JsonView(Views.Internal.class)
   private boolean isAntiqueDealer;
-  @JsonView(Views.Boss.class)
+  @JsonView(Views.Internal.class)
   private boolean isConfirmed;
-  @JsonView(Views.Boss.class)
+  @JsonView(Views.Internal.class)
   private String registrationDate;
 
   @JsonView(Views.Internal.class)
