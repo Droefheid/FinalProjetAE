@@ -7,21 +7,20 @@ import views.Views;
 
 @JsonInclude(JsonInclude.Include.NON_NULL) // ignore all null fields in order to avoid sending props not linked to a JSON view
 public class UserImpl implements User {
-  // TODO Est ce que le client ne voit pas que son id et pseudo?
 
   @JsonView(Views.Public.class)
   private int id;
   @JsonView(Views.Public.class)
-  private String lastName;
-  @JsonView(Views.Public.class)
-  private String firstName;
-  @JsonView(Views.Public.class)
   private String username;
-  @JsonView(Views.Public.class)
-  private int adressID;
-  @JsonView(Views.Public.class)
-  private String email;
 
+  @JsonView(Views.Boss.class)
+  private String lastName;
+  @JsonView(Views.Boss.class)
+  private String firstName;
+  @JsonView(Views.Boss.class)
+  private int adressID;
+  @JsonView(Views.Boss.class)
+  private String email;
   @JsonView(Views.Boss.class)
   private boolean isBoss;
   @JsonView(Views.Boss.class)
@@ -85,12 +84,12 @@ public class UserImpl implements User {
   }
 
   @Override
-  public String getUsername() {
+  public String getUserName() {
     return username;
   }
 
   @Override
-  public void setUsername(String username) {
+  public void setUserName(String username) {
     this.username = username;
   }
 
@@ -152,11 +151,6 @@ public class UserImpl implements User {
   @Override
   public String hashPassword(String password) {
     return BCrypt.hashpw(password, BCrypt.gensalt());
-  }
-
-  public String toString() {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   @Override

@@ -3,7 +3,7 @@ package be.vinci.pae.domaine;
 public class UserFactoryImpl implements UserFactory {
 
   @Override
-  public UserDTO getPublicUser() {
+  public UserDTO getUserDTO() {
     return new UserImpl();
   }
 

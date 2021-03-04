@@ -35,14 +35,14 @@ public interface UserDTO {
    */
   void setFirstName(String firstName);
 
-  String getUsername();
+  String getUserName();
 
   /**
    * change the pseudo of the user if is not already use in the DB
    * 
    * @param pseudo : not already use in the DB and as to be Not Null
    */
-  void setUsername(String username);
+  void setUserName(String username);
 
   int getAdressID();
 
