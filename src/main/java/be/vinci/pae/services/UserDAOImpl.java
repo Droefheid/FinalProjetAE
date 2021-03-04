@@ -18,7 +18,6 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public UserDTO findByUserName(String username) {
-    // TODO Auto-generated method stub
     PreparedStatement ps = this.dalServices.getPreparedStatement(
         "SELECT user_id, username, first_name, last_name, address, email, is_boss,"
             + "is_antique_dealer, is_confirmed, registration_date, password "
@@ -34,7 +33,12 @@ public class UserDAOImpl implements UserDAO {
           user.setFirstName(rs.getString(3));
           user.setLastName(rs.getString(4));
           user.setAdressID(rs.getInt(5));
-          // TODO faire les autres setters
+          user.setEmail(rs.getString(6));
+          user.setBoss(rs.getBoolean(7));
+          user.setAntiqueDealer(rs.getBoolean(8));
+          user.setConfirmed(rs.getBoolean(9));
+          user.setRegistrationDate(rs.getString(10));
+          user.setPassword(rs.getString(11));
         }
       }
     } catch (SQLException e) {

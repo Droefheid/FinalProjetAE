@@ -11,7 +11,7 @@ public class DalServicesImpl implements DalServices {
   private Connection connection;
 
   @Inject
-  JDBC jdbc;
+  private JDBC jdbc;
 
   /**
    * Sets an Url, username and password.
