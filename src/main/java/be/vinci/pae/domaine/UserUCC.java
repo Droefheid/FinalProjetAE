@@ -1,9 +1,10 @@
 package be.vinci.pae.domaine;
 
-public interface UserUCC {
-  // Retient register(UserDTO);
-  // login(login, password);
-  public UserDTO login(String username, String password);
+import jakarta.ws.rs.core.Response;
 
-  public UserDTO register(UserDTO userDTO);
+public interface UserUCC {
+
+  public Response login(String username, String password);
+
+  public Response register(UserDTO userDTO);
 }

@@ -1,15 +1,15 @@
 package be.vinci.pae.services;
 
 import java.util.List;
-import be.vinci.pae.domaine.User;
+import be.vinci.pae.domaine.UserDTO;
 
 public interface DataServiceUserCollection {
 
-  User getUser(int id);
+  UserDTO getUser(int id);
 
-  User getUser(String pseudoOrEmail);
+  UserDTO getUser(String pseudoOrEmail);
 
-  List<User> getUsers();
+  List<UserDTO> getUsers();
 
-  User addUser(User user);
+  UserDTO addUser(UserDTO user);
 }

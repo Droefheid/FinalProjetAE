@@ -43,7 +43,7 @@ public class UserResource {
     user.setEmail("LiviSatcho@hotmzil.com");
     user.setConfirmed(true);
     user.setRegistrationDate("27-02-21");
-    user.setPassword(user.hashPassword("password"));
+    // user.setPassword(user.hashPassword("password"));
     this.dataService.addUser(user);
     // load the user data from a public JSON view to filter out the private info not
     // to be returned by the API (such as password)

@@ -1,7 +1,9 @@
 package be.vinci.pae.services;
 
 import java.util.List;
+import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domaine.User;
+import be.vinci.pae.utils.Config;
 
 public class DataServiceUserCollectionImpl implements DataServiceUserCollection {
   // TODO Need the package be.vinci.pae.utils.Congig.java
@@ -22,9 +24,10 @@ public class DataServiceUserCollectionImpl implements DataServiceUserCollection 
   }
 
   @Override
-  public User getUser(String pseudoOrEmail) {
+  public User getUser(String usernameOrEmail) {
     return this.users.stream()
-        .filter(u -> u.getPseudo().equals(pseudoOrEmail) || u.getEmail().equals(pseudoOrEmail))
+        .filter(
+            u -> u.getUsername().equals(usernameOrEmail) || u.getEmail().equals(usernameOrEmail))
         .findAny().orElse(null);
   }
 

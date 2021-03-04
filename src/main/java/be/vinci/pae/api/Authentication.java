@@ -9,9 +9,11 @@ import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domaine.Adress;
 import be.vinci.pae.domaine.AdressFactory;
 import be.vinci.pae.domaine.User;
+import be.vinci.pae.domaine.UserDTO;
 import be.vinci.pae.domaine.UserFactory;
 import be.vinci.pae.services.DataServiceAdressCollection;
 import be.vinci.pae.services.DataServiceUserCollection;
+import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -58,11 +60,12 @@ public class Authentication {
       return Response.status(Status.UNAUTHORIZED).entity("Password needed")
           .type(MediaType.TEXT_PLAIN).build();
     }
-    String pseudo = json.get("pseudo").asText();
+    String pseudo = json.get("username").asText();
     String password = json.get("password").asText();
     // Try to login
-    User user = this.dataServiceUser.getUser(pseudo);
-    if (user == null || !user.checkPassword(password)) {
+    UserDTO user = this.dataServiceUser.getUser(pseudo);
+    User user2 = (User) user; // TODO ???? autorise?
+    if (user == null || !user2.checkPassword(password)) {
       return Response.status(Status.UNAUTHORIZED).entity("Pseudo or password incorrect")
           .type(MediaType.TEXT_PLAIN).build();
     }
@@ -78,7 +81,7 @@ public class Authentication {
 
     // load the user data from a public JSON view to filter out the private info not
     // to be returned by the API (such as password)
-    User publicUser = Json.filterPublicJsonView(user, User.class);
+    UserDTO publicUser = Json.filterPublicJsonView(user, UserDTO.class);
     ObjectNode node = jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
 
@@ -115,34 +118,34 @@ public class Authentication {
     // response = checkExistingCredentialsInDB(json); if (response != null) return response;
     // create adress
     Adress adress = this.adressFactory.getAdress();
-    adress.setId(1);
+    adress.setID(1);
     adress.setStreet(street);
-    adress.setHouseNumber(houseNumber);
-    adress.setMailBoxNumber(mailBoxNumber);
-    adress.setPostalCode(postalCode);
+    adress.setBuildingNumber(houseNumber);
+    adress.setUnitNumber(mailBoxNumber);
+    adress.setPostCode(postalCode);
     adress.setCommune(commune);
     adress.setCountry(country);
     this.dataServiceAdress.addAdress(adress);
     // create user
-    User user = this.userFactory.getUser();
-    user.setID(1);
-    user.setBoss(true);
-    user.setAntiqueDealer(true);
-    user.setLastName("Livi");
-    user.setFirstName("Satcho");
-    user.setPseudo("Livi Satcho");
-    user.setAdressID(adress.getId());
-    user.setEmail("LiviSatcho@hotmzil.com");
-    user.setConfirmed(true);
-    user.setDateRegistration("27-02-21");
-    user.setPassword(user.hashPassword("password"));
-    this.dataServiceUser.addUser(user);
+    UserDTO userDTO = this.userFactory.getPublicUser();
+    userDTO.setID(1);
+    userDTO.setBoss(true);
+    userDTO.setAntiqueDealer(true);
+    userDTO.setLastName("Livi");
+    userDTO.setFirstName("Satcho");
+    userDTO.setUsername("Livi Satcho");
+    userDTO.setAdressID(adress.getID());
+    userDTO.setEmail("LiviSatcho@hotmzil.com");
+    userDTO.setConfirmed(true);
+    userDTO.setRegistrationDate("27-02-21");
+    // userDTO.setPassword(userDTO.hashPassword("password"));
+    // this.dataServiceUser.addUser(userDTO);
 
     // Create token
     String token;
     try {
-      token =
-          JWT.create().withIssuer("auth0").withClaim("user", user.getID()).sign(this.jwtAlgorithm);
+      token = JWT.create().withIssuer("auth0").withClaim("user", userDTO.getID())
+          .sign(this.jwtAlgorithm);
     } catch (Exception e) {
       throw new WebApplicationException("Unable to create token", e, Status.INTERNAL_SERVER_ERROR);
     }
@@ -150,8 +153,8 @@ public class Authentication {
 
     // load the user data from a public JSON view to filter out the private info not
     // to be returned by the API (such as password)
-    String publicSerializedUser = Json.serializePublicJsonView(user);
-    User publicUser = Json.filterPublicJsonView(user, User.class);
+    String publicSerializedUser = Json.serializePublicJsonView(userDTO);
+    UserDTO publicUser = Json.filterPublicJsonView(userDTO, UserDTO.class);
     ObjectNode node = jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
 
@@ -189,9 +192,9 @@ public class Authentication {
   }
 
   private Response checkExistingCredentialsInDB(JsonNode json) {
-    String pseudo = json.get("pseudo").asText();
+    String username = json.get("username").asText();
     String email = json.get("email").asText();
-    if (this.dataServiceUser.getUser(pseudo) != null) {
+    if (this.dataServiceUser.getUser(username) != null) {
       return Response.status(Status.CONFLICT).entity("This pseudo is already in use")
           .type(MediaType.TEXT_PLAIN).build();
     }
