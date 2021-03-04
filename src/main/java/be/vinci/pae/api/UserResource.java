@@ -4,7 +4,7 @@ import java.util.List;
 import org.glassfish.jersey.server.ContainerRequest;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.utils.Json;
-import be.vinci.pae.domaine.User;
+import be.vinci.pae.domaine.UserDTO;
 import be.vinci.pae.domaine.UserFactory;
 import be.vinci.pae.services.DataServiceUserCollection;
 import jakarta.inject.Inject;
@@ -21,49 +21,51 @@ import jakarta.ws.rs.core.MediaType;
 public class UserResource {
 
   @Inject
-  private DataServiceUserCollection dataService;
+  private DataServiceUserCollection dataService; // TODO Changer pour UserUCC
 
   @Inject
   private UserFactory userFactory;
 
+  // TODO UserDTO ????
+
   @POST
   @Path("init")
   @Produces(MediaType.APPLICATION_JSON)
-  public User init() {
-    User user = this.userFactory.getUser();
+  public UserDTO init() {
+    UserDTO user = this.userFactory.getPublicUser();
     user.setID(1);
     user.setBoss(true);
     user.setAntiqueDealer(true);
     user.setLastName("Livi");
     user.setFirstName("Satcho");
-    user.setPseudo("Livi Satcho");
+    user.setUsername("Livi Satcho");
     user.setAdressID(1);
     user.setEmail("LiviSatcho@hotmzil.com");
     user.setConfirmed(true);
-    user.setDateRegistration("27-02-21");
+    user.setRegistrationDate("27-02-21");
     user.setPassword(user.hashPassword("password"));
     this.dataService.addUser(user);
     // load the user data from a public JSON view to filter out the private info not
     // to be returned by the API (such as password)
-    return Json.filterPublicJsonView(user, User.class);
+    return Json.filterPublicJsonView(user, UserDTO.class);
   }
 
   @GET
   @Path("me")
   @Produces(MediaType.APPLICATION_JSON)
   @Authorize
-  public User getUser(@Context ContainerRequest request) {
-    User currentUser = (User) request.getProperty("user");
-    return Json.filterPublicJsonView(currentUser, User.class);
+  public UserDTO getUser(@Context ContainerRequest request) {
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    return Json.filterPublicJsonView(currentUser, UserDTO.class);
   }
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Authorize
-  public List<User> getAllUsers() {
+  public List<UserDTO> getAllUsers() {
     System.out.println("List after serialization : "
-        + Json.filterPublicJsonViewAsList(this.dataService.getUsers(), User.class).toString());
-    return Json.filterPublicJsonViewAsList(this.dataService.getUsers(), User.class);
+        + Json.filterPublicJsonViewAsList(this.dataService.getUsers(), UserDTO.class).toString());
+    return Json.filterPublicJsonViewAsList(this.dataService.getUsers(), UserDTO.class);
   }
 
 }
