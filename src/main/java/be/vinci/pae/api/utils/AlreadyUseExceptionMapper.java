@@ -2,6 +2,7 @@ package be.vinci.pae.api.utils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import be.vinci.pae.utils.Config;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
