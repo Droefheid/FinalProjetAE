@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 
 public class DemoTest {
 
-  @Test
-  public void demoTest() {
-    assertTrue(true);
-  }
+	@Test
+	public void demoTest() {
+		assertTrue(true);
+	}
 
-
+	
 }
