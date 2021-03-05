@@ -39,7 +39,7 @@ public class Main {
    */
   public static void main(String[] args) throws IOException {
     // Load properties file
-    Config.load("dev.properties");
+    Config.load("prod.properties");
     // Start the server
     final HttpServer server = startServer();
     System.out.println("Jersey app started at " + Config.getProperty("BaseUri"));

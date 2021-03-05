@@ -18,6 +18,8 @@ public class DalServicesImpl implements DalServices {
    * 
    */
   public DalServicesImpl() {
+    if (jdbc == null)
+      jdbc = new JDBC();
     this.connection = jdbc.getConnection();
   }
 
