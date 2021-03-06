@@ -1,16 +1,15 @@
 package be.vinci.pae.domaine;
 
-import be.vinci.pae.services.UserDAO;
+import be.vinci.pae.services.MockUserDAO;
 import jakarta.inject.Inject;
 
-public class UserUCCImpl implements UserUCC {
+public class MockUCCImpl implements UserUCC {
 
   @Inject
-  private UserDAO userDao;
-
+  private MockUserDAO userDao;
+  
   @Override
   public UserDTO login(String username, String password) {
-
     // Try to login
     User user = (User) this.userDao.findByUserName(username);
     if (user == null || !user.checkPassword(password)) {
