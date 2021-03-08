@@ -48,10 +48,10 @@ public class DemoTest {
     @Test
     public void TestLogin() {
       UserDTO userDTO = user.getUserDTO();
-      userDTO.setUserName("Jojo123");
+      userDTO.setUserName("Jo123");
       //password = azerty
       userDTO.setPassword("$2a$10$LnMTnzCT7c1HL2VtLAJzfurviQy70TTDlUg0wIHYGr/NV0LhW.QUq");
-      assertEquals(userDTO,userUCC.login("Jojo123","azerty"));
+      assertEquals(userDTO,userUCC.login("Jo123","azerty"));
     }
 
 
