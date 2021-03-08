@@ -34,7 +34,7 @@ public class UserResource {
   private UserUCC userUcc;
 
   @POST
-  @Path("login")
+  @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response login(JsonNode json) {
     // Get and check credentials

@@ -19,20 +19,20 @@ let loginPage = `<div class="container">
           <div class="input-group-prepend">
             <span class="input-group-text"><i class="fas fa-user"></i></span>
           </div>
-          <input type="text" class="form-control" placeholder="username">
+          <input type="text" class="form-control" name="username" placeholder="username">
           
         </div>
         <div class="input-group form-group">
           <div class="input-group-prepend">
             <span class="input-group-text"><i class="fas fa-key"></i></span>
           </div>
-          <input type="password" class="form-control" placeholder="password">
+          <input type="password" class="form-control" name="password" placeholder="password">
         </div>
         <div class="row align-items-center remember">
           <input type="checkbox">Remember Me
         </div>
         <div class="form-group">
-          <input type="submit" value="Login" class="btn float-right login_btn">
+          <input type="submit" value="login" class="btn float-right login_btn">
         </div>
       </form>
     </div>
@@ -62,13 +62,13 @@ const onLogin = (e) => {
   let password = document.getElementById("password");
 
   let user = {
-    username: document.getElementById("username").value,
-    password: document.getElementById("password").value,
+    "username": username,
+    "password": password,
   };
 
   fetch(API_URL + "users/login", {
-    method: "POST", // *GET, POST, PUT, DELETE, etc.
-    body: JSON.stringify(user), // body data type must match "Content-Type" header
+    method: "POST", 
+    body: JSON.stringify(user), 
     headers: {
       "Content-Type": "application/json",
     },
