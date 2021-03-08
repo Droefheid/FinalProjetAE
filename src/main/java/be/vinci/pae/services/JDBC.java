@@ -10,13 +10,11 @@ public class JDBC {
   private ThreadLocal<Connection> dbConnections;
   private Connection connection;
 
-  public void JDBC() {
+  public JDBC() {
+    dbConnections = new ThreadLocal<Connection>();
     connection = creationConnection(Config.getProperty("db.url"), Config.getProperty("db.username"),
         Config.getProperty("db.password"));
-    dbConnections = new ThreadLocal<Connection>();
     String driver = Config.getProperty("db.driver");
-
-
     try {
       Class.forName(driver);
     } catch (ClassNotFoundException exception) {

@@ -17,12 +17,12 @@ import jakarta.inject.Singleton;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
-public class ApplicationBinder extends AbstractBinder {
+public class MockApplicationBinder extends AbstractBinder {
 
   @Override
   protected void configure() {
     bind(UserFactoryImpl.class).to(UserFactory.class).in(Singleton.class);
-    bind(UserDAOImpl.class).to(UserDAO.class).in(Singleton.class);
+    bind(MockUserDAO.class).to(UserDAO.class).in(Singleton.class);
     bind(UserUCCImpl.class).to(UserUCC.class).in(Singleton.class);
     bind(AdressFactoryImpl.class).to(AdressFactory.class).in(Singleton.class);
     bind(JDBC.class).to(JDBC.class).in(Singleton.class);
