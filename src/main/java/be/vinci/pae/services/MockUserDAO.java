@@ -1,24 +1,29 @@
 package be.vinci.pae.services;
 
 import be.vinci.pae.domaine.UserDTO;
+import be.vinci.pae.domaine.UserFactory;
 import jakarta.inject.Inject;
 
 public class MockUserDAO implements UserDAO {
 
   @Inject
-  private UserDTO userDTO;
+  private UserFactory user;
   
+  /**
+   * password = 123
+   */
   @Override
   public UserDTO findByUserName(String username) {
+    UserDTO userDTO =user.getUserDTO();
     userDTO.setUserName(username);
-    userDTO.setPassword("$2a$10$B0LtQqz9ERNwEHlOOjrsk.g7XZBPIJ4aCjQVBPa4QyNOKYkZ4V3hq"); //hi
+    userDTO.setPassword("$2a$10$9wCIFfvCj7CxhU2rA3DYOeZK6ZpugxZ4gDHCUxxrX9cUE/UK5pHSa");
     return userDTO;
   }
 
   @Override
   public UserDTO findById(int id) {
-    userDTO.setID(id);
-    return userDTO;
+    user.getUserDTO().setID(id);
+    return user.getUserDTO();
   }
 
 }

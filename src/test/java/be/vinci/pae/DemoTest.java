@@ -7,18 +7,20 @@ import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import be.vinci.pae.domaine.UserDTO;
+import be.vinci.pae.domaine.UserFactory;
 import be.vinci.pae.domaine.UserUCC;
 import be.vinci.pae.utils.ApplicationBinder;
 
 public class DemoTest {
 
 	private UserUCC userUCC;
-	private UserDTO userDTO;
+	private UserFactory user;
 
 	@BeforeEach
 	void initAll() {
 		ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
 		this.userUCC = locator.getService(UserUCC.class);
+		this.user = locator.getService(UserFactory.class);
 	}
 
 	@Test
@@ -26,12 +28,32 @@ public class DemoTest {
 	  assertNotNull(this.userUCC);
 	}
 	
+	/*
+	 * Test la methode login de UserUcc
+	 * En utilisant MockUserDAO
+	 */
 	@Test
-	public void testLogin() {
-	  userDTO.setUserName("hi");
-	  userDTO.setPassword("hi");
-	  assertEquals(userDTO,userUCC.login("hi","$2a$10$B0LtQqz9ERNwEHlOOjrsk.g7XZBPIJ4aCjQVBPa4QyNOKYkZ4V3hq"));
+	public void MockTestLogin() {
+	  UserDTO userDTO = user.getUserDTO();
+	  userDTO.setUserName("root");
+	  //password = 123
+	  userDTO.setPassword("$2a$10$9wCIFfvCj7CxhU2rA3DYOeZK6ZpugxZ4gDHCUxxrX9cUE/UK5pHSa");
+	  assertEquals(userDTO,userUCC.login("root","123"));
 	}
+	
+	   /*
+     * Test la methode login de UserUcc
+     * En utilisant UserDAOImpl
+     */
+    @Test
+    public void TestLogin() {
+      UserDTO userDTO = user.getUserDTO();
+      userDTO.setUserName("Jojo123");
+      //password = azerty
+      userDTO.setPassword("$2a$10$LnMTnzCT7c1HL2VtLAJzfurviQy70TTDlUg0wIHYGr/NV0LhW.QUq");
+      assertEquals(userDTO,userUCC.login("Jojo123","azerty"));
+    }
+
 
 	
 }

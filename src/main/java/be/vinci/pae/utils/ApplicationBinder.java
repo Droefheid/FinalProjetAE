@@ -3,7 +3,6 @@ package be.vinci.pae.utils;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import be.vinci.pae.domaine.AdressFactory;
 import be.vinci.pae.domaine.AdressFactoryImpl;
-import be.vinci.pae.domaine.MockUCCImpl;
 import be.vinci.pae.domaine.UserFactory;
 import be.vinci.pae.domaine.UserFactoryImpl;
 import be.vinci.pae.domaine.UserUCC;
@@ -25,7 +24,6 @@ public class ApplicationBinder extends AbstractBinder {
     bind(UserFactoryImpl.class).to(UserFactory.class).in(Singleton.class);
     bind(MockUserDAO.class).to(UserDAO.class).in(Singleton.class);
     bind(UserDAOImpl.class).to(UserDAO.class).in(Singleton.class);
-    bind(MockUCCImpl.class).to(UserUCC.class).in(Singleton.class);
     bind(UserUCCImpl.class).to(UserUCC.class).in(Singleton.class);
     bind(AdressFactoryImpl.class).to(AdressFactory.class).in(Singleton.class);
     bind(JDBC.class).to(JDBC.class).in(Singleton.class);
