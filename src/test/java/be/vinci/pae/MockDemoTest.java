@@ -1,7 +1,6 @@
 package be.vinci.pae;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,17 +30,30 @@ public class MockDemoTest {
 	}
 	
 	/**
-	 * Test la methode login de UserUcc
-	 * En utilisant MockUserDAO
-	 * 
+	 *Tests login method of UserUcc using MockUserDAO
+     * parameters used : username=root, password=123
+	 * information is correct
 	 */
 	@Test
-	public void MockTestLogin() {
+	public void MockTestLoginCorrect() {
 	  UserDTO userDTO = user.getUserDTO();
 	  userDTO.setUserName("root");
 	  //password = 123
 	  userDTO.setPassword("$2a$10$9wCIFfvCj7CxhU2rA3DYOeZK6ZpugxZ4gDHCUxxrX9cUE/UK5pHSa");
 	  assertEquals(userDTO,userUCC.login("root","123"));
 	}
+	
+	/**
+     * Tests login method of UserUcc using MockUserDAO
+     * parameters used : username=mike, password=123
+     * information is incorrect
+     */
+    @Test
+    public void MockTestLoginFalse() {
+      UserDTO userDTO = user.getUserDTO();
+      userDTO.setUserName("mike");
+      userDTO.setPassword("$2a$10$9wCIFfvCj7CxhU2rA3DYOeZK6ZpugxZ4gDHCUxxrX9cUE/UK5pHSa");
+      assertNotEquals(userDTO,userUCC.login("mike","123"));
+    }
 
 }
