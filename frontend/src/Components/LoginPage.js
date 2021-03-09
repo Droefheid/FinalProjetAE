@@ -39,6 +39,7 @@ let loginPage = `<div class="container">
     <div class="card-footer">
       <div class="d-flex justify-content-center">
       </div>
+      <div id="messageBoard"></div>
     </div>
   </div>
 </div>
@@ -58,8 +59,8 @@ const LoginPage = () => {
 
 const onLogin = (e) => {
   e.preventDefault();
-  let username = document.getElementById("username");
-  let password = document.getElementById("password");
+  let username = document.getElementById("username").value;
+  let password = document.getElementById("password").value;
 
   let user = {
     "username": username,

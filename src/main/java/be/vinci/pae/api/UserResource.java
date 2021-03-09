@@ -54,7 +54,7 @@ public class UserResource {
     UserDTO user = this.userUcc.login(json.get("username").asText(), json.get("password").asText());
 
     if (user == null)
-      return Response.status(Status.UNAUTHORIZED).entity("Pseudo or password incorrect")
+      return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")
           .type(MediaType.TEXT_PLAIN).build();
 
     // Create token
