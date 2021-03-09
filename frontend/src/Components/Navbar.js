@@ -3,8 +3,9 @@ import {getUserSessionData} from "../utils/session.js";
 // destructuring assignment
 const Navbar = () => {
   let navbar;
-  let user = getUserSessionData().user;    
+  let user = getUserSessionData();    
   if (user) {
+    user=user.user
     navbar = `<nav class="navbar navbar-inverse navbar-expand-md navbar-dark bg-dark mx-auto" id="navBar">
   <a class="navbar-brand" href="#" data-uri="/">LiVi Satcho</a><button
     class="navbar-toggler"
