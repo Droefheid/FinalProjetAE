@@ -25,13 +25,24 @@ public class DemoTest {
 	  assertNotNull(this.userUCC);
 	}	
 	
-	 /**
-     * Test la methode login de UserUcc
-     * En utilisant UserDAOImpl
+    /**
+     *Tests login method of UserUcc using UserDAOImpl
+     * parameters used : username=Jo123, password=azerty
+     * information is correct
      */
     @Test
-    public void TestLogin() {
+    public void TestLoginCorrect() {
       assertNotNull(userUCC.login("Jo123","azerty"));
+    }
+
+    /**
+     *Tests login method of UserUcc using UserDAOImpl
+     * parameters used : username=Jo123, password=15
+     * information is incorrect
+     */
+    @Test
+    public void TestLoginIncorrect() {
+      assertNull(userUCC.login("Jo123","15"));
     }
 
 
