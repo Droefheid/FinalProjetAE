@@ -51,6 +51,7 @@ public class UserResource {
           .type(MediaType.TEXT_PLAIN).build();
     }
 
+
     UserDTO user = this.userUcc.login(json.get("username").asText(), json.get("password").asText());
 
     if (user == null)
@@ -66,8 +67,8 @@ public class UserResource {
       throw new WebApplicationException("Unable to create token", e, Status.INTERNAL_SERVER_ERROR);
     }
 
-    // Build response
 
+    // Build response
     // load the user data from a public JSON view to filter out the private info not
     // to be returned by the API (such as password)
     UserDTO publicUser = Json.filterPublicJsonView(user, UserDTO.class);

@@ -3,7 +3,7 @@ import {getUserSessionData} from "../utils/session.js";
 // destructuring assignment
 const Navbar = () => {
   let navbar;
-  let user = getUserSessionData();    
+  let user = getUserSessionData().user;    
   if (user) {
     navbar = `<nav class="navbar navbar-inverse navbar-expand-md navbar-dark bg-dark mx-auto" id="navBar">
   <a class="navbar-brand" href="#" data-uri="/">LiVi Satcho</a><button
@@ -20,6 +20,7 @@ const Navbar = () => {
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
       <a class="nav-item nav-link" href="#" data-uri="/">Home</a>
+      <a class="nav-item nav-link" href="#">${user.username}</a>
       <a class="nav-item nav-link" href="#" data-uri="/logout">Logout</a>
     </div>
   </div>
