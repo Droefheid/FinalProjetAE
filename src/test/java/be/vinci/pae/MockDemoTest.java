@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import be.vinci.pae.domaine.UserDTO;
 import be.vinci.pae.domaine.UserFactory;
 import be.vinci.pae.domaine.UserUCC;
-import be.vinci.pae.utils.Config;
 import be.vinci.pae.utils.MockApplicationBinder;
 
 public class MockDemoTest {
@@ -18,7 +17,6 @@ public class MockDemoTest {
 
 	@BeforeEach
 	void initAll() {
-	  Config.load("prod.properties");
 		ServiceLocator locator = ServiceLocatorUtilities.bind(new MockApplicationBinder());
 		this.userUCC = locator.getService(UserUCC.class);
 		this.user = locator.getService(UserFactory.class);

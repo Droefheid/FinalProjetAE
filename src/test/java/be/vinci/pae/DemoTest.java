@@ -15,7 +15,7 @@ public class DemoTest {
 
 	@BeforeEach
 	void initAll() {
-	  Config.load("prod2.properties");
+	    Config.load("prod2.properties");
 		ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
 		this.userUCC = locator.getService(UserUCC.class);
 	}

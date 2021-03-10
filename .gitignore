@@ -10,12 +10,11 @@ tmp/
 *.bak
 *.swp
 *~.nib
-*.properties
+prod.properties
 .settings/
 .loadpath
 .recommenders
 frontend/node_modules
-*.DemoTest
 
 # External tool builders
 .externalToolBuilders/
