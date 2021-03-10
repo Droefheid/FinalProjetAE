@@ -1,6 +1,7 @@
 package be.vinci.pae;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,40 +12,36 @@ import be.vinci.pae.utils.Config;
 
 public class DemoTest {
 
-	private UserUCC userUCC;
+  private UserUCC userUCC;
 
-	@BeforeEach
-	void initAll() {
-	    Config.load("prod2.properties");
-		ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
-		this.userUCC = locator.getService(UserUCC.class);
-	}
+  @BeforeEach
+  void initAll() {
+    Config.load("prod2.properties");
+    ServiceLocator locator = ServiceLocatorUtilities.bind(new ApplicationBinder());
+    this.userUCC = locator.getService(UserUCC.class);
+  }
 
-	@Test
-	public void demoTest() {
-	  assertNotNull(this.userUCC);
-	}	
-	
-    /**
-     *Tests login method of UserUcc using UserDAOImpl
-     * parameters used : username=Jo123, password=azerty
-     * information is correct
-     */
-    @Test
-    public void TestLoginCorrect() {
-      assertNotNull(userUCC.login("Jo123","azerty"));
-    }
+  @Test
+  public void demoTest() {
+    assertNotNull(this.userUCC);
+  }
 
-    /**
-     *Tests login method of UserUcc using UserDAOImpl
-     * parameters used : username=Jo123, password=15
-     * information is incorrect
-     */
-    @Test
-    public void TestLoginIncorrect() {
-      assertNull(userUCC.login("Jo123","15"));
-    }
+  /**
+   * Tests login method of UserUcc using UserDAOImpl parameters used : username=Jo123, password=azerty information is correct
+   */
+  @Test
+  public void TestLoginCorrect() {
+    assertNotNull(userUCC.login("Jo123", "azerty"));
+  }
+
+  /**
+   * Tests login method of UserUcc using UserDAOImpl parameters used : username=Jo123, password=15 information is incorrect
+   */
+  @Test
+  public void TestLoginIncorrect() {
+    assertNull(userUCC.login("Jo123", "15"));
+  }
 
 
-	
+
 }
