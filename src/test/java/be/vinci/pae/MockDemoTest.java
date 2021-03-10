@@ -36,7 +36,6 @@ public class MockDemoTest {
 	public void MockTestLoginCorrect() {
 	  UserDTO userDTO = user.getUserDTO();
 	  userDTO.setUserName("root");
-	  //password = 123
 	  userDTO.setPassword("$2a$10$9wCIFfvCj7CxhU2rA3DYOeZK6ZpugxZ4gDHCUxxrX9cUE/UK5pHSa");
 	  assertEquals(userDTO,userUCC.login("root","123"));
 	}
