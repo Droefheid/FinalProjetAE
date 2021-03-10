@@ -50,10 +50,7 @@ public class MockDemoTest {
      */
     @Test
     public void MockTestLoginFalse() {
-      UserDTO userDTO = user.getUserDTO();
-      userDTO.setUserName("mike");
-      userDTO.setPassword("$2a$10$9wCIFfvCj7CxhU2rA3DYOeZK6ZpugxZ4gDHCUxxrX9cUE/UK5pHSa");
-      assertNotEquals(userDTO,userUCC.login("mike","123"));
+      assertNull(userUCC.login("mike","123"));
     }
 
 }

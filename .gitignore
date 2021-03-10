@@ -15,6 +15,7 @@ tmp/
 .loadpath
 .recommenders
 frontend/node_modules
+*.DemoTest
 
 # External tool builders
 .externalToolBuilders/
