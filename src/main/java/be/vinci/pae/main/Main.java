@@ -34,8 +34,8 @@ public class Main {
   /**
    * Main method.
    * 
-   * @param args command line arguments
-   * @throws IOException
+   * @param args command line arguments.
+   * @throws IOException Signals that an I/O exception of some sort has occurred.
    */
   public static void main(String[] args) throws IOException {
     // Load properties file

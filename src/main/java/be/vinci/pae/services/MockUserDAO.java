@@ -10,12 +10,16 @@ public class MockUserDAO implements UserDAO {
   private UserFactory user;
 
   /**
-   * password = 123
+   * find a user by username.
+   * 
+   * @param username = root.
+   * @return userDTO with root as username and 123 as password.
    */
   @Override
   public UserDTO findByUserName(String username) {
-    if (!username.equals("root"))
+    if (!username.equals("root")) {
       return null;
+    }
     UserDTO userDTO = user.getUserDTO();
     userDTO.setUserName(username);
     userDTO.setPassword("$2a$10$9wCIFfvCj7CxhU2rA3DYOeZK6ZpugxZ4gDHCUxxrX9cUE/UK5pHSa");

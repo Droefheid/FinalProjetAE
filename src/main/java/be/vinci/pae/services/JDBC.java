@@ -10,6 +10,9 @@ public class JDBC {
   private ThreadLocal<Connection> dbConnections;
   private Connection connection;
 
+  /**
+   * Creates a connection to the database.
+   */
   public JDBC() {
     dbConnections = new ThreadLocal<Connection>();
     connection = creationConnection(Config.getProperty("db.url"), Config.getProperty("db.username"),

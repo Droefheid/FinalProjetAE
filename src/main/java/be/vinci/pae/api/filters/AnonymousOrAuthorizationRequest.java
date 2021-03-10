@@ -18,8 +18,9 @@ import jakarta.ws.rs.ext.Provider;
 
 
 /**
+ * This filter allows anonymous requests.
  * 
- * @author e-Baron This filter allows anonymous requests
+ * @author e-Baron.
  *
  */
 
@@ -33,7 +34,7 @@ public class AnonymousOrAuthorizationRequest implements ContainerRequestFilter {
       JWT.require(this.jwtAlgorithm).withIssuer("auth0").build();
 
   @Inject
-  private UserDAO UserDAO;
+  private UserDAO userDAO;
 
   @Override
   public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -46,8 +47,7 @@ public class AnonymousOrAuthorizationRequest implements ContainerRequestFilter {
         throw new WebApplicationException(Response.status(Status.UNAUTHORIZED)
             .entity("Malformed token : " + e.getMessage()).type("text/plain").build());
       }
-      requestContext.setProperty("user",
-          UserDAO.findById(decodedToken.getClaim("user").asInt()));
+      requestContext.setProperty("user", userDAO.findById(decodedToken.getClaim("user").asInt()));
     }
   }
 

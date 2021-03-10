@@ -30,10 +30,11 @@ public class MockDemoTest {
   }
 
   /**
-   * Tests login method of UserUcc using MockUserDAO parameters used : username=root, password=123 information is correct
+   * Tests login method of UserUcc using MockUserDAO 
+   * parameters used : username=root, password=123 information is correct.
    */
   @Test
-  public void MockTestLoginCorrect() {
+  public void mockTestLoginCorrect() {
     UserDTO userDTO = user.getUserDTO();
     userDTO.setUserName("root");
     userDTO.setPassword("$2a$10$9wCIFfvCj7CxhU2rA3DYOeZK6ZpugxZ4gDHCUxxrX9cUE/UK5pHSa");
@@ -41,10 +42,11 @@ public class MockDemoTest {
   }
 
   /**
-   * Tests login method of UserUcc using MockUserDAO parameters used : username=mike, password=123 information is incorrect
+   * Tests login method of UserUcc using MockUserDAO 
+   * parameters used : username=mike, password=123 information is incorrect.
    */
   @Test
-  public void MockTestLoginFalse() {
+  public void mockTestLoginFalse() {
     assertNull(userUCC.login("mike", "123"));
   }
 

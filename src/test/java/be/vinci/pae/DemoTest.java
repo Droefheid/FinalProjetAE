@@ -21,22 +21,21 @@ public class DemoTest {
     this.userUCC = locator.getService(UserUCC.class);
   }
 
+  /**
+   * Checks to see if userUCC is null or not.
+   */
   @Test
   public void demoTest() {
     assertNotNull(this.userUCC);
   }
 
   /**
-   * Tests login method of UserUcc using UserDAOImpl parameters used : username=Jo123, password=azerty information is correct
-   *
-   * @Test public void TestLoginCorrect() { assertNotNull(userUCC.login("Jo123", "azerty")); }
-   */
-
-  /**
-   * Tests login method of UserUcc using UserDAOImpl parameters used : username=Jo123, password=15 information is incorrect
+   * Tests login method of UserUcc using UserDAOImpl parameters used :
+   * username=Jo123, password=15 information is incorrect.
+   * 
    */
   @Test
-  public void TestLoginIncorrect() {
+  public void testLoginIncorrect() {
     assertNull(userUCC.login("Jo123", "15"));
   }
 

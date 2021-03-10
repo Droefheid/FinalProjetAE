@@ -2,11 +2,11 @@ package be.vinci.pae.domaine;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-@JsonInclude(JsonInclude.Include.NON_NULL) // ignore all null fields in order to avoid sending props not linked to a JSON view
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AdressImpl implements Adress {
 
   private int id;
-  private String Street;
+  private String street;
   private int buildingNumber;
   private int unitNumber;
   private int postCode;
@@ -22,11 +22,11 @@ public class AdressImpl implements Adress {
   }
 
   public String getStreet() {
-    return Street;
+    return street;
   }
 
   public void setStreet(String street) {
-    Street = street;
+    this.street = street;
   }
 
   public int getBuildingNumber() {
@@ -72,7 +72,7 @@ public class AdressImpl implements Adress {
   @Override
   public String toString() {
     // TODO generate with source
-    return "AdressImpl [id=" + id + ", Street=" + Street + ", buildingNumber=" + buildingNumber
+    return "AdressImpl [id=" + id + ", Street=" + street + ", buildingNumber=" + buildingNumber
         + ", unitNumber=" + unitNumber + ", postCode=" + postCode + ", commune=" + commune
         + ", country=" + country + "]";
   }
@@ -87,15 +87,19 @@ public class AdressImpl implements Adress {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     AdressImpl other = (AdressImpl) obj;
-    if (id != other.id)
+    if (id != other.id) {
       return false;
+    }
     return true;
   }
 

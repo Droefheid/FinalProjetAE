@@ -18,15 +18,16 @@ public class DalServicesImpl implements DalServices {
    * 
    */
   public DalServicesImpl() {
-    if (jdbc == null)
+    if (jdbc == null) {
       jdbc = new JDBC();
+    }
     this.connection = jdbc.getConnection();
   }
 
   /**
    * get a statement form a String query.
    * 
-   * @param query from which to get a Statement
+   * @param query from which to get a Statement.
    */
   public PreparedStatement getPreparedStatement(String query) {
     PreparedStatement ps = null;

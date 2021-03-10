@@ -9,6 +9,11 @@ public class Config {
 
   private static Properties props;
 
+  /**
+   * Reads a property list (key and element pairs) from the inputbyte file.
+   * 
+   * @param file : the input file.
+   */
   public static void load(String file) {
     props = new Properties();
     try (InputStream input = new FileInputStream(file)) {
@@ -18,6 +23,13 @@ public class Config {
     }
   }
 
+  /**
+   * Searches for the property with the specified key in this property list.If the key is not found in this property list, the default property list,and
+   * its defaults, recursively, are then checked. The method returns null if the property is not found.
+   * 
+   * @param key,the value in this property list with the specified key value.
+   * @return the value in this property list with the specified key value.
+   */
   public static String getProperty(String key) {
     return props.getProperty(key);
   }

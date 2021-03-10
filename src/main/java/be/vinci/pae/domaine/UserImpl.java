@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import views.Views;
 
-@JsonInclude(JsonInclude.Include.NON_NULL) // ignore all null fields in order to avoid sending props not linked to a JSON view
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserImpl implements User {
 
   @JsonView(Views.Public.class)
@@ -163,15 +163,19 @@ public class UserImpl implements User {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     UserImpl other = (UserImpl) obj;
-    if (id != other.id)
+    if (id != other.id) {
       return false;
+    }
     return true;
   }
 

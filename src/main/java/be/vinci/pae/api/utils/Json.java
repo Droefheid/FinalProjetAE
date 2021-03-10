@@ -5,8 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import views.Views;
 
 public class Json {
-  private final static ObjectMapper jsonMapper = new ObjectMapper();
+  private static final ObjectMapper jsonMapper = new ObjectMapper();
 
+  /**
+   * Transform a java object into Json object with specific view.
+   * 
+   * @param <T> : generic type of object.
+   * @param item : Java object to transformed into JSON.
+   * @param targetClass type of class.
+   * @return item becomes Json object.
+   */
   public static <T> T filterPublicJsonView(T item, Class<T> targetClass) {
 
     try {

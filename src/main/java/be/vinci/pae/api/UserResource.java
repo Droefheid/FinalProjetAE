@@ -33,6 +33,12 @@ public class UserResource {
   @Inject
   private UserUCC userUcc;
 
+  /**
+   * Login the user if exists or send error message.
+   * 
+   * @param json object containing a username and password.
+   * @return a user if user exists in database and matches password.
+   */
   @POST
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -54,9 +60,10 @@ public class UserResource {
 
     UserDTO user = this.userUcc.login(json.get("username").asText(), json.get("password").asText());
 
-    if (user == null)
+    if (user == null) {
       return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")
           .type(MediaType.TEXT_PLAIN).build();
+    }
 
     // Create token
     String token;

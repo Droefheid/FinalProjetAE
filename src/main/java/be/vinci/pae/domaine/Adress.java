@@ -7,17 +7,18 @@ public interface Adress {
   int getID();
 
   /**
-   * change the id of the user if is not already use in the DB
+   * Change the id of the user if is not already use in the DB.
    * 
-   * @param id : not already use in the DB
+   * @param id : not already use in the DB.
    */
   void setID(int id);
 
   String getStreet();
 
   /**
+   * Change the street of the user.
    * 
-   * @param street : as to be Not Null
+   * @param street : has to be Not Null.
    */
   void setStreet(String street);
 
@@ -36,16 +37,18 @@ public interface Adress {
   String getCommune();
 
   /**
+   * Change the commune of the user.
    * 
-   * @param commune : as to be Not Null
+   * @param commune : as to be Not Null.
    */
   void setCommune(String commune);
 
   String getCountry();
 
   /**
+   * Change the country of the user.
    * 
-   * @param country : as to be Not Null
+   * @param country : as to be Not Null.
    */
   void setCountry(String country);
 }
