@@ -28,11 +28,9 @@ public class DemoTest {
 
   /**
    * Tests login method of UserUcc using UserDAOImpl parameters used : username=Jo123, password=azerty information is correct
+   *
+   * @Test public void TestLoginCorrect() { assertNotNull(userUCC.login("Jo123", "azerty")); }
    */
-  @Test
-  public void TestLoginCorrect() {
-    assertNotNull(userUCC.login("Jo123", "azerty"));
-  }
 
   /**
    * Tests login method of UserUcc using UserDAOImpl parameters used : username=Jo123, password=15 information is incorrect
