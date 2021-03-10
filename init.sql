@@ -38,6 +38,6 @@ CREATE TABLE projet.users (
 INSERT INTO projet.addresses VALUES ('1', 'Avenue Louise' ,'93' ,'1000', 'Bruxelles','Belgique','1');
 INSERT INTO projet.addresses VALUES ('2', 'Avenue Paul Hymans','20' ,'1200', 'Woluwe-Saint-Lambert','Belgique','1');
 
-INSERT INTO projet.users VALUES ('1', 'Janssens', 'Olivier', 'Jo123' , '$2y$12$jOweCgWXfokomtxHtkxJ9OZRRTf/Znph10DwlPSXL1wyjz49N2sra' , '1', 'jo@gmail.com', DEFAULT, DEFAULT, DEFAULT, '2019-10-10');
+INSERT INTO projet.users VALUES ('1', 'Janssens', 'Olivier', 'Jo123' , '$2a$10$LnMTnzCT7c1HL2VtLAJzfurviQy70TTDlUg0wIHYGr/NV0LhW.QUq' , '1', 'jo@gmail.com', DEFAULT, DEFAULT, DEFAULT, '2019-10-10');
 INSERT INTO projet.users VALUES ('2', 'Janssens', 'Axelle', 'Ja321' , '$2y$12$YFMeK.tR5EKqS5SIznRcLO795noc13r.PiiUmpz2mJ3JkF6GaOwba' , '1', 'ja@gmail.com', DEFAULT, DEFAULT, DEFAULT, '2019-11-11');
 INSERT INTO projet.users VALUES ('3', 'Sow', 'Mathieu', 'Mathos' , '$2y$12$8G7MvnjHJ8EuvHosK74DDuNhNAMCwQKbxo8wCtmLQ3Tlfi4dd1Pge' , '2', 'soma@', DEFAULT, DEFAULT, DEFAULT, '2019-10-10');
