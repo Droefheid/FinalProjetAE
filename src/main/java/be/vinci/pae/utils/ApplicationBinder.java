@@ -10,7 +10,6 @@ import be.vinci.pae.domaine.UserUCCImpl;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.DalServicesImpl;
 import be.vinci.pae.services.JDBC;
-import be.vinci.pae.services.MockUserDAO;
 import be.vinci.pae.services.UserDAO;
 import be.vinci.pae.services.UserDAOImpl;
 import jakarta.inject.Singleton;

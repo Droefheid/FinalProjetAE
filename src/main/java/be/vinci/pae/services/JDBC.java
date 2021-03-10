@@ -38,20 +38,6 @@ public class JDBC {
     return connection;
   }
 
-  private void closeConnection() {
-    try {
-      Connection connection = dbConnections.get();
-      if (connection == null) {
-        return;
-      }
-      dbConnections.remove();
-      connection.close();
-    } catch (SQLException exc) {
-      exc.printStackTrace();
-      throw new UnsupportedOperationException(exc);
-    }
-  }
-
   public Connection getConnection() {
     return /* TODO Clone */ this.connection;
   }

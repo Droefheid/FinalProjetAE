@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domaine.UserDTO;
-import be.vinci.pae.domaine.UserFactory;
 import be.vinci.pae.domaine.UserUCC;
 import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
@@ -26,9 +25,6 @@ public class UserResource {
 
   private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
   private final ObjectMapper jsonMapper = new ObjectMapper();
-
-  @Inject
-  private UserFactory userFactory;
 
   @Inject
   private UserUCC userUcc;

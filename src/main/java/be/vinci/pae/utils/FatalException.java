@@ -8,7 +8,7 @@ public class FatalException extends WebApplicationException {
 
   private static final long serialVersionUID = -5926196101906096391L;
 
-  public FatalException(Throwable cause) {
+  public FatalException() {
     super(Response.status(Status.INTERNAL_SERVER_ERROR).build());
   }
 
