@@ -3,6 +3,7 @@ package be.vinci.pae.services;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import be.vinci.pae.domaine.Adress;
 import be.vinci.pae.domaine.UserDTO;
 import be.vinci.pae.domaine.UserFactory;
 import jakarta.inject.Inject;
@@ -50,6 +51,69 @@ public class UserDAOImpl implements UserDAO {
   public UserDTO findById(int id) {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public UserDTO registerUser(String username, String email, String password, String lastName,
+      String firstName, Adress adress) {
+    PreparedStatement ps =
+        this.dalServices.getPreparedStatement("INSERT INTO projet.users VALUES(DEFAULT,?,?,?,?,?)");
+    try {
+      ps.setString(1, lastName);
+      ps.setString(2, firstName);
+      ps.setString(3, username);
+      ps.setString(4, password);
+      ps.setInt(5, adress.getID());
+      ps.executeQuery();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+    return findByUserName(username);
+  }
+
+  @Override
+  public Adress registerAdress(Adress adress) {
+    PreparedStatement ps = this.dalServices
+        .getPreparedStatement("INSERT INTO projet.addresses VALUES(DEFAULT,?,?,?,?,?,?)");
+    try {
+      ps.setString(1, adress.getStreet());
+      ps.setString(2, adress.getBuildingNumber());
+      ps.setString(3, adress.getPostCode());
+      ps.setString(4, adress.getCommune());
+      ps.setString(5, adress.getCountry());
+      ps.setString(6, adress.getUnitNumber());
+      ps.executeQuery();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+    getAdressById(adress);
+    return adress;
+  }
+
+  @Override
+  public int getAdressById(Adress adress) {
+    PreparedStatement ps = this.dalServices.getPreparedStatement(
+        "SELECT address_id FROM projet.addresses WHERE street=? AND building_number=?"
+            + " AND postcode=? AND commune=? AND unit_number=? AND country=?");
+    try {
+      ps.setString(1, adress.getStreet());
+      ps.setString(2, adress.getBuildingNumber());
+      ps.setString(3, adress.getPostCode());
+      ps.setString(4, adress.getCommune());
+      ps.setString(5, adress.getCountry());
+      ps.setString(6, adress.getUnitNumber());
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          adress.setID(rs.getInt(1));
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return -1;
+    }
+    return adress.getID();
   }
 
 }

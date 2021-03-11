@@ -22,17 +22,17 @@ public interface Adress {
    */
   void setStreet(String street);
 
-  int getBuildingNumber();
+  String getBuildingNumber();
 
-  void setBuildingNumber(int buildingNumber);
+  void setBuildingNumber(String buildingNumber);
 
-  int getUnitNumber();
+  String getUnitNumber();
 
-  void setUnitNumber(int unitNumber);
+  void setUnitNumber(String unitNumber);
 
-  int getPostCode();
+  String getPostCode();
 
-  void setPostCode(int postCode);
+  void setPostCode(String postCode);
 
   String getCommune();
 

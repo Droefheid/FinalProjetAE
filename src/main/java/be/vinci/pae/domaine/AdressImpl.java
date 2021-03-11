@@ -7,9 +7,9 @@ public class AdressImpl implements Adress {
 
   private int id;
   private String street;
-  private int buildingNumber;
-  private int unitNumber;
-  private int postCode;
+  private String buildingNumber;
+  private String unitNumber;
+  private String postCode;
   private String commune;
   private String country;
 
@@ -29,27 +29,27 @@ public class AdressImpl implements Adress {
     this.street = street;
   }
 
-  public int getBuildingNumber() {
+  public String getBuildingNumber() {
     return buildingNumber;
   }
 
-  public void setBuildingNumber(int buildingNumber) {
+  public void setBuildingNumber(String buildingNumber) {
     this.buildingNumber = buildingNumber;
   }
 
-  public int getUnitNumber() {
-    return unitNumber;
+  public String getUnitNumber() {
+    return this.unitNumber;
   }
 
-  public void setUnitNumber(int unitNumber) {
+  public void setUnitNumber(String unitNumber) {
     this.unitNumber = unitNumber;
   }
 
-  public int getPostCode() {
+  public String getPostCode() {
     return postCode;
   }
 
-  public void setPostCode(int postCode) {
+  public void setPostCode(String postCode) {
     this.postCode = postCode;
   }
 
