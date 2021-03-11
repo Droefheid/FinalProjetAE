@@ -14,6 +14,7 @@ const setUserSessionData = (user, isRemember) => {
 
 const removeSessionData = () => {
   localStorage.removeItem(STORE_NAME);
+  sessionStorage.removeItem(STORE_NAME);
 };
 
 export { getUserSessionData, setUserSessionData, removeSessionData };
