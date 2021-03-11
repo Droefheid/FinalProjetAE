@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 /* load bootstrap module (JS) */
 import 'bootstrap';
 
+
 const HEADER_TITLE = "LiVi Satcho Antiquaire";
 const FOOTER_TEXT = "Contact : livisatcho@hotmail.com";
 
