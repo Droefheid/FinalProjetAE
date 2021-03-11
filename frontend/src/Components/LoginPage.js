@@ -4,12 +4,12 @@ By default, all escape sequences in a template literal are ignored.*/
 import { getUserSessionData, setUserSessionData } from "../utils/session.js";
 import { RedirectUrl } from "./Router.js";
 import Navbar from "./Navbar.js";
-import { API_URL } from "../utils/server.js";
+import { API_URL, ALERT_BOX } from "../utils/server.js";
 
 let remember = false;
 
 let loginPage = `<div class="container">
-<div class="d-flex justify-content-center h-100">
+<div class="d-flex justify-content-center h-100 mt-4">
   <div class="card">
     <div class="card-header">
       <h3>Sign In</h3>
@@ -40,7 +40,7 @@ let loginPage = `<div class="container">
     <div class="card-footer">
       <div class="d-flex justify-content-center">
       </div>
-      <div id="messageBoard"></div>
+      <div id="messageBoardForm"></div>
     </div>
   </div>
 </div>
@@ -52,7 +52,7 @@ const LoginPage = () => {
   let loginForm = document.querySelector("form");
   const user = getUserSessionData();
   if (user) {
-    // re-render the navbar for the authenticated user
+    // re-render the navbar for the authenticated user.
     Navbar();
     RedirectUrl("/");
   } else loginForm.addEventListener("submit", onLogin);
@@ -97,13 +97,13 @@ const onUserLogin = (userData) => {
 };
 
 const onError = (err) => {
-  let messageBoard = document.querySelector("#messageBoard");
+  let messageBoard = document.querySelector("#messageBoardForm");
   let errorMessage = "";
   if (err.message.includes("401")) {
     messageBoard.innerHTML = '<div class="alert alert-danger">Wrong username or password.</div>';
   }else{
     errorMessage = err.message;
-    messageBoard.innerText = errorMessage;
+    ALERT_BOX(messageBoard, errorMessage);
   }
 };
 

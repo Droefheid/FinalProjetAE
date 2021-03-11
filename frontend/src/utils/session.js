@@ -1,3 +1,5 @@
+import VerifyUserToken from "./VerifyUserToken.js";
+
 const STORE_NAME = "user";
 const getUserSessionData = () => {
   let retrievedUser = localStorage.getItem(STORE_NAME);
@@ -17,4 +19,14 @@ const removeSessionData = () => {
   sessionStorage.removeItem(STORE_NAME);
 };
 
-export { getUserSessionData, setUserSessionData, removeSessionData };
+const checkTokenOnLoad = () => {
+  let retrievedUser = getUserSessionData();
+  if(!retrievedUser) return;
+  let isLocalToken = localStorage.getItem(STORE_NAME);
+  if(!isLocalToken) isLocalToken = false;
+  else isLocalToken = true;
+  let id = retrievedUser.user.id;
+  VerifyUserToken(id, isLocalToken);
+};
+
+export { getUserSessionData, setUserSessionData, removeSessionData, checkTokenOnLoad };

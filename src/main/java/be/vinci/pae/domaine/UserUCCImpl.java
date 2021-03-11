@@ -24,5 +24,12 @@ public class UserUCCImpl implements UserUCC {
     // TODO Auto-generated method stub
     return null;
   }
+  
+  @Override
+  public UserDTO getUser(int id) {
+	  User user = (User) this.userDao.findById(id);
+	  
+	  return (UserDTO) user;
+  }
 
 }

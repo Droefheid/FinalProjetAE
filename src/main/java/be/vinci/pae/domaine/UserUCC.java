@@ -5,4 +5,6 @@ public interface UserUCC {
   UserDTO login(String username, String password);
 
   UserDTO register(UserDTO userDTO);
+  
+  UserDTO getUser(int id);
 }
