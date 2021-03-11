@@ -5,7 +5,8 @@ import { getUserSessionData, setUserSessionData } from "../utils/session.js";
 import { RedirectUrl } from "./Router.js";
 import Navbar from "./Navbar.js";
 import { API_URL } from "../utils/server.js";
-import { setLayout } from "../utils/render.js";
+
+let remember = false;
 
 let loginPage = `<div class="container">
 <div class="d-flex justify-content-center h-100">
@@ -29,7 +30,7 @@ let loginPage = `<div class="container">
           <input type="password" class="form-control" id="password" placeholder="password">
         </div>
         <div class="row align-items-center remember">
-          <input type="checkbox">Remember Me
+          <input type="checkbox" id="remember">Remember Me
         </div>
         <div class="form-group">
           <input type="submit" value="login" class="btn float-right login_btn">
@@ -67,6 +68,8 @@ const onLogin = (e) => {
     "password": password,
   };
 
+  remember = document.getElementById("remember").checked;
+
   fetch(API_URL + "users/login", {
     method: "POST", 
     body: JSON.stringify(user), 
@@ -87,7 +90,7 @@ const onLogin = (e) => {
 
 const onUserLogin = (userData) => {
   const user = { ...userData, isAutenticated: true };
-  setUserSessionData(user);
+  setUserSessionData(user, remember);
   // re-render the navbar for the authenticated user
   Navbar();
   RedirectUrl("/");
