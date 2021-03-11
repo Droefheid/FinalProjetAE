@@ -70,12 +70,12 @@ public class UserResource {
       throw new WebApplicationException("Unable to create token", e, Status.INTERNAL_SERVER_ERROR);
     }
 
-
     // Build response
     // load the user data from a public JSON view to filter out the private info not
     // to be returned by the API (such as password)
     UserDTO publicUser = Json.filterPublicJsonView(user, UserDTO.class);
     ObjectNode node = jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
+    System.out.println(node);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
 

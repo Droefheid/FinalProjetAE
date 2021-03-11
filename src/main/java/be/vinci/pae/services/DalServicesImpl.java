@@ -1,27 +1,29 @@
 package be.vinci.pae.services;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import jakarta.inject.Inject;
+import be.vinci.pae.utils.Config;
 
 
 public class DalServicesImpl implements DalServices {
   // private Map<String, String> propertiesQueries = new HashMap<String, String>();
   private Connection connection;
 
-  @Inject
-  private JDBC jdbc;
 
   /**
    * Sets an Url, username and password.
    * 
    */
   public DalServicesImpl() {
-    if (jdbc == null) {
-      jdbc = new JDBC();
+    try {
+      connection = DriverManager.getConnection(Config.getProperty("db.url"),
+          Config.getProperty("db.username"), Config.getProperty("db.password"));
+      String driver = Config.getProperty("db.driver");
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
-    this.connection = jdbc.getConnection();
   }
 
   /**

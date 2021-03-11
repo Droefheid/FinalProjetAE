@@ -9,7 +9,6 @@ import be.vinci.pae.domaine.UserUCC;
 import be.vinci.pae.domaine.UserUCCImpl;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.DalServicesImpl;
-import be.vinci.pae.services.JDBC;
 import be.vinci.pae.services.UserDAO;
 import be.vinci.pae.services.UserDAOImpl;
 import jakarta.inject.Singleton;
@@ -24,7 +23,6 @@ public class ApplicationBinder extends AbstractBinder {
     bind(UserDAOImpl.class).to(UserDAO.class).in(Singleton.class);
     bind(UserUCCImpl.class).to(UserUCC.class).in(Singleton.class);
     bind(AdressFactoryImpl.class).to(AdressFactory.class).in(Singleton.class);
-    bind(JDBC.class).to(JDBC.class).in(Singleton.class);
     bind(DalServicesImpl.class).to(DalServices.class).in(Singleton.class);
   }
 
