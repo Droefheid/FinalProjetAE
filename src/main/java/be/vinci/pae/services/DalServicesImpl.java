@@ -21,7 +21,8 @@ public class DalServicesImpl implements DalServices {
       connection = DriverManager.getConnection(Config.getProperty("db.url"),
           Config.getProperty("db.username"), Config.getProperty("db.password"));
       String driver = Config.getProperty("db.driver");
-    } catch (SQLException e) {
+      Class.forName(driver);
+    } catch (SQLException | ClassNotFoundException e) {
       e.printStackTrace();
     }
   }
