@@ -75,7 +75,6 @@ public class UserResource {
     // to be returned by the API (such as password)
     UserDTO publicUser = Json.filterPublicJsonView(user, UserDTO.class);
     ObjectNode node = jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
-    System.out.println(node);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
 

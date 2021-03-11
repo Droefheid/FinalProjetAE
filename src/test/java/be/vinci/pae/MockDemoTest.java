@@ -30,8 +30,7 @@ public class MockDemoTest {
   }
 
   /**
-   * Tests login method of UserUcc using MockUserDAO 
-   * parameters used : username=root, password=123 information is correct.
+   * Tests login method of UserUcc using MockUserDAO parameters used : username=root, password=123 information is correct.
    */
   @Test
   public void mockTestLoginCorrect() {
@@ -42,8 +41,7 @@ public class MockDemoTest {
   }
 
   /**
-   * Tests login method of UserUcc using MockUserDAO 
-   * parameters used : username=mike, password=123 information is incorrect.
+   * Tests login method of UserUcc using MockUserDAO parameters used : username=mike, password=123 information is incorrect.
    */
   @Test
   public void mockTestLoginFalse() {
