@@ -1,5 +1,6 @@
 package be.vinci.pae.domaine;
 
+import java.sql.Timestamp;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = UserImpl.class)
@@ -67,10 +68,10 @@ public interface UserDTO {
   void setConfirmed(boolean isConfirmed);
 
   // TODO change String for... idk a date...
-  String getRegistrationDate();
+  Timestamp getRegistrationDate();
 
   // TODO change String for... idk a date...
-  void setRegistrationDate(String registrationDate);
+  void setRegistrationDate(Timestamp timestamp);
 
   String getPassword();
 

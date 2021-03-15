@@ -20,9 +20,16 @@ public class UserUCCImpl implements UserUCC {
   }
 
   @Override
-  public UserDTO register(UserDTO userDTO) {
-    // TODO Auto-generated method stub
-    return null;
+  public UserDTO register(UserDTO userDTO, Adress adress) {
+    Adress adresse = userDao.registerAdress(adress);
+    User user = (User) userDTO;
+    user.setAdressID(adresse.getID());
+    user.hashPassword(userDTO.getPassword());
+    user = (User) userDao.registerUser(user);
+    if (user == null || adresse == null) {
+      return null;
+    }
+    return (UserDTO) user;
   }
 
 }

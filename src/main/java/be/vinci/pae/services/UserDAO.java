@@ -9,12 +9,11 @@ public interface UserDAO {
 
   UserDTO findByUserName(String username);
 
-  UserDTO registerUser(String username, String email, String password, String lastName,
-      String firstName, Adress adress);
+  UserDTO registerUser(UserDTO user);
 
   Adress registerAdress(Adress adress);
 
-  int getAdressById(Adress adress);
+  Adress getAdressById(int adress);
 
 }
 
