@@ -14,9 +14,13 @@ import 'bootstrap';
 const HEADER_TITLE = "LiVi Satcho Antiquaire";
 const FOOTER_TEXT = "Contact : livisatcho@hotmail.com";
 
+let user;
+
 checkTokenOnLoad();
 
 Navbar();
 Router();
 
 setLayout(HEADER_TITLE, FOOTER_TEXT);
+
+export { user };

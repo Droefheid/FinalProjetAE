@@ -11,6 +11,7 @@ tmp/
 *.swp
 *~.nib
 prod.properties
+prod2.properties
 .settings/
 .loadpath
 .recommenders
