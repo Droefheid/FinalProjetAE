@@ -33,8 +33,7 @@ let loginPage = `<div class="container">
           <input type="checkbox" id="remember">Remember Me
         </div>
         <div class="form-group">
-          <input type="submit" value="Login" class="btn btn-lg btn-outline-primary btn-block">
-          
+          <input type="submit" value="Log in" class="btn btn-lg btn-outline-primary btn-block">   
         </div>
       </form>
     </div>
