@@ -1,17 +1,63 @@
+
+#page{
+
+  position: fixed;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+ 
+}
+
+ 
 body {
+  background: #222;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://source.unsplash.com/collection/1163637/');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+.container {
+  background: white;
+  padding: 20px 25px;
+  border: 5px solid #26a69a;
+  width: 550px;
+  height: auto;
+  box-sizing: border-box;
+  position: relative;
+}
+.col.s6 > .btn {
+   width: 100%;
+}
+.gender-male,.gender-female {
+  display: inline-block;
+}
+.gender-female {
+  margin-left: 35px;
+}
+radio:required {
+  border-color: red;
+}
+.container {
+  animation: showUp 0.5s cubic-bezier(0.18, 1.3, 1, 1) forwards;
 }
 
-a {
-  color: #00B7FF;
+@keyframes showUp {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transoform: scale(1);
+  }
 }
+.row {margin-bottom: 10px;}
 
-/* CSS to deal with constraint validation styles */
-input:invalid {
-  border: 2px dashed red;
-}
-
-input:valid {
-  border: 2px solid green;
+.ngl {
+  position: absolute;
+  top: -20px;
+  right: -20px;
 }
