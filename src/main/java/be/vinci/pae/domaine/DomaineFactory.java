@@ -1,5 +1,7 @@
 package be.vinci.pae.domaine;
 
-public interface UserFactory {
+public interface DomaineFactory {
   UserDTO getUserDTO();
+
+  Adress getAdress();
 }

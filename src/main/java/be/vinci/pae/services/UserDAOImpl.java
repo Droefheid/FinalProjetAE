@@ -4,18 +4,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import be.vinci.pae.domaine.Adress;
-import be.vinci.pae.domaine.AdressFactory;
+import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.UserDTO;
-import be.vinci.pae.domaine.UserFactory;
 import jakarta.inject.Inject;
 
 public class UserDAOImpl implements UserDAO {
 
   @Inject
-  private UserFactory userFactory;
-
-  @Inject
-  private AdressFactory adressFactory;
+  private DomaineFactory domaineFactory;
 
   @Inject
   private DalServices dalServices;
@@ -26,7 +22,7 @@ public class UserDAOImpl implements UserDAO {
         "SELECT user_id, username, first_name, last_name, address, email, is_boss,\r\n"
             + "            is_antique_dealer, is_confirmed, registration_date, password \r\n"
             + "            FROM projet.users WHERE username = ?");
-    UserDTO user = userFactory.getUserDTO();
+    UserDTO user = domaineFactory.getUserDTO();
     try {
       ps.setString(1, username);
       try (ResultSet rs = ps.executeQuery()) {
@@ -101,7 +97,7 @@ public class UserDAOImpl implements UserDAO {
   public Adress getAdressById(int adress_id) {
     PreparedStatement ps = this.dalServices.getPreparedStatement("SELECT address_id,street,"
         + "building_number,postcode,commune,country,unit_number FROM projet.addresses WHERE address_id=?");
-    Adress adresse = adressFactory.getAdress();
+    Adress adresse = domaineFactory.getAdress();
     try {
       ps.setInt(1, adress_id);
       try (ResultSet rs = ps.executeQuery()) {

@@ -9,9 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domaine.Adress;
-import be.vinci.pae.domaine.AdressFactory;
+import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.UserDTO;
-import be.vinci.pae.domaine.UserFactory;
 import be.vinci.pae.domaine.UserUCC;
 import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
@@ -35,10 +34,8 @@ public class UserResource {
   private UserUCC userUcc;
 
   @Inject
-  private UserFactory userFactory;
+  private DomaineFactory domaineFactory;
 
-  @Inject
-  private AdressFactory adressFactory;
 
   /**
    * Login the user if exists or send error message.
@@ -127,8 +124,8 @@ public class UserResource {
       return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
     }
 
-    UserDTO user = userFactory.getUserDTO();
-    Adress adress = adressFactory.getAdress();
+    UserDTO user = domaineFactory.getUserDTO();
+    Adress adress = domaineFactory.getAdress();
 
     user.setUserName(json.get("username").asText());
     user.setFirstName(json.get("firstname").asText());
