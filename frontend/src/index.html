@@ -31,6 +31,8 @@
   <!--Fontawesome CDN-->
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 
+ <!-- Font Icon -->
+ <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
   </head>
 
   <!-- Viewport height of 100% -->
@@ -41,34 +43,32 @@
     flex-column to set a vertical direction-->
     <div class="container-fluid h-100 d-flex flex-column">
       <!-- Header row : dark background, white text -->
-      <div class="row bg-dark py-2">
-        <div class="col">
-          <header class="text-center text-white font-weight-bold">
-            <h4 id="headerTitle"></h4>
-          </header>
-        </div>
-      </div>
+      
 
       <!-- Page content row. 
         flex-grow-1: Fill available space 
         mb-5 : to ensure that we see all of the content of the page row -->
       <div class="row flex-grow-1 mb-5">
-        <div class="d-none d-md-block col-md bg-dark"></div>
-        <div class="col col-md-10 mt-2">
+        
+        <div class="w-100 p-3">
           <div id="navBar"></div>                
 
           <div id="page"></div>
+
+          <div class="footer">
+            <div id="button"></div>
+          <div id="container">
+          <div id="cont">
+          <div class="footer_center">
+             
+          </div>
+          </div>
+          </div>
+          </div>
         </div>
-        <div class="d-none d-md-block col-md bg-dark"></div>
+       
       </div>
-      <!-- Footer row -->
-      <div class="row bg-dark fixed-bottom">
-        <div class="col">
-          <footer class="py-2 text-center text-white font-weight-bold">
-            <h5 id="footerText"></h5>
-          </footer>
-        </div>
-      </div>
+     
     </div>
 
     <!-- Optional JavaScript -->
