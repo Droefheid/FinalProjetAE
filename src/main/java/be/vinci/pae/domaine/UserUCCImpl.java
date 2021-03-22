@@ -22,14 +22,17 @@ public class UserUCCImpl implements UserUCC {
   @Override
   public UserDTO register(UserDTO userDTO, Adress adress) {
     Adress adresse = userDao.registerAdress(adress);
+    if (adresse == null) {
+      return null;
+    }
     User user = (User) userDTO;
     user.setAdressID(adresse.getID());
     user.hashPassword(userDTO.getPassword());
-    user = (User) userDao.registerUser(user);
-    if (user == null || adresse == null) {
+    userDTO = userDao.registerUser(user);
+    if (userDTO == null) {
       return null;
     }
-    return (UserDTO) user;
+    return userDTO;
   }
 
 }
