@@ -99,10 +99,10 @@ public class UserResource {
     if (!json.hasNonNull("password")) {
       return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
     }
-    if (!json.hasNonNull("lastName")) {
+    if (!json.hasNonNull("lastname")) {
       return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
     }
-    if (!json.hasNonNull("firstName")) {
+    if (!json.hasNonNull("firstname")) {
       return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
     }
     if (!json.hasNonNull("street")) {

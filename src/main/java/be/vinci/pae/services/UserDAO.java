@@ -15,5 +15,7 @@ public interface UserDAO {
 
   Adress getAdressById(int adress);
 
+  int getAdressByInfo(String street, String building_number, String commune, String country);
+
 }
 

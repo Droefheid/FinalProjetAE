@@ -98,13 +98,7 @@ const onUserLogin = (userData) => {
 
 const onError = (err) => {
   let messageBoard = document.querySelector("#messageBoard");
-  let errorMessage = "";
-  if (err.message.includes("401")) {
-    messageBoard.innerHTML = '<div class="alert alert-danger">Wrong username or password.</div>';
-  }else{
-    errorMessage = err.message;
-    messageBoard.innerText = errorMessage;
-  }
+  messageBoard.innerHTML = '<div class="alert alert-danger">Wrong username or password.</div>';
 };
 
 export default LoginPage;

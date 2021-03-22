@@ -44,6 +44,9 @@ public class UserDAOImpl implements UserDAO {
       e.printStackTrace();
       return null;
     }
+    if (user.getUserName() == null) {
+      return null;
+    }
     return user;
   }
 
@@ -55,8 +58,11 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public UserDTO registerUser(UserDTO user) {
+    if (findByUserName(user.getUserName()) != null) {
+      return null;
+    }
     PreparedStatement ps = this.dalServices.getPreparedStatement(
-        "INSERT INTO projet.users " + "VALUES(DEFAULT,?,?,?,?,?,?,DEFAULT,DEFAULT,DEFAULT,?)");
+        "INSERT INTO projet.users VALUES(DEFAULT,?,?,?,?,?,?,DEFAULT,DEFAULT,DEFAULT,?)");
     try {
       ps.setString(1, user.getLastName());
       ps.setString(2, user.getFirstName());
@@ -65,7 +71,7 @@ public class UserDAOImpl implements UserDAO {
       ps.setInt(5, user.getAdressID());
       ps.setString(6, user.getEmail());
       ps.setTimestamp(7, user.getRegistrationDate());
-      ps.executeQuery();
+      ps.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
       return null;
@@ -75,6 +81,10 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public Adress registerAdress(Adress adress) {
+    if (getAdressByInfo(adress.getStreet(), adress.getBuildingNumber(), adress.getCommune(),
+        adress.getCountry()) > 0) {
+      return null;
+    }
     PreparedStatement ps = this.dalServices
         .getPreparedStatement("INSERT INTO projet.addresses VALUES(DEFAULT,?,?,?,?,?,?)");
     try {
@@ -84,7 +94,7 @@ public class UserDAOImpl implements UserDAO {
       ps.setString(4, adress.getCommune());
       ps.setString(5, adress.getCountry());
       ps.setString(6, adress.getUnitNumber());
-      ps.executeQuery();
+      ps.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
       return null;
@@ -114,6 +124,30 @@ public class UserDAOImpl implements UserDAO {
     } catch (SQLException e) {
       e.printStackTrace();
       return null;
+    }
+    return adresse;
+  }
+
+  @Override
+  public int getAdressByInfo(String street, String building_number, String commune,
+      String country) {
+    PreparedStatement ps = this.dalServices
+        .getPreparedStatement("SELECT address_id FROM projet.addresses WHERE street=? "
+            + "AND building_number=? AND country=? AND commune=?");
+    int adresse = 0;
+    try {
+      ps.setString(1, street);
+      ps.setString(2, building_number);
+      ps.setString(3, commune);
+      ps.setString(4, country);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          adresse = rs.getInt(1);
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return -1;
     }
     return adresse;
   }
