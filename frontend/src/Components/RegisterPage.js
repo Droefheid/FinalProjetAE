@@ -189,16 +189,16 @@ const onRegister = (e) => {
         );
       return response.json();
     })
-    .then((data) => onUserRegistration(data))
+    .then(() => onUserRegistration())
     .catch((err) => onError(err));
 };
 
-const onUserRegistration = (userData) => {
+const onUserRegistration = () => {
   let messageBoard = document.querySelector("#messageBoard");
-  messageBoard.innerHTML = '<div class="alert alert-danger">You have been registered. An admin must now validate your inscription.</div>';
+  messageBoard.innerHTMLs = '<div class="alert alert-danger">You have been registered. An admin must now validate your inscription.</div>';
   // re-render the navbar for the authenticated user
   Navbar();
-  RedirectUrl("/login");
+  RedirectUrl("/");
 };
 
 const onError = (err) => {

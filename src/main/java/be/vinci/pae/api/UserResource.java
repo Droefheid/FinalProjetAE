@@ -147,7 +147,7 @@ public class UserResource {
       return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
     }
 
-    return Response.ok(MediaType.APPLICATION_JSON).build();
+    return Response.ok().build();
   }
 
 }

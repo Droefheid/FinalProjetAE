@@ -67,14 +67,13 @@ public class DemoTest {
   }
 
   /**
-   * Test register method. Parameters should already be verified in UserResources.java so first time using method returns OK.
-   *  Second time returns null
+   * Test register method. Parameters should already be verified in UserResources.java so first time using method returns OK. Second time returns null
    * because user or address should already be registered.
    */
   @Test
   public void testRegister() {
 
-    Mockito.when(userDAO.registerAdress(address)).thenReturn(address, null);
+    Mockito.when(userDAO.registerAdress(address)).thenReturn(1, -1);
     Mockito.when(userDAO.registerUser(userDTO)).thenReturn(userDTO, null);
 
     assertAll(() -> assertNotNull(userUCC.register(userDTO, address)),

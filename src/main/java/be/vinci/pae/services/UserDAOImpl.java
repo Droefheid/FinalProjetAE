@@ -66,8 +66,8 @@ public class UserDAOImpl implements UserDAO {
     try {
       ps.setString(1, user.getLastName());
       ps.setString(2, user.getFirstName());
-      ps.setString(4, user.getUserName());
-      ps.setString(3, user.getPassword());
+      ps.setString(3, user.getUserName());
+      ps.setString(4, user.getPassword());
       ps.setInt(5, user.getAdressID());
       ps.setString(6, user.getEmail());
       ps.setTimestamp(7, user.getRegistrationDate());
@@ -80,10 +80,10 @@ public class UserDAOImpl implements UserDAO {
   }
 
   @Override
-  public Adress registerAdress(Adress adress) {
+  public int registerAdress(Adress adress) {
     if (getAdressByInfo(adress.getStreet(), adress.getBuildingNumber(), adress.getCommune(),
         adress.getCountry()) > 0) {
-      return null;
+      return -1;
     }
     PreparedStatement ps = this.dalServices
         .getPreparedStatement("INSERT INTO projet.addresses VALUES(DEFAULT,?,?,?,?,?,?)");
@@ -97,10 +97,11 @@ public class UserDAOImpl implements UserDAO {
       ps.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
-      return null;
+      return -1;
     }
-    getAdressById(adress.getID());
-    return adress;
+    int i = getAdressByInfo(adress.getStreet(), adress.getBuildingNumber(), adress.getCommune(),
+        adress.getCountry());
+    return i;
   }
 
   @Override
@@ -112,6 +113,9 @@ public class UserDAOImpl implements UserDAO {
       ps.setInt(1, adress_id);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
+          if (rs.getInt(1) <= 0) {
+            return null;
+          }
           adresse.setID(rs.getInt(1));
           adresse.setStreet(rs.getString(2));
           adresse.setBuildingNumber(rs.getString(3));
@@ -138,8 +142,8 @@ public class UserDAOImpl implements UserDAO {
     try {
       ps.setString(1, street);
       ps.setString(2, building_number);
-      ps.setString(3, commune);
-      ps.setString(4, country);
+      ps.setString(3, country);
+      ps.setString(4, commune);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           adresse = rs.getInt(1);
@@ -147,6 +151,9 @@ public class UserDAOImpl implements UserDAO {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+      return -1;
+    }
+    if (adresse <= 0) {
       return -1;
     }
     return adresse;
