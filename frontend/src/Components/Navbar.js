@@ -4,8 +4,11 @@ import { user_me } from "../index.js";
 
 const Navbar = () => {
   let navbar = `
-  <nav class="navbar navbar-inverse navbar-expand-md navbar-dark bg-dark mx-auto" id="navBar">
-  <a class="navbar-brand" href="#" data-uri="/">LiVi Satcho</a>
+  <nav class="navbar navbar-inverse navbar-expand-sm navbar-dark bg-dark mx-auto" id="navBar">
+    <!-- Logo -->
+    <a class="navbar-brand" href="#" data-uri="/">LiVi Satcho</a>
+
+    <!-- Button -->
     <button
     class="navbar-toggler"
     type="button"
@@ -15,11 +18,13 @@ const Navbar = () => {
     aria-expanded="false"
     aria-label="Toggle navigation"
     >
-    <span class="navbar-toggler-icon"></span>
+      <span class="navbar-toggler-icon"></span>
     </button>
+
+    <!-- Collapse body -->
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav">
-    <a class="nav-item nav-link" href="#" data-uri="/">Home</a>`;
+      <div class="navbar-nav">
+        <a class="nav-item nav-link" href="#" data-uri="/">Home</a>`;
 
   // Choose how to finish the Navbar.
   let user = getUserSessionData();    
