@@ -1,3 +1,4 @@
+import Navbar from "../Components/Navbar.js";
 import { API_URL, ALERT_BOX } from "./server.js";
 import { setUserSessionData } from "./session.js"
 
@@ -25,6 +26,7 @@ const VerifyUserToken = (id, isLocalItem) => {
 const onUserFound = (userData) => {
     const user = { ...userData, isAutenticated: true };
     setUserSessionData(user, isLocalToken);
+    Navbar();
 };
 
 const onError = (err) => {

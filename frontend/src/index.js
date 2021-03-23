@@ -14,7 +14,7 @@ import 'bootstrap';
 const HEADER_TITLE = "LiVi Satcho Antiquaire";
 const FOOTER_TEXT = "Contact : livisatcho@hotmail.com";
 
-let user;
+let user_me = { itself: null };
 
 checkTokenOnLoad();
 
@@ -23,4 +23,4 @@ Router();
 
 setLayout(HEADER_TITLE, FOOTER_TEXT);
 
-export { user };
+export { user_me };
