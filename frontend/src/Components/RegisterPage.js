@@ -1,27 +1,6 @@
 import { RedirectUrl } from "./Router.js";
 import Navbar from "./Navbar.js";
-import { setUserSessionData } from "../utils/session.js";
 import { API_URL } from "../utils/server.js";
-
-/* In a template literal, the ` (backtick), \ (backslash), and $ (dollar sign) characters should be 
-escaped using the escape character \ if they are to be included in their template value. 
-By default, all escape sequences in a template literal are ignored.*/
-
-
-/*let registerPage = `<form>
-<div class="form-group">
-  <label for="email">Email</label>
-  <input class="form-control" id="email" type="text" name="email" placeholder="Enter your email" required="" pattern="^\\w+([.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,4})+\$" />
-</div>
-<div class="form-group">
-  <label for="password">Password</label>
-  <input class="form-control" id="password" type="password" name="password" placeholder="Enter your password" required="" pattern=".*[A-Z]+.*" />
-</div>
-<button class="btn btn-primary" id="btn" type="submit">Submit</button>
-<!-- Create an alert component with bootstrap that is not displayed by default-->
-<div class="alert alert-danger mt-2 d-none" id="messageBoard"></div><span id="errorMessage"></span>
-</form>`;
-*/
 
 let registerPage = `
 <div class="container">
@@ -47,7 +26,7 @@ let registerPage = `
                             <div class="input-group-prepend">
                               <span class="input-group-text"><i class="fas fa-user"></i></span>
                             </div>
-                            <input type="text" class="form-control" id="first_name" placeholder="First name">
+                            <input type="text" class="form-control" id="firstname" placeholder="First name">
                           </div>
                             </div>
 
@@ -57,7 +36,7 @@ let registerPage = `
                             <div class="input-group-prepend">
                               <span class="input-group-text"><i class="fas fa-user"></i></span>
                             </div>
-                            <input type="text" class="form-control" id="last_name" placeholder="Last name">
+                            <input type="text" class="form-control" id="lastname" placeholder="Last name">
                           </div>
                             </div>
         </div>
@@ -67,7 +46,7 @@ let registerPage = `
         <div class="input-group-prepend">
           <span class="input-group-text"><i class="fas fa-envelope"></i></span>
         </div>
-        <input type="email" class="form-control" id="username" placeholder="Email">
+        <input type="email" class="form-control" id="email" placeholder="Email">
       </div>
 
 
@@ -103,7 +82,7 @@ let registerPage = `
                             <div class="input-group-prepend">
                               <span class="input-group-text"><i class="fas fa-road"></i></span>
                             </div>
-                            <input type="password" class="form-control" id="password" placeholder="Road">
+                            <input type="text" class="form-control" id="street" placeholder="Street">
                           </div>
                             </div>
 
@@ -113,7 +92,7 @@ let registerPage = `
                             <div class="input-group-prepend">
                               <span class="input-group-text"><i class="fa fa-address-book" aria-hidden="true"></i></span>
                             </div>
-                            <input type="number" class="form-control" id="confirm_password" placeholder="Number">
+                            <input type="text" class="form-control" id="building_number" placeholder="Number">
                           </div>
                             </div>
 
@@ -122,7 +101,7 @@ let registerPage = `
                             <div class="input-group-prepend">
                               <span class="input-group-text"><i class="fa fa-inbox" aria-hidden="true"></i></span>
                             </div>
-                            <input type="text" class="form-control" id="confirm_password" placeholder="Post box">
+                            <input type="text" class="form-control" id="unit_number" placeholder="Post box">
                           </div>
                             </div>
         </div>
@@ -134,7 +113,7 @@ let registerPage = `
         <div class="input-group-prepend">
           <span class="input-group-text"><i class="fas fa-city"></i></span>
         </div>
-        <input type="text" class="form-control" id="municipality" placeholder="Municipality">
+        <input type="text" class="form-control" id="commune" placeholder="Commune">
       </div>
         </div>
 
@@ -154,7 +133,7 @@ let registerPage = `
         <div class="input-group-prepend">
           <span class="input-group-text"><i class="fa fa-map-pin" aria-hidden="true"></i></span>
         </div>
-        <input type="text" class="form-control" id="postal_code" placeholder="Postal code">
+        <input type="text" class="form-control" id="postcode" placeholder="Postal code">
       </div>
        
         <div class="form-group">
@@ -185,9 +164,18 @@ const onRegister = (e) => {
   let user = {
     email: document.getElementById("email").value,
     password: document.getElementById("password").value,
+    lastname: document.getElementById("lastname").value,
+    firstname: document.getElementById("firstname").value,
+    street: document.getElementById("street").value,
+    building_number: document.getElementById("building_number").value,
+    postcode: document.getElementById("postcode").value,
+    commune: document.getElementById("commune").value,
+    country: document.getElementById("country").value,
+    unit_number: document.getElementById("unit_number").value,
+    username: document.getElementById("username").value
   };
 
-  fetch(API_URL + "users/", {
+  fetch(API_URL + "users/register", {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     body: JSON.stringify(user), // body data type must match "Content-Type" header
     headers: {
@@ -199,29 +187,23 @@ const onRegister = (e) => {
         throw new Error(
           "Error code : " + response.status + " : " + response.statusText
         );
-      return response.json();
     })
-    .then((data) => onUserRegistration(data))
+    .then(() => onUserRegistration())
     .catch((err) => onError(err));
 };
 
-const onUserRegistration = (userData) => {
-  console.log("onUserRegistration", userData);
-  const user = { ...userData, isAutenticated: true };
-  setUserSessionData(user);
-  // re-render the navbar for the authenticated user
-  Navbar();
-  RedirectUrl("/list");
+const onUserRegistration = () => {
+  alert("You have been registered. An admin must now validate your inscription.");
+  window.setTimeout(RedirectUrl("/"),5000);
 };
 
 const onError = (err) => {
   let messageBoard = document.querySelector("#messageBoard");
-  let errorMessage = "";
-  if (err.message.includes("409"))
-    errorMessage = "This user is already registered.";
-  else errorMessage = err.message;
-  messageBoard.innerText = errorMessage;
-  // show the messageBoard div (add relevant Bootstrap class)
+  if (err.message.includes("401")){
+   messageBoard.innerHTML = '<div class="alert alert-danger">Username or email already exists</div>';
+  }else {
+    messageBoard.innerHTML = '<div class="alert alert-danger">Missing fields!</div>';
+  }
   messageBoard.classList.add("d-block");
 };
 

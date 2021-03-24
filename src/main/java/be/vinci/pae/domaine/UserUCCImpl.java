@@ -20,9 +20,21 @@ public class UserUCCImpl implements UserUCC {
   }
 
   @Override
-  public UserDTO register(UserDTO userDTO) {
-    // TODO Auto-generated method stub
-    return null;
+  public UserDTO register(UserDTO userDTO, Address address) {
+    int adresseId = userDao.getAddressByInfo(address.getStreet(), address.getBuildingNumber(),
+        address.getCommune(), address.getCountry());
+    if (adresseId == -1) {
+      adresseId = userDao.registerAddress(address);
+    }
+    User user = (User) userDTO;
+    user.setAdressID(adresseId);
+    String password = user.hashPassword(userDTO.getPassword());
+    user.setPassword(password);
+    user = (User) userDao.registerUser(user);
+    if (user == null) {
+      return null;
+    }
+    return (UserDTO) user;
   }
 
 }

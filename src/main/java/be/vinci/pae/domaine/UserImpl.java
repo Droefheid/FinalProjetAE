@@ -1,5 +1,6 @@
 package be.vinci.pae.domaine;
 
+import java.sql.Timestamp;
 import org.mindrot.jbcrypt.BCrypt;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -28,7 +29,7 @@ public class UserImpl implements User {
   @JsonView(Views.Internal.class)
   private boolean isConfirmed;
   @JsonView(Views.Internal.class)
-  private String registrationDate;
+  private Timestamp registrationDate;
 
   @JsonView(Views.Internal.class)
   private String password;
@@ -124,12 +125,12 @@ public class UserImpl implements User {
   }
 
   @Override
-  public String getRegistrationDate() {
+  public Timestamp getRegistrationDate() {
     return registrationDate;
   }
 
   @Override
-  public void setRegistrationDate(String registrationDate) {
+  public void setRegistrationDate(Timestamp registrationDate) {
     this.registrationDate = registrationDate;
   }
 
