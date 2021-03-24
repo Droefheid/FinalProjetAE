@@ -14,7 +14,7 @@ public interface UserDAO {
   /**
    * insert an address into the DB.
    * 
-   * @param adress
+   * @param address to be inserted.
    * @return the id of the address or -1 if address already exists.
    */
   int registerAdress(Adress adress);
@@ -30,13 +30,13 @@ public interface UserDAO {
   /**
    * fetch an address with the corresponding information.
    * 
-   * @param street
-   * @param building_number
-   * @param commune
-   * @param country
+   * @param street name.
+   * @param building_number, the number of the building.
+   * @param commune, the name of the commune.
+   * @param country, name of the country.
    * @return the address id or -1 if the address doesn't exists.
    */
-  int getAdressByInfo(String street, String building_number, String commune, String country);
+  int getAdressByInfo(String street, String buildingNumber, String commune, String country);
 
 }
 

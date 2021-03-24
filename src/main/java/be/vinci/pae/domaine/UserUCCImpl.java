@@ -21,13 +21,13 @@ public class UserUCCImpl implements UserUCC {
 
   @Override
   public UserDTO register(UserDTO userDTO, Adress adress) {
-    int adresse_id = userDao.getAdressByInfo(adress.getStreet(), adress.getBuildingNumber(),
+    int adresseId = userDao.getAdressByInfo(adress.getStreet(), adress.getBuildingNumber(),
         adress.getCommune(), adress.getCountry());
-    if (adresse_id == -1) {
-      adresse_id = userDao.registerAdress(adress);
+    if (adresseId == -1) {
+      adresseId = userDao.registerAdress(adress);
     }
     User user = (User) userDTO;
-    user.setAdressID(adresse_id);
+    user.setAdressID(adresseId);
     String password = user.hashPassword(userDTO.getPassword());
     user.setPassword(password);
     user = (User) userDao.registerUser(user);

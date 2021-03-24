@@ -86,6 +86,12 @@ public class UserResource {
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
 
+  /**
+   * register a user if correct parameters are sent.
+   * 
+   * @param json
+   * @return ok if user has been inserted or an exception.
+   */
   @POST
   @Path("/register")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -125,13 +131,15 @@ public class UserResource {
     }
 
     UserDTO user = domaineFactory.getUserDTO();
-    Adress adress = domaineFactory.getAdress();
 
     user.setUserName(json.get("username").asText());
     user.setFirstName(json.get("firstname").asText());
     user.setLastName(json.get("lastname").asText());
     user.setEmail(json.get("email").asText());
     user.setPassword(json.get("password").asText());
+
+    Adress adress = domaineFactory.getAdress();
+
     adress.setBuildingNumber(json.get("building_number").asText());
     adress.setCommune(json.get("commune").asText());
     adress.setPostCode(json.get("postcode").asText());
