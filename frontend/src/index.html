@@ -13,28 +13,17 @@
 
   </head>
   <body>
-    <div class="container-fluid h-100 d-flex flex-column">
-      <!-- Header row -->
-      <div class="row bg-dark py-2">
-        <div class="col">
-          <header class="text-center text-white font-weight-bold">
-            <h4 id="headerTitle"></h4>
-          </header>
-        </div>
+    <span id="navBar"></span> 
+
+    <span id="sideBar"></span>
+
+    <!-- Page content row. -->
+    <div class="container-fluid">
+      <div id="movingRow" class="row justify-content-center mt-5">
+        <span id="messageBoard"></span>
+        <span id="page"></span>
       </div>
-
-      <!-- Page content row. -->
-      <div class="row flex-grow-1 mb-5">
-        <div class="d-none d-md-block col-md bg-dark"></div>
-        <div class="col col-md-10 mt-2">
-          <div id="navBar"></div> 
-
-          <div id="messageBoard"></div>
-
-          <div id="page"></div>
-        </div>
-        <div class="d-none d-md-block col-md bg-dark"></div>
-      </div>
+      
 
       <!-- Footer row -->
       <div class="row bg-dark fixed-bottom">
@@ -45,5 +34,7 @@
         </div>
       </div> <!-- End Footer -->
     </div>
+
+    <span id="scripts"></span>
   </body>
 </html>

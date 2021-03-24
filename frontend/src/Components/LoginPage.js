@@ -5,6 +5,7 @@ import { getUserSessionData, setUserSessionData } from "../utils/session.js";
 import { RedirectUrl } from "./Router.js";
 import Navbar from "./Navbar.js";
 import { API_URL, ALERT_BOX } from "../utils/server.js";
+import Sidebar from "./SideBar.js";
 
 let remember = false;
 
@@ -47,6 +48,8 @@ let loginPage = `<div class="container">
 </div>`;
 
 const LoginPage = () => {
+  Sidebar();
+
   let page = document.querySelector("#page");
   page.innerHTML = loginPage;
   let loginForm = document.querySelector("form");
