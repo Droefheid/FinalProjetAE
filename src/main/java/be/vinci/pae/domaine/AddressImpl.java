@@ -3,7 +3,7 @@ package be.vinci.pae.domaine;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AdressImpl implements Address {
+public class AddressImpl implements Address {
 
   private int id;
   private String street;
@@ -72,7 +72,7 @@ public class AdressImpl implements Address {
   @Override
   public String toString() {
     // TODO generate with source
-    return "AdressImpl [id=" + id + ", Street=" + street + ", buildingNumber=" + buildingNumber
+    return "AddressImpl [id=" + id + ", Street=" + street + ", buildingNumber=" + buildingNumber
         + ", unitNumber=" + unitNumber + ", postCode=" + postCode + ", commune=" + commune
         + ", country=" + country + "]";
   }
@@ -96,7 +96,7 @@ public class AdressImpl implements Address {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    AdressImpl other = (AdressImpl) obj;
+    AddressImpl other = (AddressImpl) obj;
     if (id != other.id) {
       return false;
     }

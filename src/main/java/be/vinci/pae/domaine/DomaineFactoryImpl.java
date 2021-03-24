@@ -9,7 +9,7 @@ public class DomaineFactoryImpl implements DomaineFactory {
 
   @Override
   public Address getAdress() {
-    return new AdressImpl();
+    return new AddressImpl();
   }
 
 }
