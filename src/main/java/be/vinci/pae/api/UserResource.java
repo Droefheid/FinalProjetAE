@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.utils.Json;
-import be.vinci.pae.domaine.Adress;
+import be.vinci.pae.domaine.Address;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.UserDTO;
 import be.vinci.pae.domaine.UserUCC;
@@ -89,7 +89,7 @@ public class UserResource {
   /**
    * register a user if correct parameters are sent.
    * 
-   * @param json
+   * @param json object containg user information and address.
    * @return ok if user has been inserted or an exception.
    */
   @POST
@@ -138,18 +138,18 @@ public class UserResource {
     user.setEmail(json.get("email").asText());
     user.setPassword(json.get("password").asText());
 
-    Adress adress = domaineFactory.getAdress();
+    Address address = domaineFactory.getAdress();
 
-    adress.setBuildingNumber(json.get("building_number").asText());
-    adress.setCommune(json.get("commune").asText());
-    adress.setPostCode(json.get("postcode").asText());
-    adress.setStreet(json.get("street").asText());
-    adress.setUnitNumber(json.get("unit_number").asText());
-    adress.setCountry(json.get("country").asText());
+    address.setBuildingNumber(json.get("building_number").asText());
+    address.setCommune(json.get("commune").asText());
+    address.setPostCode(json.get("postcode").asText());
+    address.setStreet(json.get("street").asText());
+    address.setUnitNumber(json.get("unit_number").asText());
+    address.setCountry(json.get("country").asText());
     LocalDateTime now = LocalDateTime.now();
     Timestamp timestamp = Timestamp.valueOf(now);
     user.setRegistrationDate(timestamp);
-    UserDTO userDTO = userUcc.register(user, adress);
+    UserDTO userDTO = userUcc.register(user, address);
 
     if (userDTO == null) {
       return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();

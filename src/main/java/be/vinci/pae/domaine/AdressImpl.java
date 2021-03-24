@@ -3,7 +3,7 @@ package be.vinci.pae.domaine;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AdressImpl implements Adress {
+public class AdressImpl implements Address {
 
   private int id;
   private String street;

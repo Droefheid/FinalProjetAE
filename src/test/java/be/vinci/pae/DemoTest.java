@@ -10,7 +10,7 @@ import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import be.vinci.pae.domaine.Adress;
+import be.vinci.pae.domaine.Address;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.User;
 import be.vinci.pae.domaine.UserDTO;
@@ -25,7 +25,7 @@ public class DemoTest {
   private DomaineFactory domaineFactory;
   private UserDTO userDTO;
   private UserDAO userDAO;
-  private Adress address;
+  private Address address;
   private User user;
 
   @BeforeEach
@@ -67,14 +67,15 @@ public class DemoTest {
   }
 
   /**
-   * Test register method. Parameters should already be verified in UserResources.java so first time using method returns OK.
+   * Test register method. Parameters should already be verified in UserResources.java.
+   *  so first time using method returns OK.
    *  Second time returns null
    * because user or address should already be registered.
    */
   @Test
   public void testRegister() {
 
-    Mockito.when(userDAO.registerAdress(address)).thenReturn(1, -1);
+    Mockito.when(userDAO.registerAddress(address)).thenReturn(1, -1);
     Mockito.when(userDAO.registerUser(userDTO)).thenReturn(userDTO, null);
 
     assertAll(() -> assertNotNull(userUCC.register(userDTO, address)),

@@ -1,6 +1,6 @@
 package be.vinci.pae.services;
 
-import be.vinci.pae.domaine.Adress;
+import be.vinci.pae.domaine.Address;
 import be.vinci.pae.domaine.UserDTO;
 
 public interface UserDAO {
@@ -17,7 +17,7 @@ public interface UserDAO {
    * @param address to be inserted.
    * @return the id of the address or -1 if address already exists.
    */
-  int registerAdress(Adress adress);
+  int registerAddress(Address address);
 
   /**
    * Fetch an adress with the address_id.
@@ -25,18 +25,18 @@ public interface UserDAO {
    * @param adress id.
    * @return the address that is linked to the parameter id or null if inexistant.
    */
-  Adress getAdressById(int adress);
+  Address getAddressById(int address);
 
   /**
    * fetch an address with the corresponding information.
    * 
    * @param street name.
-   * @param building_number, the number of the building.
-   * @param commune, the name of the commune.
-   * @param country, name of the country.
+   * @param buildingNumber the number of the building.
+   * @param commune the name of the commune.
+   * @param country name of the country.
    * @return the address id or -1 if the address doesn't exists.
    */
-  int getAdressByInfo(String street, String buildingNumber, String commune, String country);
+  int getAddressByInfo(String street, String buildingNumber, String commune, String country);
 
 }
 
