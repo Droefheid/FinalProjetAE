@@ -187,18 +187,14 @@ const onRegister = (e) => {
         throw new Error(
           "Error code : " + response.status + " : " + response.statusText
         );
-      return response.json();
     })
     .then(() => onUserRegistration())
     .catch((err) => onError(err));
 };
 
 const onUserRegistration = () => {
-  let messageBoard = document.querySelector("#messageBoard");
-  messageBoard.innerHTMLs = '<div class="alert alert-danger">You have been registered. An admin must now validate your inscription.</div>';
-  // re-render the navbar for the authenticated user
-  Navbar();
-  RedirectUrl("/");
+  alert("You have been registered. An admin must now validate your inscription.");
+  window.setTimeout(RedirectUrl("/"),5000);
 };
 
 const onError = (err) => {
