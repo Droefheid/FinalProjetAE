@@ -134,7 +134,8 @@ public class UserDAOImpl implements UserDAO {
   }
 
   @Override
-  public int getAddressByInfo(String street, String buildingNumber, String commune, String country) {
+  public int getAddressByInfo(String street, String buildingNumber, String commune,
+      String country) {
     PreparedStatement ps = this.dalServices
         .getPreparedStatement("SELECT address_id FROM projet.addresses WHERE street=? "
             + "AND building_number=? AND country=? AND commune=?");

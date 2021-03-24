@@ -22,7 +22,7 @@ public interface UserDAO {
   /**
    * Fetch an adress with the address_id.
    * 
-   * @param adress id.
+   * @param address id.
    * @return the address that is linked to the parameter id or null if inexistant.
    */
   Address getAddressById(int address);
