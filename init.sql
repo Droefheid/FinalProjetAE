@@ -98,3 +98,4 @@ CREATE TABLE projet.options (
 	customer INTEGER REFERENCES projet.users(user_id) NOT NULL,
 	furniture INTEGER REFERENCES projet.furnitures(furniture_id) NOT NULL
 );
+
