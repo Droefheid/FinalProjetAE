@@ -44,6 +44,7 @@ const Navbar = () => {
       <a class="nav-item nav-link" href="#" data-uri="/">Home</a>
       <a class="nav-item nav-link" href="#" data-uri="/register">Register</a>
       <a class="nav-item nav-link" href="#" data-uri="/login">Log in</a>
+      <a class="nav-item nav-link" href="#" data-uri="/furniture">Furnitures</a>
     </div>
   </div>
   </nav>`;
