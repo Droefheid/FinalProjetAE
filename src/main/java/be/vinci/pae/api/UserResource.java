@@ -106,10 +106,10 @@ public class UserResource {
     if (user == null) {
       return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")
               .type(MediaType.TEXT_PLAIN).build();
-	}
-	  
-	ObjectNode node = createToken(user);
-	return Response.ok(node, MediaType.APPLICATION_JSON).build();
+    }
+  
+    ObjectNode node = createToken(user);
+    return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
   
   /**
@@ -123,14 +123,14 @@ public class UserResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Authorize
   public Response getUser(@Context ContainerRequest request) {
-    UserDTO currentUser = (UserDTO) request.getProperty("user");	
-	
-	if (currentUser == null) {
-	  return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")
-	          .type(MediaType.TEXT_PLAIN).build();
-	}
-	ObjectNode node = createToken(currentUser);
-	return Response.ok(node, MediaType.APPLICATION_JSON).build();
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+
+    if (currentUser == null) {
+      return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")
+    		  .type(MediaType.TEXT_PLAIN).build();
+    }
+    ObjectNode node = createToken(currentUser);
+    return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
 
   
@@ -144,21 +144,21 @@ public class UserResource {
    */
   private ObjectNode createToken(UserDTO user) {
     // Create token
-	String token;
-	try {
+    String token;
+    try {
       token = 
-    		  JWT.create().withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-	          .withIssuer("auth0").withClaim("user", user.getID()).sign(this.jwtAlgorithm);
-	} catch (Exception e) {
+              JWT.create().withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+              .withIssuer("auth0").withClaim("user", user.getID()).sign(this.jwtAlgorithm);
+    } catch (Exception e) {
       throw new WebApplicationException("Unable to create token",
-				  e, Status.INTERNAL_SERVER_ERROR);
-	}
-	  
-	// Build response
-	// load the user data from a public JSON view to filter out the private info not
-	// to be returned by the API (such as password)
-	UserDTO publicUser = Json.filterPublicJsonView(user, UserDTO.class);
-	return jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
+    		      e, Status.INTERNAL_SERVER_ERROR);
+    }
+
+    // Build response
+    // load the user data from a public JSON view to filter out the private info not
+    // to be returned by the API (such as password)
+    UserDTO publicUser = Json.filterPublicJsonView(user, UserDTO.class);
+    return jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
   }
 
   /**

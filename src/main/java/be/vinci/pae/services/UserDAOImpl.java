@@ -42,9 +42,9 @@ public class UserDAOImpl implements UserDAO {
   @Override
   public UserDTO findById(int id) {
     PreparedStatement ps = this.dalServices.getPreparedStatement(
-		        "SELECT user_id, username, first_name, last_name, address, email, is_boss,"
-		            + " is_antique_dealer, is_confirmed, registration_date, password "
-		            + "FROM projet.users WHERE user_id = ?");
+            "SELECT user_id, username, first_name, last_name, address, email, is_boss,"
+            + " is_antique_dealer, is_confirmed, registration_date, password "
+            + "FROM projet.users WHERE user_id = ?");
     UserDTO user = domaineFactory.getUserDTO();
     try {
       ps.setInt(1, id);
@@ -54,9 +54,9 @@ public class UserDAOImpl implements UserDAO {
       return null;
     }
     if (!user.isConfirmed()) {
-	  return null;
-	}
-	return user;
+      return null;
+    }
+    return user;
   }
   
   /**
@@ -69,22 +69,22 @@ public class UserDAOImpl implements UserDAO {
    * @throws SQLException if problems.
    */
   private UserDTO fullFillUserFromResulSet(UserDTO user, PreparedStatement ps) throws SQLException {
-	      try (ResultSet rs = ps.executeQuery()) {
-	        while (rs.next()) {
-	          user.setID(rs.getInt(1));
-	          user.setUserName(rs.getString(2));
-	          user.setFirstName(rs.getString(3));
-	          user.setLastName(rs.getString(4));
-	          user.setAdressID(rs.getInt(5));
-	          user.setEmail(rs.getString(6));
-	          user.setBoss(rs.getBoolean(7));
-	          user.setAntiqueDealer(rs.getBoolean(8));
-	          user.setConfirmed(rs.getBoolean(9));
-	          user.setRegistrationDate(rs.getTimestamp(10));
-	          user.setPassword(rs.getString(11));
-	        }
-	      }
-	  return user;
+    try (ResultSet rs = ps.executeQuery()) {
+      while (rs.next()) {
+        user.setID(rs.getInt(1));
+        user.setUserName(rs.getString(2));
+        user.setFirstName(rs.getString(3));
+        user.setLastName(rs.getString(4));
+        user.setAdressID(rs.getInt(5));
+        user.setEmail(rs.getString(6));
+        user.setBoss(rs.getBoolean(7));
+        user.setAntiqueDealer(rs.getBoolean(8));
+        user.setConfirmed(rs.getBoolean(9));
+        user.setRegistrationDate(rs.getTimestamp(10));
+        user.setPassword(rs.getString(11));
+      }
+    }
+    return user;
   }
 
   @Override
