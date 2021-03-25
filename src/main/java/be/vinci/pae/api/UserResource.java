@@ -96,16 +96,16 @@ public class UserResource {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response getUserById(@PathParam("id") int id) {
     // Check credentials.
-	if(id < 1) {
-	  return Response.status(Status.UNAUTHORIZED).entity("Id cannot be under 1 !")
-			  .type(MediaType.TEXT_PLAIN).build();
-	}
-	  
-	UserDTO user = this.userUcc.getUser(id);
-	  
-	if (user == null) {
-	  return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")
-	          .type(MediaType.TEXT_PLAIN).build();
+    if (id < 1) {
+      return Response.status(Status.UNAUTHORIZED).entity("Id cannot be under 1 !")
+              .type(MediaType.TEXT_PLAIN).build();
+    }
+      
+    UserDTO user = this.userUcc.getUser(id);
+      
+    if (user == null) {
+      return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")
+              .type(MediaType.TEXT_PLAIN).build();
 	}
 	  
 	ObjectNode node = createToken(user);
@@ -123,7 +123,7 @@ public class UserResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Authorize
   public Response getUser(@Context ContainerRequest request) {
-	UserDTO currentUser = (UserDTO) request.getProperty("user");	
+    UserDTO currentUser = (UserDTO) request.getProperty("user");	
 	
 	if (currentUser == null) {
 	  return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")

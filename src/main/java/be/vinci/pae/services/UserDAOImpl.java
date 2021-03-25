@@ -41,19 +41,19 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public UserDTO findById(int id) {
-	PreparedStatement ps = this.dalServices.getPreparedStatement(
+    PreparedStatement ps = this.dalServices.getPreparedStatement(
 		        "SELECT user_id, username, first_name, last_name, address, email, is_boss,"
 		            + " is_antique_dealer, is_confirmed, registration_date, password "
 		            + "FROM projet.users WHERE user_id = ?");
-	UserDTO user = domaineFactory.getUserDTO();
-	try {
-	  ps.setInt(1, id);
-	  user = fullFillUserFromResulSet(user, ps);
-	} catch (SQLException e) {
-	  e.printStackTrace();
-	  return null;
-	}
-	if (!user.isConfirmed()) {
+    UserDTO user = domaineFactory.getUserDTO();
+    try {
+      ps.setInt(1, id);
+      user = fullFillUserFromResulSet(user, ps);
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+    if (!user.isConfirmed()) {
 	  return null;
 	}
 	return user;
