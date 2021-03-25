@@ -1,11 +1,15 @@
 package be.vinci.pae.api;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.utils.Json;
+import be.vinci.pae.domaine.Address;
+import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.UserDTO;
 import be.vinci.pae.domaine.UserUCC;
 import be.vinci.pae.utils.Config;
@@ -29,6 +33,10 @@ public class UserResource {
 
   @Inject
   private UserUCC userUcc;
+
+  @Inject
+  private DomaineFactory domaineFactory;
+
 
   /**
    * Login the user if exists or send error message.
@@ -116,6 +124,78 @@ public class UserResource {
 	  // to be returned by the API (such as password)
 	  UserDTO publicUser = Json.filterPublicJsonView(user, UserDTO.class);
 	  return jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
+  }
+
+  /**
+   * register a user if correct parameters are sent.
+   * 
+   * @param json object containg user information and address.
+   * @return ok if user has been inserted or an exception.
+   */
+  @POST
+  @Path("/register")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response register(JsonNode json) {
+    if (!json.hasNonNull("username")) {
+      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    }
+    if (!json.hasNonNull("email")) {
+      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    }
+    if (!json.hasNonNull("password")) {
+      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    }
+    if (!json.hasNonNull("lastname")) {
+      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    }
+    if (!json.hasNonNull("firstname")) {
+      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    }
+    if (!json.hasNonNull("street")) {
+      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    }
+    if (!json.hasNonNull("building_number")) {
+      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    }
+    if (!json.hasNonNull("postcode")) {
+      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    }
+    if (!json.hasNonNull("commune")) {
+      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    }
+    if (!json.hasNonNull("country")) {
+      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    }
+    if (!json.hasNonNull("unit_number")) {
+      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    }
+
+    UserDTO user = domaineFactory.getUserDTO();
+
+    user.setUserName(json.get("username").asText());
+    user.setFirstName(json.get("firstname").asText());
+    user.setLastName(json.get("lastname").asText());
+    user.setEmail(json.get("email").asText());
+    user.setPassword(json.get("password").asText());
+
+    Address address = domaineFactory.getAdress();
+
+    address.setBuildingNumber(json.get("building_number").asText());
+    address.setCommune(json.get("commune").asText());
+    address.setPostCode(json.get("postcode").asText());
+    address.setStreet(json.get("street").asText());
+    address.setUnitNumber(json.get("unit_number").asText());
+    address.setCountry(json.get("country").asText());
+    LocalDateTime now = LocalDateTime.now();
+    Timestamp timestamp = Timestamp.valueOf(now);
+    user.setRegistrationDate(timestamp);
+    UserDTO userDTO = userUcc.register(user, address);
+
+    if (userDTO == null) {
+      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    }
+
+    return Response.ok().build();
   }
 
 }

@@ -3,13 +3,13 @@ package be.vinci.pae.domaine;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AdressImpl implements Adress {
+public class AddressImpl implements Address {
 
   private int id;
   private String street;
-  private int buildingNumber;
-  private int unitNumber;
-  private int postCode;
+  private String buildingNumber;
+  private String unitNumber;
+  private String postCode;
   private String commune;
   private String country;
 
@@ -29,27 +29,27 @@ public class AdressImpl implements Adress {
     this.street = street;
   }
 
-  public int getBuildingNumber() {
+  public String getBuildingNumber() {
     return buildingNumber;
   }
 
-  public void setBuildingNumber(int buildingNumber) {
+  public void setBuildingNumber(String buildingNumber) {
     this.buildingNumber = buildingNumber;
   }
 
-  public int getUnitNumber() {
-    return unitNumber;
+  public String getUnitNumber() {
+    return this.unitNumber;
   }
 
-  public void setUnitNumber(int unitNumber) {
+  public void setUnitNumber(String unitNumber) {
     this.unitNumber = unitNumber;
   }
 
-  public int getPostCode() {
+  public String getPostCode() {
     return postCode;
   }
 
-  public void setPostCode(int postCode) {
+  public void setPostCode(String postCode) {
     this.postCode = postCode;
   }
 
@@ -72,7 +72,7 @@ public class AdressImpl implements Adress {
   @Override
   public String toString() {
     // TODO generate with source
-    return "AdressImpl [id=" + id + ", Street=" + street + ", buildingNumber=" + buildingNumber
+    return "AddressImpl [id=" + id + ", Street=" + street + ", buildingNumber=" + buildingNumber
         + ", unitNumber=" + unitNumber + ", postCode=" + postCode + ", commune=" + commune
         + ", country=" + country + "]";
   }
@@ -96,7 +96,7 @@ public class AdressImpl implements Adress {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    AdressImpl other = (AdressImpl) obj;
+    AddressImpl other = (AddressImpl) obj;
     if (id != other.id) {
       return false;
     }
