@@ -36,7 +36,7 @@ const getUserSessionData = () => {
 };
 
 const setUserSessionData = (user, isRemember) => {
-  const storageValue = JSON.stringify(user.user.id);
+  const storageValue = JSON.stringify(user.token);
   if(isRemember) localStorage.setItem(STORE_NAME, storageValue);
   else sessionStorage.setItem(STORE_NAME, storageValue);
 
@@ -51,15 +51,15 @@ const removeSessionData = () => {
 };
 
 const checkTokenOnLoad = () => {
-  let retrievedId = localStorage.getItem(STORE_NAME);
+  let retrievedToken = localStorage.getItem(STORE_NAME);
   let isLocalToken = true;
-  if(!retrievedId){
-    retrievedId = sessionStorage.getItem(STORE_NAME);
+  if(!retrievedToken){
+    retrievedToken = sessionStorage.getItem(STORE_NAME);
     isLocalToken = false;
   }
-  if(!retrievedId) return;
+  if(!retrievedToken) return;
 
-  VerifyUserToken(retrievedId, isLocalToken);
+  VerifyUserToken(retrievedToken, isLocalToken); //TODO /me avec un token
 };
 
 export { getUserSessionData, setUserSessionData, removeSessionData, checkTokenOnLoad };

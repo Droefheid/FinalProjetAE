@@ -1,15 +1,16 @@
 import Navbar from "../Components/Navbar.js";
 import { API_URL, ALERT_BOX } from "./server.js";
-import { setUserSessionData } from "./session.js"
+import { setUserSessionData, removeSessionData } from "./session.js"
 
 let isLocalToken = null;
 
 const VerifyUserToken = (id, isLocalItem) => {
     isLocalToken = isLocalItem;
-    fetch(API_URL + "users/" + id, {
-        method: "POST", 
+    fetch(API_URL + "users/me", {
+        method: "GET", 
         headers: {
           "Content-Type": "application/json",
+          "Authorization": id,
         },
     })
     .then((response) => {
@@ -30,6 +31,7 @@ const onUserFound = (userData) => {
 };
 
 const onError = (err) => {
+    removeSessionData();
     let messageBoard = document.querySelector("#messageBoard");
     let errorMessage = "";
     if (err.message.includes("401")) {

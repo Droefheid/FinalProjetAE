@@ -1,12 +1,18 @@
 package be.vinci.pae.api;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+
+import org.glassfish.jersey.server.ContainerRequest;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domaine.Address;
 import be.vinci.pae.domaine.DomaineFactory;
@@ -16,10 +22,13 @@ import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -27,6 +36,8 @@ import jakarta.ws.rs.core.Response.Status;
 @Singleton
 @Path("/users")
 public class UserResource {
+	// 86400s = 1 jour (86.400.000 ms).
+  private final static long EXPIRATION_TIME = 86400 * 1000;
 
   private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
   private final ObjectMapper jsonMapper = new ObjectMapper();
@@ -101,6 +112,22 @@ public class UserResource {
 	  return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
   
+  @GET
+  @Path("/me")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Authorize
+  public Response getUser(@Context ContainerRequest request) {
+	  UserDTO currentUser = (UserDTO) request.getProperty("user");	
+	
+	if (currentUser == null) {
+	      return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")
+	          .type(MediaType.TEXT_PLAIN).build();
+	}
+	ObjectNode node = createToken(currentUser);
+	return Response.ok(node, MediaType.APPLICATION_JSON).build();
+  }
+
+  
   /**
    * Create a token and a ObjectNode with an user.
    * The user is transformed with a Public JSON views.
@@ -114,7 +141,8 @@ public class UserResource {
 	  String token;
 	  try {
 		  token =
-	          JWT.create().withIssuer("auth0").withClaim("user", user.getID()).sign(this.jwtAlgorithm);
+	          JWT.create().withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+	          .withIssuer("auth0").withClaim("user", user.getID()).sign(this.jwtAlgorithm);
 	  } catch (Exception e) {
 		  throw new WebApplicationException("Unable to create token", e, Status.INTERNAL_SERVER_ERROR);
 	  }

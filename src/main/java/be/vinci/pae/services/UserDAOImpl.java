@@ -25,13 +25,16 @@ public class UserDAOImpl implements UserDAO {
     UserDTO user = domaineFactory.getUserDTO();
     try {
       ps.setString(1, username);
-      return fullFillUserFromResulSet(user, ps);
+      user =  fullFillUserFromResulSet(user, ps);
     } catch (SQLException e) {
       e.printStackTrace();
       return null;
     }
     if (user.getUserName() == null) {
       return null;
+    }
+    if(!user.isConfirmed()) {
+    	return null;
     }
     return user;
   }
@@ -42,14 +45,18 @@ public class UserDAOImpl implements UserDAO {
 		        "SELECT user_id, username, first_name, last_name, address, email, is_boss,\r\n"
 		            + "            is_antique_dealer, is_confirmed, registration_date, password \r\n"
 		            + "            FROM projet.users WHERE user_id = ?");
-	  UserDTO user = userFactory.getUserDTO();
+	  UserDTO user = domaineFactory.getUserDTO();
 	  try {
 	      ps.setInt(1, id);
-	      return fullFillUserFromResulSet(user, ps);
+	      user = fullFillUserFromResulSet(user, ps);
 	  } catch (SQLException e) {
 	      e.printStackTrace();
 	      return null;
 	  }
+	  if(!user.isConfirmed()) {
+	    	return null;
+	    }
+	  return user;
   }
   
   /**
@@ -73,7 +80,7 @@ public class UserDAOImpl implements UserDAO {
 	          user.setBoss(rs.getBoolean(7));
 	          user.setAntiqueDealer(rs.getBoolean(8));
 	          user.setConfirmed(rs.getBoolean(9));
-	          user.setRegistrationDate(rs.getString(10));
+	          user.setRegistrationDate(rs.getTimestamp(10));
 	          user.setPassword(rs.getString(11));
 	        }
 	      }
