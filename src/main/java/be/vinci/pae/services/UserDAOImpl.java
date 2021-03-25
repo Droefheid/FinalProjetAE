@@ -25,36 +25,11 @@ public class UserDAOImpl implements UserDAO {
     UserDTO user = domaineFactory.getUserDTO();
     try {
       ps.setString(1, username);
-<<<<<<< HEAD
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-          user.setID(rs.getInt(1));
-          user.setUserName(rs.getString(2));
-          user.setFirstName(rs.getString(3));
-          user.setLastName(rs.getString(4));
-          user.setAdressID(rs.getInt(5));
-          user.setEmail(rs.getString(6));
-          user.setBoss(rs.getBoolean(7));
-          user.setAntiqueDealer(rs.getBoolean(8));
-          user.setConfirmed(rs.getBoolean(9));
-          user.setRegistrationDate(rs.getTimestamp(10));
-          user.setPassword(rs.getString(11));
-        }
-      }
-=======
       return fullFillUserFromResulSet(user, ps);
->>>>>>> 91598ecab7c2d309d3a640ce7ba9e6f1d3cd4060
     } catch (SQLException e) {
       e.printStackTrace();
       return null;
     }
-<<<<<<< HEAD
-    if (user.getUserName() == null) {
-      return null;
-    }
-    return user;
-=======
->>>>>>> 91598ecab7c2d309d3a640ce7ba9e6f1d3cd4060
   }
 
   @Override

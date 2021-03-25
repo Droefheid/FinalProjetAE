@@ -101,10 +101,6 @@ const onUserLogin = (userData) => {
 };
 
 const onError = (err) => {
-<<<<<<< HEAD
-  let messageBoard = document.querySelector("#messageBoard");
-  messageBoard.innerHTML = '<div class="alert alert-danger">Wrong username or password.</div>';
-=======
   let messageBoard = document.querySelector("#messageBoardForm");
   let errorMessage = "";
   if (err.message.includes("401")) {
@@ -113,7 +109,6 @@ const onError = (err) => {
     errorMessage = err.message;
     ALERT_BOX(messageBoard, errorMessage);
   }
->>>>>>> 91598ecab7c2d309d3a640ce7ba9e6f1d3cd4060
 };
 
 export default LoginPage;

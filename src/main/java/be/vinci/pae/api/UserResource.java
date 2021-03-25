@@ -70,24 +70,7 @@ public class UserResource {
           .type(MediaType.TEXT_PLAIN).build();
     }
 
-<<<<<<< HEAD
-    // Create token
-    String token;
-    try {
-      token =
-          JWT.create().withIssuer("auth0").withClaim("user", user.getID()).sign(this.jwtAlgorithm);
-    } catch (Exception e) {
-      throw new WebApplicationException("Unable to create token", e, Status.INTERNAL_SERVER_ERROR);
-    }
-
-    // Build response
-    // load the user data from a public JSON view to filter out the private info not
-    // to be returned by the API (such as password)
-    UserDTO publicUser = Json.filterPublicJsonView(user, UserDTO.class);
-    ObjectNode node = jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
-=======
     ObjectNode node = createToken(user);
->>>>>>> 91598ecab7c2d309d3a640ce7ba9e6f1d3cd4060
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
   
