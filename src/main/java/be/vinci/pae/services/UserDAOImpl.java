@@ -25,6 +25,7 @@ public class UserDAOImpl implements UserDAO {
     UserDTO user = domaineFactory.getUserDTO();
     try {
       ps.setString(1, username);
+<<<<<<< HEAD
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           user.setID(rs.getInt(1));
@@ -40,20 +41,64 @@ public class UserDAOImpl implements UserDAO {
           user.setPassword(rs.getString(11));
         }
       }
+=======
+      return fullFillUserFromResulSet(user, ps);
+>>>>>>> 91598ecab7c2d309d3a640ce7ba9e6f1d3cd4060
     } catch (SQLException e) {
       e.printStackTrace();
       return null;
     }
+<<<<<<< HEAD
     if (user.getUserName() == null) {
       return null;
     }
     return user;
+=======
+>>>>>>> 91598ecab7c2d309d3a640ce7ba9e6f1d3cd4060
   }
 
   @Override
   public UserDTO findById(int id) {
-    // TODO Auto-generated method stub
-    return null;
+	  PreparedStatement ps = this.dalServices.getPreparedStatement(
+		        "SELECT user_id, username, first_name, last_name, address, email, is_boss,\r\n"
+		            + "            is_antique_dealer, is_confirmed, registration_date, password \r\n"
+		            + "            FROM projet.users WHERE user_id = ?");
+	  UserDTO user = userFactory.getUserDTO();
+	  try {
+	      ps.setInt(1, id);
+	      return fullFillUserFromResulSet(user, ps);
+	  } catch (SQLException e) {
+	      e.printStackTrace();
+	      return null;
+	  }
+  }
+  
+  /**
+   * Fully fill the user with the ResultSet from de db.
+   * Or throws SQLException.
+   * 
+   * @param user empty, to be filled.
+   * @param ps the PreparedStatement already Set.
+   * @return the user filled.
+   * @throws SQLException if problems.
+   */
+  private UserDTO fullFillUserFromResulSet(UserDTO user, PreparedStatement ps) throws SQLException {
+	      try (ResultSet rs = ps.executeQuery()) {
+	        while (rs.next()) {
+	          user.setID(rs.getInt(1));
+	          user.setUserName(rs.getString(2));
+	          user.setFirstName(rs.getString(3));
+	          user.setLastName(rs.getString(4));
+	          user.setAdressID(rs.getInt(5));
+	          user.setEmail(rs.getString(6));
+	          user.setBoss(rs.getBoolean(7));
+	          user.setAntiqueDealer(rs.getBoolean(8));
+	          user.setConfirmed(rs.getBoolean(9));
+	          user.setRegistrationDate(rs.getString(10));
+	          user.setPassword(rs.getString(11));
+	        }
+	      }
+	  return user;
   }
 
   @Override

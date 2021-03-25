@@ -13,6 +13,7 @@
   bottom:0;
 }
 body {
+<<<<<<< HEAD
   background: #222;
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://source.unsplash.com/collection/1163637/');
   background-repeat: no-repeat;
@@ -38,6 +39,10 @@ body {
 
 .container {
   animation: showUp 0.5s cubic-bezier(0.18, 1.3, 1, 1) forwards;
+=======
+
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+>>>>>>> 91598ecab7c2d309d3a640ce7ba9e6f1d3cd4060
 }
 
 @keyframes showUp {
@@ -126,10 +131,97 @@ height:100%;
 	float:left;
   text-align:center;
 }
+<<<<<<< HEAD
 .footer h3{
 	font-family: 'Helvetica';
 	font-size: 30px;
 	font-weight: 100;
 	margin-top:70px;
 	margin-left:40px;
+=======
+
+/* Placements */
+.absolute {
+  position: absolute;
+}
+
+/* Images resizing */
+.logo_size {
+  width: 70px;
+}
+
+/*************** SideBar ***************/
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: absolute;
+  z-index: 1;
+  top: 40;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+  padding-left: 0px;
+    margin-left: 0px;
+}
+
+.sidenav a {
+  padding: 8px 0px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenav form {
+  padding: 0px 0px 0px 10px;
+    margin: 0px 0px 0px 0px;
+  text-decoration: none;
+  font-size: 20px;
+  color: #818181;
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/* Button Of the SideBar */
+.transitionButton {
+position: absolute;
+  transition: .5s;
+ top: 40;
+  right: 25px;
+  font-size: 36px;
+  background-color: #111;
+  width: 36px;
+  left: 0px;
+  padding: 5px 40px 5px 10px;
+  margin: 0px;
+}
+
+.transitionButton a {
+  text-decoration: none;
+  color: #818181;
+}
+
+.transitionButton a:hover {
+  color: #f1f1f1;
+}
+
+.smoothTransition {
+  transition: .5s;
+  padding-left: 170px;
+}
+
+.noPaddingForSideBar {
+  padding-left: 0px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+>>>>>>> 91598ecab7c2d309d3a640ce7ba9e6f1d3cd4060
 }

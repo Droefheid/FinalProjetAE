@@ -1,12 +1,15 @@
 import { RedirectUrl } from "./Router.js";
 import { getUserSessionData } from "../utils/session.js";
 import { API_URL } from "../utils/server.js";
+import Sidebar from "./SideBar.js";
 
 let page = document.querySelector("#page");
 
 const UserListPage = () => {
   const user = getUserSessionData();
   if (!user) RedirectUrl("/error", "Resource not authorized. Please login.");
+
+  Sidebar();
 
   fetch(API_URL + "users", {
     method: "GET",

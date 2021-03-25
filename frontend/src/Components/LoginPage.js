@@ -4,12 +4,13 @@ By default, all escape sequences in a template literal are ignored.*/
 import { getUserSessionData, setUserSessionData } from "../utils/session.js";
 import { RedirectUrl } from "./Router.js";
 import Navbar from "./Navbar.js";
-import { API_URL } from "../utils/server.js";
+import { API_URL, ALERT_BOX } from "../utils/server.js";
+import Sidebar from "./SideBar.js";
 
 let remember = false;
 
 let loginPage = `<div class="container">
-<div class="d-flex justify-content-center h-100">
+<div class="d-flex justify-content-center h-100 mt-4">
   <div class="card">
     <div class="card-header">
     <h3><center>Log in</center></h3>
@@ -40,19 +41,21 @@ let loginPage = `<div class="container">
     <div class="card-footer">
       <div class="d-flex justify-content-center">
       </div>
-      <div id="messageBoard"></div>
+      <div id="messageBoardForm"></div>
     </div>
   </div>
 </div>
 </div>`;
 
 const LoginPage = () => {
+  Sidebar();
+
   let page = document.querySelector("#page");
   page.innerHTML = loginPage;
   let loginForm = document.querySelector("form");
   const user = getUserSessionData();
   if (user) {
-    // re-render the navbar for the authenticated user
+    // re-render the navbar for the authenticated user.
     Navbar();
     RedirectUrl("/");
   } else loginForm.addEventListener("submit", onLogin);
@@ -90,6 +93,7 @@ const onLogin = (e) => {
 
 const onUserLogin = (userData) => {
   const user = { ...userData, isAutenticated: true };
+  console.log("est passer", user);
   setUserSessionData(user, remember);
   // re-render the navbar for the authenticated user
   Navbar();
@@ -97,8 +101,19 @@ const onUserLogin = (userData) => {
 };
 
 const onError = (err) => {
+<<<<<<< HEAD
   let messageBoard = document.querySelector("#messageBoard");
   messageBoard.innerHTML = '<div class="alert alert-danger">Wrong username or password.</div>';
+=======
+  let messageBoard = document.querySelector("#messageBoardForm");
+  let errorMessage = "";
+  if (err.message.includes("401")) {
+    messageBoard.innerHTML = '<div class="alert alert-danger">Wrong username or password.</div>';
+  }else{
+    errorMessage = err.message;
+    ALERT_BOX(messageBoard, errorMessage);
+  }
+>>>>>>> 91598ecab7c2d309d3a640ce7ba9e6f1d3cd4060
 };
 
 export default LoginPage;
