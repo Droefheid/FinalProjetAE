@@ -36,8 +36,8 @@ import jakarta.ws.rs.core.Response.Status;
 @Singleton
 @Path("/users")
 public class UserResource {
-	// 86400s = 1 jour (86.400.000 ms).
-  private final static long EXPIRATION_TIME = 86400 * 1000;
+  // 86400s = 1 jour (86.400.000 ms).
+  private static final long EXPIRATION_TIME = 86400 * 1000;
 
   private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
   private final ObjectMapper jsonMapper = new ObjectMapper();
@@ -88,39 +88,45 @@ public class UserResource {
   /**
    * Get the user with an ID if exists or send error message.
    * 
-   * @param json object containing an id.
+   * @param id id of the user.
    * @return a user if user exists in database and matches the id.
    */
   @POST
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response getUserById(@PathParam("id") int id) {
-	  // Check credentials.
-	  if(id < 1) {
-		  return Response.status(Status.UNAUTHORIZED).entity("Id cannot be under 1 !")
-		          .type(MediaType.TEXT_PLAIN).build();
-	  }
+    // Check credentials.
+	if(id < 1) {
+	  return Response.status(Status.UNAUTHORIZED).entity("Id cannot be under 1 !")
+			  .type(MediaType.TEXT_PLAIN).build();
+	}
 	  
-	  UserDTO user = this.userUcc.getUser(id);
+	UserDTO user = this.userUcc.getUser(id);
 	  
-	  if (user == null) {
-	      return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")
+	if (user == null) {
+	  return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")
 	          .type(MediaType.TEXT_PLAIN).build();
-	    }
+	}
 	  
-	  ObjectNode node = createToken(user);
-	  return Response.ok(node, MediaType.APPLICATION_JSON).build();
+	ObjectNode node = createToken(user);
+	return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
   
+  /**
+   * Get the user from an id in a token in header.
+   * 
+   * @param request header with the token.
+   * @return a new token and the user.
+   */
   @GET
   @Path("/me")
   @Produces(MediaType.APPLICATION_JSON)
   @Authorize
   public Response getUser(@Context ContainerRequest request) {
-	  UserDTO currentUser = (UserDTO) request.getProperty("user");	
+	UserDTO currentUser = (UserDTO) request.getProperty("user");	
 	
 	if (currentUser == null) {
-	      return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")
+	  return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")
 	          .type(MediaType.TEXT_PLAIN).build();
 	}
 	ObjectNode node = createToken(currentUser);
@@ -137,21 +143,22 @@ public class UserResource {
    * @return ObjectNode contains the token and the user filter.
    */
   private ObjectNode createToken(UserDTO user) {
-	  // Create token
-	  String token;
-	  try {
-		  token =
-	          JWT.create().withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+    // Create token
+	String token;
+	try {
+      token = 
+    		  JWT.create().withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
 	          .withIssuer("auth0").withClaim("user", user.getID()).sign(this.jwtAlgorithm);
-	  } catch (Exception e) {
-		  throw new WebApplicationException("Unable to create token", e, Status.INTERNAL_SERVER_ERROR);
-	  }
+	} catch (Exception e) {
+      throw new WebApplicationException("Unable to create token",
+				  e, Status.INTERNAL_SERVER_ERROR);
+	}
 	  
-	  // Build response
-	  // load the user data from a public JSON view to filter out the private info not
-	  // to be returned by the API (such as password)
-	  UserDTO publicUser = Json.filterPublicJsonView(user, UserDTO.class);
-	  return jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
+	// Build response
+	// load the user data from a public JSON view to filter out the private info not
+	// to be returned by the API (such as password)
+	UserDTO publicUser = Json.filterPublicJsonView(user, UserDTO.class);
+	return jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
   }
 
   /**

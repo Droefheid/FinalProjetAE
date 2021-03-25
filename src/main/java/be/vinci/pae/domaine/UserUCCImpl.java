@@ -39,9 +39,8 @@ public class UserUCCImpl implements UserUCC {
   
   @Override
   public UserDTO getUser(int id) {
-	  User user = (User) this.userDao.findById(id);
-	  
-	  return (UserDTO) user;
+	User user = (User) this.userDao.findById(id);
+	return (UserDTO) user;
   }
 
 }
