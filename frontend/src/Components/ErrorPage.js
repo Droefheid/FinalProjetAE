@@ -1,6 +1,9 @@
+import Sidebar from "./SideBar";
+
 let page = document.querySelector("#page");
 
 const ErrorPage = (err) => {
+  Sidebar();
   let errorPage;
   if (!err) errorPage = `<p>There was an error.</p>`;
   else if (!err.message) errorPage = `<p>${err}</p>`;
