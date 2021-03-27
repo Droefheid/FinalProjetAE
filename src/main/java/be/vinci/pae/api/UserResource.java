@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.filters.Authorize;
+import be.vinci.pae.api.utils.FatalException;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domaine.Address;
 import be.vinci.pae.domaine.DomaineFactory;
@@ -24,7 +25,6 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -57,26 +57,21 @@ public class UserResource {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response login(JsonNode json) {
     // Get and check credentials
-    if (!json.hasNonNull("username") && !json.hasNonNull("password")) {
+    if (json.get("username").asText().equals("") && json.get("password").asText().equals("")) {
       return Response.status(Status.UNAUTHORIZED).entity("Username and Password needed")
           .type(MediaType.TEXT_PLAIN).build();
     }
-    if (!json.hasNonNull("username")) {
+    if (json.get("username").asText().equals("")) {
       return Response.status(Status.UNAUTHORIZED).entity("Username needed")
           .type(MediaType.TEXT_PLAIN).build();
     }
-    if (!json.hasNonNull("password")) {
+    if (json.get("password").asText().equals("")) {
       return Response.status(Status.UNAUTHORIZED).entity("Password needed")
           .type(MediaType.TEXT_PLAIN).build();
     }
 
 
     UserDTO user = this.userUcc.login(json.get("username").asText(), json.get("password").asText());
-
-    if (user == null) {
-      return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")
-          .type(MediaType.TEXT_PLAIN).build();
-    }
 
     ObjectNode node = createToken(user);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
@@ -100,11 +95,6 @@ public class UserResource {
 
     UserDTO user = this.userUcc.getUser(id);
 
-    if (user == null) {
-      return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")
-          .type(MediaType.TEXT_PLAIN).build();
-    }
-
     ObjectNode node = createToken(user);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
@@ -123,8 +113,7 @@ public class UserResource {
     UserDTO currentUser = (UserDTO) request.getProperty("user");
 
     if (currentUser == null) {
-      return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")
-          .type(MediaType.TEXT_PLAIN).build();
+      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
     }
     ObjectNode node = createToken(currentUser);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
@@ -132,8 +121,8 @@ public class UserResource {
 
 
   /**
-   * Create a token and a ObjectNode with an user. 
-   * The user is transformed with a Public JSON views.
+   * Create a token and a ObjectNode with an user.
+   * The user is transformed with a Public JSON views. 
    * to filter out the private info not to be returned
    * by the API (such as password).
    * 
@@ -147,7 +136,7 @@ public class UserResource {
       token = JWT.create().withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
           .withIssuer("auth0").withClaim("user", user.getID()).sign(this.jwtAlgorithm);
     } catch (Exception e) {
-      throw new WebApplicationException("Unable to create token", e, Status.INTERNAL_SERVER_ERROR);
+      throw new FatalException("Unable to create token", e);
     }
 
     // Build response
@@ -167,38 +156,49 @@ public class UserResource {
   @Path("/register")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response register(JsonNode json) {
-    if (!json.hasNonNull("username")) {
-      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    if (json.get("username").asText().equals("")) {
+      return Response.status(Status.UNAUTHORIZED).entity("Username is needed")
+          .type(MediaType.TEXT_PLAIN).build();
     }
-    if (!json.hasNonNull("email")) {
-      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    if (json.get("email").asText().equals("")) {
+      return Response.status(Status.UNAUTHORIZED).entity("Email is needed")
+          .type(MediaType.TEXT_PLAIN).build();
     }
-    if (!json.hasNonNull("password")) {
-      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    if (json.get("password").asText().equals("")) {
+      return Response.status(Status.UNAUTHORIZED).entity("Password is needed")
+          .type(MediaType.TEXT_PLAIN).build();
     }
-    if (!json.hasNonNull("lastname")) {
-      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    if (json.get("lastname").asText().equals("")) {
+      return Response.status(Status.UNAUTHORIZED).entity("Lastname is needed")
+          .type(MediaType.TEXT_PLAIN).build();
     }
-    if (!json.hasNonNull("firstname")) {
-      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    if (json.get("firstname").asText().equals("")) {
+      return Response.status(Status.UNAUTHORIZED).entity("Firstname is needed")
+          .type(MediaType.TEXT_PLAIN).build();
     }
-    if (!json.hasNonNull("street")) {
-      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    if (json.get("street").asText().equals("")) {
+      return Response.status(Status.UNAUTHORIZED).entity("Street is needed")
+          .type(MediaType.TEXT_PLAIN).build();
     }
-    if (!json.hasNonNull("building_number")) {
-      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    if (json.get("building_number").asText().equals("")) {
+      return Response.status(Status.UNAUTHORIZED).entity("Building_number is needed")
+          .type(MediaType.TEXT_PLAIN).build();
     }
-    if (!json.hasNonNull("postcode")) {
-      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    if (json.get("postcode").asText().equals("")) {
+      return Response.status(Status.UNAUTHORIZED).entity("Postcode is needed")
+          .type(MediaType.TEXT_PLAIN).build();
     }
-    if (!json.hasNonNull("commune")) {
-      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    if (json.get("commune").asText().equals("")) {
+      return Response.status(Status.UNAUTHORIZED).entity("Commune is needed")
+          .type(MediaType.TEXT_PLAIN).build();
     }
-    if (!json.hasNonNull("country")) {
-      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    if (json.get("country").asText().equals("")) {
+      return Response.status(Status.UNAUTHORIZED).entity("Country is needed")
+          .type(MediaType.TEXT_PLAIN).build();
     }
-    if (!json.hasNonNull("unit_number")) {
-      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+    if (json.get("unit_number").asText().equals("")) {
+      return Response.status(Status.UNAUTHORIZED).entity("Unit_number is needed")
+          .type(MediaType.TEXT_PLAIN).build();
     }
 
     UserDTO user = domaineFactory.getUserDTO();
@@ -220,11 +220,7 @@ public class UserResource {
     LocalDateTime now = LocalDateTime.now();
     Timestamp timestamp = Timestamp.valueOf(now);
     user.setRegistrationDate(timestamp);
-    UserDTO userDTO = userUcc.register(user, address);
-
-    if (userDTO == null) {
-      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
-    }
+    userUcc.register(user, address);
 
     return Response.ok().build();
   }

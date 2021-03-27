@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import be.vinci.pae.api.utils.FatalException;
 
 public class Config {
 
