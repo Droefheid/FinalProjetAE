@@ -81,10 +81,11 @@ const onLogin = (e) => {
     },
   })
     .then((response) => {
-      if (!response.ok)
+      if (!response.ok){
         throw new Error(
-          "Error code : " + response.status + " : " + response.statusText
+          response.text()
         );
+    }
       return response.json();
     })
     .then((data) => onUserLogin(data))
@@ -100,14 +101,9 @@ const onUserLogin = (userData) => {
 };
 
 const onError = (err) => {
+  console.log(err);
   let messageBoard = document.querySelector("#messageBoardForm");
-  let errorMessage = "";
-  if (err.message.includes("401")) {
-    messageBoard.innerHTML = '<div class="alert alert-danger">Wrong username or password.</div>';
-  }else{
-    errorMessage = err.message;
-    ALERT_BOX(messageBoard, errorMessage);
-  }
+  messageBoard.innerHTML=err;
 };
 
 export default LoginPage;
