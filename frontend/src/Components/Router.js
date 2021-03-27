@@ -3,6 +3,7 @@ import UserListPage from "./UserListPage.js";
 import LoginPage from "./LoginPage.js";
 import RegisterPage from "./RegisterPage.js";
 import LogoutComponent from "./LogoutComponent.js";
+import FurniturePage from "./Furniture.js";
 import ErrorPage from "./ErrorPage.js";
 
 const routes = {
@@ -11,6 +12,7 @@ const routes = {
   "/login": LoginPage,
   "/register": RegisterPage,
   "/logout": LogoutComponent,
+  "/furniture": FurniturePage,
   "/error": ErrorPage,
 };
 

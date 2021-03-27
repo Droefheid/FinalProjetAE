@@ -1,7 +1,9 @@
 package be.vinci.pae.domaine;
 
 import java.sql.Date;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DeliveryImpl implements Delivery {
 
   private int id;

@@ -1,5 +1,8 @@
 package be.vinci.pae.domaine;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TypesImpl implements Types {
 
   private int id;
