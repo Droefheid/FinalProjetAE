@@ -161,3 +161,21 @@ body {
     font-size: 18px;
   }
 }
+#nav_furniture {
+  float: left;
+  display: block;
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: 15%;
+  margin-right: 0;
+  padding-left: 40px;
+  width: 40%;
+  height: 25em;
+  line-height: 2em;
+  overflow-x: hidden;
+}
+
+#description_furniture {
+  display: block;
+  text-align: center;
+}

@@ -3,7 +3,6 @@ import UserListPage from "./UserListPage.js";
 import LoginPage from "./LoginPage.js";
 import RegisterPage from "./RegisterPage.js";
 import LogoutComponent from "./LogoutComponent.js";
-import FurniturePage from "./Furniture.js";
 import ErrorPage from "./ErrorPage.js";
 import FurniturePage from "./FurniturePage.js";
 
