@@ -200,7 +200,6 @@ const onUserRegistration = () => {
 };
 
 const onError = (err) => {
-  console.log(err);
   let messageBoard = document.querySelector("#messageBoardForm");
    messageBoard.innerHTML = err;
   
