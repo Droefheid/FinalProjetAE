@@ -30,6 +30,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 @Singleton
 @Path("/users")
@@ -123,9 +124,7 @@ public class UserResource {
 
 
   /**
-   * Create a token and a ObjectNode with an user.
-   * The user is transformed with a Public JSON views.
-   * to filter out the private info not to be returned.
+   * Create a token and a ObjectNode with an user. The user is transformed with a Public JSON views. to filter out the private info not to be returned.
    * by the API (such as password).
    * 
    * @param user : the user to put in the token.
