@@ -7,7 +7,7 @@
  * @param {footerText} footerText
  */
 function setLayout(headerTitle, footerText) {
-  document.querySelector("#footerText").innerText = footerText;
+  document.querySelector(".footerText").innerText = footerText;
 }
 // named export
 export {setLayout};

@@ -3,7 +3,8 @@ package be.vinci.pae.services;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import be.vinci.pae.domaine.Adress;
+import be.vinci.pae.api.utils.FatalException;
+import be.vinci.pae.domaine.Address;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.UserDTO;
 import jakarta.inject.Inject;
@@ -25,27 +26,35 @@ public class UserDAOImpl implements UserDAO {
     UserDTO user = domaineFactory.getUserDTO();
     try {
       ps.setString(1, username);
-      return fullFillUserFromResulSet(user, ps);
+      user = fullFillUserFromResulSet(user, ps);
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
+    if (user.getUserName() == null) {
       return null;
     }
+    return user;
   }
 
   @Override
   public UserDTO findById(int id) {
     PreparedStatement ps = this.dalServices.getPreparedStatement(
-        "SELECT user_id, username, first_name, last_name, address, email, is_boss,\r\n"
-            + "            is_antique_dealer, is_confirmed, registration_date, password \r\n"
-            + "            FROM projet.users WHERE user_id = ?");
+        "SELECT user_id, username, first_name, last_name, address, email, is_boss,"
+            + " is_antique_dealer, is_confirmed, registration_date, password "
+            + "FROM projet.users WHERE user_id = ?");
     UserDTO user = domaineFactory.getUserDTO();
     try {
       ps.setInt(1, id);
-      return fullFillUserFromResulSet(user, ps);
+      user = fullFillUserFromResulSet(user, ps);
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
+    if (!user.isConfirmed()) {
       return null;
     }
+    return user;
   }
 
   /**
@@ -93,43 +102,44 @@ public class UserDAOImpl implements UserDAO {
       ps.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
-      return null;
+      throw new FatalException(e.getMessage(), e);
     }
     return findByUserName(user.getUserName());
   }
 
   @Override
-  public int registerAdress(Adress adress) {
-    if (getAdressByInfo(adress.getStreet(), adress.getBuildingNumber(), adress.getCommune(),
-        adress.getCountry()) > 0) {
+  public int registerAddress(Address address) {
+    if (getAddressByInfo(address.getStreet(), address.getBuildingNumber(), address.getCommune(),
+        address.getCountry()) > 0) {
       return -1;
     }
     PreparedStatement ps = this.dalServices
         .getPreparedStatement("INSERT INTO projet.addresses VALUES(DEFAULT,?,?,?,?,?,?)");
     try {
-      ps.setString(1, adress.getStreet());
-      ps.setString(2, adress.getBuildingNumber());
-      ps.setString(3, adress.getPostCode());
-      ps.setString(4, adress.getCommune());
-      ps.setString(5, adress.getCountry());
-      ps.setString(6, adress.getUnitNumber());
+      ps.setString(1, address.getStreet());
+      ps.setString(2, address.getBuildingNumber());
+      ps.setString(3, address.getPostCode());
+      ps.setString(4, address.getCommune());
+      ps.setString(5, address.getCountry());
+      ps.setString(6, address.getUnitNumber());
       ps.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
-      return -1;
+      throw new FatalException(e.getMessage(), e);
     }
-    int i = getAdressByInfo(adress.getStreet(), adress.getBuildingNumber(), adress.getCommune(),
-        adress.getCountry());
+    int i = getAddressByInfo(address.getStreet(), address.getBuildingNumber(), address.getCommune(),
+        address.getCountry());
     return i;
   }
 
   @Override
-  public Adress getAdressById(int adress_id) {
-    PreparedStatement ps = this.dalServices.getPreparedStatement("SELECT address_id,street,"
-        + "building_number,postcode,commune,country,unit_number FROM projet.addresses WHERE address_id=?");
-    Adress adresse = domaineFactory.getAdress();
+  public Address getAddressById(int addressId) {
+    PreparedStatement ps = this.dalServices.getPreparedStatement(
+        "SELECT address_id,street," + "building_number,postcode,commune,country,unit_number "
+            + "FROM projet.addresses WHERE address_id=?");
+    Address adresse = domaineFactory.getAdress();
     try {
-      ps.setInt(1, adress_id);
+      ps.setInt(1, addressId);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           if (rs.getInt(1) <= 0) {
@@ -146,13 +156,13 @@ public class UserDAOImpl implements UserDAO {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      return null;
+      throw new FatalException(e.getMessage(), e);
     }
     return adresse;
   }
 
   @Override
-  public int getAdressByInfo(String street, String building_number, String commune,
+  public int getAddressByInfo(String street, String buildingNumber, String commune,
       String country) {
     PreparedStatement ps = this.dalServices
         .getPreparedStatement("SELECT address_id FROM projet.addresses WHERE street=? "
@@ -160,7 +170,7 @@ public class UserDAOImpl implements UserDAO {
     int adresse = 0;
     try {
       ps.setString(1, street);
-      ps.setString(2, building_number);
+      ps.setString(2, buildingNumber);
       ps.setString(3, country);
       ps.setString(4, commune);
       try (ResultSet rs = ps.executeQuery()) {
@@ -170,7 +180,7 @@ public class UserDAOImpl implements UserDAO {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      return -1;
+      throw new FatalException(e.getMessage(), e);
     }
     if (adresse <= 0) {
       return -1;

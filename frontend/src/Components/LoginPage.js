@@ -74,26 +74,24 @@ const onLogin = (e) => {
   remember = document.getElementById("remember").checked;
 
   fetch(API_URL + "users/login", {
-    method: "POST", 
-    body: JSON.stringify(user), 
+    method: "POST",
+    body: JSON.stringify(user),
     headers: {
       "Content-Type": "application/json",
     },
   })
     .then((response) => {
-      if (!response.ok)
-        throw new Error(
-          "Error code : " + response.status + " : " + response.statusText
-        );
-      return response.json();
+      if (!response.ok) {
+        return response.text().then(errMsg => { throw new Error(errMsg) })
+        .catch((err) => onError(err));
+      }
+      else
+        return response.json().then((data) => onUserLogin(data));
     })
-    .then((data) => onUserLogin(data))
-    .catch((err) => onError(err));
 };
 
 const onUserLogin = (userData) => {
   const user = { ...userData, isAutenticated: true };
-  console.log("est passer", user);
   setUserSessionData(user, remember);
   // re-render the navbar for the authenticated user
   Navbar();
@@ -102,13 +100,7 @@ const onUserLogin = (userData) => {
 
 const onError = (err) => {
   let messageBoard = document.querySelector("#messageBoardForm");
-  let errorMessage = "";
-  if (err.message.includes("401")) {
-    messageBoard.innerHTML = '<div class="alert alert-danger">Wrong username or password.</div>';
-  }else{
-    errorMessage = err.message;
-    ALERT_BOX(messageBoard, errorMessage);
-  }
+  messageBoard.innerHTML = err;
 };
 
 export default LoginPage;

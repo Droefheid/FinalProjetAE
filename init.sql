@@ -101,4 +101,3 @@ CREATE TABLE projet.options (
 	furniture INTEGER REFERENCES projet.furnitures(furniture_id) NOT NULL
 );
 
-
