@@ -45,6 +45,11 @@ public interface FurnitureDTO {
 
   String getState();
 
+  /**
+   * set the state of the furniture.
+   * 
+   * @param state the new state of the furniture.
+   */
   void setState(String state);
 
   Timestamp getDepositDate();

@@ -22,32 +22,16 @@ public class FurnitureDAOImpl implements FurnitureDAO {
   @Override
   public FurnitureDTO findById(int id) {
 
-    PreparedStatement ps = this.dalServices.getPreparedStatement(
-        "SELECT id_furniture, type, buyer, furniture_title, purchase_price, pick_up_date, selling_price,\r\n"
+    PreparedStatement ps = this.dalServices
+        .getPreparedStatement("SELECT id_furniture, type, buyer, furniture_title, purchase_price,"
+            + " pick_up_date, selling_price,\r\n"
             + "            special_sale_price, delivery, state, "
             + "deposit_date, date_of_sale, sale_withdrawal_date, seller \r\n"
             + "            FROM projet.furnitures WHERE id_furniture = ?");
     FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
     try {
       ps.setInt(1, id);
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-          furniture.setIdFurniture(rs.getInt(1));
-          furniture.setType(rs.getInt(2));
-          furniture.setBuyer(rs.getInt(3));
-          furniture.setFurnitureTitle(rs.getString(4));
-          furniture.setPurchasePrice(rs.getDouble(5));
-          furniture.setPickUpDate(rs.getTimestamp(6));
-          furniture.setSellingPrice(rs.getDouble(7));
-          furniture.setSpecialSalePrice(rs.getDouble(8));
-          furniture.setDelivery(rs.getInt(9));
-          furniture.setState(rs.getString(10));
-          furniture.setDepositDate(rs.getTimestamp(11));
-          furniture.setDateOfSale(rs.getTimestamp(12));
-          furniture.setSaleWithdrawalDate(rs.getTimestamp(13));
-          furniture.setSeller(rs.getInt(14));
-        }
-      }
+      fullFillFurnitures(ps, furniture);
     } catch (SQLException e) {
       throw new FatalException("error findById", e);
     }
@@ -84,13 +68,19 @@ public class FurnitureDAOImpl implements FurnitureDAO {
 
   @Override
   public List<FurnitureDTO> getAll() {
-    PreparedStatement ps = this.dalServices.getPreparedStatement(
-        "SELECT id_furniture, type, buyer, furniture_title, purchase_price, pick_up_date, selling_price,\r\n"
+    PreparedStatement ps = this.dalServices
+        .getPreparedStatement("SELECT id_furniture, type, buyer, furniture_title, purchase_price,"
+            + " pick_up_date, selling_price,\r\n"
             + "            special_sale_price, delivery, state,"
             + " deposit_date, date_of_sale, sale_withdrawal_date, seller \r\n"
             + "            FROM projet.furnitures");
     FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
     List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
+    fullFillFurnitures(ps, furniture);
+    return list;
+  }
+
+  private void fullFillFurnitures(PreparedStatement ps, FurnitureDTO furniture) {
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
         furniture.setIdFurniture(rs.getInt(1));
@@ -107,14 +97,11 @@ public class FurnitureDAOImpl implements FurnitureDAO {
         furniture.setDateOfSale(rs.getTimestamp(12));
         furniture.setSaleWithdrawalDate(rs.getTimestamp(13));
         furniture.setSeller(rs.getInt(14));
-        list.add(furniture);
       }
+
     } catch (SQLException e) {
-      throw new FatalException("error get all", e);
+      throw new FatalException("error findById", e);
     }
-
-    return list;
   }
-
 
 }
