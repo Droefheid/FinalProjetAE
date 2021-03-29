@@ -98,6 +98,11 @@ public class FurnitureImpl implements FurnitureDTO {
     return state;
   }
 
+  /**
+   * set the state of the furniture.
+   * 
+   * @param state the new state of the furniture.
+   */
   public void setState(String state) {
     if (Arrays.asList(STATES).contains(state)) {
       this.state = state;
