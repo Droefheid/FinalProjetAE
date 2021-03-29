@@ -4,4 +4,6 @@ public interface DomaineFactory {
   UserDTO getUserDTO();
 
   Adress getAdress();
+  
+  FurnitureDTO getFurnitureDTO();
 }
