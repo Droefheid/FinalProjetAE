@@ -74,22 +74,20 @@ const onLogin = (e) => {
   remember = document.getElementById("remember").checked;
 
   fetch(API_URL + "users/login", {
-    method: "POST", 
-    body: JSON.stringify(user), 
+    method: "POST",
+    body: JSON.stringify(user),
     headers: {
       "Content-Type": "application/json",
     },
   })
     .then((response) => {
-      if (!response.ok){
-        throw new Error(
-          response.text()
-        );
-    }
-      return response.json();
+      if (!response.ok) {
+        return response.text().then(errMsg => { throw new Error(errMsg) })
+        .catch((err) => onError(err));
+      }
+      else
+        return response.json().then((data) => onUserLogin(data));
     })
-    .then((data) => onUserLogin(data))
-    .catch((err) => onError(err));
 };
 
 const onUserLogin = (userData) => {
@@ -101,9 +99,8 @@ const onUserLogin = (userData) => {
 };
 
 const onError = (err) => {
-  console.log(err);
   let messageBoard = document.querySelector("#messageBoardForm");
-  messageBoard.innerHTML=err;
+  messageBoard.innerHTML = err;
 };
 
 export default LoginPage;

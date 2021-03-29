@@ -145,7 +145,7 @@ let registerPage = `
     <div class="card-footer">
       <div class="d-flex justify-content-center">
       </div>
-      <div id="messageBoard"></div>
+      <div id="messageBoardForm"></div>
     </div>
   </div>
  </div>
@@ -185,13 +185,13 @@ const onRegister = (e) => {
     },
   })
     .then((response) => {
-      if (!response.ok)
-        throw new Error(
-          "Error code : " + response.status + " : " + response.statusText
-        );
+      if (!response.ok) {
+        return response.text().then(errMsg => { throw new Error(errMsg) })
+        .catch((err) => onError(err));
+      }
+      else
+        return onUserRegistration();
     })
-    .then(() => onUserRegistration())
-    .catch((err) => onError(err));
 };
 
 const onUserRegistration = () => {
@@ -200,13 +200,9 @@ const onUserRegistration = () => {
 };
 
 const onError = (err) => {
-  let messageBoard = document.querySelector("#messageBoard");
-  if (err.message.includes("401")){
-   messageBoard.innerHTML = '<div class="alert alert-danger">Username or email already exists</div>';
-  }else {
-    messageBoard.innerHTML = '<div class="alert alert-danger">Missing fields!</div>';
-  }
-  messageBoard.classList.add("d-block");
+  let messageBoard = document.querySelector("#messageBoardForm");
+   messageBoard.innerHTML = err;
+  
 };
 
 export default RegisterPage;
