@@ -3,6 +3,7 @@ package be.vinci.pae.api;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.filters.Authorize;
+import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.api.utils.FatalException;
 import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.domaine.Address;
@@ -28,7 +30,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 
 @Singleton
 @Path("/users")
@@ -58,16 +59,13 @@ public class UserResource {
   public Response login(JsonNode json) {
     // Get and check credentials
     if (json.get("username").asText().equals("") && json.get("password").asText().equals("")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Username and Password needed")
-          .type(MediaType.TEXT_PLAIN).build();
+      throw new BusinessException("Username and password needed", HttpStatus.BAD_REQUEST_400);
     }
     if (json.get("username").asText().equals("")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Username needed")
-          .type(MediaType.TEXT_PLAIN).build();
+      throw new BusinessException("Username ", HttpStatus.BAD_REQUEST_400);
     }
     if (json.get("password").asText().equals("")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Password needed")
-          .type(MediaType.TEXT_PLAIN).build();
+      throw new BusinessException("Password needed", HttpStatus.BAD_REQUEST_400);
     }
 
 
@@ -89,8 +87,7 @@ public class UserResource {
   public Response getUserById(@PathParam("id") int id) {
     // Check credentials.
     if (id < 1) {
-      return Response.status(Status.UNAUTHORIZED).entity("Id cannot be under 1 !")
-          .type(MediaType.TEXT_PLAIN).build();
+      throw new BusinessException("Id cannot be under 1", HttpStatus.BAD_REQUEST_400);
     }
 
     UserDTO user = this.userUcc.getUser(id);
@@ -113,7 +110,7 @@ public class UserResource {
     UserDTO currentUser = (UserDTO) request.getProperty("user");
 
     if (currentUser == null) {
-      return Response.status(Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN).build();
+      throw new BusinessException("User not found", HttpStatus.BAD_REQUEST_400);
     }
     ObjectNode node = createToken(currentUser);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
@@ -121,9 +118,7 @@ public class UserResource {
 
 
   /**
-   * Create a token and a ObjectNode with an user.
-   * The user is transformed with a Public JSON views. 
-   * to filter out the private info not to be returned
+   * Create a token and a ObjectNode with an user. The user is transformed with a Public JSON views. to filter out the private info not to be returned
    * by the API (such as password).
    * 
    * @param user : the user to put in the token.
@@ -157,48 +152,37 @@ public class UserResource {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response register(JsonNode json) {
     if (json.get("username").asText().equals("")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Username is needed")
-          .type(MediaType.TEXT_PLAIN).build();
+      throw new BusinessException("Username is needed ", HttpStatus.BAD_REQUEST_400);
     }
     if (json.get("email").asText().equals("")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Email is needed")
-          .type(MediaType.TEXT_PLAIN).build();
+      throw new BusinessException("email is needed", HttpStatus.BAD_REQUEST_400);
     }
     if (json.get("password").asText().equals("")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Password is needed")
-          .type(MediaType.TEXT_PLAIN).build();
+      throw new BusinessException("password is needed ", HttpStatus.BAD_REQUEST_400);
     }
     if (json.get("lastname").asText().equals("")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Lastname is needed")
-          .type(MediaType.TEXT_PLAIN).build();
+      throw new BusinessException("Lastname is needed ", HttpStatus.BAD_REQUEST_400);
     }
     if (json.get("firstname").asText().equals("")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Firstname is needed")
-          .type(MediaType.TEXT_PLAIN).build();
+      throw new BusinessException("Lastname is needed ", HttpStatus.BAD_REQUEST_400);
     }
     if (json.get("street").asText().equals("")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Street is needed")
-          .type(MediaType.TEXT_PLAIN).build();
+      throw new BusinessException("street is needed ", HttpStatus.BAD_REQUEST_400);
     }
     if (json.get("building_number").asText().equals("")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Building_number is needed")
-          .type(MediaType.TEXT_PLAIN).build();
+      throw new BusinessException("building_number is needed ", HttpStatus.BAD_REQUEST_400);
     }
     if (json.get("postcode").asText().equals("")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Postcode is needed")
-          .type(MediaType.TEXT_PLAIN).build();
+      throw new BusinessException("postcode is needed ", HttpStatus.BAD_REQUEST_400);
     }
     if (json.get("commune").asText().equals("")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Commune is needed")
-          .type(MediaType.TEXT_PLAIN).build();
+      throw new BusinessException("commune is needed ", HttpStatus.BAD_REQUEST_400);
     }
     if (json.get("country").asText().equals("")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Country is needed")
-          .type(MediaType.TEXT_PLAIN).build();
+      throw new BusinessException("country is needed ", HttpStatus.BAD_REQUEST_400);
     }
     if (json.get("unit_number").asText().equals("")) {
-      return Response.status(Status.UNAUTHORIZED).entity("Unit_number is needed")
-          .type(MediaType.TEXT_PLAIN).build();
+      throw new BusinessException("unit_number is needed ", HttpStatus.BAD_REQUEST_400);
     }
 
     UserDTO user = domaineFactory.getUserDTO();
