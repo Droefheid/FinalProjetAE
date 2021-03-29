@@ -26,7 +26,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
 		PreparedStatement ps = this.dalServices.getPreparedStatement(
 				"SELECT id_furniture, type, buyer, furniture_title, purchase_price, pick_up_date, selling_price,\r\n"
 						+ "            special_sale_price, delivery, state, deposit_date, date_of_sale, sale_withdrawal_date, seller \r\n"
-						+ "            FROM projet.furnitures WHERE id = id_furniture");
+						+ "            FROM projet.furnitures WHERE id_furniture = ?");
 		FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
 		try {
 			ps.setInt(1, id);
@@ -62,7 +62,6 @@ public class FurnitureDAOImpl implements FurnitureDAO {
 		// TODO Auto-generated method stub
 		
 		
-		
 		return null;
 	}
 
@@ -85,7 +84,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
 			ps.setTimestamp(12, furniture.getSale_withdrawal_date());
 			ps.setInt(13, furniture.getSeller());
 
-			ps.executeQuery();
+			ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
