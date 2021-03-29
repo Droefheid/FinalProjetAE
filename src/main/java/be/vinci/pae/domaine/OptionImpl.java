@@ -1,5 +1,6 @@
 package be.vinci.pae.domaine;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -7,10 +8,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class OptionImpl {
 
   private int id;
-  private Date optionTerm;
-  private Date beginningOptionDate;
-  private User customer;
-  // private Furniture furniture;
+  private Timestamp optionTerm;
+  private Timestamp beginningOptionDate;
+  private int customer;
+  private int furniture;
 
 
   public int getId() {
@@ -21,11 +22,11 @@ public class OptionImpl {
     this.id = id;
   }
 
-  public Date getOptionTerm() {
+  public Timestamp getOptionTerm() {
     return optionTerm;
   }
 
-  public void setOptionTerm(Date optionTerm) {
+  public void setOptionTerm(Timestamp optionTerm) {
     this.optionTerm = optionTerm;
   }
 
@@ -33,16 +34,24 @@ public class OptionImpl {
     return beginningOptionDate;
   }
 
-  public void setBeginningOptionDate(Date beginningOptionDate) {
+  public void setBeginningOptionDate(Timestamp beginningOptionDate) {
     this.beginningOptionDate = beginningOptionDate;
   }
 
-  public User getCustomer() {
+  public int getCustomer() {
     return customer;
   }
 
-  public void setCustomer(User customer) {
+  public void setCustomer(int customer) {
     this.customer = customer;
+  }
+
+  public int getFurniture() {
+    return furniture;
+  }
+
+  public void setFurniture(int furniture) {
+    this.furniture = furniture;
   }
 
   @Override
@@ -66,8 +75,6 @@ public class OptionImpl {
       return false;
     return true;
   }
-  
-  
 
 
 

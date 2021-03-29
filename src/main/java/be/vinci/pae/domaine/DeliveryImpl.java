@@ -1,15 +1,15 @@
 package be.vinci.pae.domaine;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DeliveryImpl implements Delivery {
 
   private int id;
-  private Date estimatedDeliveryDate;
+  private Timestamp estimatedDeliveryDate;
   private boolean isDelivered;
-  private User customer;
+  private int customer;
 
 
   public int getId() {
@@ -20,11 +20,11 @@ public class DeliveryImpl implements Delivery {
     this.id = id;
   }
 
-  public Date getEstimatedDeliveryDate() {
+  public Timestamp getEstimatedDeliveryDate() {
     return estimatedDeliveryDate;
   }
 
-  public void setEstimatedDeliveryDate(Date estimatedDeliveryDate) {
+  public void setEstimatedDeliveryDate(Timestamp estimatedDeliveryDate) {
     this.estimatedDeliveryDate = estimatedDeliveryDate;
   }
 
@@ -36,11 +36,11 @@ public class DeliveryImpl implements Delivery {
     this.isDelivered = isDelivered;
   }
 
-  public User getCustomer() {
+  public int getCustomer() {
     return customer;
   }
 
-  public void setCustomer(User customer) {
+  public void setCustomer(int customer) {
     this.customer = customer;
   }
 

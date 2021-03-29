@@ -66,10 +66,12 @@ CREATE TABLE projet.furnitures (
 	deposit_date TIMESTAMP NULL,
 	date_of_sale TIMESTAMP NULL,
 	sale_withdrawal_date TIMESTAMP NULL,
+	delivery INTEGER REFERENCES projet.deliveries(delivery_id) NULL,
 	type INTEGER REFERENCES projet.types(type_id) NOT NULL,
 	buyer INTEGER REFERENCES projet.users(user_id) NULL,
 	seller INTEGER REFERENCES projet.users(user_id) NOT NULL
 );
+
 
 CREATE TABLE projet.photos (
 	photo_id SERIAL PRIMARY KEY,
@@ -98,3 +100,5 @@ CREATE TABLE projet.options (
 	customer INTEGER REFERENCES projet.users(user_id) NOT NULL,
 	furniture INTEGER REFERENCES projet.furnitures(furniture_id) NOT NULL
 );
+
+

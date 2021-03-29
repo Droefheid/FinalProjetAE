@@ -1,6 +1,6 @@
 package be.vinci.pae.domaine;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 public interface Delivery {
 
@@ -8,15 +8,15 @@ public interface Delivery {
 
   public void setId(int id);
 
-  public Date getEstimatedDeliveryDate();
+  public Timestamp getEstimatedDeliveryDate();
 
-  public void setEstimatedDeliveryDate(Date estimatedDeliveryDate);
+  public void setEstimatedDeliveryDate(Timestamp estimatedDeliveryDate);
 
   public boolean isDelivered();
 
   public void setDelivered(boolean isDelivered);
 
-  public User getCustomer();
+  public int getCustomer();
 
-  public void setCustomer(User customer);
+  public void setCustomer(int customer);
 }

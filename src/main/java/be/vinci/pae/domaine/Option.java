@@ -1,6 +1,6 @@
 package be.vinci.pae.domaine;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = OptionImpl.class)
@@ -10,15 +10,19 @@ public interface Option {
 
   public void setId(int id);
 
-  public Date getOptionTerm();
+  public Timestamp getOptionTerm();
 
-  public void setOptionTerm(Date optionTerm);
+  public void setOptionTerm(Timestamp optionTerm);
 
-  public Date getBeginningOptionDate();
+  public Timestamp getBeginningOptionDate();
 
-  public void setBeginningOptionDate(Date beginningOptionDate);
+  public void setBeginningOptionDate(Timestamp beginningOptionDate);
 
-  public User getCustomer();
+  public int getCustomer();
 
-  public void setCustomer(User customer);
+  public void setCustomer(int customer);
+
+  public int getFurniture();
+
+  public void setFurniture(int furniture);
 }
