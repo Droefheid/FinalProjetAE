@@ -3,10 +3,10 @@ package be.vinci.pae.domaine;
 public class DomaineFactoryImpl implements DomaineFactory {
 
 
-@Override
-public FurnitureDTO getFurnitureDTO() {
-	return new FurnitureImpl();
-}
+  @Override
+  public FurnitureDTO getFurnitureDTO() {
+    return new FurnitureImpl();
+  }
 
   @Override
   public UserDTO getUserDTO() {

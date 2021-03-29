@@ -26,6 +26,11 @@ public class FurnitureResource {
   @Inject
   DomaineFactory domaineFactory;
 
+  /**
+   * get all furnitures.
+   * 
+   * @return list of all furnitures.
+   */
   @GET
   @Path("/allFurnitures")
   public Response allFurnitures() {
