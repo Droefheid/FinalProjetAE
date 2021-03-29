@@ -57,9 +57,10 @@ const Navbar = () => {
   // Secondary Navbar
   navbar += `<!-- Secondary Navbar -->
   <nav class="navbar navbar-expand-sm bg-light navbar-light pt-0" id="navBar">
-	  <div class="absolute"><a class="navbar-brand" href="#" data-uri="/">Livi Satcho</a></div>
     <div class="navbar navbar-nav ml-auto mr-auto pt-3">
-      <a class="btn btn-info" href="#" data-uri="/furniture">Voir tous les meubles</a>
+      <a class="btn btn-info" href="#" data-uri="/furniture" style="margin:10px;">See all the furniture</a>
+      <a class="btn btn-info" href="#" data-uri="/furniture" style="margin:10px;">See my furniture</a>
+      <a class="btn btn-info" href="#" data-uri="/furniture" style="margin:10px;">Introduce a visit</a>
     </div>
 </nav>`;
 

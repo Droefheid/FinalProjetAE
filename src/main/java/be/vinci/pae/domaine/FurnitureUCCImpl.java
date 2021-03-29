@@ -23,11 +23,8 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
   @Override
   public FurnitureDTO getAll() {
-    FurnitureDTO furnitureList = this.furnitureDao.getAll();
-    if (furnitureList == null) {
-      return null;
-    }
-    return furnitureList;
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

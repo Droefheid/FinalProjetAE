@@ -161,6 +161,9 @@ body {
     font-size: 18px;
   }
 }
+
+/* VOIR TOUT LES MEUBLES CSS */
+
 #nav_furniture {
   float: left;
   display: block;
@@ -170,9 +173,16 @@ body {
   margin-right: 0;
   padding-left: 40px;
   width: 40%;
-  height: 25em;
+  height: 21em;
   line-height: 2em;
   overflow-x: hidden;
+}
+
+#search_furniture_list {
+  float: left;
+  margin-bottom: 1em;
+  margin-left: 18.5%;
+  width: 37%;
 }
 
 #description_furniture {

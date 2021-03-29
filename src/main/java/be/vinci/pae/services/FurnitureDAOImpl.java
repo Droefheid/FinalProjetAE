@@ -55,33 +55,8 @@ public class FurnitureDAOImpl implements FurnitureDAO {
 
   @Override
   public FurnitureDTO getAll() {
-    PreparedStatement ps = this.dalServices.getPreparedStatement("SELECT * FROM projet.furnitures");
-    FurnitureDTO furnitureList = domaineFactory.getFurnitureDTO();
-    try {
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-
-          furnitureList.setId_furniture(rs.getInt(1));
-          furnitureList.setFurniture_title(rs.getString(2));
-          furnitureList.setPurchase_price(rs.getDouble(3));
-          furnitureList.setPick_up_date(rs.getTimestamp(4)); // get timestamp ?
-          furnitureList.setSelling_price(rs.getDouble(5));
-          furnitureList.setSpecial_sale_price(rs.getDouble(6));
-          furnitureList.setState(rs.getString(7));
-          furnitureList.setDeposit_date(rs.getTimestamp(8));
-          furnitureList.setDate_of_sale(rs.getTimestamp(9));
-          furnitureList.setSale_withdrawal_date(rs.getTimestamp(10));
-          furnitureList.setDelivery(rs.getInt(11));
-          furnitureList.setType(rs.getInt(12));
-          furnitureList.setBuyer(rs.getInt(13));
-          furnitureList.setSeller(rs.getInt(14));
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-      return null;
-    }
-    return furnitureList;
+    // TODO Auto-generated method stub
+    return null;
   }
 
   @Override
