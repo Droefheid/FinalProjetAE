@@ -2,22 +2,17 @@ package be.vinci.pae.api.utils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import be.vinci.pae.utils.Config;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
-public class AlreadyUseExceptionMapper implements ExceptionMapper<Throwable> {
+public class ExceptionHandlerMapper implements ExceptionMapper<Throwable> {
 
   @Override
   public Response toResponse(Throwable exception) {
-    // Need the package be.vinci.pae.utils.Congig.java
-    if (Config.getBoolProperty("SendStackTraceToClient")) {
-      return Response.status(getStatusCode(exception)).entity(getEntity(exception)).build();
-    }
-    return Response.status(getStatusCode(exception)).entity(exception.getMessage()).build();
+    return Response.status(getStatusCode(exception)).entity(getEntity(exception)).build();
   }
 
   /*

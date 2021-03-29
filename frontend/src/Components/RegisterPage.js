@@ -196,7 +196,7 @@ const onRegister = (e) => {
 
 const onUserRegistration = () => {
   alert("You have been registered. An admin must now validate your inscription.");
-  window.setTimeout(RedirectUrl("/"),5000);
+  RedirectUrl("/");
 };
 
 const onError = (err) => {

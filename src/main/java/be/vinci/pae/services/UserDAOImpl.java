@@ -3,6 +3,7 @@ package be.vinci.pae.services;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import be.vinci.pae.api.utils.FatalException;
 import be.vinci.pae.domaine.Address;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.UserDTO;
@@ -25,15 +26,12 @@ public class UserDAOImpl implements UserDAO {
     UserDTO user = domaineFactory.getUserDTO();
     try {
       ps.setString(1, username);
-      user =  fullFillUserFromResulSet(user, ps);
+      user = fullFillUserFromResulSet(user, ps);
     } catch (SQLException e) {
       e.printStackTrace();
-      return null;
+      throw new FatalException(e.getMessage(), e);
     }
     if (user.getUserName() == null) {
-      return null;
-    }
-    if (!user.isConfirmed()) {
       return null;
     }
     return user;
@@ -42,7 +40,7 @@ public class UserDAOImpl implements UserDAO {
   @Override
   public UserDTO findById(int id) {
     PreparedStatement ps = this.dalServices.getPreparedStatement(
-            "SELECT user_id, username, first_name, last_name, address, email, is_boss,"
+        "SELECT user_id, username, first_name, last_name, address, email, is_boss,"
             + " is_antique_dealer, is_confirmed, registration_date, password "
             + "FROM projet.users WHERE user_id = ?");
     UserDTO user = domaineFactory.getUserDTO();
@@ -51,17 +49,16 @@ public class UserDAOImpl implements UserDAO {
       user = fullFillUserFromResulSet(user, ps);
     } catch (SQLException e) {
       e.printStackTrace();
-      return null;
+      throw new FatalException(e.getMessage(), e);
     }
     if (!user.isConfirmed()) {
       return null;
     }
     return user;
   }
-  
+
   /**
-   * Fully fill the user with the ResultSet from de db.
-   * Or throws SQLException.
+   * Fully fill the user with the ResultSet from de db. Or throws SQLException.
    * 
    * @param user empty, to be filled.
    * @param ps the PreparedStatement already Set.
@@ -105,7 +102,7 @@ public class UserDAOImpl implements UserDAO {
       ps.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
-      return null;
+      throw new FatalException(e.getMessage(), e);
     }
     return findByUserName(user.getUserName());
   }
@@ -128,7 +125,7 @@ public class UserDAOImpl implements UserDAO {
       ps.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
-      return -1;
+      throw new FatalException(e.getMessage(), e);
     }
     int i = getAddressByInfo(address.getStreet(), address.getBuildingNumber(), address.getCommune(),
         address.getCountry());
@@ -159,7 +156,7 @@ public class UserDAOImpl implements UserDAO {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      return null;
+      throw new FatalException(e.getMessage(), e);
     }
     return adresse;
   }
@@ -183,7 +180,7 @@ public class UserDAOImpl implements UserDAO {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-      return -1;
+      throw new FatalException(e.getMessage(), e);
     }
     if (adresse <= 0) {
       return -1;

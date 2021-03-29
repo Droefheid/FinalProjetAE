@@ -1,4 +1,4 @@
-package be.vinci.pae.utils;
+package be.vinci.pae.api.utils;
 
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
