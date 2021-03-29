@@ -46,7 +46,7 @@ const Navbar = () => {
   <nav class="navbar navbar-expand-sm bg-light navbar-light pt-0" id="navBar">
 	  <div class="absolute"><a class="navbar-brand" href="#" data-uri="/">Livi Satcho</a></div>
     <div class="navbar navbar-nav ml-auto mr-auto pt-3">
-      <a class="btn btn-info" href="#" data-uri="/login">Voir tous les meubles</a>
+      <a class="btn btn-info" href="#" data-uri="/modificationFourniture">Voir tous les meubles</a>
     </div>
 </nav>`;
 

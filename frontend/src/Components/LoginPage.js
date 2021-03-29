@@ -9,7 +9,7 @@ import Sidebar from "./SideBar.js";
 
 let remember = false;
 
-let loginPage = `<div class="container">
+let loginPage = `<div class="containerForm">
 <div class="d-flex justify-content-center h-100 mt-4">
   <div class="card">
     <div class="card-header">

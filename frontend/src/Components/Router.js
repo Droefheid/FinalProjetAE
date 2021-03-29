@@ -4,6 +4,7 @@ import LoginPage from "./LoginPage.js";
 import RegisterPage from "./RegisterPage.js";
 import LogoutComponent from "./LogoutComponent.js";
 import ErrorPage from "./ErrorPage.js";
+import ModificationFurniturePage from "./ModificationFurniturePage.js"
 
 const routes = {
   "/": HomePage,
@@ -12,6 +13,7 @@ const routes = {
   "/register": RegisterPage,
   "/logout": LogoutComponent,
   "/error": ErrorPage,
+  "/modificationFourniture": ModificationFurniturePage,
 };
 
 let page = document.querySelector("#page");
