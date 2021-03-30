@@ -50,7 +50,7 @@ let loginPage = `<div class="container">
 const LoginPage = () => {
   Sidebar();
 
-  let page = document.querySelector("#page");
+  let page = document.querySelector("#content");
   page.innerHTML = loginPage;
   let loginForm = document.querySelector("form");
   const user = getUserSessionData();
