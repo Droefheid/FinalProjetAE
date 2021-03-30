@@ -5,6 +5,7 @@ import RegisterPage from "./RegisterPage.js";
 import LogoutComponent from "./LogoutComponent.js";
 import ErrorPage from "./ErrorPage.js";
 import ModificationFurniturePage from "./ModificationFurniturePage.js"
+import FurniturePage from "./FurniturePage.js";
 
 const routes = {
   "/": HomePage,
@@ -12,6 +13,7 @@ const routes = {
   "/login": LoginPage,
   "/register": RegisterPage,
   "/logout": LogoutComponent,
+  "/furniture": FurniturePage,
   "/error": ErrorPage,
   "/modificationFourniture": ModificationFurniturePage,
 };
