@@ -30,9 +30,11 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
     try {
       ps.setInt(1, id);
-      ResultSet rs = ps.executeQuery();
-      rs.next();
-      fullFillFurnitures(rs, furniture);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          fullFillFurnitures(rs, furniture);
+        }
+      }
     } catch (SQLException e) {
       throw new FatalException("error findById", e);
     }

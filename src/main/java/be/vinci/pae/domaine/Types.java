@@ -3,13 +3,13 @@ package be.vinci.pae.domaine;
 public interface Types {
 
 
-  public int getId();
+  int getId();
 
-  public void setId(int id);
+  void setId(int id);
 
-  public String getName();
+  String getName();
 
-  public void setName(String name);
+  void setName(String name);
 
 
 }

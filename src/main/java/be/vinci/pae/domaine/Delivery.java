@@ -4,19 +4,19 @@ import java.sql.Timestamp;
 
 public interface Delivery {
 
-  public int getId();
+  int getId();
 
-  public void setId(int id);
+  void setId(int id);
 
-  public Timestamp getEstimatedDeliveryDate();
+  Timestamp getEstimatedDeliveryDate();
 
-  public void setEstimatedDeliveryDate(Timestamp estimatedDeliveryDate);
+  void setEstimatedDeliveryDate(Timestamp estimatedDeliveryDate);
 
-  public boolean isDelivered();
+  boolean isDelivered();
 
-  public void setDelivered(boolean isDelivered);
+  void setDelivered(boolean isDelivered);
 
-  public int getCustomer();
+  int getCustomer();
 
-  public void setCustomer(int customer);
+  void setCustomer(int customer);
 }

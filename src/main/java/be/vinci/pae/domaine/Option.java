@@ -6,23 +6,23 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonDeserialize(as = OptionImpl.class)
 public interface Option {
 
-  public int getId();
+  int getId();
 
-  public void setId(int id);
+  void setId(int id);
 
-  public Timestamp getOptionTerm();
+  Timestamp getOptionTerm();
 
-  public void setOptionTerm(Timestamp optionTerm);
+  void setOptionTerm(Timestamp optionTerm);
 
-  public Timestamp getBeginningOptionDate();
+  Timestamp getBeginningOptionDate();
 
-  public void setBeginningOptionDate(Timestamp beginningOptionDate);
+  void setBeginningOptionDate(Timestamp beginningOptionDate);
 
-  public int getCustomer();
+  int getCustomer();
 
-  public void setCustomer(int customer);
+  void setCustomer(int customer);
 
-  public int getFurniture();
+  int getFurniture();
 
-  public void setFurniture(int furniture);
+  void setFurniture(int furniture);
 }
