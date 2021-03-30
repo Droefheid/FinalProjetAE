@@ -11,8 +11,8 @@ const Sidebar = (needed) => {
     }
 
     // Add padding.
-    movingRow.className.replace("noPaddingForSideBar", "smoothTransition");
-    movingRow.className += " smoothTransition";
+    //movingRow.className.replace("noPaddingForSideBar", "smoothTransition");
+    movingRow.className = "row justify-content-center mt-5 smoothTransition";
 
     let sidebar = "";
 
@@ -26,7 +26,7 @@ const Sidebar = (needed) => {
     //let user = getUserSessionData();
     if(user && user.isBoss){
       sidebar += `
-      <span class="onLeft navbar">
+      <div class="onLeft">
         <div class="navbar navbar-nav ml-auto mr-auto pt-3">
           <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/login">Liste d'inscriptions</a>
               <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/login">Liste des clients</a>
@@ -34,7 +34,7 @@ const Sidebar = (needed) => {
               <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/login">Validation des visites</a>
               <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/login">Liste des visites</a>
         </div>
-      </span>`;
+      </div>`;
     }
 
     // SideBar Content.

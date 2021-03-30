@@ -9,5 +9,7 @@ public interface FurnitureUCC {
   FurnitureDTO findById(int id);
 
   List<FurnitureDTO> getAll();
+  
+  FurnitureDTO update(FurnitureDTO furniture);
 
 }

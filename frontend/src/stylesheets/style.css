@@ -119,10 +119,13 @@
   position: relative;
 }
 
+.moveOnRight {
+  left: 10%;
+}
+
 .onLeft {
   position: absolute;
   left: 0%;
-  right: 0%;
   background-color: white;
   width: 200px;
 }

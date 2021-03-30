@@ -11,4 +11,6 @@ public interface FurnitureDAO {
 
   FurnitureDTO add(FurnitureDTO furniture);
 
+  FurnitureDTO update(FurnitureDTO furniture);
+
 }

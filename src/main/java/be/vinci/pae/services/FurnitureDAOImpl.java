@@ -80,6 +80,11 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     return list;
   }
 
+  @Override
+  public FurnitureDTO update(FurnitureDTO furniture) {
+    return null;
+  }
+
   private void fullFillFurnitures(PreparedStatement ps, FurnitureDTO furniture) {
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
