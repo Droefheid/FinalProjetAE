@@ -155,7 +155,7 @@ let registerPage = `
 
 const RegisterPage = () => {
   Sidebar();
-  let page = document.querySelector("#page");
+  let page = document.querySelector("#content");
   page.innerHTML = registerPage;
   let registerForm = document.querySelector("form");
   registerForm.addEventListener("submit", onRegister);

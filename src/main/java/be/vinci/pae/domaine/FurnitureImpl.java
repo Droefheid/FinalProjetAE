@@ -5,14 +5,14 @@ import java.util.Arrays;
 
 public class FurnitureImpl implements FurnitureDTO {
 
-  private int idFurniture;
+  private int furnitureId;
   private int type;
   private int buyer;
   private String furnitureTitle;
-  private double purchasePrice;
-  private Timestamp pickUpDate;
-  private double sellingPrice;
-  private double specialSalePrice;
+  private float purchasePrice;
+  private Timestamp furnitureDateCollection;
+  private float sellingPrice;
+  private float specialSalePrice;
   private int delivery;
   private static final String[] STATES = {"R", "V", "A", "O", "RE", "VE"};
   private String state;
@@ -22,12 +22,12 @@ public class FurnitureImpl implements FurnitureDTO {
   private int seller;
 
 
-  public int getIdFurniture() {
-    return idFurniture;
+  public int getFurnitureId() {
+    return furnitureId;
   }
 
-  public void setIdFurniture(int idFurniture) {
-    this.idFurniture = idFurniture;
+  public void setFurnitureId(int furnitureId) {
+    this.furnitureId = furnitureId;
   }
 
   public int getType() {
@@ -54,35 +54,35 @@ public class FurnitureImpl implements FurnitureDTO {
     this.furnitureTitle = furnitureTitle;
   }
 
-  public double getPurchasePrice() {
+  public float getPurchasePrice() {
     return purchasePrice;
   }
 
-  public void setPurchasePrice(double purchasePrice) {
+  public void setPurchasePrice(float purchasePrice) {
     this.purchasePrice = purchasePrice;
   }
 
-  public Timestamp getPickUpDate() {
-    return pickUpDate;
+  public Timestamp getFurnitureDateCollection() {
+    return furnitureDateCollection;
   }
 
-  public void setPickUpDate(Timestamp pickUpDate) {
-    this.pickUpDate = pickUpDate;
+  public void setFurnitureDateCollection(Timestamp furnitureDateCollection) {
+    this.furnitureDateCollection = furnitureDateCollection;
   }
 
-  public double getSellingPrice() {
+  public float getSellingPrice() {
     return sellingPrice;
   }
 
-  public void setSellingPrice(double sellingPrice) {
+  public void setSellingPrice(float sellingPrice) {
     this.sellingPrice = sellingPrice;
   }
 
-  public double getSpecialSalePrice() {
+  public float getSpecialSalePrice() {
     return specialSalePrice;
   }
 
-  public void setSpecialSalePrice(double specialSalePrice) {
+  public void setSpecialSalePrice(float specialSalePrice) {
     this.specialSalePrice = specialSalePrice;
   }
 
