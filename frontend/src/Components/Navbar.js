@@ -63,6 +63,9 @@ const Navbar = () => {
       <a class="btn btn-info" href="#" data-uri="" style="margin:15px;">See my furniture</a>
       <a class="btn btn-info" href="#" data-uri="" style="margin:15px;">Introduce a visit</a>
     </div>
+    <div class="navbar navbar-nav ml-auto mr-auto pt-3">
+    <a class="btn btn-info" href="#" data-uri="/option">Introduire Option</a>
+  </div>
 </nav>`;
 
   return (navBar.innerHTML = navbar);
