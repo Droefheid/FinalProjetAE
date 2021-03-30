@@ -1,11 +1,15 @@
-body
-{
-  background-color: #ccc  !important;
+
+#page{
+
+  background: #ccc;
+  height: 70vh;
+  position: relative;
+   width: 100%;
+   min-width: 100%;
+   padding-left: 20px;
+   padding-right: 20px;
 }
-#footer {
-  position:fixed;
-  bottom:0;
-}
+
 div.card{
 
  
@@ -20,16 +24,11 @@ div.card{
 
 
 }
-
-#page{
-height: 70vh;
-position: relative;
- width: 100%;
- min-width: 100%;
- padding-left: 20px;
- padding-right: 20px;
-
+#footer {
+  position:fixed;
+  bottom:0;
 }
+
 .col.s6 > .btn {
    width: 100%;
 }
@@ -217,8 +216,3 @@ position: absolute;
 	margin-top:70px;
 	margin-left:40px;
 }
-
-h3{
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-}
-
