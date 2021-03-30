@@ -1,6 +1,6 @@
 import Sidebar from "./SideBar";
 
-let page = document.querySelector("#content");
+let page = document.querySelector("#page");
 
 let homePage = `
 <div class="row">

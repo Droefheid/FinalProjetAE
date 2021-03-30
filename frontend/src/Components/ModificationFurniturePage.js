@@ -25,9 +25,21 @@ let modifPage = `
             <label for="depositDate">Date de dépot: </label>
             <input type="text" class="form-control" id="depositDate" placeholder="Enter date of deposit" name="depositDate" required>
             <label for="seller">Vendeur: </label>
-            <input type="text" class="form-control" id="seller" placeholder="Enter seller" name="seller" required>
+            <div class="form-group">
+                <select class="form-control" id="seller" name="seller">
+                    <option>Livi Satcho</option>
+                    <option>George</option>
+                    <option>Michael</option>
+                </select>
+            </div>
             <label for="type">Type: </label>
-            <input type="text" class="form-control" id="type" placeholder="Enter type" name="type" required>
+            <div class="form-group">
+                <select class="form-control" id="type" name="type">
+                    <option>Armoire</option>
+                    <option>Bahut</option>
+                    <option>Bibliotheque</option>
+                </select>
+            </div>
         </div>
         <div class="col-sm-6 bg-warning">
             <label for="furnitureDateCollection">Date emporter: </label>
