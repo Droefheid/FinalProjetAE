@@ -10,7 +10,7 @@ import be.vinci.pae.utils.Config;
 
 public class DalServicesImpl implements DalBackendServices, DalServices {
 
-  private ThreadLocal<Connection> threadConnection;
+  private ThreadLocal<Connection> threadConnection = new ThreadLocal<Connection>();
 
   private BasicDataSource bds = new BasicDataSource();
 
@@ -21,14 +21,15 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
   public DalServicesImpl() {
     bds.setUrl(Config.getProperty("db.url"));
     bds.setDriverClassName(Config.getProperty("db.driver"));
+    bds.setUsername(Config.getProperty("db.username"));
+    bds.setPassword(Config.getProperty("db.password"));
     try {
-      Connection connection =
-          bds.getConnection(Config.getProperty("db.username"), Config.getProperty("db.password"));
+      Connection connection = bds.getConnection();
       threadConnection.set(connection);
     } catch (SQLException e) {
       throw new FatalException("Error Db connection", e);
     }
-    bds.setMaxActive(5);
+    bds.setMaxActive(50);
   }
 
   /**
@@ -50,6 +51,7 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
   public void startTransaction() {
     try {
       Connection c = bds.getConnection();
+      threadConnection.set(c);
     } catch (SQLException e) {
       throw new FatalException("Transaction error", e);
     }
@@ -58,13 +60,25 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 
   @Override
   public void commitTransaction() {
-
-
+    try {
+      Connection c = threadConnection.get();
+      c.commit();
+      threadConnection.remove();
+      c.close();
+    } catch (SQLException e) {
+      throw new FatalException("commit error", e);
+    }
   }
 
   @Override
   public void rollbackTransaction() {
-
+    try {
+      Connection c = threadConnection.get();
+      c.rollback();
+      c.close();
+    } catch (SQLException e) {
+      throw new FatalException("commit error", e);
+    }
   }
 
 }

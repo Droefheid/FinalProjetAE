@@ -82,8 +82,7 @@ const onLogin = (e) => {
   })
     .then((response) => {
       if (!response.ok) {
-        return response.text().then(errMsg => { throw new Error(errMsg) })
-        .catch((err) => onError(err));
+        return response.text().then((err) => onError(err));
       }
       else
         return response.json().then((data) => onUserLogin(data));

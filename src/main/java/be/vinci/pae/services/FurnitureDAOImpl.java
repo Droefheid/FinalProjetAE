@@ -16,7 +16,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
   private DomaineFactory domaineFactory;
 
   @Inject
-  private DalServices dalServices;
+  private DalBackendServices dalServices;
 
 
   @Override
