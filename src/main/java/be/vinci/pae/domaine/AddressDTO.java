@@ -3,7 +3,7 @@ package be.vinci.pae.domaine;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = AddressImpl.class)
-public interface Address {
+public interface AddressDTO {
   int getID();
 
   /**

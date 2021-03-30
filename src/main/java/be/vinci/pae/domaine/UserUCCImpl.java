@@ -27,12 +27,12 @@ public class UserUCCImpl implements UserUCC {
   }
 
   @Override
-  public UserDTO register(UserDTO userDTO, Address address) {
+  public UserDTO register(UserDTO userDTO, AddressDTO addressDTO) {
     dalservices.startTransaction();
-    int adresseId = userDao.getAddressByInfo(address.getStreet(), address.getBuildingNumber(),
-        address.getCommune(), address.getCountry());
+    int adresseId = userDao.getAddressByInfo(addressDTO.getStreet(), addressDTO.getBuildingNumber(),
+        addressDTO.getCommune(), addressDTO.getCountry());
     if (adresseId == -1) {
-      adresseId = userDao.registerAddress(address);
+      adresseId = userDao.registerAddress(addressDTO);
     }
     User user = (User) userDTO;
     user.setAdressID(adresseId);
