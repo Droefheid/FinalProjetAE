@@ -53,7 +53,7 @@ public class FurnitureResource {
    * @return the furniture updated.
    */
   @POST
-  @Path("/updateFurnitures")
+  @Path("/update")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response updateFurniture(JsonNode json) {
 
@@ -82,8 +82,9 @@ public class FurnitureResource {
     if (json.get("purchasePrice").asText().equals("")) {
       throw new BusinessException("Purchase Price is needed ", HttpStatus.BAD_REQUEST_400);
     }
-    if (json.get("pickUpDate").asText().equals("")) {
-      throw new BusinessException("Pick-Up Date is needed ", HttpStatus.BAD_REQUEST_400);
+    if (json.get("furnitureDateCollection").asText().equals("")) {
+      throw new BusinessException("Furniture Date Collection is needed ",
+          HttpStatus.BAD_REQUEST_400);
     }
     if (json.get("sellingPrice").asText().equals("")) {
       throw new BusinessException("Selling Price is needed ", HttpStatus.BAD_REQUEST_400);
@@ -117,12 +118,12 @@ public class FurnitureResource {
     furniture.setFurnitureTitle(json.get("title").asText());
     furniture.setType(json.get("type").asInt());
     furniture.setBuyer(json.get("buyer").asInt());
-    furniture.setPurchasePrice(json.get("purchasePrice").asDouble());
+    furniture.setPurchasePrice(json.get("purchasePrice").asLong());
 
-    Timestamp timestamp = Timestamp.valueOf(json.get("pickUpDate").asText());
-    furniture.setPickUpDate(timestamp);
-    furniture.setSellingPrice(json.get("sellingPrice").asDouble());
-    furniture.setSpecialSalePrice(json.get("specialSalePrice").asDouble());
+    Timestamp timestamp = Timestamp.valueOf(json.get("furnitureDateCollection").asText());
+    furniture.setFurnitureDateCollection(timestamp);
+    furniture.setSellingPrice(json.get("sellingPrice").asLong());
+    furniture.setSpecialSalePrice(json.get("specialSalePrice").asLong());
     furniture.setDelivery(json.get("delivery").asInt());
     furniture.setState(json.get("state").asText());
 
