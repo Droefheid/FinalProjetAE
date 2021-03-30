@@ -1,8 +1,6 @@
 package be.vinci.pae.api;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import jakarta.inject.Singleton;
-import jakarta.ws.rs.Consumes;
+
 import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;

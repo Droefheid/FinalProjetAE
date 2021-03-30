@@ -7,9 +7,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 public interface FurnitureDTO {
 
 
-  int getIdFurniture();
+  int getFurnitureId();
 
-  void setIdFurniture(int idFurniture);
+  void setFurnitureId(int idFurniture);
 
   int getType();
 
@@ -23,21 +23,21 @@ public interface FurnitureDTO {
 
   void setFurnitureTitle(String furnitureTitle);
 
-  double getPurchasePrice();
+  float getPurchasePrice();
 
-  void setPurchasePrice(double purchasePrice);
+  void setPurchasePrice(float purchasePrice);
 
-  Timestamp getPickUpDate();
+  Timestamp getFurnitureDateCollection();
 
-  void setPickUpDate(Timestamp pickUpDate);
+  void setFurnitureDateCollection(Timestamp furnitureDateCollection);
 
-  double getSellingPrice();
+  float getSellingPrice();
 
-  void setSellingPrice(double sellingPrice);
+  void setSellingPrice(float sellingPrice);
 
-  double getSpecialSalePrice();
+  float getSpecialSalePrice();
 
-  void setSpecialSalePrice(double specialSalePrice);
+  void setSpecialSalePrice(float specialSalePrice);
 
   int getDelivery();
 
