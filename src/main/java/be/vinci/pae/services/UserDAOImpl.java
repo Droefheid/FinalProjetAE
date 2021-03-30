@@ -15,11 +15,11 @@ public class UserDAOImpl implements UserDAO {
   private DomaineFactory domaineFactory;
 
   @Inject
-  private DalServices dalServices;
+  private DalBackendServices dalBackendServices;
 
   @Override
   public UserDTO findByUserName(String username) {
-    PreparedStatement ps = this.dalServices.getPreparedStatement(
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
         "SELECT user_id, username, first_name, last_name, address, email, is_boss,\r\n"
             + "            is_antique_dealer, is_confirmed, registration_date, password \r\n"
             + "            FROM projet.users WHERE username = ?");
@@ -39,7 +39,7 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public UserDTO findById(int id) {
-    PreparedStatement ps = this.dalServices.getPreparedStatement(
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
         "SELECT user_id, username, first_name, last_name, address, email, is_boss,"
             + " is_antique_dealer, is_confirmed, registration_date, password "
             + "FROM projet.users WHERE user_id = ?");
@@ -89,7 +89,7 @@ public class UserDAOImpl implements UserDAO {
     if (findByUserName(user.getUserName()) != null) {
       return null;
     }
-    PreparedStatement ps = this.dalServices.getPreparedStatement(
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
         "INSERT INTO projet.users VALUES(DEFAULT,?,?,?,?,?,?,DEFAULT,DEFAULT,DEFAULT,?)");
     try {
       ps.setString(1, user.getLastName());
@@ -113,7 +113,7 @@ public class UserDAOImpl implements UserDAO {
         address.getCountry()) > 0) {
       return -1;
     }
-    PreparedStatement ps = this.dalServices
+    PreparedStatement ps = this.dalBackendServices
         .getPreparedStatement("INSERT INTO projet.addresses VALUES(DEFAULT,?,?,?,?,?,?)");
     try {
       ps.setString(1, address.getStreet());
@@ -134,7 +134,7 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public Address getAddressById(int addressId) {
-    PreparedStatement ps = this.dalServices.getPreparedStatement(
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
         "SELECT address_id,street," + "building_number,postcode,commune,country,unit_number "
             + "FROM projet.addresses WHERE address_id=?");
     Address adresse = domaineFactory.getAdress();
@@ -164,7 +164,7 @@ public class UserDAOImpl implements UserDAO {
   @Override
   public int getAddressByInfo(String street, String buildingNumber, String commune,
       String country) {
-    PreparedStatement ps = this.dalServices
+    PreparedStatement ps = this.dalBackendServices
         .getPreparedStatement("SELECT address_id FROM projet.addresses WHERE street=? "
             + "AND building_number=? AND country=? AND commune=?");
     int adresse = 0;

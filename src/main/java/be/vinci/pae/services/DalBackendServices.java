@@ -2,7 +2,7 @@ package be.vinci.pae.services;
 
 import java.sql.PreparedStatement;
 
-public interface DalServices {
+public interface DalBackendServices {
 
   PreparedStatement getPreparedStatement(String query);
 
