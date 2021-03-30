@@ -30,6 +30,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 @Singleton
 @Path("/users")
@@ -70,6 +71,11 @@ public class UserResource {
 
 
     UserDTO user = this.userUcc.login(json.get("username").asText(), json.get("password").asText());
+
+    if (user == null) {
+      return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")
+          .type(MediaType.TEXT_PLAIN).build();
+    }
 
     ObjectNode node = createToken(user);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
@@ -119,9 +125,6 @@ public class UserResource {
 
   /**
    * Create a token and a ObjectNode with an user.
-   * The user is transformed with a Public JSON views.
-   * to filter out the private info not to be returned.
-   * by the API (such as password).
    * 
    * @param user : the user to put in the token.
    * @return ObjectNode contains the token and the user filter.

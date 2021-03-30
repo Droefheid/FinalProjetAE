@@ -32,11 +32,24 @@ const Navbar = () => {
     </div>
   </nav>`;
   } else {
-    navbar += `
-      <div class="navbar navbar-nav ml-auto pt-2">
-        <a class="nav-item nav-link" href="#" data-uri="/register">Register</a>
-        <a class="nav-item nav-link" href="#" data-uri="/login">Log in</a>
-      </div>
+    navbar = `<nav class="navbar navbar-expand-md navbar-dark bg-dark mx-auto" id="navBar">
+  <a class="navbar-brand" href="#" data-uri="/">LiVi Satcho</a><button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#navbarNavAltMarkup"
+    aria-controls="navbarNavAltMarkup"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link" href="#" data-uri="/">Home</a>
+      <a class="nav-item nav-link" href="#" data-uri="/register">Register</a>
+      <a class="nav-item nav-link" href="#" data-uri="/login">Log in</a>
+      <a class="nav-item nav-link" href="#" data-uri="/furniture">Furnitures</a>
     </div>
   </nav>`;
   }
@@ -45,8 +58,10 @@ const Navbar = () => {
   navbar += `<!-- Secondary Navbar -->
   <nav class="navbar navbar-expand-sm bg-light navbar-light pt-0" id="navBar">
 	  <div class="absolute"><a class="navbar-brand" href="#" data-uri="/">Livi Satcho</a></div>
-    <div class="navbar navbar-nav ml-auto mr-auto pt-3">
-      <a class="btn btn-info" href="#" data-uri="/login">Voir tous les meubles</a>
+    <div class="navbar navbar-nav ml-auto mr-auto pt-3" >
+      <a class="btn btn-info" href="#" data-uri="/furniture" style="margin:15px;">See all the furnitures</a>
+      <a class="btn btn-info" href="#" data-uri="" style="margin:15px;">See my furniture</a>
+      <a class="btn btn-info" href="#" data-uri="" style="margin:15px;">Introduce a visit</a>
     </div>
     <div class="navbar navbar-nav ml-auto mr-auto pt-3">
     <a class="btn btn-info" href="#" data-uri="/option">Introduire Option</a>
@@ -57,3 +72,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

@@ -58,18 +58,20 @@ CREATE TABLE projet.visits (
 CREATE TABLE projet.furnitures (
 	furniture_id SERIAL PRIMARY KEY,
 	furniture_title VARCHAR(100) NOT NULL,
-	purchase_price INTEGER NOT NULL,
+	purchase_price FLOAT NOT NULL,
 	furniture_date_collection TIMESTAMP NULL,
-	selling_price INTEGER NOT NULL,
-	special_sale_price INTEGER NOT NULL,
+	selling_price FLOAT NOT NULL,
+	special_sale_price FLOAT NOT NULL,
 	state_furniture state_furniture,
 	deposit_date TIMESTAMP NULL,
 	date_of_sale TIMESTAMP NULL,
 	sale_withdrawal_date TIMESTAMP NULL,
+	delivery INTEGER REFERENCES projet.deliveries(delivery_id) NULL,
 	type INTEGER REFERENCES projet.types(type_id) NOT NULL,
 	buyer INTEGER REFERENCES projet.users(user_id) NULL,
 	seller INTEGER REFERENCES projet.users(user_id) NOT NULL
 );
+
 
 CREATE TABLE projet.photos (
 	photo_id SERIAL PRIMARY KEY,
