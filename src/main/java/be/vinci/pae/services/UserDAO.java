@@ -20,14 +20,6 @@ public interface UserDAO {
   int registerAddress(AddressDTO addressDTO);
 
   /**
-   * Fetch an adress with the address_id.
-   * 
-   * @param address id.
-   * @return the address that is linked to the parameter id or null if inexistant.
-   */
-  AddressDTO getAddressById(int address);
-
-  /**
    * fetch an address with the corresponding information.
    * 
    * @param street name.

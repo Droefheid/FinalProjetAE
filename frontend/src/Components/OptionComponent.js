@@ -48,7 +48,7 @@ const introduceOption = (e) => {
   let option ={
     "userID":userID,
     "optionTerm":datetime,
-    "furniture":furniture
+    "furnitureID":furniture
   }
 
   fetch(API_URL + "options/introduceOption", {

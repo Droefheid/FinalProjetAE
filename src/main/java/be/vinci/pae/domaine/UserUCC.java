@@ -8,3 +8,4 @@ public interface UserUCC {
 
   UserDTO getUser(int id);
 }
+

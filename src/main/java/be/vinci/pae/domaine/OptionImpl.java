@@ -1,11 +1,10 @@
 package be.vinci.pae.domaine;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OptionImpl {
+public class OptionImpl implements OptionDTO {
 
   private int id;
   private Timestamp optionTerm;
@@ -30,7 +29,7 @@ public class OptionImpl {
     this.optionTerm = optionTerm;
   }
 
-  public Date getBeginningOptionDate() {
+  public Timestamp getBeginningOptionDate() {
     return beginningOptionDate;
   }
 

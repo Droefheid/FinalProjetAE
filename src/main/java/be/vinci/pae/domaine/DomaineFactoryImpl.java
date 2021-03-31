@@ -14,8 +14,13 @@ public class DomaineFactoryImpl implements DomaineFactory {
   }
 
   @Override
-  public AddressDTO getAdress() {
+  public AddressDTO getAdressDTO() {
     return new AddressImpl();
+  }
+
+  @Override
+  public OptionDTO getOptionDTO() {
+    return new OptionImpl();
   }
 
 }
