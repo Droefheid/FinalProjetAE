@@ -4,14 +4,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import be.vinci.pae.api.utils.FatalException;
-import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.OptionDTO;
 import jakarta.inject.Inject;
 
 public class OptionDAOImpl implements OptionDAO {
-
-  @Inject
-  private DomaineFactory domaineFactory;
 
   @Inject
   private DalBackendServices dalBackendServices;
@@ -31,6 +27,9 @@ public class OptionDAOImpl implements OptionDAO {
     }
   }
 
+  /**
+   * returns the id of the option or -1 if non-existent.
+   */
   public int findOptionByInfo(OptionDTO option) {
     PreparedStatement ps = this.dalBackendServices
         .getPreparedStatement("SELECT option_id FROM projet.options WHERE option_term  = ?"
@@ -49,8 +48,9 @@ public class OptionDAOImpl implements OptionDAO {
     } catch (SQLException e) {
       throw new FatalException(e.getMessage(), e);
     }
-    if (id <= 0)
+    if (id <= 0) {
       return -1;
+    }
     return id;
   }
 
