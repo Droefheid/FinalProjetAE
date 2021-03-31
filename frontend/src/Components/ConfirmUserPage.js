@@ -1,4 +1,10 @@
-let option = document.querySelector("#confirmUser");
+import { getUserSessionData } from "../utils/session";
+import Sidebar from "./SideBar";
+import { RedirectUrl } from "./Router.js";
+import Navbar from "./Navbar.js";
+import { type } from "jquery";
+
+let page = document.querySelector("#page");
 
 
 
@@ -40,7 +46,19 @@ let confirmUserPage = `
 
 
 const ConfirmUserPage = () => {    
+
+    Sidebar(true);
+
+    const user = getUserSessionData();
+    if (!user || !user.isBoss) {
+        // re-render the navbar for the authenticated user.
+        Navbar();
+        RedirectUrl("/");
+    } else loginForm.addEventListener("submit", onSubmit);
+ 
     return page.innerHTML = confirmUserPage;
  };
+
+ 
  
  export default ConfirmUserPage;

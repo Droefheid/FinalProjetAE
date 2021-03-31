@@ -1,5 +1,7 @@
 package be.vinci.pae.domaine;
 
+import java.util.List;
+
 import org.glassfish.grizzly.http.util.HttpStatus;
 import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.services.UserDAO;
@@ -47,5 +49,23 @@ public class UserUCCImpl implements UserUCC {
     }
     return (UserDTO) user;
   }
+
+@Override
+public List<UserDTO> getAll() {
+	List<UserDTO> list = userDao.getAll();
+    return list;
+}
+
+/*
+@Override
+public UserDTO updateBoss(UserDTO user , boolean is_boss) {
+	UserDTO userDTO = userDao.updateBoss(user, false);
+    if (userDTO == null) {
+      throw new BusinessException("user doesn't exist", HttpStatus.BAD_REQUEST_400);
+    }
+    return userDTO;
+}
+
+*/
 
 }

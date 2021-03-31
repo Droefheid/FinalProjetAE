@@ -3,6 +3,9 @@ package be.vinci.pae.services;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import be.vinci.pae.api.utils.FatalException;
 import be.vinci.pae.domaine.Address;
 import be.vinci.pae.domaine.DomaineFactory;
@@ -187,5 +190,59 @@ public class UserDAOImpl implements UserDAO {
     }
     return adresse;
   }
+
+  @Override
+  public List<UserDTO> getAll() {
+    PreparedStatement ps = this.dalServices.getPreparedStatement(
+        "SELECT * FROM projet.users");
+
+    UserDTO user = domaineFactory.getUserDTO();
+    List<UserDTO> list = new ArrayList<UserDTO>();
+
+    try (ResultSet rs = ps.executeQuery()) {
+      while (rs.next()) {
+        fullFillUsers(rs, user);
+        list.add(user);
+      }
+    } catch (SQLException e) {
+      throw new FatalException("error fullFillUsers", e);
+    }
+
+    return list;
+  }
+
+/*
+@Override
+  public UserDTO updateBoss(UserDTO user, boolean is_boss) {
+    PreparedStatement ps = this.dalServices.getPreparedStatement("UPDATE projet.users SET is_boss = ? WHERE username = ?;");
+    try {
+      ps.setBoolean(1, is_boss);
+      ps.setString(2, user.getUserName());
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      throw new FatalException("ERROR update user.", e);
+    }
+    return user;
+  }
+  
+*/
+  private void fullFillUsers(ResultSet rs, UserDTO user) {
+    try {
+      user.setAdressID(rs.getInt("address"));
+      user.setAntiqueDealer(rs.getBoolean("is_antique_dealer"));
+      user.setBoss(rs.getBoolean("is_boss"));
+      user.setConfirmed(rs.getBoolean("is_confirmed"));
+      user.setEmail(rs.getString("email"));
+      user.setFirstName(rs.getString("first_name"));
+      user.setID(rs.getInt("user_id"));
+      user.setPassword(rs.getString("password"));
+      user.setLastName(rs.getString("last_name"));
+      user.setRegistrationDate(rs.getTimestamp("registration_date"));
+      user.setUserName(rs.getString("username"));
+    } catch (SQLException e) {
+      throw new FatalException("error fullFillUsers", e);
+    }
+  }
+
 
 }

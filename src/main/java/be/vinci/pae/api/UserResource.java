@@ -3,6 +3,9 @@ package be.vinci.pae.api;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.auth0.jwt.JWT;
@@ -213,5 +216,69 @@ public class UserResource {
 
     return Response.ok().build();
   }
+  
+  
+
+  /**
+   * get all users.
+   * 
+   * @return list of all users.
+   */
+  @GET
+  @Path("/allUsers")
+  public Response allUsers() {
+    List<UserDTO> listUsers = new ArrayList<UserDTO>();
+    listUsers = userUcc.getAll();
+
+    ObjectNode node = jsonMapper.createObjectNode().putPOJO("list", listUsers);
+    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+  }
+
+  /**
+   * update a user for boss.
+   * 
+   * @return the user updated.
+   */
+  
+  /*             update le boss
+  @POST
+  @Path("/updateBoss")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response updateUser(JsonNode json) {
+
+    UserDTO user = createFullFillUser(json);
+
+
+    user = userUcc.updateBoss(user, false);
+
+    ObjectNode node = jsonMapper.createObjectNode().putPOJO("user", user);
+    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+  }
+
+
+  private UserDTO createFullFillUser(JsonNode json) {
+   UserDTO user = domaineFactory.getUserDTO();
+   
+   user.setAdressID(0);
+   user.setAntiqueDealer(false);
+   user.setBoss(false);
+   user.setConfirmed(false);
+   user.setEmail(null);
+   user.setFirstName(null);
+   user.setLastName(null);
+   user.setRegistrationDate(null);
+   user.setUserName(null);
+   
+   
+
+    return user;
+  }
+  
+  */
+  
+  
+  
+  
+  
 
 }

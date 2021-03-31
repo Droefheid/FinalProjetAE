@@ -1,5 +1,7 @@
 package be.vinci.pae.services;
 
+import java.util.List;
+
 import be.vinci.pae.domaine.Address;
 import be.vinci.pae.domaine.UserDTO;
 
@@ -37,6 +39,13 @@ public interface UserDAO {
    * @return the address id or -1 if the address doesn't exists.
    */
   int getAddressByInfo(String street, String buildingNumber, String commune, String country);
+
+  List<UserDTO> getAll();
+
+  
+
+
+   // UserDTO updateBoss(UserDTO user, boolean is_boss);
 
 }
 
