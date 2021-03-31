@@ -54,9 +54,9 @@ public class UserDAOImpl implements UserDAO {
       e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
-    if (!user.isConfirmed()) {
+   /* if (!user.isConfirmed()) {
       return null;
-    }
+    }  */
     return user;
   }
 
@@ -194,14 +194,16 @@ public class UserDAOImpl implements UserDAO {
   @Override
   public List<UserDTO> getAll() {
     PreparedStatement ps = this.dalServices.getPreparedStatement(
-        "SELECT * FROM projet.users");
+        "SELECT user_id , last_name , first_name,username ,password , address , email , is_boss , is_antique_dealer , is_confirmed , "
+        + " registration_date FROM projet.users");
 
-    UserDTO user = domaineFactory.getUserDTO();
+  
     List<UserDTO> list = new ArrayList<UserDTO>();
 
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
-        fullFillUsers(rs, user);
+    	  UserDTO user = domaineFactory.getUserDTO();
+    	  fullFillListUsers(rs, user);
         list.add(user);
       }
     } catch (SQLException e) {
@@ -210,38 +212,44 @@ public class UserDAOImpl implements UserDAO {
 
     return list;
   }
-
-/*
-@Override
-  public UserDTO updateBoss(UserDTO user, boolean is_boss) {
-    PreparedStatement ps = this.dalServices.getPreparedStatement("UPDATE projet.users SET is_boss = ? WHERE username = ?;");
-    try {
-      ps.setBoolean(1, is_boss);
-      ps.setString(2, user.getUserName());
-      ps.executeUpdate();
-    } catch (SQLException e) {
-      throw new FatalException("ERROR update user.", e);
-    }
-    return user;
-  }
   
-*/
-  private void fullFillUsers(ResultSet rs, UserDTO user) {
+
+
+@Override
+  public void updateConfirmed(boolean confirmed , boolean antique_dealer , int user_id) {
+    PreparedStatement ps = this.dalServices.getPreparedStatement(
+        "UPDATE projet.users SET is_confirmed = ? , is_antique_dealer = ? WHERE user_id = ?");
+    
+    
+    try (ResultSet rs = ps.executeQuery()) {
+        ps.setBoolean(user_id, rs.getBoolean(1));  //userid
+        ps.setBoolean(user_id, rs.getBoolean(2));
+        ps.setInt(user_id, rs.getInt(3));
+        ps.executeUpdate();
+      } catch (SQLException e) {
+        e.printStackTrace();
+        throw new FatalException(e.getMessage(), e);
+      }
+  }
+
+  private UserDTO fullFillListUsers(ResultSet rs, UserDTO user) {
     try {
-      user.setAdressID(rs.getInt("address"));
-      user.setAntiqueDealer(rs.getBoolean("is_antique_dealer"));
-      user.setBoss(rs.getBoolean("is_boss"));
-      user.setConfirmed(rs.getBoolean("is_confirmed"));
-      user.setEmail(rs.getString("email"));
-      user.setFirstName(rs.getString("first_name"));
-      user.setID(rs.getInt("user_id"));
-      user.setPassword(rs.getString("password"));
-      user.setLastName(rs.getString("last_name"));
-      user.setRegistrationDate(rs.getTimestamp("registration_date"));
-      user.setUserName(rs.getString("username"));
+    	user.setID(rs.getInt(1));
+    	user.setLastName(rs.getString(2));
+    	 user.setFirstName(rs.getString(3));
+    	 user.setUserName(rs.getString(4));
+        user.setPassword(rs.getString(5));
+        user.setAdressID(rs.getInt(6));
+        user.setEmail(rs.getString(7));
+        user.setBoss(rs.getBoolean(8));
+        user.setAntiqueDealer(rs.getBoolean(9));
+        user.setConfirmed(rs.getBoolean(10));
+        user.setRegistrationDate(rs.getTimestamp(11));
+       
     } catch (SQLException e) {
       throw new FatalException("error fullFillUsers", e);
     }
+    return user;
   }
 
 

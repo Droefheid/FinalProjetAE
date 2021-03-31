@@ -12,7 +12,9 @@ public interface UserUCC {
 
   List<UserDTO> getAll() ;
   
+  void updateConfirmed(boolean confirmed , boolean antique_dealer, int user_id) ; 
+  
  
- // UserDTO updateBoss(UserDTO user, boolean is_boss);
+
 	
 }

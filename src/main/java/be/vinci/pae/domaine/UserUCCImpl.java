@@ -56,16 +56,14 @@ public List<UserDTO> getAll() {
     return list;
 }
 
-/*
+
 @Override
-public UserDTO updateBoss(UserDTO user , boolean is_boss) {
-	UserDTO userDTO = userDao.updateBoss(user, false);
-    if (userDTO == null) {
-      throw new BusinessException("user doesn't exist", HttpStatus.BAD_REQUEST_400);
-    }
-    return userDTO;
+public void updateConfirmed(boolean confirmed, boolean antique_dealer , int user_id) {
+	
+   this.userDao.updateConfirmed(confirmed,antique_dealer,user_id);
+   
 }
 
-*/
+
 
 }

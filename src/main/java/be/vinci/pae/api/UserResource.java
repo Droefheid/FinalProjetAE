@@ -104,6 +104,35 @@ public class UserResource {
     ObjectNode node = createToken(user);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
+  
+  
+  
+  /**
+   * Get the user with an ID if exists or send error message.
+   * 
+   * @param id id of the user.
+   * @return a user if user exists in database and matches the id.
+   */
+  @GET
+  @Path("/confirmation/{id}")
+  public Response getUser(@PathParam("id") int id) {
+    // Check credentials.
+    if (id < 1) {
+      throw new BusinessException("Id cannot be under 1", HttpStatus.BAD_REQUEST_400);
+    }
+
+    UserDTO user = this.userUcc.getUser(id);
+
+    ObjectNode node = jsonMapper.createObjectNode().putPOJO("user", user);
+    
+    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+  }
+  
+  
+  
+  
+  
+  
 
   /**
    * Get the user from an id in a token in header.
@@ -233,52 +262,29 @@ public class UserResource {
     ObjectNode node = jsonMapper.createObjectNode().putPOJO("list", listUsers);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
-
+  
+  
   /**
-   * update a user for boss.
+   * update confirmation
    * 
-   * @return the user updated.
+   * @return list of all users.
    */
-  
-  /*             update le boss
   @POST
-  @Path("/updateBoss")
-  @Consumes(MediaType.APPLICATION_JSON)
-  public Response updateUser(JsonNode json) {
+  @Path("/updateConfirmed")
+  public Response updateConfirmed(JsonNode json) {
+    int user_id = json.get("user_id").asInt();
+    boolean antique_dealer  = json.get("is_antique_dealer").asBoolean();
+    boolean confirmed = json.get("is_confirmed").asBoolean();
+    this.userUcc.updateConfirmed(confirmed, antique_dealer , user_id);
+	return null;
 
-    UserDTO user = createFullFillUser(json);
-
-
-    user = userUcc.updateBoss(user, false);
-
-    ObjectNode node = jsonMapper.createObjectNode().putPOJO("user", user);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+    //ObjectNode node = jsonMapper.createObjectNode().putPOJO("list", listUsers);
+    //return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
 
-
-  private UserDTO createFullFillUser(JsonNode json) {
-   UserDTO user = domaineFactory.getUserDTO();
-   
-   user.setAdressID(0);
-   user.setAntiqueDealer(false);
-   user.setBoss(false);
-   user.setConfirmed(false);
-   user.setEmail(null);
-   user.setFirstName(null);
-   user.setLastName(null);
-   user.setRegistrationDate(null);
-   user.setUserName(null);
-   
-   
-
-    return user;
-  }
-  
-  */
   
   
   
-  
-  
+ 
 
 }

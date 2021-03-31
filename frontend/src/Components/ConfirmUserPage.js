@@ -1,64 +1,173 @@
-import { getUserSessionData } from "../utils/session";
-import Sidebar from "./SideBar";
 import { RedirectUrl } from "./Router.js";
 import Navbar from "./Navbar.js";
-import { type } from "jquery";
+import { setUserSessionData } from "../utils/session.js";
+import { API_URL } from "../utils/server.js";
+import Sidebar from "./SideBar.js";
 
-let page = document.querySelector("#page");
+let page = document.querySelector("#content");
 
+const ConfirmUserPage = async () => {
+  Sidebar(true);
 
+  page.innerHTML = `
+    <div id="list"></div>
+    <div id="confirmUserDesc"></div> 
+    `;
 
-let confirmUserPage = `
-<div class="container-fluid mt-4">
-    
-    <!-- table des utilisateurs -->
-    <div class="card shadow mb-4">
-      <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">User management</h6>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <table class="table" id="dataTable" width="100%" cellspacing="0">
-            <thead>
-              <tr>
-                <th>Last name</th>
-                <th>First name</th>
-                <th>Username</th>
-                <th>Mail</th>
-                <th>Registration Date</th>
-                <th>Address</th>
-                <th>User confirmation</th>
-                <th>Antique dealer</th>
-                <th>Is boss</th>
-                <th>Save</th>
-              </tr>
-            </thead>
-            <tbody id="list_users">    
-          
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-</div>
+  fetch(API_URL + "users/allUsers", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.text().then((err) => onError(err));
+      }
+      else
+        return response.json().then((data) => onUserList(data));
+    })
+};
+
+const onUserList = (data) => {
+
+  let userList = document.querySelector("#list");
+
+  if (!data) return;
+  
+  let table = `
+          <nav id="nav_user">
+            <ul class="list-group">`;
+  data.list.forEach(element => {
+    table += `
+        <li id="${element.id}" class="list-group-item" data-toggle="collapse"
+              href="#collapse${element.id}" role="button"
+              aria-expanded="false" aria-controls="collapse${element.id}">
+                <div class="row" id="${element.id}" >
+                
+                  <div class="col-sm-">
+                    <p>
+                      <h5>${element.username}</h5>
+                    </p>
+                  </div>
+                </div>
+        </li>`;
+  });
+
+  table += `  
+        </ul>
+      </nav>
 `;
+  userList.innerHTML = table;
 
-
-
-const ConfirmUserPage = () => {    
-
-    Sidebar(true);
-
-    const user = getUserSessionData();
-    if (!user || !user.isBoss) {
-        // re-render the navbar for the authenticated user.
-        Navbar();
-        RedirectUrl("/");
-    } else loginForm.addEventListener("submit", onSubmit);
+  const viewUsers = document.querySelectorAll("li");
+  viewUsers.forEach((elem) =>{
+    elem.addEventListener("click", onClick);
+  })
+}
  
-    return page.innerHTML = confirmUserPage;
- };
+const onClick = (e) => {
+   
+    const userId = e.target.parentElement.parentElement.id;
+    if(userId == 'nav_user') return;
 
+    if(userId == null) return;
+  
+    fetch(API_URL + "users/confirmation/" + userId, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then((err) => onError(err));
+        }
+        else
+          return response.json().then((data) => onConfirmUserDescription(data));
+      })
+};
+
+const onConfirmUserDescription = (data) => {
+
+  let info = document.querySelector("#confirmUserDesc");
+
+  let description = `
+  <div id="description_user">
+    <h4>${data.user.username}</h4>
+   
+    <p>Last name : ${data.user.lastName} </br>
+       First name : ${data.user.firstName}</br>
+        Email : ${data.user.email}</br>
+    </p>
+
+    <div class="form-check">
+  <input class="form-check-input" type="checkbox" id="is_confirmed" >
+  <label class="form-check-label" for="flexCheckChecked">
+    Is confirmed
+  </label>
+
+  <div class="form-check" id="${data.user.id}">
+  <input class="form-check-input" type="checkbox" id="is_antique_dealer" >
+  <label class="form-check-label" for="flexCheckChecked">
+    Is antique dealer
+  </label>
+  <br>
+  <input class="btn btn-primary" type="button" id="button_confirmed" value="Submit">
+</div>
+</div>
+  </div>`;
+
+  info.innerHTML = description; 
+
+  let btn = document.getElementById("button_confirmed");
+  btn.addEventListener("click",onConfirmUser);
+};
+
+const onConfirmUser = (e) =>{
+  var userId = e.target.parentElement.id;
+  var confirmed = false ;
+  var antique_dealer = false;
  
+  if (document.getElementById("is_confirmed").checked === true) {   
+    confirmed = true;
+
+  }
+
+  if (document.getElementById("is_antique_dealer").checked === true) {   
+    antique_dealer = true;
+  }
+  let user = { 
+    "is_confirmed" : confirmed ,
+    "is_antique_dealer" : antique_dealer,
+    "user_id" : userId,
+  };
+
+  fetch(API_URL + "users/updateConfirmed", {
+    method: "POST",
+    body: JSON.stringify(user),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.text().then((err) => onError(err));
+      }
+      else
+        return response.json().then((data) => onConfirmedUser());
+    }) 
+};
  
- export default ConfirmUserPage;
+const onConfirmedUser = (e) => {
+  RedirectUrl("/");
+}
+
+
+const onError = (err) => {
+  let messageBoard = document.querySelector("#messageBoardForm");
+  messageBoard.innerHTML = err;
+};
+
+
+export default ConfirmUserPage;
