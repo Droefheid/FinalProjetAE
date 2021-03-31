@@ -239,6 +239,15 @@ position: absolute;
   margin-top: 70px;
   margin-left: 40px;
 }
+/* VOIR TOUT LES USER CSS */
+#nav_user {
+  display: inline-block;
+}
+
+#description_user {
+  display: block;
+  text-align: center;
+}
 
 /* VOIR TOUT LES MEUBLES CSS */
 

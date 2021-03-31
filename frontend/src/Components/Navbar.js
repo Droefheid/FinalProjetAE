@@ -28,29 +28,23 @@ const Navbar = () => {
       <div class="navbar navbar-nav ml-auto pt-2">
         <a class="nav-item nav-link" href="#">${user.username}</a>
         <a class="nav-item nav-link" href="#" data-uri="/logout">Logout</a>
+        <a class="btn btn-info" href="#" data-uri="/modificationFourniture" style="margin:15px;">See my furniture</a>
+      <a class="btn btn-info" href="#" data-uri="" style="margin:15px;">Introduce a visit</a>
+  
+    <a class="btn btn-info" href="#" data-uri="/confirmUser" style="margin:15px;">Confirm a user</a>
+      <a class="btn btn-info" href="#" data-uri="/option">Introduire Option</a>
       </div>
     </div>
   </nav>`;
 
-   // Secondary Navbar
-   navbar += `<!-- Secondary Navbar -->
-   <nav class="navbar navbar-expand-sm bg-light navbar-light pt-0" id="navBar">
-     <div class="absolute"><a class="navbar-brand" href="#" data-uri="/">Livi Satcho</a></div>
-     <div class="navbar navbar-nav ml-auto mr-auto pt-3" >
-       <a class="btn btn-info" href="#" data-uri="/furniture" style="margin:15px;">See all the furnitures</a>
-       <a class="btn btn-info" href="#" data-uri="" style="margin:15px;">See my furniture</a>
-       <a class="btn btn-info" href="#" data-uri="" style="margin:15px;">Introduce a visit</a>
-     </div>
-     <div class="navbar navbar-nav ml-auto mr-auto pt-3">
-     <a class="btn btn-info" href="#" data-uri="/option">Introduire Option</a>
-   </div>
- </nav>`;
+
  
   } else {
     navbar += `
       <div class="navbar navbar-nav ml-auto pt-2">
         <a class="nav-item nav-link" href="#" data-uri="/register">Register</a>
         <a class="nav-item nav-link" href="#" data-uri="/login">Log in</a>
+        
       </div>
     </div>
   </nav>`;
@@ -62,9 +56,6 @@ const Navbar = () => {
 	  <div class="absolute"><a class="navbar-brand" href="#" data-uri="/">Livi Satcho</a></div>
     <div class="navbar navbar-nav ml-auto mr-auto pt-3" >
       <a class="btn btn-info" href="#" data-uri="/furniture" style="margin:15px;">See all the furnitures</a>
-      <a class="btn btn-info" href="#" data-uri="/modificationFourniture" style="margin:15px;">See my furniture</a>
-      <a class="btn btn-info" href="#" data-uri="" style="margin:15px;">Introduce a visit</a>
-      <a class="btn btn-info" href="#" data-uri="/option">Introduire Option</a>
     </div>
   </nav>`;
 

@@ -3,6 +3,8 @@ package be.vinci.pae.services;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import be.vinci.pae.api.utils.FatalException;
 import be.vinci.pae.domaine.AddressDTO;
 import be.vinci.pae.domaine.DomaineFactory;
@@ -86,6 +88,9 @@ public class UserDAOImpl implements UserDAO {
     if (findByUserName(user.getUserName()) != null) {
       return null;
     }
+    if (findByEmail(user.getEmail()) != null) {
+      return null;
+    }
     PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
         "INSERT INTO projet.users VALUES(DEFAULT,?,?,?,?,?,?,DEFAULT,DEFAULT,DEFAULT,?)");
     try {
@@ -102,6 +107,25 @@ public class UserDAOImpl implements UserDAO {
       throw new FatalException(e.getMessage(), e);
     }
     return findByUserName(user.getUserName());
+  }
+
+  private UserDTO findByEmail(String email) {
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
+        "SELECT user_id, username, first_name, last_name, address, email, is_boss,"
+            + " is_antique_dealer, is_confirmed, registration_date, password"
+            + " FROM projet.users WHERE email = ?");
+    UserDTO user = domaineFactory.getUserDTO();
+    try {
+      ps.setString(1, email);
+      user = fullFillUserFromResulSet(user, ps);
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
+    if (user.getEmail() == null) {
+      return null;
+    }
+    return user;
   }
 
   @Override
@@ -155,5 +179,68 @@ public class UserDAOImpl implements UserDAO {
     }
     return adresse;
   }
+
+  @Override
+  public List<UserDTO> getAll() {
+    PreparedStatement ps =
+        this.dalBackendServices.getPreparedStatement("SELECT user_id , last_name , "
+            + "first_name,username ,password , address , email , is_boss ,"
+            + " is_antique_dealer , is_confirmed , " + " registration_date FROM projet.users");
+
+
+    List<UserDTO> list = new ArrayList<UserDTO>();
+
+    try (ResultSet rs = ps.executeQuery()) {
+      while (rs.next()) {
+        UserDTO user = domaineFactory.getUserDTO();
+        fullFillListUsers(rs, user);
+        list.add(user);
+      }
+    } catch (SQLException e) {
+      throw new FatalException("error fullFillUsers", e);
+    }
+
+    return list;
+  }
+
+
+
+  @Override
+  public void updateConfirmed(boolean confirmed, boolean antiqueDealer, int userId) {
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
+        "UPDATE projet.users SET is_confirmed = ? , is_antique_dealer = ? WHERE user_id = ?");
+
+
+    try {
+      ps.setBoolean(1, confirmed);
+      ps.setBoolean(2, antiqueDealer);
+      ps.setInt(3, userId);
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
+
+  private UserDTO fullFillListUsers(ResultSet rs, UserDTO user) {
+    try {
+      user.setID(rs.getInt(1));
+      user.setLastName(rs.getString(2));
+      user.setFirstName(rs.getString(3));
+      user.setUserName(rs.getString(4));
+      user.setPassword(rs.getString(5));
+      user.setAdressID(rs.getInt(6));
+      user.setEmail(rs.getString(7));
+      user.setBoss(rs.getBoolean(8));
+      user.setAntiqueDealer(rs.getBoolean(9));
+      user.setConfirmed(rs.getBoolean(10));
+      user.setRegistrationDate(rs.getTimestamp(11));
+
+    } catch (SQLException e) {
+      throw new FatalException("error fullFillUsers", e);
+    }
+    return user;
+  }
+
 
 }

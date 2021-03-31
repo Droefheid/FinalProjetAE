@@ -3,6 +3,8 @@ package be.vinci.pae.api;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.auth0.jwt.JWT;
@@ -70,7 +72,10 @@ public class UserResource {
 
 
     UserDTO user = this.userUcc.login(json.get("username").asText(), json.get("password").asText());
-
+    if (!user.isConfirmed()) {
+      throw new BusinessException("This account hasn't been confirmed by an admin yet",
+          HttpStatus.BAD_REQUEST_400);
+    }
     ObjectNode node = createToken(user);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
@@ -95,6 +100,31 @@ public class UserResource {
     ObjectNode node = createToken(user);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
+
+
+
+  /**
+   * Get the user with an ID if exists or send error message.
+   * 
+   * @param id id of the user.
+   * @return a user if user exists in database and matches the id.
+   */
+  @GET
+  @Path("/confirmation/{id}")
+  public Response getUser(@PathParam("id") int id) {
+    // Check credentials.
+    if (id < 1) {
+      throw new BusinessException("Id cannot be under 1", HttpStatus.BAD_REQUEST_400);
+    }
+
+    UserDTO user = this.userUcc.getUser(id);
+
+    ObjectNode node = jsonMapper.createObjectNode().putPOJO("user", user);
+
+    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+  }
+
+
 
   /**
    * Get the user from an id in a token in header.
@@ -206,6 +236,40 @@ public class UserResource {
     userUcc.register(user, addressDTO);
 
     return Response.ok().build();
+  }
+
+
+
+  /**
+   * get all users.
+   * 
+   * @return list of all users.
+   */
+  @GET
+  @Path("/allUsers")
+  public Response allUsers() {
+    List<UserDTO> listUsers = new ArrayList<UserDTO>();
+    listUsers = userUcc.getAll();
+
+    ObjectNode node = jsonMapper.createObjectNode().putPOJO("list", listUsers);
+    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+  }
+
+
+  /**
+   * update confirmation.
+   * 
+   * @return list of all users.
+   */
+  @POST
+  @Path("/updateConfirmed")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response updateConfirmed(JsonNode json) {
+    int userId = json.get("user_id").asInt();
+    boolean antiqueDealer = json.get("is_antique_dealer").asBoolean();
+    boolean confirmed = json.get("is_confirmed").asBoolean();
+    this.userUcc.updateConfirmed(confirmed, antiqueDealer, userId);
+    return Response.ok(MediaType.APPLICATION_JSON).build();
   }
 
 }
