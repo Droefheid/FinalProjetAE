@@ -1,8 +1,7 @@
 import { RedirectUrl } from "./Router.js";
-import Navbar from "./Navbar.js";
-import { setUserSessionData } from "../utils/session.js";
 import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
+import { user_me } from "../index.js";
 
 let page = document.querySelector("#page");
 
@@ -110,11 +109,24 @@ const onFurnitureDescription = (data) => {
        State : ${data.furniture.state}
          </p>
          <button type="button" class="btn btn-primary">Option</button>
-         <button type="button" class="btn btn-primary">Modifier</button>
+         <a class="btn btn-info" id="update">Modifier</a>
+         <form id="updateB">
+          <input id="id" value="${data.furniture.furnitureId}" hidden>
+          <input type="submit" value="Update" class="btn btn-lg btn-outline-primary btn-block">
+         </form>
   </div>`;
 
   info.innerHTML = description; 
+  let updateButton = document.querySelector("#updateB");
+  updateButton.addEventListener("submit", onUpdate);
 };
+
+const onUpdate = (e) => {
+  e.preventDefault();
+  let furnitureId = document.getElementById("id").value;
+  user_me.furnitureId = furnitureId;
+  RedirectUrl(`/updateFurniture`);
+}
 
 const onError = (err) => {
   let messageBoard = document.querySelector("#messageBoard");

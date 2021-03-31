@@ -3,6 +3,7 @@ import Sidebar from "./SideBar";
 import { RedirectUrl } from "./Router.js";
 import Navbar from "./Navbar.js";
 import { API_URL, ALERT_BOX } from "../utils/server.js";
+import { user_me } from "..";
 
 const STATES = [ "ER", "M", "EV", "O", "V", "EL", "L", "AE", "E", "R", "RE" ];
 
@@ -81,26 +82,128 @@ let modifPage = `
     </div>
 </form><div>`;
 
-const ModificationFurniturePage = (furniture) => {    
+const ModificationFurniturePage = () => {    
     Sidebar(true);
+    console.log(user_me.furnitureId);
 
-    const user = getUserSessionData();
+    const user = {isBoss: true};//getUserSessionData();
     if (!user || !user.isBoss) {
         // re-render the navbar for the authenticated user.
         Navbar();
         RedirectUrl("/");
     } else {
-        /*let modifPage = `
-            <form id="update" class="form-inline">
-                <input id="furnitureId" value="${furniture.id}"`;*/
-
-
-
-        page.innerHTML = modifPage;
-        let form = document.querySelector("#update");
-        form.addEventListener("submit", onSubmit);
+        // Fetch pour recup
+        fetch(API_URL + "furnitures/" + user_me.furnitureId, {
+            method: "GET", 
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((response) => {
+              if (!response.ok) {
+                return response.text().then((err) => onError(err));
+              }
+              else
+                return response.json().then((data) => onPageCreate(data));
+            });
     }
 };
+
+const onPageCreate = (data) => {
+    let furniture = data.furniture;
+    let Timestamp = new Date(furniture.pickUpDate);
+    let timeSplit = Timestamp.toLocaleString().split("/");
+    furniture.pickUpDate = timeSplit[2].substr(0, 4)+"-"+timeSplit[1]+"-"+timeSplit[0]+" "+Timestamp.toLocaleTimeString();
+    
+    let modifPage = `
+    <form id="update" class="form-inline">
+        <input id="furnitureId" value="${furniture.furnitureId}" hidden>
+        <div class="row">
+            <div class="col-sm-6 bg-info">
+                <label for="title">Titre: </label>
+                <input type="text" class="form-control" id="title" value="${furniture.furnitureTitle}" placeholder="Enter title" name="title" required>
+                <label for="state">Etat: </label>
+                <div class="form-group">
+                    <select class="form-control" id="state" name="state">
+                        <option value="ER">En restauration</option>
+                        <option value="M">En magasin</option>
+                        <option value="EV">En vente</option>
+                        <option value="O">Sous option</option>
+                        <option value="V">Vendu</option>
+                        <option value="EL">En livraison</option>
+                        <option value="L">Livré</option>
+                        <option value="AE">a emporté</option>
+                        <option value="E">Emporté</option>
+                        <option value="R">Reservé</option>
+                        <option value="RE">Retiré</option>
+                    </select>
+                </div>
+                <label for="depositDate">Date de dépot: </label>
+                <input type="text" class="form-control" id="depositDate" `;
+                if(furniture.depositDate) modifPage += ` value="${furniture.depositDate}"`;
+                modifPage += `" placeholder="Enter date of deposit" name="depositDate">
+                <label for="seller">Vendeur: </label>
+                <div class="form-group">
+                    <select class="form-control" id="seller" name="seller">
+                        <option value="1">Livi Satcho</option>
+                        <option value="2">George</option>
+                        <option value="3">Michael</option>
+                    </select>
+                </div>
+                <label for="type">Type: </label>
+                <div class="form-group">
+                    <select class="form-control" id="type" name="type">
+                        <option value="1">Armoire</option>
+                        <option value="2">Bahut</option>
+                        <option value="3">Bibliotheque</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-6 bg-warning">
+                <label for="furnitureDateCollection">Date emporter: </label>
+                <input type="text" class="form-control" id="furnitureDateCollection"`;
+                if(furniture.furnitureDateCollection) modifPage += ` value="${furniture.furnitureDateCollection}"`;
+                modifPage += ` placeholder="Enter furnitureDateCollection" name="furnitureDateCollection">
+                <label for="dateOfSale">Date de vente: </label>
+                <input type="text" class="form-control" id="dateOfSale"`;
+                if(furniture.dateOfSale) modifPage += ` value="${furniture.dateOfSale}"`;
+                modifPage += ` placeholder="Enter date Of Sale" name="dateOfSale">
+                <label for="saleWithdrawalDate">Date de retrait: </label>
+                <input type="text" class="form-control" id="saleWithdrawalDate"`;
+                if(furniture.saleWithdrawalDate) modifPage += ` value="${furniture.saleWithdrawalDate}"`;
+                modifPage += ` placeholder="Enter sale With drawal Date" name="saleWithdrawalDate">
+                <label for="purchasePrice">Prix d'achat: </label>
+                <input type="text" class="form-control" id="purchasePrice" value="${furniture.purchasePrice}" placeholder="Enter purchase Price" name="purchasePrice" required>
+                <label for="sellingPrice">Prix de vente: </label>
+                <input type="text" class="form-control" id="sellingPrice" value="${furniture.sellingPrice}" placeholder="Enter selling Price" name="sellingPrice">
+                <label for="specialSalePrice">Prix antiquaire: </label>
+                <input type="text" class="form-control" id="specialSalePrice" value="${furniture.specialSalePrice}" placeholder="Enter special Sale Price" name="specialSalePrice">
+                <label for="buyer">Acheteur: </label>
+                <div class="form-group">
+                    <select class="form-control" id="buyer" name="buyer">
+                        <option value="" selected>Nobody</option>
+                        <option value="1">Livi Satcho</option>
+                        <option value="2">George</option>
+                        <option value="3">Michael</option>
+                    </select>
+                </div>
+                <label for="delivery">Livraison: </label>
+                <input type="text" class="form-control" id="delivery"`;
+                if(furniture.delivery) modifPage += ` value="${furniture.delivery}"`;
+                modifPage += ` placeholder="Enter delivery" name="delivery">
+                <label for="pickUpDate">Pick-up date: </label>
+                <input type="text" class="form-control" id="pickUpDate"`;
+                if(furniture.pickUpDate) modifPage += ` value="${furniture.pickUpDate}"`;
+                modifPage += ` placeholder="Enter pickUpDate" name="pickUpDate" required>
+                <input type="submit" value="update" class="btn btn-lg btn-primary btn-block">
+            </div>
+        </div>
+    </form><div>`;
+
+    page.innerHTML = modifPage;
+    let form = document.querySelector("#update");
+    form.addEventListener("submit", onSubmit);
+}
 
 const onSubmit = (e) => {
     e.preventDefault();

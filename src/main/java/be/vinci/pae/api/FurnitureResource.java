@@ -8,7 +8,6 @@ import org.glassfish.jersey.server.ContainerRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.FurnitureDTO;
@@ -63,7 +62,6 @@ public class FurnitureResource {
   @POST
   @Path("/update")
   @Consumes(MediaType.APPLICATION_JSON)
-  @Authorize
   public Response updateFurniture(@Context ContainerRequest request, JsonNode json) {
     UserDTO currentUser = (UserDTO) request.getProperty("user");
     if (currentUser == null || !currentUser.isBoss()) {
@@ -72,7 +70,6 @@ public class FurnitureResource {
 
     checkAllCredentialFurniture(json); // pourrais renvoyer le type si besoin en dessous.
     FurnitureDTO furniture = createFullFillFurniture(json);
-    System.out.println("Created furniture and check");
 
     furniture = furnitureUCC.update(furniture);
 
@@ -102,7 +99,7 @@ public class FurnitureResource {
     if (sellerId < 1 || userRessource.getUserById(sellerId) == null) {
       throw new BusinessException("Seller does not exist.", HttpStatus.BAD_REQUEST_400);
     }
-    if (json.get("pick_up_date").asText().equals("")) {
+    if (json.get("pickUpDate").asText().equals("")) {
       throw new BusinessException("Pick-up date is needed.", HttpStatus.BAD_REQUEST_400);
     }
     // TODO Verifier que furnitureDateCollection est bien un timestamp.
@@ -159,7 +156,7 @@ public class FurnitureResource {
       throw new BusinessException("Buyer is needed ", HttpStatus.BAD_REQUEST_400);
     }
     int buyerId = json.get("buyer").asInt();
-    if (buyerId < 1 || userRessource.getUserById(buyerId) == null) {
+    if (buyerId != 0 && (buyerId < 1 || userRessource.getUserById(buyerId) == null)) {
       throw new BusinessException("Buyer does not exist ", HttpStatus.BAD_REQUEST_400);
     }
     if (!json.get("buyer").asText().equals("") && !state.equals("V") && !state.equals("EL")
@@ -236,22 +233,36 @@ public class FurnitureResource {
     furniture.setBuyer(json.get("buyer").asInt());
     furniture.setPurchasePrice(json.get("purchasePrice").asLong());
 
-    Timestamp timestamp = Timestamp.valueOf(json.get("furnitureDateCollection").asText());
-    furniture.setFurnitureDateCollection(timestamp);
+    Timestamp timestamp;
+    if (!json.get("furnitureDateCollection").asText().equals("")) {
+      timestamp = Timestamp.valueOf(json.get("furnitureDateCollection").asText());
+      furniture.setFurnitureDateCollection(timestamp);
+    }
     furniture.setSellingPrice(json.get("sellingPrice").asLong());
     furniture.setSpecialSalePrice(json.get("specialSalePrice").asLong());
     furniture.setDelivery(json.get("delivery").asInt());
     furniture.setState(json.get("state").asText());
 
-    timestamp = Timestamp.valueOf(json.get("depositDate").asText());
-    furniture.setDepositDate(timestamp);
+    if (!json.get("depositDate").asText().equals("")) {
+      timestamp = Timestamp.valueOf(json.get("depositDate").asText());
+      furniture.setDepositDate(timestamp);
+    }
 
-    timestamp = Timestamp.valueOf(json.get("dateOfSale").asText());
-    furniture.setDateOfSale(timestamp);
+    if (!json.get("dateOfSale").asText().equals("")) {
+      timestamp = Timestamp.valueOf(json.get("dateOfSale").asText());
+      furniture.setDateOfSale(timestamp);
+    }
 
-    timestamp = Timestamp.valueOf(json.get("saleWithdrawalDate").asText());
-    furniture.setSaleWithdrawalDate(timestamp);
+    if (!json.get("saleWithdrawalDate").asText().equals("")) {
+      timestamp = Timestamp.valueOf(json.get("saleWithdrawalDate").asText());
+      furniture.setSaleWithdrawalDate(timestamp);
+    }
     furniture.setSeller(json.get("seller").asInt());
+
+    if (!json.get("pickUpDate").asText().equals("")) {
+      timestamp = Timestamp.valueOf(json.get("pickUpDate").asText());
+      furniture.setPickUpDate(timestamp);
+    }
 
     return furniture;
   }

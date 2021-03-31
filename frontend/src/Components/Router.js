@@ -19,7 +19,7 @@ const routes = {
   "/furniture": FurniturePage,
   "/confirmUser": ConfirmUserPage,
   "/error": ErrorPage,
-  "/modificationFourniture": ModificationFurniturePage,
+  "/updateFurniture": ModificationFurniturePage,
 };
 
 let page = document.querySelector("#page");

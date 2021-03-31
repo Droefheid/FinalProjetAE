@@ -14,7 +14,7 @@ import 'bootstrap';
 const HEADER_TITLE = "LiVi Satcho Antiquaire";
 const FOOTER_TEXT = "Contact : livisatcho@hotmail.com";
 
-let user_me = { itself: null };
+let user_me = { itself: null, furnitureId: null };
 
 checkTokenOnLoad();
 
