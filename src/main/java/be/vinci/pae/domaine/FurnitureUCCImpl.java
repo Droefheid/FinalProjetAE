@@ -37,6 +37,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
   @Override
   public FurnitureDTO update(FurnitureDTO furniture) {
+    System.out.println("FurnitureUCCImpl:" + furniture);
     FurnitureDTO furnitureDTO = furnitureDAO.update(furniture);
     if (furnitureDTO == null) {
       throw new BusinessException("Furniture doesn't exist", HttpStatus.BAD_REQUEST_400);

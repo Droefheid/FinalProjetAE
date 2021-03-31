@@ -1,5 +1,4 @@
 import { RedirectUrl } from "./Router.js";
-import Navbar from "./Navbar.js";
 import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
 
@@ -155,7 +154,7 @@ let registerPage = `
 
 const RegisterPage = () => {
   Sidebar();
-  let page = document.querySelector("#content");
+  let page = document.querySelector("#page");
   page.innerHTML = registerPage;
   let registerForm = document.querySelector("form");
   registerForm.addEventListener("submit", onRegister);

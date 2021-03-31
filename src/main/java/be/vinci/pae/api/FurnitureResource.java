@@ -32,6 +32,9 @@ public class FurnitureResource {
   @Inject
   private DomaineFactory domaineFactory;
 
+  @Inject
+  private UserResource userRessource;
+
   /**
    * get all furnitures.
    * 
@@ -56,10 +59,11 @@ public class FurnitureResource {
   @Path("/update")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response updateFurniture(JsonNode json) {
+    System.out.println("FurnitureRessource");
 
     checkAllCredentialFurniture(json); // pourrais renvoyer le type si besoin en dessous.
     FurnitureDTO furniture = createFullFillFurniture(json);
-
+    System.out.println("Created furniture and check");
 
     furniture = furnitureUCC.update(furniture);
 
@@ -68,23 +72,58 @@ public class FurnitureResource {
   }
 
   private void checkAllCredentialFurniture(JsonNode json) {
+    System.out.println(json.asText());
     // Required Field.
+    if (json.get("furnitureId").asText().equals("") || json.get("furnitureId").asInt() < 1) {
+      throw new BusinessException("Id is needed or incorrect ", HttpStatus.BAD_REQUEST_400);
+    }
     if (json.get("title").asText().equals("")) {
       throw new BusinessException("Title is needed ", HttpStatus.BAD_REQUEST_400);
     }
-    if (json.get("type").asText().equals("")) {
-      throw new BusinessException("Type is needed ", HttpStatus.BAD_REQUEST_400);
+    if (json.get("state").asText().equals("")) {
+      throw new BusinessException("State is needed ", HttpStatus.BAD_REQUEST_400);
     }
-    // Appel a type.findByID() ? pour verifier les autres champs.
-    if (json.get("buyer").asText().equals("")) {
-      throw new BusinessException("Buyer is needed ", HttpStatus.BAD_REQUEST_400);
-    }
-    if (json.get("purchasePrice").asText().equals("")) {
+    if (json.get("purchasePrice").asText().equals("") || json.get("purchasePrice").asInt() <= 0) {
       throw new BusinessException("Purchase Price is needed ", HttpStatus.BAD_REQUEST_400);
+    }
+    if (json.get("seller").asText().equals("")) {
+      throw new BusinessException("Seller is needed ", HttpStatus.BAD_REQUEST_400);
+    }
+    int sellerId = json.get("seller").asInt();
+    if (sellerId < 1 || userRessource.getUserById(sellerId) == null) {
+      throw new BusinessException("Buyer does not exist ", HttpStatus.BAD_REQUEST_400);
     }
     if (json.get("furnitureDateCollection").asText().equals("")) {
       throw new BusinessException("Furniture Date Collection is needed ",
           HttpStatus.BAD_REQUEST_400);
+    }
+    if (json.get("type").asText().equals("") || json.get("type").asInt() < 1) {
+      throw new BusinessException("Type is needed ", HttpStatus.BAD_REQUEST_400);
+    }
+    // int typeId = json.get("type").asInt();
+    // if (typeId < 1 || getTypeById(typeId) == null) {
+    // throw new BusinessException("Type does not exist ", HttpStatus.BAD_REQUEST_400);
+    // }
+
+
+    // Check when the furniture is in restoration.
+    String state = json.get("state").asText();
+    if (state.equals("ER") && !json.get("delivery").asText().equals("")) {
+      throw new BusinessException("You cant have a deposit date if the state is en restoration.",
+          HttpStatus.BAD_REQUEST_400);
+    }
+
+
+    // Check when the furniture is in the shop.
+    if (json.get("depositDate").asText().equals("") && !state.equals("ER")) {
+      throw new BusinessException("A deposit date is needed if is not anymore in restoration.",
+          HttpStatus.BAD_REQUEST_400);
+    }
+
+
+    // .
+    if (json.get("buyer").asText().equals("") || json.get("buyer").asInt() < 1) {
+      throw new BusinessException("Buyer is needed ", HttpStatus.BAD_REQUEST_400);
     }
     if (json.get("sellingPrice").asText().equals("")) {
       throw new BusinessException("Selling Price is needed ", HttpStatus.BAD_REQUEST_400);
@@ -95,26 +134,18 @@ public class FurnitureResource {
     if (json.get("delivery").asText().equals("")) {
       throw new BusinessException("Delivery is needed ", HttpStatus.BAD_REQUEST_400);
     }
-    if (json.get("state").asText().equals("")) {
-      throw new BusinessException("State is needed ", HttpStatus.BAD_REQUEST_400);
-    }
-    if (json.get("depositDate").asText().equals("")) {
-      throw new BusinessException("Deposit Date is needed ", HttpStatus.BAD_REQUEST_400);
-    }
     if (json.get("dateOfSale").asText().equals("")) {
       throw new BusinessException("Date Of Sale is needed ", HttpStatus.BAD_REQUEST_400);
     }
     if (json.get("saleWithdrawalDate").asText().equals("")) {
       throw new BusinessException("Sale With drawal Date is needed ", HttpStatus.BAD_REQUEST_400);
     }
-    if (json.get("seller").asText().equals("")) {
-      throw new BusinessException("Seller is needed ", HttpStatus.BAD_REQUEST_400);
-    }
   }
 
   private FurnitureDTO createFullFillFurniture(JsonNode json) {
     FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
 
+    furniture.setFurnitureId(json.get("furnitureId").asInt());
     furniture.setFurnitureTitle(json.get("title").asText());
     furniture.setType(json.get("type").asInt());
     furniture.setBuyer(json.get("buyer").asInt());

@@ -22,10 +22,11 @@ public class FurnitureDAOImpl implements FurnitureDAO {
   @Override
   public FurnitureDTO findById(int id) {
 
-    PreparedStatement ps = this.dalServices.getPreparedStatement(
-        "SELECT id_furniture," + " type, buyer, furniture_title, purchase_price,"
-            + " pick_up_date, selling_price," + " special_sale_price, delivery, state,"
-            + " deposit_date, date_of_sale, sale_withdrawal_date, seller"
+    PreparedStatement ps = this.dalServices
+        .getPreparedStatement("SELECT furniture_id," + " type, buyer, furniture_title,"
+            + " purchase_price, furniture_date_collection ,selling_price,"
+            + " special_sale_price,delivery,state_furniture,deposit_date,"
+            + " date_of_sale, sale_withdrawal_date, seller"
             + " FROM projet.furnitures WHERE id_furniture = ?");
     FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
     try {
@@ -58,10 +59,10 @@ public class FurnitureDAOImpl implements FurnitureDAO {
 
   @Override
   public List<FurnitureDTO> getAll() {
-    PreparedStatement ps = this.dalServices.getPreparedStatement(
-        "SELECT furniture_id," + " type,state_furniture, buyer, furniture_title,"
-            + " purchase_price, furniture_date_collection ,"
-            + " selling_price,special_sale_price,deposit_date,"
+    PreparedStatement ps = this.dalServices
+        .getPreparedStatement("SELECT furniture_id," + " type, buyer, furniture_title,"
+            + " purchase_price, furniture_date_collection ,selling_price,"
+            + " special_sale_price,delivery,state_furniture,deposit_date,"
             + " date_of_sale, sale_withdrawal_date, seller" + " FROM projet.furnitures");
 
     FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
@@ -73,7 +74,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
         list.add(furniture);
       }
     } catch (SQLException e) {
-      throw new FatalException("error fullFillFurnitures", e);
+      throw new FatalException("error getAll", e);
     }
 
 
