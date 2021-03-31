@@ -7,6 +7,7 @@ import be.vinci.pae.domaine.FurnitureUCC;
 import be.vinci.pae.domaine.FurnitureUCCImpl;
 import be.vinci.pae.domaine.UserUCC;
 import be.vinci.pae.domaine.UserUCCImpl;
+import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.DalServicesImpl;
 import be.vinci.pae.services.FurnitureDAO;
@@ -24,7 +25,8 @@ public class ApplicationBinder extends AbstractBinder {
     bind(DomaineFactoryImpl.class).to(DomaineFactory.class).in(Singleton.class);
     bind(UserDAOImpl.class).to(UserDAO.class).in(Singleton.class);
     bind(UserUCCImpl.class).to(UserUCC.class).in(Singleton.class);
-    bind(DalServicesImpl.class).to(DalServices.class).in(Singleton.class);
+    bind(DalServicesImpl.class).to(DalBackendServices.class).to(DalServices.class)
+        .in(Singleton.class);
     bind(FurnitureUCCImpl.class).to(FurnitureUCC.class).in(Singleton.class);
     bind(FurnitureDAOImpl.class).to(FurnitureDAO.class).in(Singleton.class);
   }

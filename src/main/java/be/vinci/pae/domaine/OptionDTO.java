@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = OptionImpl.class)
-public interface Option {
+public interface OptionDTO {
 
   int getId();
 

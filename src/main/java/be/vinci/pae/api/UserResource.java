@@ -14,7 +14,7 @@ import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.api.utils.FatalException;
 import be.vinci.pae.api.utils.Json;
-import be.vinci.pae.domaine.Address;
+import be.vinci.pae.domaine.AddressDTO;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.UserDTO;
 import be.vinci.pae.domaine.UserUCC;
@@ -198,18 +198,18 @@ public class UserResource {
     user.setEmail(json.get("email").asText());
     user.setPassword(json.get("password").asText());
 
-    Address address = domaineFactory.getAdress();
+    AddressDTO addressDTO = domaineFactory.getAdress();
 
-    address.setBuildingNumber(json.get("building_number").asText());
-    address.setCommune(json.get("commune").asText());
-    address.setPostCode(json.get("postcode").asText());
-    address.setStreet(json.get("street").asText());
-    address.setUnitNumber(json.get("unit_number").asText());
-    address.setCountry(json.get("country").asText());
+    addressDTO.setBuildingNumber(json.get("building_number").asText());
+    addressDTO.setCommune(json.get("commune").asText());
+    addressDTO.setPostCode(json.get("postcode").asText());
+    addressDTO.setStreet(json.get("street").asText());
+    addressDTO.setUnitNumber(json.get("unit_number").asText());
+    addressDTO.setCountry(json.get("country").asText());
     LocalDateTime now = LocalDateTime.now();
     Timestamp timestamp = Timestamp.valueOf(now);
     user.setRegistrationDate(timestamp);
-    userUcc.register(user, address);
+    userUcc.register(user, addressDTO);
 
     return Response.ok().build();
   }

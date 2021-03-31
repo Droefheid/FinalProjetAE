@@ -4,7 +4,7 @@ By default, all escape sequences in a template literal are ignored.*/
 import { getUserSessionData, setUserSessionData } from "../utils/session.js";
 import { RedirectUrl } from "./Router.js";
 import Navbar from "./Navbar.js";
-import { API_URL, ALERT_BOX } from "../utils/server.js";
+import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
 
 let remember = false;
@@ -82,8 +82,7 @@ const onLogin = (e) => {
   })
     .then((response) => {
       if (!response.ok) {
-        return response.text().then(errMsg => { throw new Error(errMsg) })
-        .catch((err) => onError(err));
+        return response.text().then((err) => onError(err));
       }
       else
         return response.json().then((data) => onUserLogin(data));
