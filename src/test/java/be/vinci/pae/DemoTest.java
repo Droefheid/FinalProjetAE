@@ -37,7 +37,7 @@ public class DemoTest {
     this.userDAO = locator.getService(UserDAO.class);
 
     userDTO = domaineFactory.getUserDTO();
-    addressDTO = domaineFactory.getAdress();
+    addressDTO = domaineFactory.getAdressDTO();
   }
 
   /**

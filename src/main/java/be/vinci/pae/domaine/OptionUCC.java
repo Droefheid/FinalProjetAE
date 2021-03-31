@@ -2,7 +2,7 @@ package be.vinci.pae.domaine;
 
 public interface OptionUCC {
 
-  OptionDTO addOption();
+  void introduceOption(OptionDTO option);
 
   OptionDTO stopOption();
 }

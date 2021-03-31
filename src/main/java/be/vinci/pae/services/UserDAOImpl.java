@@ -133,35 +133,6 @@ public class UserDAOImpl implements UserDAO {
   }
 
   @Override
-  public AddressDTO getAddressById(int addressId) {
-    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
-        "SELECT address_id,street," + "building_number,postcode,commune,country,unit_number "
-            + "FROM projet.addresses WHERE address_id=?");
-    AddressDTO adresse = domaineFactory.getAdress();
-    try {
-      ps.setInt(1, addressId);
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-          if (rs.getInt(1) <= 0) {
-            return null;
-          }
-          adresse.setID(rs.getInt(1));
-          adresse.setStreet(rs.getString(2));
-          adresse.setBuildingNumber(rs.getString(3));
-          adresse.setPostCode(rs.getString(4));
-          adresse.setCommune(rs.getString(5));
-          adresse.setCountry(rs.getString(6));
-          adresse.setUnitNumber(rs.getString(7));
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-      throw new FatalException(e.getMessage(), e);
-    }
-    return adresse;
-  }
-
-  @Override
   public int getAddressByInfo(String street, String buildingNumber, String commune,
       String country) {
     PreparedStatement ps = this.dalBackendServices

@@ -30,7 +30,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 
 @Singleton
 @Path("/users")
@@ -71,11 +70,6 @@ public class UserResource {
 
 
     UserDTO user = this.userUcc.login(json.get("username").asText(), json.get("password").asText());
-
-    if (user == null) {
-      return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")
-          .type(MediaType.TEXT_PLAIN).build();
-    }
 
     ObjectNode node = createToken(user);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
@@ -198,7 +192,7 @@ public class UserResource {
     user.setEmail(json.get("email").asText());
     user.setPassword(json.get("password").asText());
 
-    AddressDTO addressDTO = domaineFactory.getAdress();
+    AddressDTO addressDTO = domaineFactory.getAdressDTO();
 
     addressDTO.setBuildingNumber(json.get("building_number").asText());
     addressDTO.setCommune(json.get("commune").asText());
