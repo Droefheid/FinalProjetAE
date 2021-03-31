@@ -12,6 +12,7 @@ import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.FurnitureDTO;
 import be.vinci.pae.domaine.FurnitureUCC;
+import be.vinci.pae.domaine.UserDTO;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -62,10 +63,10 @@ public class FurnitureResource {
   @Path("/update")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response updateFurniture(@Context ContainerRequest request, JsonNode json) {
-    /*
-     * UserDTO currentUser = (UserDTO) request.getProperty("user"); if (currentUser == null || !currentUser.isBoss()) { throw new
-     * BusinessException("You dont have the permission.", HttpStatus.BAD_REQUEST_400); }
-     */
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    if (currentUser == null || !currentUser.isBoss()) {
+      throw new BusinessException("You dont have the permission.", HttpStatus.BAD_REQUEST_400);
+    }
 
     checkAllCredentialFurniture(json); // pourrais renvoyer le type si besoin en dessous.
     FurnitureDTO furniture = createFullFillFurniture(json);
