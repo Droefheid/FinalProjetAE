@@ -31,7 +31,6 @@ let homePage = `
   </div>
 </div>
 `;
-// TODO il faut remplacer les 3 images de Test par un caroussel.
 
 const HomePage = () => {   
    Sidebar(true);

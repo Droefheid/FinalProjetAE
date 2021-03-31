@@ -1,4 +1,4 @@
-import { getUserSessionData } from "../utils/session";
+import { getUserSessionData, getTokenSessionDate } from "../utils/session";
 import Sidebar from "./SideBar";
 import { RedirectUrl } from "./Router.js";
 import Navbar from "./Navbar.js";
@@ -86,15 +86,15 @@ const ModificationFurniturePage = () => {
     Sidebar(true);
 
     const user = getUserSessionData();
-    /*if (!user || !user.isBoss) {
+    if (!user || !user.isBoss) {
         // re-render the navbar for the authenticated user.
         Navbar();
         RedirectUrl("/");
-    } else {*/
+    } else {
         page.innerHTML = modifPage;
         let form = document.querySelector("#update");
         form.addEventListener("submit", onSubmit);
-    //}
+    }
 };
 
 const onSubmit = (e) => {
@@ -233,22 +233,22 @@ const onSubmit = (e) => {
       "pickUpDate": pickUpDate,
     };
   
+    let id = getTokenSessionDate();
     fetch(API_URL + "furnitures/update", {
       method: "POST", 
       body: JSON.stringify(furniture), 
       headers: {
         "Content-Type": "application/json",
+        "Authorization": id,
       },
     })
       .then((response) => {
-        if (!response.ok)
-          throw new Error(
-            "Error code : " + response.status + " : " + response.statusText
-          );
-        return response.json();
-      })
-      .then((data) => onFurnitureUpdate(data))
-      .catch((err) => onError(err));
+        if (!response.ok) {
+          return response.text().then((err) => onError(err));
+        }
+        else
+          return response.json().then((data) => onFurnitureUpdate(data));
+      });
 };
   
 const onFurnitureUpdate = (furnitureData) => {
@@ -268,4 +268,4 @@ const onError = (err) => {
     }
 };
  
- export default ModificationFurniturePage;
+export default ModificationFurniturePage;

@@ -4,13 +4,16 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import org.glassfish.grizzly.http.util.HttpStatus;
+import org.glassfish.jersey.server.ContainerRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.FurnitureDTO;
 import be.vinci.pae.domaine.FurnitureUCC;
+import be.vinci.pae.domaine.UserDTO;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -18,6 +21,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -59,8 +63,12 @@ public class FurnitureResource {
   @POST
   @Path("/update")
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response updateFurniture(JsonNode json) {
-    System.out.println("FurnitureRessource");
+  @Authorize
+  public Response updateFurniture(@Context ContainerRequest request, JsonNode json) {
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    if (currentUser == null || !currentUser.isBoss()) {
+      throw new BusinessException("You dont have the permission.", HttpStatus.BAD_REQUEST_400);
+    }
 
     checkAllCredentialFurniture(json); // pourrais renvoyer le type si besoin en dessous.
     FurnitureDTO furniture = createFullFillFurniture(json);

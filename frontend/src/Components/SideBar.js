@@ -16,14 +16,8 @@ const Sidebar = (needed) => {
 
     let sidebar = "";
 
-    // A ENLEVER !!!!!!!!!
-    let user = getUserSessionData();
-    if(user) user.isBoss = true;
-    else user = {isBoss: true}
-    // JUSQUE ICI !!!!!!!!
-
     // Add new navbar on the left if is boss
-    //let user = getUserSessionData();
+    let user = getUserSessionData();
     if(user && user.isBoss){
       sidebar += `
       <div class="onLeft">
