@@ -1,8 +1,10 @@
 package be.vinci.pae.services;
 
+
 import java.util.List;
 
-import be.vinci.pae.domaine.Address;
+import be.vinci.pae.domaine.AddressDTO;
+
 import be.vinci.pae.domaine.UserDTO;
 
 public interface UserDAO {
@@ -16,18 +18,10 @@ public interface UserDAO {
   /**
    * insert an address into the DB.
    * 
-   * @param address to be inserted.
+   * @param addressDTO to be inserted.
    * @return the id of the address or -1 if address already exists.
    */
-  int registerAddress(Address address);
-
-  /**
-   * Fetch an adress with the address_id.
-   * 
-   * @param address id.
-   * @return the address that is linked to the parameter id or null if inexistant.
-   */
-  Address getAddressById(int address);
+  int registerAddress(AddressDTO addressDTO);
 
   /**
    * fetch an address with the corresponding information.

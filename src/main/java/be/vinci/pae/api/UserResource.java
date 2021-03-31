@@ -17,7 +17,7 @@ import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.api.utils.FatalException;
 import be.vinci.pae.api.utils.Json;
-import be.vinci.pae.domaine.Address;
+import be.vinci.pae.domaine.AddressDTO;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.UserDTO;
 import be.vinci.pae.domaine.UserUCC;
@@ -33,7 +33,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 
 @Singleton
 @Path("/users")
@@ -74,12 +73,10 @@ public class UserResource {
 
 
     UserDTO user = this.userUcc.login(json.get("username").asText(), json.get("password").asText());
-
-    if (user == null) {
-      return Response.status(Status.UNAUTHORIZED).entity("Username or password incorrect")
-          .type(MediaType.TEXT_PLAIN).build();
+    if (!user.isConfirmed()) {
+      throw new BusinessException("This account hasn't been confirmed by an admin yet",
+          HttpStatus.BAD_REQUEST_400);
     }
-
     ObjectNode node = createToken(user);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
@@ -230,18 +227,18 @@ public class UserResource {
     user.setEmail(json.get("email").asText());
     user.setPassword(json.get("password").asText());
 
-    Address address = domaineFactory.getAdress();
+    AddressDTO addressDTO = domaineFactory.getAdressDTO();
 
-    address.setBuildingNumber(json.get("building_number").asText());
-    address.setCommune(json.get("commune").asText());
-    address.setPostCode(json.get("postcode").asText());
-    address.setStreet(json.get("street").asText());
-    address.setUnitNumber(json.get("unit_number").asText());
-    address.setCountry(json.get("country").asText());
+    addressDTO.setBuildingNumber(json.get("building_number").asText());
+    addressDTO.setCommune(json.get("commune").asText());
+    addressDTO.setPostCode(json.get("postcode").asText());
+    addressDTO.setStreet(json.get("street").asText());
+    addressDTO.setUnitNumber(json.get("unit_number").asText());
+    addressDTO.setCountry(json.get("country").asText());
     LocalDateTime now = LocalDateTime.now();
     Timestamp timestamp = Timestamp.valueOf(now);
     user.setRegistrationDate(timestamp);
-    userUcc.register(user, address);
+    userUcc.register(user, addressDTO);
 
     return Response.ok().build();
   }

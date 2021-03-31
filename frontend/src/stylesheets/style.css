@@ -1,23 +1,9 @@
-
-#page{
-
-  background: #ccc;
-  height: 70vh;
-  position: relative;
-   width: 100%;
-   min-width: 100%;
-   padding-left: 20px;
-   padding-right: 20px;
-
-}
 #footer {
   position: fixed;
   bottom: 0;
 }
 
-div.card{
-
- 
+.containerForm {
   background: white;
   padding: 20px 25px;
   border: 5px solid #26a69a;
@@ -25,9 +11,7 @@ div.card{
   height: auto;
   box-sizing: border-box;
   position: relative;
-
-
-
+  animation: showUp 0.5s cubic-bezier(0.18, 1.3, 1, 1) forwards;
 }
 #footer {
   position:fixed;
@@ -38,8 +22,60 @@ div.card{
   width: 100%;
 }
 
-.container {
-  animation: showUp 0.5s cubic-bezier(0.18, 1.3, 1, 1) forwards;
+@keyframes showUp {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transoform: scale(1);
+  }
+}
+
+
+.ngl {
+  position: absolute;
+  top: -20px;
+  right: -20px;
+}
+
+.footer #button{
+	width:35px;
+	height:35px;
+	border: #727172 12px solid;
+	border-radius:35px;
+	margin:0 auto;
+	position:relative;
+	-webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    -ms-transition: all 1s ease;
+    transition: all 1s ease;
+}
+.footer #button:hover{
+	width:35px;
+	height:35px;
+	border: #3A3A3A 12px solid;
+	-webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    -ms-transition: all 1s ease;
+    transition: all 1s ease;
+	position:relative;
+}
+.footer {
+	bottom:0;
+	left:0;
+	position:fixed;
+    width: 100%;
+    height: 2em;
+    overflow:hidden;
+    margin:0 auto;
+	-webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    -ms-transition: all 1s ease;
+    transition: all 1s ease;
+	z-index:999;
 }
 .footer:hover {
   -webkit-transition: all 1s ease;
@@ -71,40 +107,37 @@ div.card{
   float: left;
   text-align: center;
 }
-.footer:hover {
-  -webkit-transition: all 1s ease;
-  -moz-transition: all 1s ease;
-  -o-transition: all 1s ease;
-  -ms-transition: all 1s ease;
-  transition: all 1s ease;
-  height: 10em;
-}
-.footer #container {
-  margin-top: 5px;
-  width: 100%;
-  height: 100%;
-  position: relative;
-  top: 0;
-  left: 0;
-  background: #3a3a3a;
-}
-.footer #cont {
-  position: relative;
-  top: -45px;
-  right: 190px;
-  width: 150px;
-  height: auto;
-  margin: 0 auto;
-}
-.footer_center {
-  width: 500px;
-  float: left;
-  text-align: center;
+.footer h3{
+	font-family: 'Helvetica';
+	font-size: 30px;
+	font-weight: 100;
+	margin-top:70px;
+	margin-left:40px;
 }
 
 /* Placements */
 .absolute {
   position: absolute;
+}
+
+.relative {
+  position: relative;
+}
+
+.moveOnRight {
+  left: 10%;
+}
+
+.onLeft {
+  position: absolute;
+  left: 0%;
+  background-color: white;
+  width: 200px;
+}
+
+/* Button resizing */
+.samebutton {
+  width: 180px;
 }
 
 /* Images resizing */
@@ -118,7 +151,6 @@ div.card{
   width: 0;
   position: absolute;
   z-index: 1;
-  top: 40;
   left: 0;
   background-color: #111;
   overflow-x: hidden;
@@ -126,6 +158,10 @@ div.card{
   padding-top: 60px;
   padding-left: 0px;
   margin-left: 0px;
+}
+
+.patron {
+  top: 55%;
 }
 
 .sidenav a {
@@ -152,9 +188,8 @@ div.card{
 
 /* Button Of the SideBar */
 .transitionButton {
-  position: absolute;
+position: absolute;
   transition: 0.5s;
-  top: 40;
   right: 25px;
   font-size: 36px;
   background-color: #111;
@@ -269,4 +304,10 @@ div.card{
 #description_furniture {
   display: block;
   text-align: center;
+}
+
+/* HOME PAGE */
+
+.carousel .item {
+  height: 500px;
 }

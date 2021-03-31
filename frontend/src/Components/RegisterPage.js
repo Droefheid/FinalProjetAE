@@ -1,10 +1,9 @@
 import { RedirectUrl } from "./Router.js";
-import Navbar from "./Navbar.js";
 import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
 
 let registerPage = `
-<div class="container">
+<div class="containerForm">
  <div class="d-flex justify-content-center h-100">
   <div class="card">
     <div class="card-header">
@@ -155,7 +154,7 @@ let registerPage = `
 
 const RegisterPage = () => {
   Sidebar();
-  let page = document.querySelector("#content");
+  let page = document.querySelector("#page");
   page.innerHTML = registerPage;
   let registerForm = document.querySelector("form");
   registerForm.addEventListener("submit", onRegister);
@@ -163,6 +162,12 @@ const RegisterPage = () => {
 
 const onRegister = (e) => {
   e.preventDefault();
+  let confirmPassword = document.getElementById("confirm_password").value;
+  let password = document.getElementById("password").value;
+  if(confirmPassword !==password){
+    onError("Passwords aren't identical");
+  }
+ else {
   let user = {
     email: document.getElementById("email").value,
     password: document.getElementById("password").value,
@@ -186,12 +191,12 @@ const onRegister = (e) => {
   })
     .then((response) => {
       if (!response.ok) {
-        return response.text().then(errMsg => { throw new Error(errMsg) })
-        .catch((err) => onError(err));
+        return response.text().then((err) => onError(err));
       }
       else
         return onUserRegistration();
     })
+  }
 };
 
 const onUserRegistration = () => {
