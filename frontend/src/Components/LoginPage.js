@@ -9,7 +9,7 @@ import Sidebar from "./SideBar.js";
 
 let remember = false;
 
-let loginPage = `<div class="container">
+let loginPage = `<div class="containerForm">
 <div class="d-flex justify-content-center h-100 mt-4">
   <div class="card">
     <div class="card-header">
@@ -50,7 +50,7 @@ let loginPage = `<div class="container">
 const LoginPage = () => {
   Sidebar();
 
-  let page = document.querySelector("#content");
+  let page = document.querySelector("#page");
   page.innerHTML = loginPage;
   let loginForm = document.querySelector("form");
   const user = getUserSessionData();

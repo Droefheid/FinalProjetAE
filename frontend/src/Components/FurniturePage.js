@@ -4,7 +4,7 @@ import { setUserSessionData } from "../utils/session.js";
 import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
 
-let page = document.querySelector("#content");
+let page = document.querySelector("#page");
 
 const FurniturePage = async () => {
   Sidebar(true);
@@ -116,7 +116,7 @@ const onFurnitureDescription = (data) => {
 };
 
 const onError = (err) => {
-  let messageBoard = document.querySelector("#messageBoardForm");
+  let messageBoard = document.querySelector("#messageBoard");
   messageBoard.innerHTML = err;
 };
 
