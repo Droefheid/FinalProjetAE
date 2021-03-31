@@ -162,6 +162,12 @@ const RegisterPage = () => {
 
 const onRegister = (e) => {
   e.preventDefault();
+  let confirmPassword = document.getElementById("confirm_password").value;
+  let password = document.getElementById("password").value;
+  if(confirmPassword !==password){
+    onError("Passwords aren't identical");
+  }
+ else {
   let user = {
     email: document.getElementById("email").value,
     password: document.getElementById("password").value,
@@ -190,6 +196,7 @@ const onRegister = (e) => {
       else
         return onUserRegistration();
     })
+  }
 };
 
 const onUserRegistration = () => {

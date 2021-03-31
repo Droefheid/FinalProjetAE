@@ -89,6 +89,9 @@ public class UserDAOImpl implements UserDAO {
     if (findByUserName(user.getUserName()) != null) {
       return null;
     }
+    if (findByEmail(user.getEmail()) != null) {
+      return null;
+    }
     PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
         "INSERT INTO projet.users VALUES(DEFAULT,?,?,?,?,?,?,DEFAULT,DEFAULT,DEFAULT,?)");
     try {
@@ -105,6 +108,25 @@ public class UserDAOImpl implements UserDAO {
       throw new FatalException(e.getMessage(), e);
     }
     return findByUserName(user.getUserName());
+  }
+
+  private UserDTO findByEmail(String email) {
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
+        "SELECT user_id, username, first_name, last_name, address, email, is_boss,"
+            + " is_antique_dealer, is_confirmed, registration_date, password"
+            + " FROM projet.users WHERE email = ?");
+    UserDTO user = domaineFactory.getUserDTO();
+    try {
+      ps.setString(1, email);
+      user = fullFillUserFromResulSet(user, ps);
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
+    if (user.getEmail() == null) {
+      return null;
+    }
+    return user;
   }
 
   @Override

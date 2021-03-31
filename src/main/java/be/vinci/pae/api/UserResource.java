@@ -70,7 +70,10 @@ public class UserResource {
 
 
     UserDTO user = this.userUcc.login(json.get("username").asText(), json.get("password").asText());
-
+    if (!user.isConfirmed()) {
+      throw new BusinessException("This account hasn't been confirmed by an admin yet",
+          HttpStatus.BAD_REQUEST_400);
+    }
     ObjectNode node = createToken(user);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
