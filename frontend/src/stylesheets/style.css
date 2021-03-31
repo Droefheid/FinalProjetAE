@@ -220,6 +220,6 @@
 
 /* HOME PAGE */
 
-.carousel .item {
-  height: 500px;
+.centrer {
+  padding: 30px 200px;
 }
