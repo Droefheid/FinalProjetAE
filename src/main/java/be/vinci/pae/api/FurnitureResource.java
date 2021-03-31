@@ -248,7 +248,7 @@ public class FurnitureResource {
     return furniture;
   }
 
-  
+
   /**
    * Get the furniture with an ID if exists or send error message.
    * 
@@ -262,7 +262,7 @@ public class FurnitureResource {
     if (id < 1) {
       throw new BusinessException("Id cannot be under 1", HttpStatus.BAD_REQUEST_400);
     }
-    FurnitureDTO furniture = this.furnitureUcc.findById(id);
+    FurnitureDTO furniture = this.furnitureUCC.findById(id);
 
     ObjectNode node = jsonMapper.createObjectNode().putPOJO("furniture", furniture);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();

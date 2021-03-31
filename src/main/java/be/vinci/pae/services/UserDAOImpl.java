@@ -19,7 +19,7 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public UserDTO findByUserName(String username) {
-    PreparedStatement ps = this.dalServices.getPreparedStatement(
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
         "SELECT user_id, username, first_name, last_name, address, email, is_boss,"
             + " is_antique_dealer, is_confirmed, registration_date, password"
             + " FROM projet.users WHERE username = ?");
