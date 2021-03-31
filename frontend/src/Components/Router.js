@@ -6,6 +6,7 @@ import LogoutComponent from "./LogoutComponent.js";
 import OptionComponent from "./OptionComponent.js";
 import ErrorPage from "./ErrorPage.js";
 import FurniturePage from "./FurniturePage.js";
+import ConfirmUserPage from "./ConfirmUserPage.js";
 
 const routes = {
   "/": HomePage,
@@ -15,6 +16,7 @@ const routes = {
   "/logout": LogoutComponent,
   "/option": OptionComponent,
   "/furniture": FurniturePage,
+  "/confirmUser": ConfirmUserPage,
   "/error": ErrorPage,
 };
 

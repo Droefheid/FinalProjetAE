@@ -62,10 +62,10 @@ const Navbar = () => {
       <a class="btn btn-info" href="#" data-uri="/furniture" style="margin:15px;">See all the furnitures</a>
       <a class="btn btn-info" href="#" data-uri="" style="margin:15px;">See my furniture</a>
       <a class="btn btn-info" href="#" data-uri="" style="margin:15px;">Introduce a visit</a>
+       <a class="btn btn-info" href="#" data-uri="/option" style="margin:15px;">Introduce an option</a>
+    <a class="btn btn-info" href="#" data-uri="/confirmUser" style="margin:15px;">Confirm a user</a>
     </div>
-    <div class="navbar navbar-nav ml-auto mr-auto pt-3">
-    <a class="btn btn-info" href="#" data-uri="/option">Introduire Option</a>
-  </div>
+    
 </nav>`;
 
   return (navBar.innerHTML = navbar);
