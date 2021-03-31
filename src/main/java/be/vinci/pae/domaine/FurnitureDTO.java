@@ -23,6 +23,10 @@ public interface FurnitureDTO {
 
   void setFurnitureTitle(String furnitureTitle);
 
+  Timestamp getPickUpDate();
+
+  void setPickUpDate(Timestamp pickUpDate);
+
   float getPurchasePrice();
 
   void setPurchasePrice(float purchasePrice);
@@ -46,7 +50,7 @@ public interface FurnitureDTO {
   String getState();
 
   /**
-   * set the state of the furniture.
+   * set the state of the furniture if it is correct.
    * 
    * @param state the new state of the furniture.
    */

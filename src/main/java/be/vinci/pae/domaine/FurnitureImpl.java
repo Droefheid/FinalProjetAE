@@ -2,6 +2,8 @@ package be.vinci.pae.domaine;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
+import org.glassfish.grizzly.http.util.HttpStatus;
+import be.vinci.pae.api.utils.BusinessException;
 
 public class FurnitureImpl implements FurnitureDTO {
 
@@ -14,12 +16,14 @@ public class FurnitureImpl implements FurnitureDTO {
   private float sellingPrice;
   private float specialSalePrice;
   private int delivery;
-  private static final String[] STATES = {"R", "V", "A", "O", "RE", "VE"};
+  private static final String[] STATES =
+      {"ER", "M", "EV", "O", "V", "EL", "L", "AE", "E", "R", "RE"};
   private String state;
   private Timestamp depositDate;
   private Timestamp dateOfSale;
   private Timestamp saleWithdrawalDate;
   private int seller;
+  private Timestamp pickUpDate;
 
 
   public int getFurnitureId() {
@@ -52,6 +56,14 @@ public class FurnitureImpl implements FurnitureDTO {
 
   public void setFurnitureTitle(String furnitureTitle) {
     this.furnitureTitle = furnitureTitle;
+  }
+
+  public Timestamp getPickUpDate() {
+    return pickUpDate;
+  }
+
+  public void setPickUpDate(Timestamp pickUpDate) {
+    this.pickUpDate = pickUpDate;
   }
 
   public float getPurchasePrice() {
@@ -106,6 +118,8 @@ public class FurnitureImpl implements FurnitureDTO {
   public void setState(String state) {
     if (Arrays.asList(STATES).contains(state)) {
       this.state = state;
+    } else {
+      throw new BusinessException("State does not exist ", HttpStatus.BAD_REQUEST_400);
     }
   }
 

@@ -35,6 +35,14 @@ const getUserSessionData = () => {
   return user_me.itself;
 };
 
+const getTokenSessionDate = () => {
+  let retrievedToken = localStorage.getItem(STORE_NAME);
+  if (!retrievedToken) {
+    retrievedToken = sessionStorage.getItem(STORE_NAME);
+  }
+  return retrievedToken;
+}
+
 const setUserSessionData = (user, isRemember) => {
   const storageValue = JSON.stringify(user.token);
   if(isRemember) localStorage.setItem(STORE_NAME, storageValue);
@@ -62,4 +70,4 @@ const checkTokenOnLoad = () => {
   VerifyUserToken(retrievedToken, isLocalToken); //TODO /me avec un token
 };
 
-export { getUserSessionData, setUserSessionData, removeSessionData, checkTokenOnLoad };
+export { getUserSessionData, getTokenSessionDate, setUserSessionData, removeSessionData, checkTokenOnLoad };

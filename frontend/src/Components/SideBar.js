@@ -1,3 +1,5 @@
+import { getUserSessionData } from "../utils/session.js";
+
 let sideBar = document.querySelector("#sideBar");
 let movingRow = document.querySelector("#movingRow");
 
@@ -9,11 +11,28 @@ const Sidebar = (needed) => {
     }
 
     // Add padding.
-    movingRow.className.replace("noPaddingForSideBar", "smoothTransition");
-    movingRow.className += " smoothTransition";
+    //movingRow.className.replace("noPaddingForSideBar", "smoothTransition");
+    movingRow.className = "row justify-content-center mt-5 smoothTransition";
+
+    let sidebar = "";
+
+    // Add new navbar on the left if is boss
+    let user = getUserSessionData();
+    if(user && user.isBoss){
+      sidebar += `
+      <div class="onLeft">
+        <div class="navbar navbar-nav ml-auto mr-auto pt-3">
+          <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/login">Liste d'inscriptions</a>
+              <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/login">Liste des clients</a>
+              <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/login">Ajouter un meuble</a>
+              <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/login">Validation des visites</a>
+              <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/login">Liste des visites</a>
+        </div>
+      </div>`;
+    }
 
     // SideBar Content.
-    let sidebar = `<!-- SideBar -->
+    sidebar += `<!-- SideBar -->
     <div id="mySidenav" class="sidenav">
       <form class="mb-5 pb-4">
           <div class="form-group form-check">
@@ -66,7 +85,16 @@ const Sidebar = (needed) => {
     '>&#9776;</a>
     </div><div class="pb-4"></div>`;
 
-    return (sideBar.innerHTML = sidebar);
+    sideBar.innerHTML = sidebar;
+
+    // Change position of sidebar if is boss
+    if(user && user.isBoss){
+      let mySidenav = document.querySelector("#mySidenav");
+      let mySidenavButton = document.querySelector("#mySidenavButton");
+
+      mySidenav.className += " patron";
+      mySidenavButton.className += " patron";
+    }
 };
 
 export default Sidebar;

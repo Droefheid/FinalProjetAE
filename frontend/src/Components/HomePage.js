@@ -1,7 +1,7 @@
 import { getUserSessionData } from "../utils/session";
 import Sidebar from "./SideBar";
 
-let page = document.querySelector("#content");
+let page = document.querySelector("#page");
 
 let homePage = `
 
@@ -31,7 +31,6 @@ let homePage = `
   </div>
 </div>
 `;
-// TODO il faut remplacer les 3 images de Test par un caroussel.
 
 const HomePage = () => {   
    Sidebar(true);
