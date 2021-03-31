@@ -90,9 +90,9 @@ const ModificationFurniturePage = (furniture) => {
         Navbar();
         RedirectUrl("/");
     } else {
-        let modifPage = `
+        /*let modifPage = `
             <form id="update" class="form-inline">
-                <input id="furnitureId" value="${furniture.id}"`
+                <input id="furnitureId" value="${furniture.id}"`;*/
 
 
 
