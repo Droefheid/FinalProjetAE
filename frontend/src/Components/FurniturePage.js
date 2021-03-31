@@ -109,6 +109,7 @@ const onFurnitureDescription = (data) => {
     <p>Type : ${data.furniture.type} </br>
        State : ${data.furniture.state}
          </p>
+         <button type="button" class="btn btn-primary">Option</button>
   </div>`;
 
   info.innerHTML = description; 

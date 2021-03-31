@@ -24,7 +24,8 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
     bds.setDriverClassName(Config.getProperty("db.driver"));
     bds.setUsername(Config.getProperty("db.username"));
     bds.setPassword(Config.getProperty("db.password"));
-    bds.setMaxActive(50);
+    bds.setMaxActive(5);
+    bds.setDefaultAutoCommit(false);
   }
 
   /**
