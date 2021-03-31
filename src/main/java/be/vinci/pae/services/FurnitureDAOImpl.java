@@ -27,7 +27,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
             + " purchase_price, furniture_date_collection ,selling_price,"
             + " special_sale_price,delivery,state_furniture,deposit_date,"
             + " date_of_sale, sale_withdrawal_date, seller, pick_up_date"
-            + " FROM projet.furnitures WHERE id_furniture = ?");
+            + " FROM projet.furnitures WHERE furniture_id = ?");
     FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
     try {
       ps.setInt(1, id);
@@ -99,14 +99,14 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     try {
       furniture.setFurnitureId(rs.getInt(1));
       furniture.setType(rs.getInt(2));
-      furniture.setState(rs.getString(3));
-      furniture.setBuyer(rs.getInt(4));
-      furniture.setFurnitureTitle(rs.getString(5));
-      furniture.setPurchasePrice(rs.getFloat(6));
-      furniture.setFurnitureDateCollection(rs.getTimestamp(7));
-      furniture.setSellingPrice(rs.getFloat(8));
-      furniture.setSpecialSalePrice(rs.getFloat(9));
-      furniture.setDelivery(rs.getInt(10));
+      furniture.setBuyer(rs.getInt(3));
+      furniture.setFurnitureTitle(rs.getString(4));
+      furniture.setPurchasePrice(rs.getFloat(5));
+      furniture.setFurnitureDateCollection(rs.getTimestamp(6));
+      furniture.setSellingPrice(rs.getFloat(7));
+      furniture.setSpecialSalePrice(rs.getFloat(8));
+      furniture.setDelivery(rs.getInt(9));
+      furniture.setState(rs.getString(10));
       furniture.setDepositDate(rs.getTimestamp(11));
       furniture.setDateOfSale(rs.getTimestamp(12));
       furniture.setSaleWithdrawalDate(rs.getTimestamp(13));
@@ -116,7 +116,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     } catch (SQLException e) {
       throw new FatalException("error fullFillFurnitures", e);
     }
-    
+
     return furniture;
   }
 
