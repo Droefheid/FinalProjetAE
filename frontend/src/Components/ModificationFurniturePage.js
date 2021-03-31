@@ -4,7 +4,7 @@ import { RedirectUrl } from "./Router.js";
 import Navbar from "./Navbar.js";
 import { API_URL, ALERT_BOX } from "../utils/server.js";
 
-const STATES = [ "ER", "M", "EV", "O", "V", "EL", "L", "E", "R", "RE" ];
+const STATES = [ "ER", "M", "EV", "O", "V", "EL", "L", "AE", "E", "R", "RE" ];
 
 let page = document.querySelector("#page");
 
@@ -26,6 +26,7 @@ let modifPage = `
                     <option value="V">Vendu</option>
                     <option value="EL">En livraison</option>
                     <option value="L">Livré</option>
+                    <option value="AE">a emporté</option>
                     <option value="E">Emporté</option>
                     <option value="R">Reservé</option>
                     <option value="RE">Retiré</option>
@@ -52,7 +53,7 @@ let modifPage = `
         </div>
         <div class="col-sm-6 bg-warning">
             <label for="furnitureDateCollection">Date emporter: </label>
-            <input type="text" class="form-control" id="furnitureDateCollection" placeholder="Enter furnitureDateCollection" name="furnitureDateCollection" required>
+            <input type="text" class="form-control" id="furnitureDateCollection" placeholder="Enter furnitureDateCollection" name="furnitureDateCollection">
             <label for="dateOfSale">Date de vente: </label>
             <input type="text" class="form-control" id="dateOfSale" placeholder="Enter date Of Sale" name="dateOfSale">
             <label for="saleWithdrawalDate">Date de retrait: </label>
@@ -64,9 +65,18 @@ let modifPage = `
             <label for="specialSalePrice">Prix antiquaire: </label>
             <input type="text" class="form-control" id="specialSalePrice" placeholder="Enter special Sale Price" name="specialSalePrice">
             <label for="buyer">Acheteur: </label>
-            <input type="text" class="form-control" id="buyer" placeholder="Enter buyer" name="buyer">
+            <div class="form-group">
+                <select class="form-control" id="buyer" name="buyer">
+                    <option value="" selected>Nobody</option>
+                    <option value="1">Livi Satcho</option>
+                    <option value="2">George</option>
+                    <option value="3">Michael</option>
+                </select>
+            </div>
             <label for="delivery">Livraison: </label>
             <input type="text" class="form-control" id="delivery" placeholder="Enter delivery" name="delivery">
+            <label for="pickUpDate">Pick-up date: </label>
+            <input type="text" class="form-control" id="pickUpDate" placeholder="Enter pickUpDate" name="pickUpDate" required>
             <input type="submit" value="update" class="btn btn-lg btn-primary btn-block">
         </div>
     </div>
@@ -104,10 +114,11 @@ const onSubmit = (e) => {
     let dateOfSale = document.getElementById("dateOfSale").value;
     let saleWithdrawalDate = document.getElementById("saleWithdrawalDate").value;
     let seller = document.getElementById("seller").value;
+    let pickUpDate = document.getElementById("pickUpDate").value;
 
     // Required field.
     if(!furnitureId || !title || !state || !purchasePrice || !seller 
-        || !furnitureDateCollection || !type) {
+        || !pickUpDate || !type) {
         let messageBoard = document.querySelector("#messageBoardForm");
         messageBoard.innerHTML = '<div class="alert alert-danger">Something required is missing.</div>';
         return;
@@ -129,7 +140,7 @@ const onSubmit = (e) => {
         return onError(err);
     }
 
-    // Check about put for sale.
+    // Check about put up for sale.
     if(sellingPrice && sellingPrice != "0" && (state == "ER" || state == "M")) {
         let err = { message: "You cant have a selling price if the state is en restauration or en magasin." };
         return onError(err);
@@ -138,15 +149,22 @@ const onSubmit = (e) => {
         let err = { message: "You need a selling price if the furniture is not anymore en restauration or en magasin." };
         return onError(err);
     }
-
-    // Check for buyer.
-    if(!buyer && (state == "V" || state == "EL" || state == "L" || state == "E" || state == "R")) {
-        let err = { message: "You need a buyer if the state is vendu or en livraison or livre or emporte or reserve." };
+    if(sellingPrice < 0) {
+        let err = { message: "You cant have a negative selling price." };
         return onError(err);
     }
-    if(buyer && state != "V" && state != "EL" && state != "L" && state != "E" && state != "R") {
-        let err = { message: ("You cant have a buyer if the state is not vendu or not en livraison or not livre or" 
-        + " not emporte or not reserve.") };
+
+    // Check for buyer.
+    if(!buyer && (state == "V" || state == "EL" || state == "L" || state == "AE" || state == "E" 
+    || state == "R")) {
+        let err = { message: "You need a buyer if the state is sold, on delivery, "
+        + "delivered, to go, taken away or reserved." };
+        return onError(err);
+    }
+    if(buyer && state != "V" && state != "EL" && state != "L" && state != "AE" 
+    && state != "E" && state != "R") {
+        let err = { message: ("You cant have a buyer if the state is not vendu or "
+        + "not en livraison or not livre or not emporte or not reserve.") };
         return onError(err);
     }
     if(buyer && !dateOfSale) {
@@ -154,35 +172,46 @@ const onSubmit = (e) => {
         return onError(err);
     }
 
-    // Check about special sale.
-    if(specialSalePrice && specialSalePrice != "0" && (state == "ER" || state == "M" || state == "EV" || state == "O" || state == "RE")) {
-        let err = { message: ("You cant have a special sale price if the state is en restauration or en magasin or" 
-        + " en vente or sous option or retire.") };
-        return onError(err);
-    }
-    if((!specialSalePrice || specialSalePrice == "0") && state != "ER" && state != "M" && state != "EV" && state != "O" && state != "RE") {
-        let err = { message: ("You need a special sale price if the furniture is not anymore en restauration or en magasin or" 
-        + " en vente or sous option or retire.") };
-        return onError(err);
-    }
-    if(specialSalePrice && !buyer) {
-        let err = { message: "You need a buyer if the special price is specify." };
-        return onError(err);
-    }
-
-    // Check for saleWithdrawalDate.
-    if(saleWithdrawalDate && !buyer) {
-        let err = { message: "You need a buyer if the sale with drawal date is specify." };
-        return onError(err);
-    }
-    if(saleWithdrawalDate && delivery) {
-        let err = { message: "You cant have a sale with drawal date and a delivery." };
-        return onError(err);
-    }
-
     // Check for delivery
     if(delivery && !buyer) {
         let err = { message: "You need a buyer if the delivery is specify." };
+        return onError(err);
+    }
+    if(!delivery && (state == "EL" || state == "L")) {
+        let err = { message: "Delivery is needed if the state is on delivery or delivered." };
+        return onError(err);
+    }
+
+    // Check for take away.
+    if((state == "AE" || state == "E") && !furnitureDateCollection) {
+        let err = { message: "Furniture date collection is needed if the state is"
+        + " to go or take away." };
+        return onError(err);
+    }
+
+    // Check about special sale.
+    if(specialSalePrice && specialSalePrice != "0" && (state == "ER" || state == "M" 
+    || state == "EV" || state == "O" || state == "RE")) {
+        let err = { message: ("You cant have a special sale price if the state is "+
+        "on restoration, in shop, on sale, under option or withdraw.") };
+        return onError(err);
+    }
+    if(specialSalePrice && specialSalePrice != "0" && !buyer) {
+        let err = { message: "You need a buyer if the special price is specify." };
+        return onError(err);
+    }
+    if(specialSalePrice < 0) {
+        let err = { message: "You cant have a negative special sale price." };
+        return onError(err);
+    }
+
+    // Check for withdraw.
+    if(!saleWithdrawalDate && state == "RE") {
+        let err = { message: "Sale Withdrawal Date is needed if the state is withdraw." };
+        return onError(err);
+    }
+    if(saleWithdrawalDate && state != "RE") {
+        let err = { message: "The state need to be withdraw if a sale withdrawal date is specify." };
         return onError(err);
     }
   
@@ -201,6 +230,7 @@ const onSubmit = (e) => {
       "dateOfSale": dateOfSale,
       "saleWithdrawalDate": saleWithdrawalDate,
       "seller": seller,
+      "pickUpDate": pickUpDate,
     };
   
     fetch(API_URL + "furnitures/update", {

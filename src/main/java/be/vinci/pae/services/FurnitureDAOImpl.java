@@ -26,7 +26,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
         .getPreparedStatement("SELECT furniture_id," + " type, buyer, furniture_title,"
             + " purchase_price, furniture_date_collection ,selling_price,"
             + " special_sale_price,delivery,state_furniture,deposit_date,"
-            + " date_of_sale, sale_withdrawal_date, seller"
+            + " date_of_sale, sale_withdrawal_date, seller, pick_up_date"
             + " FROM projet.furnitures WHERE id_furniture = ?");
     FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
     try {
@@ -46,7 +46,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
   @Override
   public FurnitureDTO add(FurnitureDTO furniture) {
     PreparedStatement ps = this.dalServices.getPreparedStatement(
-        "INSERT INTO projet.furnitures " + "VALUES(DEFAULT,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        "INSERT INTO projet.furnitures " + "VALUES(DEFAULT,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
     try {
       setAllPsAttributNotNull(ps, furniture);
 
@@ -59,11 +59,11 @@ public class FurnitureDAOImpl implements FurnitureDAO {
 
   @Override
   public List<FurnitureDTO> getAll() {
-    PreparedStatement ps = this.dalServices
-        .getPreparedStatement("SELECT furniture_id," + " type, buyer, furniture_title,"
-            + " purchase_price, furniture_date_collection ,selling_price,"
-            + " special_sale_price,delivery,state_furniture,deposit_date,"
-            + " date_of_sale, sale_withdrawal_date, seller" + " FROM projet.furnitures");
+    PreparedStatement ps = this.dalServices.getPreparedStatement("SELECT furniture_id,"
+        + " type, buyer, furniture_title,"
+        + " purchase_price, furniture_date_collection ,selling_price,"
+        + " special_sale_price,delivery,state_furniture,deposit_date,"
+        + " date_of_sale, sale_withdrawal_date, seller, pick_up_date" + " FROM projet.furnitures");
 
     FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
     List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
@@ -87,7 +87,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
         + "SET type = ?" + ", state_furniture = ?, buyer = ?, furniture_title = ?,"
         + " purchase_price = ?, furniture_date_collection = ?, selling_price = ?,"
         + " special_sale_price = ?,deposit_date = ?, date_of_sale = ?,"
-        + " sale_withdrawal_date = ?, seller = ?" + " WHERE furniture_id = ?");
+        + " sale_withdrawal_date = ?, seller = ?, pick_up_date = ?" + " WHERE furniture_id = ?");
     try {
       setAllPsAttributNotNull(ps, furniture);
 
@@ -114,6 +114,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
       furniture.setDateOfSale(rs.getTimestamp(12));
       furniture.setSaleWithdrawalDate(rs.getTimestamp(13));
       furniture.setSeller(rs.getInt(14));
+      furniture.setPickUpDate(rs.getTimestamp(15));
 
     } catch (SQLException e) {
       throw new FatalException("error fullFillFurnitures", e);
@@ -136,5 +137,6 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     ps.setTimestamp(11, furniture.getDateOfSale());
     ps.setTimestamp(12, furniture.getSaleWithdrawalDate());
     ps.setInt(13, furniture.getSeller());
+    ps.setTimestamp(14, furniture.getPickUpDate());
   }
 }

@@ -16,12 +16,14 @@ public class FurnitureImpl implements FurnitureDTO {
   private float sellingPrice;
   private float specialSalePrice;
   private int delivery;
-  private static final String[] STATES = {"ER", "M", "EV", "O", "V", "EL", "L", "E", "R", "RE"};
+  private static final String[] STATES =
+      {"ER", "M", "EV", "O", "V", "EL", "L", "AE", "E", "R", "RE"};
   private String state;
   private Timestamp depositDate;
   private Timestamp dateOfSale;
   private Timestamp saleWithdrawalDate;
   private int seller;
+  private Timestamp pickUpDate;
 
 
   public int getFurnitureId() {
@@ -54,6 +56,14 @@ public class FurnitureImpl implements FurnitureDTO {
 
   public void setFurnitureTitle(String furnitureTitle) {
     this.furnitureTitle = furnitureTitle;
+  }
+
+  public Timestamp getPickUpDate() {
+    return pickUpDate;
+  }
+
+  public void setPickUpDate(Timestamp pickUpDate) {
+    this.pickUpDate = pickUpDate;
   }
 
   public float getPurchasePrice() {
