@@ -9,7 +9,6 @@ const STATES = [ "ER", "M", "EV", "O", "V", "EL", "L", "AE", "E", "R", "RE" ];
 let page = document.querySelector("#page");
 
 let modifPage = `
-<div class="container-fluid bg-danger relative">Hello World<div>
 <form id="update" class="form-inline">
     <input id="furnitureId" value="1" hidden>
     <div class="row">
@@ -82,7 +81,7 @@ let modifPage = `
     </div>
 </form><div>`;
 
-const ModificationFurniturePage = () => {    
+const ModificationFurniturePage = (furniture) => {    
     Sidebar(true);
 
     const user = getUserSessionData();
@@ -91,6 +90,12 @@ const ModificationFurniturePage = () => {
         Navbar();
         RedirectUrl("/");
     } else {
+        /*let modifPage = `
+            <form id="update" class="form-inline">
+                <input id="furnitureId" value="${furniture.id}"`;*/
+
+
+
         page.innerHTML = modifPage;
         let form = document.querySelector("#update");
         form.addEventListener("submit", onSubmit);
