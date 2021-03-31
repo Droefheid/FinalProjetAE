@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.auth0.jwt.JWT;
@@ -101,9 +100,9 @@ public class UserResource {
     ObjectNode node = createToken(user);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
-  
-  
-  
+
+
+
   /**
    * Get the user with an ID if exists or send error message.
    * 
@@ -121,15 +120,11 @@ public class UserResource {
     UserDTO user = this.userUcc.getUser(id);
 
     ObjectNode node = jsonMapper.createObjectNode().putPOJO("user", user);
-    
+
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
-  
-  
-  
-  
-  
-  
+
+
 
   /**
    * Get the user from an id in a token in header.
@@ -242,8 +237,8 @@ public class UserResource {
 
     return Response.ok().build();
   }
-  
-  
+
+
 
   /**
    * get all users.
@@ -259,8 +254,8 @@ public class UserResource {
     ObjectNode node = jsonMapper.createObjectNode().putPOJO("list", listUsers);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
-  
-  
+
+
   /**
    * update confirmation
    * 
@@ -270,10 +265,10 @@ public class UserResource {
   @Path("/updateConfirmed")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response updateConfirmed(JsonNode json) {
-    int user_id = json.get("user_id").asInt();
-    boolean antique_dealer  = json.get("is_antique_dealer").asBoolean();
+    int userId = json.get("user_id").asInt();
+    boolean antiqueDealer = json.get("is_antique_dealer").asBoolean();
     boolean confirmed = json.get("is_confirmed").asBoolean();
-    this.userUcc.updateConfirmed(confirmed, antique_dealer , user_id);
+    this.userUcc.updateConfirmed(confirmed, antiqueDealer, userId);
     return Response.ok(MediaType.APPLICATION_JSON).build();
   }
 

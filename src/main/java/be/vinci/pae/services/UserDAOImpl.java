@@ -208,15 +208,15 @@ public class UserDAOImpl implements UserDAO {
 
 
   @Override
-  public void updateConfirmed(boolean confirmed, boolean antique_dealer, int user_id) {
+  public void updateConfirmed(boolean confirmed, boolean antiqueDealer, int userId) {
     PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
         "UPDATE projet.users SET is_confirmed = ? , is_antique_dealer = ? WHERE user_id = ?");
 
 
     try {
       ps.setBoolean(1, confirmed);
-      ps.setBoolean(2, antique_dealer);
-      ps.setInt(3, user_id);
+      ps.setBoolean(2, antiqueDealer);
+      ps.setInt(3, userId);
       ps.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();

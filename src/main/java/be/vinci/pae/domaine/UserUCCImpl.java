@@ -70,9 +70,9 @@ public class UserUCCImpl implements UserUCC {
 
 
   @Override
-  public void updateConfirmed(boolean confirmed, boolean antique_dealer, int user_id) {
+  public void updateConfirmed(boolean confirmed, boolean antiqueDealer, int userId) {
     dalservices.startTransaction();
-    this.userDao.updateConfirmed(confirmed, antique_dealer, user_id);
+    this.userDao.updateConfirmed(confirmed, antiqueDealer, userId);
     dalservices.commitTransaction();
   }
 

@@ -2,9 +2,7 @@ package be.vinci.pae.services;
 
 
 import java.util.List;
-
 import be.vinci.pae.domaine.AddressDTO;
-
 import be.vinci.pae.domaine.UserDTO;
 
 public interface UserDAO {
@@ -36,14 +34,13 @@ public interface UserDAO {
 
   List<UserDTO> getAll();
 
- 
-
-void updateConfirmed(boolean confirmed, boolean antique_dealer, int user_id);
-
-  
 
 
-   // UserDTO updateBoss(UserDTO user, boolean is_boss);
+  void updateConfirmed(boolean confirmed, boolean antiqueDealer, int userId);
+
+
+
+  // UserDTO updateBoss(UserDTO user, boolean is_boss);
 
 }
 

@@ -10,12 +10,11 @@ public interface UserUCC {
 
   UserDTO getUser(int id);
 
-  List<UserDTO> getAll() ;
-  
-  void updateConfirmed(boolean confirmed , boolean antique_dealer, int user_id) ; 
-  
- 
+  List<UserDTO> getAll();
 
-	
+  void updateConfirmed(boolean confirmed, boolean antiqueDealer, int userId);
+
+
+
 }
 
