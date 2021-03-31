@@ -51,9 +51,6 @@ public class UserDAOImpl implements UserDAO {
       e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
-    if (!user.isConfirmed()) {
-      return null;
-    }
     return user;
   }
 

@@ -49,10 +49,12 @@ public class UserUCCImpl implements UserUCC {
 
   @Override
   public UserDTO getUser(int id) {
+    dalservices.startTransaction();
     User user = (User) this.userDao.findById(id);
     if (user == null) {
       throw new BusinessException("User doesn't exist", HttpStatus.BAD_REQUEST_400);
     }
+    dalservices.commitTransaction();
     return (UserDTO) user;
   }
 

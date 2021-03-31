@@ -81,12 +81,13 @@ public class FurnitureDAOImpl implements FurnitureDAO {
   @Override
   public FurnitureDTO update(FurnitureDTO furniture) {
     PreparedStatement ps = this.dalServices.getPreparedStatement("UPDATE projet.furnitures "
-        + "SET type = ?" + ", state_furniture = ?, buyer = ?, furniture_title = ?,"
-        + " purchase_price = ?, furniture_date_collection = ?, selling_price = ?,"
-        + " special_sale_price = ?,deposit_date = ?, date_of_sale = ?,"
+        + "SET type = ?" + ", buyer = ?, furniture_title = ?, purchase_price = ?,"
+        + " furniture_date_collection = ?, selling_price = ?, special_sale_price = ?,"
+        + " delivery = ?, state_furniture = ?, deposit_date = ?, date_of_sale = ?,"
         + " sale_withdrawal_date = ?, seller = ?, pick_up_date = ?" + " WHERE furniture_id = ?");
     try {
-      setAllPsAttributNotNull(ps, furniture);
+      ps = setAllPsAttributNotNull(ps, furniture);
+      ps.setInt(15, furniture.getFurnitureId());
 
       ps.executeUpdate();
     } catch (SQLException e) {
@@ -120,7 +121,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     return furniture;
   }
 
-  private void setAllPsAttributNotNull(PreparedStatement ps, FurnitureDTO furniture)
+  private PreparedStatement setAllPsAttributNotNull(PreparedStatement ps, FurnitureDTO furniture)
       throws SQLException {
     // Il faut verifier ce qui est nessecaire ou non.
     ps.setInt(1, furniture.getType());
@@ -137,5 +138,6 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     ps.setTimestamp(12, furniture.getSaleWithdrawalDate());
     ps.setInt(13, furniture.getSeller());
     ps.setTimestamp(14, furniture.getPickUpDate());
+    return ps;
   }
 }

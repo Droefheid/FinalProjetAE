@@ -17,7 +17,7 @@ const routes = {
   "/option": OptionComponent,
   "/furniture": FurniturePage,
   "/error": ErrorPage,
-  "/modificationFourniture": ModificationFurniturePage,
+  "/updateFurniture": ModificationFurniturePage,
 };
 
 let page = document.querySelector("#page");

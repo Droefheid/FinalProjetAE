@@ -50,7 +50,6 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   @Override
   public FurnitureDTO update(FurnitureDTO furniture) {
     dalservices.startTransaction();
-    System.out.println("FurnitureUCCImpl:" + furniture);
     FurnitureDTO furnitureDTO = furnitureDAO.update(furniture);
     if (furnitureDTO == null) {
       dalservices.rollbackTransaction();
