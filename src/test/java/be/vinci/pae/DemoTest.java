@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import be.vinci.pae.api.utils.BusinessException;
-import be.vinci.pae.domaine.Address;
+import be.vinci.pae.domaine.AddressDTO;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.User;
 import be.vinci.pae.domaine.UserDTO;
@@ -25,7 +25,7 @@ public class DemoTest {
   private DomaineFactory domaineFactory;
   private UserDTO userDTO;
   private UserDAO userDAO;
-  private Address address;
+  private AddressDTO addressDTO;
   private User user;
 
   @BeforeEach
@@ -37,7 +37,7 @@ public class DemoTest {
     this.userDAO = locator.getService(UserDAO.class);
 
     userDTO = domaineFactory.getUserDTO();
-    address = domaineFactory.getAdress();
+    addressDTO = domaineFactory.getAdress();
   }
 
   /**
@@ -66,22 +66,20 @@ public class DemoTest {
   }
 
   /**
-   * Test register method. 
-   * Parameters should already be verified in UserResources.java.
-   *  so first time using method returns OK.
-   * Second time returns null.
-   * because user or address should already be registered.
+   * Test register method.
+   * so first time using method returns OK. Second time returns null.
+   * because user or addressDTO should already be registered.
    */
   @Test
   public void testRegister() {
-    Mockito.when(userDAO.getAddressByInfo(address.getStreet(), address.getBuildingNumber(),
-        address.getCommune(), address.getCountry())).thenReturn(1, -1);
-    Mockito.when(userDAO.registerAddress(address)).thenReturn(1);
+    Mockito.when(userDAO.getAddressByInfo(addressDTO.getStreet(), addressDTO.getBuildingNumber(),
+        addressDTO.getCommune(), addressDTO.getCountry())).thenReturn(1, -1);
+    Mockito.when(userDAO.registerAddress(addressDTO)).thenReturn(1);
     Mockito.when(userDAO.registerUser(userDTO)).thenReturn(userDTO, (UserDTO) null);
 
-    assertAll(() -> assertNotNull(userUCC.register(userDTO, address)),
-        () -> assertThrows(BusinessException.class, () -> userUCC.register(userDTO, address)),
-        () -> assertThrows(BusinessException.class, () -> userUCC.register(userDTO, address)));
+    assertAll(() -> assertNotNull(userUCC.register(userDTO, addressDTO)),
+        () -> assertThrows(BusinessException.class, () -> userUCC.register(userDTO, addressDTO)),
+        () -> assertThrows(BusinessException.class, () -> userUCC.register(userDTO, addressDTO)));
   }
 
 }

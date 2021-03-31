@@ -5,5 +5,5 @@ public interface DomaineFactory {
   
   FurnitureDTO getFurnitureDTO();
   
-  Address getAdress();
+  AddressDTO getAdress();
 }

@@ -16,7 +16,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
   private DomaineFactory domaineFactory;
 
   @Inject
-  private DalServices dalServices;
+  private DalBackendServices dalServices;
 
 
   @Override
@@ -33,13 +33,12 @@ public class FurnitureDAOImpl implements FurnitureDAO {
       ps.setInt(1, id);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          fullFillFurnitures(rs, furniture);
+          furniture = fullFillFurnitures(rs, furniture);
         }
       }
     } catch (SQLException e) {
       throw new FatalException("error findById", e);
     }
-
     return furniture;
   }
 
@@ -65,19 +64,17 @@ public class FurnitureDAOImpl implements FurnitureDAO {
         + " special_sale_price,delivery,state_furniture,deposit_date,"
         + " date_of_sale, sale_withdrawal_date, seller, pick_up_date" + " FROM projet.furnitures");
 
-    FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
     List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
 
     try (ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
-        fullFillFurnitures(rs, furniture);
+        FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
+        furniture = fullFillFurnitures(rs, furniture);
         list.add(furniture);
       }
     } catch (SQLException e) {
       throw new FatalException("error getAll", e);
     }
-
-
     return list;
   }
 
@@ -98,18 +95,18 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     return findById(furniture.getFurnitureId());
   }
 
-  private void fullFillFurnitures(ResultSet rs, FurnitureDTO furniture) {
+  private FurnitureDTO fullFillFurnitures(ResultSet rs, FurnitureDTO furniture) {
     try {
       furniture.setFurnitureId(rs.getInt(1));
       furniture.setType(rs.getInt(2));
-      furniture.setBuyer(rs.getInt(3));
-      furniture.setFurnitureTitle(rs.getString(4));
-      furniture.setPurchasePrice(rs.getFloat(5));
-      furniture.setFurnitureDateCollection(rs.getTimestamp(6));
-      furniture.setSellingPrice(rs.getFloat(7));
-      furniture.setSpecialSalePrice(rs.getFloat(8));
-      furniture.setDelivery(rs.getInt(9));
-      furniture.setState(rs.getString(10));
+      furniture.setState(rs.getString(3));
+      furniture.setBuyer(rs.getInt(4));
+      furniture.setFurnitureTitle(rs.getString(5));
+      furniture.setPurchasePrice(rs.getFloat(6));
+      furniture.setFurnitureDateCollection(rs.getTimestamp(7));
+      furniture.setSellingPrice(rs.getFloat(8));
+      furniture.setSpecialSalePrice(rs.getFloat(9));
+      furniture.setDelivery(rs.getInt(10));
       furniture.setDepositDate(rs.getTimestamp(11));
       furniture.setDateOfSale(rs.getTimestamp(12));
       furniture.setSaleWithdrawalDate(rs.getTimestamp(13));
@@ -119,6 +116,8 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     } catch (SQLException e) {
       throw new FatalException("error fullFillFurnitures", e);
     }
+    
+    return furniture;
   }
 
   private void setAllPsAttributNotNull(PreparedStatement ps, FurnitureDTO furniture)

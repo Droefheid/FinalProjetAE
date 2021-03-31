@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import be.vinci.pae.api.utils.FatalException;
-import be.vinci.pae.domaine.Address;
+import be.vinci.pae.domaine.AddressDTO;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.UserDTO;
 import jakarta.inject.Inject;
@@ -15,7 +15,7 @@ public class UserDAOImpl implements UserDAO {
   private DomaineFactory domaineFactory;
 
   @Inject
-  private DalServices dalServices;
+  private DalBackendServices dalBackendServices;
 
   @Override
   public UserDTO findByUserName(String username) {
@@ -39,7 +39,7 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public UserDTO findById(int id) {
-    PreparedStatement ps = this.dalServices.getPreparedStatement(
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
         "SELECT user_id, username, first_name, last_name, address, email, is_boss,"
             + " is_antique_dealer, is_confirmed, registration_date, password "
             + "FROM projet.users WHERE user_id = ?");
@@ -89,7 +89,7 @@ public class UserDAOImpl implements UserDAO {
     if (findByUserName(user.getUserName()) != null) {
       return null;
     }
-    PreparedStatement ps = this.dalServices.getPreparedStatement(
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
         "INSERT INTO projet.users VALUES(DEFAULT,?,?,?,?,?,?,DEFAULT,DEFAULT,DEFAULT,?)");
     try {
       ps.setString(1, user.getLastName());
@@ -108,36 +108,36 @@ public class UserDAOImpl implements UserDAO {
   }
 
   @Override
-  public int registerAddress(Address address) {
-    if (getAddressByInfo(address.getStreet(), address.getBuildingNumber(), address.getCommune(),
-        address.getCountry()) > 0) {
+  public int registerAddress(AddressDTO addressDTO) {
+    if (getAddressByInfo(addressDTO.getStreet(), addressDTO.getBuildingNumber(),
+        addressDTO.getCommune(), addressDTO.getCountry()) > 0) {
       return -1;
     }
-    PreparedStatement ps = this.dalServices
+    PreparedStatement ps = this.dalBackendServices
         .getPreparedStatement("INSERT INTO projet.addresses VALUES(DEFAULT,?,?,?,?,?,?)");
     try {
-      ps.setString(1, address.getStreet());
-      ps.setString(2, address.getBuildingNumber());
-      ps.setString(3, address.getPostCode());
-      ps.setString(4, address.getCommune());
-      ps.setString(5, address.getCountry());
-      ps.setString(6, address.getUnitNumber());
+      ps.setString(1, addressDTO.getStreet());
+      ps.setString(2, addressDTO.getBuildingNumber());
+      ps.setString(3, addressDTO.getPostCode());
+      ps.setString(4, addressDTO.getCommune());
+      ps.setString(5, addressDTO.getCountry());
+      ps.setString(6, addressDTO.getUnitNumber());
       ps.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
-    int i = getAddressByInfo(address.getStreet(), address.getBuildingNumber(), address.getCommune(),
-        address.getCountry());
+    int i = getAddressByInfo(addressDTO.getStreet(), addressDTO.getBuildingNumber(),
+        addressDTO.getCommune(), addressDTO.getCountry());
     return i;
   }
 
   @Override
-  public Address getAddressById(int addressId) {
-    PreparedStatement ps = this.dalServices.getPreparedStatement(
+  public AddressDTO getAddressById(int addressId) {
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
         "SELECT address_id,street," + "building_number,postcode,commune,country,unit_number "
             + "FROM projet.addresses WHERE address_id=?");
-    Address adresse = domaineFactory.getAdress();
+    AddressDTO adresse = domaineFactory.getAdress();
     try {
       ps.setInt(1, addressId);
       try (ResultSet rs = ps.executeQuery()) {
@@ -164,7 +164,7 @@ public class UserDAOImpl implements UserDAO {
   @Override
   public int getAddressByInfo(String street, String buildingNumber, String commune,
       String country) {
-    PreparedStatement ps = this.dalServices
+    PreparedStatement ps = this.dalBackendServices
         .getPreparedStatement("SELECT address_id FROM projet.addresses WHERE street=? "
             + "AND building_number=? AND country=? AND commune=?");
     int adresse = 0;
