@@ -1,13 +1,11 @@
+import { getUserSessionData } from "../utils/session";
 import Sidebar from "./SideBar";
 
 let page = document.querySelector("#content");
 
 let homePage = `
 <div class="row">
-   <h3>Page d'accueil</h3>
-</div>
-<div class="row">
-   <p>When using the .navbar-brand class on images, Bootstrap 4 will automatically style the image to fit the navbar.</p>
+   <h3>Home Page</h3>
 </div>
 
 <div class="container-fluid row justify-content-center">
@@ -17,9 +15,8 @@ let homePage = `
 </div>`;
 // TODO il faut remplacer les 3 images de Test par un caroussel.
 
-const HomePage = () => {    
+const HomePage = () => {   
    Sidebar(true);
-
    return page.innerHTML = homePage;
 };
 

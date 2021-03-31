@@ -12,23 +12,18 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 
   private ThreadLocal<Connection> threadConnection = new ThreadLocal<Connection>();
 
-  private BasicDataSource bds = new BasicDataSource();
+  private BasicDataSource bds;
 
   /**
    * Sets an Url, username and password.
    * 
    */
   public DalServicesImpl() {
+    bds = new BasicDataSource();
     bds.setUrl(Config.getProperty("db.url"));
     bds.setDriverClassName(Config.getProperty("db.driver"));
     bds.setUsername(Config.getProperty("db.username"));
     bds.setPassword(Config.getProperty("db.password"));
-    try {
-      Connection connection = bds.getConnection();
-      threadConnection.set(connection);
-    } catch (SQLException e) {
-      throw new FatalException("Error Db connection", e);
-    }
     bds.setMaxActive(50);
   }
 
