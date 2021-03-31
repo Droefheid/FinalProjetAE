@@ -17,8 +17,7 @@ const FurniturePage = async () => {
   })
     .then((response) => {
       if (!response.ok) {
-        return response.text().then(errMsg => { throw new Error(errMsg) })
-        .catch((err) => onError(err));
+        return response.text().then((err) => onError(err));
       }
       else
         return response.json().then((data) => onFurnitureList(data));
@@ -28,7 +27,7 @@ const FurniturePage = async () => {
 const onFurnitureList = (data) => {
   if (!data) return;
 
-  let table = `
+  var table = `
           <div class="input-group rounded" id="search_furniture_list">
             <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
               aria-describedby="search-addon" />
@@ -38,18 +37,19 @@ const onFurnitureList = (data) => {
           </div>
           <nav id="nav_furniture">
             <ul class="list-group">`;
-  
   data.list.forEach(element => {
     table += `
-        <li id="" class="list-group-item" data-toggle="collapse" href="#collapse" role="button" aria-expanded="false" aria-controls="collapse">
-                <div class="row">
-                  <div class="col-sm-4">
+        <li id="${element.furnitureId}" class="list-group-item" data-toggle="collapse"
+              href="#collapse${element.furnitureId}" role="button"
+              aria-expanded="false" aria-controls="collapse${element.furnitureId}">
+                <div class="row" id="${element.furnitureId}" >
+                  <div class="col-sm-4" id="${element.furnitureId}">
                     <img src="assets/Images/Bureau_1.png" class="rounded" style="width:100%;"/>
                   </div>
                   <div class="col-sm-">
                     <p>
-                      <h5>Title</h5>
-                      Type :
+                      <h5>${element.furnitureTitle}</h5>
+                      Type : ${element.type}
                     </p>
                   </div>
                 </div>
@@ -59,21 +59,54 @@ const onFurnitureList = (data) => {
   table += `  
         </ul>
       </nav>
+           
+      
+`;
+      
+  page.innerHTML = table
 
-      <div id="description_furniture">
-        <h4>Meuble en bois massif</h4>
-        <img src="assets/Images/Bureau_1.png" style="width:25%;"/>
-        <p>Texte Lambda</p>
-      </div>`;
+  
+  const viewFurnitures = document.querySelectorAll("li");
+  viewFurnitures.forEach((elem) =>{
+    elem.addEventListener("click", onClick);
+  })
+}
+ 
+const onClick = (e) => {
+    console.log("onClick");
+    console.log(e.target.parentElement.parentElement.id);
+    const furnitureId = e.target.parentElement.parentElement.id;
+  
+    fetch(API_URL + "furnitures/" + furnitureId, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then((err) => onError(err));
+        }
+        else
+          return response.json().then((data) => onFurnitureDescription(data));
+      })
 
-
-  page.innerHTML = table;
+      
 };
 
+const onFurnitureDescription = (data) => {
+  console.log(data.furniture);
+  let table = `
+  <div id="description_furniture">
+    <h4>${data.furniture.furnitureTitle}</h4>
+    <img src="assets/Images/Bureau_1.png" style="width:25%;"/>
+    <p>Type : ${data.furniture.type} </br>
+       State : ${data.furniture.state}
+         </p>
+  </div>`;
 
-
-
-
+  page.innerHTML += table;
+};
 
 
 const onError = (err) => {
