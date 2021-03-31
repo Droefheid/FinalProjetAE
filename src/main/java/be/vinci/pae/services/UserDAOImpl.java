@@ -185,9 +185,10 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public List<UserDTO> getAll() {
-    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
-        "SELECT user_id , last_name , first_name,username ,password , address , email , is_boss , is_antique_dealer , is_confirmed , "
-            + " registration_date FROM projet.users");
+    PreparedStatement ps =
+        this.dalBackendServices.getPreparedStatement("SELECT user_id , last_name , "
+            + "first_name,username ,password , address , email , is_boss ,"
+            + " is_antique_dealer , is_confirmed , " + " registration_date FROM projet.users");
 
 
     List<UserDTO> list = new ArrayList<UserDTO>();

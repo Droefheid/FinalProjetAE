@@ -257,7 +257,7 @@ public class UserResource {
 
 
   /**
-   * update confirmation
+   * update confirmation.
    * 
    * @return list of all users.
    */
