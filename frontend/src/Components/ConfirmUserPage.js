@@ -4,15 +4,19 @@ import { setUserSessionData } from "../utils/session.js";
 import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
 
-let page = document.querySelector("#content");
+let page = document.querySelector("#page");
 
-const ConfirmUserPage = async () => {
+const ConfirmUserPage = () => {
   Sidebar(true);
 
-  page.innerHTML = `
-    <div id="list"></div>
-    <div id="confirmUserDesc"></div> 
-    `;
+  let list = `
+  
+  <div class="container-fluid row justify-content-center" id="list"> </div>
+  <div class="container-fluid row justify-content-center"  id="confirmUserDesc"></div>
+  
+  `;
+  
+  page.innerHTML = list;
 
   fetch(API_URL + "users/allUsers", {
     method: "GET",
@@ -30,7 +34,7 @@ const ConfirmUserPage = async () => {
 };
 
 const onUserList = (data) => {
-
+console.log(data);
   let userList = document.querySelector("#list");
 
   if (!data) return;
@@ -67,7 +71,7 @@ const onUserList = (data) => {
 }
  
 const onClick = (e) => {
-   
+  e.preventDefault();
     const userId = e.target.parentElement.parentElement.id;
     if(userId == 'nav_user') return;
 
@@ -89,7 +93,7 @@ const onClick = (e) => {
 };
 
 const onConfirmUserDescription = (data) => {
-
+  
   let info = document.querySelector("#confirmUserDesc");
 
   let description = `
@@ -125,6 +129,7 @@ const onConfirmUserDescription = (data) => {
 };
 
 const onConfirmUser = (e) =>{
+  e.preventDefault();
   var userId = e.target.parentElement.id;
   var confirmed = false ;
   var antique_dealer = false;
@@ -160,6 +165,7 @@ const onConfirmUser = (e) =>{
 };
  
 const onConfirmedUser = (e) => {
+
   RedirectUrl("/");
 }
 

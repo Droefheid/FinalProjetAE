@@ -1,7 +1,6 @@
 package be.vinci.pae.domaine;
 
 import java.util.List;
-
 import org.glassfish.grizzly.http.util.HttpStatus;
 import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.services.DalServices;
@@ -51,26 +50,31 @@ public class UserUCCImpl implements UserUCC {
 
   @Override
   public UserDTO getUser(int id) {
+    dalservices.startTransaction();
     User user = (User) this.userDao.findById(id);
     if (user == null) {
+      dalservices.rollbackTransaction();
       throw new BusinessException("User doesn't exist", HttpStatus.BAD_REQUEST_400);
     }
+    dalservices.commitTransaction();
     return (UserDTO) user;
   }
 
-@Override
-public List<UserDTO> getAll() {
-	List<UserDTO> list = userDao.getAll();
+  @Override
+  public List<UserDTO> getAll() {
+    dalservices.startTransaction();
+    List<UserDTO> list = userDao.getAll();
+    dalservices.commitTransaction();
     return list;
-}
+  }
 
 
-@Override
-public void updateConfirmed(boolean confirmed, boolean antique_dealer , int user_id) {
-	
-   this.userDao.updateConfirmed(confirmed,antique_dealer,user_id);
-   
-}
+  @Override
+  public void updateConfirmed(boolean confirmed, boolean antique_dealer, int user_id) {
+    dalservices.startTransaction();
+    this.userDao.updateConfirmed(confirmed, antique_dealer, user_id);
+    dalservices.commitTransaction();
+  }
 
 
 

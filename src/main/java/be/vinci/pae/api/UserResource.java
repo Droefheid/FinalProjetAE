@@ -268,20 +268,13 @@ public class UserResource {
    */
   @POST
   @Path("/updateConfirmed")
+  @Consumes(MediaType.APPLICATION_JSON)
   public Response updateConfirmed(JsonNode json) {
     int user_id = json.get("user_id").asInt();
     boolean antique_dealer  = json.get("is_antique_dealer").asBoolean();
     boolean confirmed = json.get("is_confirmed").asBoolean();
     this.userUcc.updateConfirmed(confirmed, antique_dealer , user_id);
-	return null;
-
-    //ObjectNode node = jsonMapper.createObjectNode().putPOJO("list", listUsers);
-    //return Response.ok(node, MediaType.APPLICATION_JSON).build();
+    return Response.ok(MediaType.APPLICATION_JSON).build();
   }
-
-  
-  
-  
- 
 
 }
