@@ -217,3 +217,9 @@
   display: block;
   text-align: center;
 }
+
+/* HOME PAGE */
+
+.carousel .item {
+  height: 500px;
+}
