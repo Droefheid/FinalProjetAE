@@ -49,6 +49,7 @@ const Navbar = () => {
       <a class="btn btn-info" href="#" data-uri="/furniture" style="margin:15px;">See all the furnitures</a>
       <a class="btn btn-info" href="#" data-uri="/modificationFourniture" style="margin:15px;">See my furniture</a>
       <a class="btn btn-info" href="#" data-uri="" style="margin:15px;">Introduce a visit</a>
+      <a class="btn btn-info" href="#" data-uri="/option">Introduire Option</a>
     </div>
   </nav>`;
 
