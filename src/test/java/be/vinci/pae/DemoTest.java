@@ -67,9 +67,7 @@ public class DemoTest {
 
   /**
    * Test register method.
-   * 
    * so first time using method returns OK. Second time returns null.
-   * 
    * because user or addressDTO should already be registered.
    */
   @Test

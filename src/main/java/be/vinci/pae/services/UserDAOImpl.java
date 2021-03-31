@@ -109,8 +109,8 @@ public class UserDAOImpl implements UserDAO {
 
   @Override
   public int registerAddress(AddressDTO addressDTO) {
-    if (getAddressByInfo(addressDTO.getStreet(), addressDTO.getBuildingNumber(), addressDTO.getCommune(),
-        addressDTO.getCountry()) > 0) {
+    if (getAddressByInfo(addressDTO.getStreet(), addressDTO.getBuildingNumber(),
+        addressDTO.getCommune(), addressDTO.getCountry()) > 0) {
       return -1;
     }
     PreparedStatement ps = this.dalBackendServices
@@ -127,8 +127,8 @@ public class UserDAOImpl implements UserDAO {
       e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
-    int i = getAddressByInfo(addressDTO.getStreet(), addressDTO.getBuildingNumber(), addressDTO.getCommune(),
-        addressDTO.getCountry());
+    int i = getAddressByInfo(addressDTO.getStreet(), addressDTO.getBuildingNumber(),
+        addressDTO.getCommune(), addressDTO.getCountry());
     return i;
   }
 
