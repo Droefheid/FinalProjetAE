@@ -26,9 +26,9 @@ public abstract class AuthorizeAbstract {
   /**
    * get a user from the token.
    * 
-   * @throws PresentationException if Expired or Malformed token.
    * @param requestContext contains in header the token as "Authorization".
    * @return a user or null if the token isn't there.
+   * @throws PresentationException if Expired or Malformed token.
    */
   public UserDTO decodedToken(ContainerRequestContext requestContext) {
     String token = requestContext.getHeaderString("Authorization");
