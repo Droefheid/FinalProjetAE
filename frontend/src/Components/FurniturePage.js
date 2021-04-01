@@ -13,7 +13,7 @@ const FurniturePage = async () => {
     <div id="furnitureDesc"></div> 
     `;
 
-  fetch(API_URL + "furnitures/allFurnitures", {
+  fetch(API_URL + "furnitures/", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

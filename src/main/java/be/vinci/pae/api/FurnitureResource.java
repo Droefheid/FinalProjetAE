@@ -3,12 +3,12 @@ package be.vinci.pae.api;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import be.vinci.pae.api.utils.BusinessException;
+import be.vinci.pae.api.filters.AuthorizeBoss;
+import be.vinci.pae.api.utils.PresentationException;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.FurnitureDTO;
 import be.vinci.pae.domaine.FurnitureUCC;
@@ -17,12 +17,13 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 @Singleton
 @Path("/furnitures")
@@ -45,7 +46,6 @@ public class FurnitureResource {
    * @return list of all furnitures.
    */
   @GET
-  @Path("/allFurnitures")
   public Response allFurnitures() {
     List<FurnitureDTO> listFurnitures = new ArrayList<FurnitureDTO>();
     listFurnitures = furnitureUCC.getAll();
@@ -59,13 +59,14 @@ public class FurnitureResource {
    * 
    * @return the furniture updated.
    */
-  @POST
-  @Path("/update")
+  @PUT
   @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeBoss
   public Response updateFurniture(@Context ContainerRequest request, JsonNode json) {
     UserDTO currentUser = (UserDTO) request.getProperty("user");
+    System.out.println(currentUser.getUserName());
     if (currentUser == null || !currentUser.isBoss()) {
-      throw new BusinessException("You dont have the permission.", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("You dont have the permission.", Status.BAD_REQUEST);
     }
 
     checkAllCredentialFurniture(json); // pourrais renvoyer le type si besoin en dessous.
@@ -80,31 +81,30 @@ public class FurnitureResource {
   private void checkAllCredentialFurniture(JsonNode json) {
     // Required Field.
     if (json.get("furnitureId").asText().equals("") || json.get("furnitureId").asInt() < 1) {
-      throw new BusinessException("Id is needed or incorrect.", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Id is needed or incorrect.", Status.BAD_REQUEST);
     }
     if (json.get("title").asText().equals("")) {
-      throw new BusinessException("Title is needed.", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Title is needed.", Status.BAD_REQUEST);
     }
     if (json.get("state").asText().equals("")) {
-      throw new BusinessException("State is needed.", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("State is needed.", Status.BAD_REQUEST);
     }
     if (json.get("purchasePrice").asText().equals("") || json.get("purchasePrice").asInt() <= 0) {
-      throw new BusinessException("Purchase Price is needed or inccorect.",
-          HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Purchase Price is needed or inccorect.", Status.BAD_REQUEST);
     }
     if (json.get("seller").asText().equals("")) {
-      throw new BusinessException("Seller is needed.", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Seller is needed.", Status.BAD_REQUEST);
     }
     int sellerId = json.get("seller").asInt();
     if (sellerId < 1 || userRessource.getUserById(sellerId) == null) {
-      throw new BusinessException("Seller does not exist.", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Seller does not exist.", Status.BAD_REQUEST);
     }
     if (json.get("pickUpDate").asText().equals("")) {
-      throw new BusinessException("Pick-up date is needed.", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Pick-up date is needed.", Status.BAD_REQUEST);
     }
     // TODO Verifier que furnitureDateCollection est bien un timestamp.
     if (json.get("type").asText().equals("") || json.get("type").asInt() < 1) {
-      throw new BusinessException("Type is needed ", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Type is needed ", Status.BAD_REQUEST);
     }
     // TODO
     // int typeId = json.get("type").asInt();
@@ -116,15 +116,15 @@ public class FurnitureResource {
     // Check when the furniture is in restoration.
     String state = json.get("state").asText();
     if (state.equals("ER") && !json.get("depositDate").asText().equals("")) {
-      throw new BusinessException("You cant have a deposit date if the state is in restoration.",
-          HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException(
+          "You cant have a deposit date if the state is in restoration.", Status.BAD_REQUEST);
     }
 
 
     // Check when the furniture is in the shop.
     if (json.get("depositDate").asText().equals("") && !state.equals("ER")) {
-      throw new BusinessException("A deposit date is needed if is not anymore in restoration.",
-          HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("A deposit date is needed if is not anymore in restoration.",
+          Status.BAD_REQUEST);
     }
     // TODO Verifier que depositDate est bien un timestamp.
 
@@ -133,93 +133,95 @@ public class FurnitureResource {
     if ((json.get("sellingPrice").asText().equals("")
         || json.get("sellingPrice").asText().equals("0")) && !state.equals("ER")
         && !state.equals("M")) {
-      throw new BusinessException(
+      throw new PresentationException(
           "Selling Price is needed if is not anymore in restoration or in shop.",
-          HttpStatus.BAD_REQUEST_400);
+          Status.BAD_REQUEST);
     }
     if (!json.get("sellingPrice").asText().equals("")
         && !json.get("sellingPrice").asText().equals("0")
         && (state.equals("ER") || state.equals("M"))) {
-      throw new BusinessException(
+      throw new PresentationException(
           "You cant have a selling price if the state is in restoration or in shop.",
-          HttpStatus.BAD_REQUEST_400);
+          Status.BAD_REQUEST);
     }
     if (!json.get("sellingPrice").asText().equals("") && json.get("sellingPrice").asInt() < 0) {
-      throw new BusinessException("You cant have a negative selling price.",
-          HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("You cant have a negative selling price.",
+          Status.BAD_REQUEST);
     }
 
 
     // Check when the furniture is buy.
     if (json.get("buyer").asText().equals("") && (state.equals("V") || state.equals("EL")
         || state.equals("L") || state.equals("AE") || state.equals("E") || state.equals("R"))) {
-      throw new BusinessException("Buyer is needed ", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Buyer is needed ", Status.BAD_REQUEST);
     }
     int buyerId = json.get("buyer").asInt();
     if (buyerId != 0 && (buyerId < 1 || userRessource.getUserById(buyerId) == null)) {
-      throw new BusinessException("Buyer does not exist ", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Buyer does not exist ", Status.BAD_REQUEST);
     }
     if (!json.get("buyer").asText().equals("") && !state.equals("V") && !state.equals("EL")
         && !state.equals("L") && !state.equals("AE") && !state.equals("E") && !state.equals("R")) {
-      throw new BusinessException("You cant have a buyer if the state is not (sold, on delivery, "
-          + "delivered, to go, taken away, reserved).", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException(
+          "You cant have a buyer if the state is not (sold, on delivery, "
+              + "delivered, to go, taken away, reserved).",
+          Status.BAD_REQUEST);
     }
     if (!json.get("buyer").asText().equals("") && json.get("dateOfSale").asText().equals("")) {
-      throw new BusinessException("A date of sale is needed if a buyer is specify.",
-          HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("A date of sale is needed if a buyer is specify.",
+          Status.BAD_REQUEST);
     }
     // TODO Verifier que dateOfSale est bien un timestamp.
     // TODO Verifier que si il y a un buyer, il y a soit delivery/saleWithdrawalDate.
 
     // Case if delivery.
     if ((state.equals("EL") || state.equals("EL")) && json.get("delivery").asText().equals("")) {
-      throw new BusinessException("Delivery is needed if the state is on delivery or delivered.",
-          HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException(
+          "Delivery is needed if the state is on delivery or delivered.", Status.BAD_REQUEST);
     }
     // TODO Verifier que delivery est bien un timestamp.
 
     // Case if takeaway.
     if ((state.equals("AE") || state.equals("E"))
         && json.get("furnitureDateCollection").asText().equals("")) {
-      throw new BusinessException(
+      throw new PresentationException(
           "Furniture date collection is needed if the state is to go or take away.",
-          HttpStatus.BAD_REQUEST_400);
+          Status.BAD_REQUEST);
     }
     // TODO Verifier que furnitureDateCollection est bien un timestamp.
 
     // Case if antique dealer.
     if (!json.get("specialSalePrice").asText().equals("")
         && json.get("specialSalePrice").asInt() < 0) {
-      throw new BusinessException("You cant have a negative special sale price.",
-          HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("You cant have a negative special sale price.",
+          Status.BAD_REQUEST);
     }
     if (!json.get("specialSalePrice").asText().equals("")
         && !json.get("specialSalePrice").asText().equals("0") && !state.equals("V")
         && !state.equals("EL") && !state.equals("L") && !state.equals("AE") && !state.equals("E")
         && !state.equals("R")) {
-      throw new BusinessException(
+      throw new PresentationException(
           "You cant have a special sale price if the state is not (sold, on delivery,"
               + " delivered, to go, taken away, reserved)",
-          HttpStatus.BAD_REQUEST_400);
+          Status.BAD_REQUEST);
     }
     if (!json.get("specialSalePrice").asText().equals("")
         && !json.get("specialSalePrice").asText().equals("0")
         && json.get("buyer").asText().equals("")) {
-      throw new BusinessException("Buyer is needed if a special sale price is specify.",
-          HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Buyer is needed if a special sale price is specify.",
+          Status.BAD_REQUEST);
     }
 
 
 
     // Check if withdraw.
     if (json.get("saleWithdrawalDate").asText().equals("") && state.equals("RE")) {
-      throw new BusinessException("Sale Withdrawal Date is needed if the state is withdraw.",
-          HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Sale Withdrawal Date is needed if the state is withdraw.",
+          Status.BAD_REQUEST);
     }
     if (!json.get("saleWithdrawalDate").asText().equals("") && !state.equals("RE")) {
-      throw new BusinessException(
+      throw new PresentationException(
           "The state need to be withdraw if a sale withdrawal date is specify.",
-          HttpStatus.BAD_REQUEST_400);
+          Status.BAD_REQUEST);
     }
     // TODO Verifier que saleWithdrawalDate est bien un timestamp.
   }
@@ -279,7 +281,7 @@ public class FurnitureResource {
   public Response getFurnitureById(@PathParam("id") int id) {
     // Check credentials.
     if (id < 1) {
-      throw new BusinessException("Id cannot be under 1", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Id cannot be under 1", Status.BAD_REQUEST);
     }
     FurnitureDTO furniture = this.furnitureUCC.findById(id);
 

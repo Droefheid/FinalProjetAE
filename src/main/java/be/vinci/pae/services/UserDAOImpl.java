@@ -31,6 +31,7 @@ public class UserDAOImpl implements UserDAO {
       user = fullFillUserFromResulSet(user, ps);
     } catch (SQLException e) {
       e.printStackTrace();
+      ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     if (user.getUserName() == null) {
@@ -51,6 +52,7 @@ public class UserDAOImpl implements UserDAO {
       user = fullFillUserFromResulSet(user, ps);
     } catch (SQLException e) {
       e.printStackTrace();
+      ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return user;
@@ -104,6 +106,7 @@ public class UserDAOImpl implements UserDAO {
       ps.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
+      ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     return findByUserName(user.getUserName());
@@ -120,6 +123,7 @@ public class UserDAOImpl implements UserDAO {
       user = fullFillUserFromResulSet(user, ps);
     } catch (SQLException e) {
       e.printStackTrace();
+      ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     if (user.getEmail() == null) {
@@ -146,6 +150,7 @@ public class UserDAOImpl implements UserDAO {
       ps.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
+      ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     int i = getAddressByInfo(addressDTO.getStreet(), addressDTO.getBuildingNumber(),
@@ -172,6 +177,7 @@ public class UserDAOImpl implements UserDAO {
       }
     } catch (SQLException e) {
       e.printStackTrace();
+      ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException(e.getMessage(), e);
     }
     if (adresse <= 0) {
@@ -197,6 +203,7 @@ public class UserDAOImpl implements UserDAO {
         list.add(user);
       }
     } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException("error fullFillUsers", e);
     }
 
@@ -217,6 +224,7 @@ public class UserDAOImpl implements UserDAO {
       ps.setInt(3, userId);
       ps.executeUpdate();
     } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
       e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
@@ -237,6 +245,7 @@ public class UserDAOImpl implements UserDAO {
       user.setRegistrationDate(rs.getTimestamp(11));
 
     } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException("error fullFillUsers", e);
     }
     return user;

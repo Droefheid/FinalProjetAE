@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -13,9 +12,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.filters.Authorize;
-import be.vinci.pae.api.utils.BusinessException;
+import be.vinci.pae.api.filters.AuthorizeBoss;
 import be.vinci.pae.api.utils.FatalException;
 import be.vinci.pae.api.utils.Json;
+import be.vinci.pae.api.utils.PresentationException;
 import be.vinci.pae.domaine.AddressDTO;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.UserDTO;
@@ -26,12 +26,13 @@ import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 @Singleton
 @Path("/users")
@@ -61,47 +62,24 @@ public class UserResource {
   public Response login(JsonNode json) {
     // Get and check credentials
     if (json.get("username").asText().equals("") && json.get("password").asText().equals("")) {
-      throw new BusinessException("Username and password needed", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Username and password needed", Status.BAD_REQUEST);
     }
     if (json.get("username").asText().equals("")) {
-      throw new BusinessException("Username ", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Username ", Status.BAD_REQUEST);
     }
     if (json.get("password").asText().equals("")) {
-      throw new BusinessException("Password needed", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Password needed", Status.BAD_REQUEST);
     }
 
 
     UserDTO user = this.userUcc.login(json.get("username").asText(), json.get("password").asText());
     if (!user.isConfirmed()) {
-      throw new BusinessException("This account hasn't been confirmed by an admin yet",
-          HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("This account hasn't been confirmed by an admin yet",
+          Status.BAD_REQUEST);
     }
     ObjectNode node = createToken(user);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
-
-  /**
-   * Get the user with an ID if exists or send error message.
-   * 
-   * @param id id of the user.
-   * @return a user if user exists in database and matches the id.
-   */
-  @POST
-  @Path("/{id}")
-  @Consumes(MediaType.APPLICATION_JSON)
-  public Response getUserById(@PathParam("id") int id) {
-    // Check credentials.
-    if (id < 1) {
-      throw new BusinessException("Id cannot be under 1", HttpStatus.BAD_REQUEST_400);
-    }
-
-    UserDTO user = this.userUcc.getUser(id);
-
-    ObjectNode node = createToken(user);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
-  }
-
-
 
   /**
    * Get the user with an ID if exists or send error message.
@@ -110,21 +88,19 @@ public class UserResource {
    * @return a user if user exists in database and matches the id.
    */
   @GET
-  @Path("/confirmation/{id}")
-  public Response getUser(@PathParam("id") int id) {
+  @Path("/{id}")
+  @AuthorizeBoss
+  public Response getUserById(@PathParam("id") int id) {
     // Check credentials.
     if (id < 1) {
-      throw new BusinessException("Id cannot be under 1", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Id cannot be under 1", Status.BAD_REQUEST);
     }
 
     UserDTO user = this.userUcc.getUser(id);
 
-    ObjectNode node = jsonMapper.createObjectNode().putPOJO("user", user);
-
+    ObjectNode node = createToken(user);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
-
-
 
   /**
    * Get the user from an id in a token in header.
@@ -134,13 +110,12 @@ public class UserResource {
    */
   @GET
   @Path("/me")
-  @Produces(MediaType.APPLICATION_JSON)
   @Authorize
   public Response getUser(@Context ContainerRequest request) {
     UserDTO currentUser = (UserDTO) request.getProperty("user");
 
     if (currentUser == null) {
-      throw new BusinessException("User not found", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("User not found", Status.BAD_REQUEST);
     }
     ObjectNode node = createToken(currentUser);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
@@ -181,37 +156,37 @@ public class UserResource {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response register(JsonNode json) {
     if (json.get("username").asText().equals("")) {
-      throw new BusinessException("Username is needed ", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Username is needed ", Status.BAD_REQUEST);
     }
     if (json.get("email").asText().equals("")) {
-      throw new BusinessException("email is needed", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("email is needed", Status.BAD_REQUEST);
     }
     if (json.get("password").asText().equals("")) {
-      throw new BusinessException("password is needed ", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("password is needed ", Status.BAD_REQUEST);
     }
     if (json.get("lastname").asText().equals("")) {
-      throw new BusinessException("Lastname is needed ", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Lastname is needed ", Status.BAD_REQUEST);
     }
     if (json.get("firstname").asText().equals("")) {
-      throw new BusinessException("Lastname is needed ", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("Firstname is needed ", Status.BAD_REQUEST);
     }
     if (json.get("street").asText().equals("")) {
-      throw new BusinessException("street is needed ", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("street is needed ", Status.BAD_REQUEST);
     }
     if (json.get("building_number").asText().equals("")) {
-      throw new BusinessException("building_number is needed ", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("building number is needed ", Status.BAD_REQUEST);
     }
     if (json.get("postcode").asText().equals("")) {
-      throw new BusinessException("postcode is needed ", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("postcode is needed ", Status.BAD_REQUEST);
     }
     if (json.get("commune").asText().equals("")) {
-      throw new BusinessException("commune is needed ", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("commune is needed ", Status.BAD_REQUEST);
     }
     if (json.get("country").asText().equals("")) {
-      throw new BusinessException("country is needed ", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("country is needed ", Status.BAD_REQUEST);
     }
     if (json.get("unit_number").asText().equals("")) {
-      throw new BusinessException("unit_number is needed ", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("unit number is needed ", Status.BAD_REQUEST);
     }
 
     UserDTO user = domaineFactory.getUserDTO();
@@ -246,7 +221,7 @@ public class UserResource {
    * @return list of all users.
    */
   @GET
-  @Path("/allUsers")
+  @AuthorizeBoss
   public Response allUsers() {
     List<UserDTO> listUsers = new ArrayList<UserDTO>();
     listUsers = userUcc.getAll();
@@ -261,11 +236,12 @@ public class UserResource {
    * 
    * @return list of all users.
    */
-  @POST
-  @Path("/updateConfirmed")
+  @PUT
   @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeBoss
   public Response updateConfirmed(JsonNode json) {
     int userId = json.get("user_id").asInt();
+    // TODO boolean isBoss.
     boolean antiqueDealer = json.get("is_antique_dealer").asBoolean();
     boolean confirmed = json.get("is_confirmed").asBoolean();
     this.userUcc.updateConfirmed(confirmed, antiqueDealer, userId);

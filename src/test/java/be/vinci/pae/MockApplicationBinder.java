@@ -1,4 +1,4 @@
-package be.vinci.pae.utils;
+package be.vinci.pae;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.mockito.Mockito;

@@ -17,7 +17,10 @@ public class ExceptionHandlerMapper implements ExceptionMapper<Throwable> {
    */
   private int getStatusCode(Throwable exception) {
     if (exception instanceof BusinessException) {
-      return ((BusinessException) exception).getStatus();
+      return ((BusinessException) exception).getResponse().getStatus();
+    }
+    if (exception instanceof PresentationException) {
+      return ((PresentationException) exception).getResponse().getStatus();
     }
     return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
   }
