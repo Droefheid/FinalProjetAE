@@ -86,7 +86,7 @@ const ModificationFurniturePage = () => {
     Sidebar(true);
     console.log(user_me.furnitureId);
 
-    const user = {isBoss: true};//getUserSessionData();
+    const user = getUserSessionData();
     if (!user || !user.isBoss) {
         // re-render the navbar for the authenticated user.
         Navbar();
@@ -342,8 +342,8 @@ const onSubmit = (e) => {
     };
   
     let id = getTokenSessionDate();
-    fetch(API_URL + "furnitures/update", {
-      method: "POST", 
+    fetch(API_URL + "furnitures", {
+      method: "PUT", 
       body: JSON.stringify(furniture), 
       headers: {
         "Content-Type": "application/json",
