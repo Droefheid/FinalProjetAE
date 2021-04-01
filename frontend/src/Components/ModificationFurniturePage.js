@@ -87,7 +87,7 @@ const ModificationFurniturePage = () => {
     console.log(user_me.furnitureId);
 
     const user = getUserSessionData();
-    if (!user || !user.isBoss) {
+    if (!user || !user.isBoss || !user_me.furnitureId) {
         // re-render the navbar for the authenticated user.
         Navbar();
         RedirectUrl("/");
