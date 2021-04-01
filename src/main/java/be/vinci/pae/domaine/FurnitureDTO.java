@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonDeserialize(as = FurnitureImpl.class)
 public interface FurnitureDTO {
 
-  static enum STATES {
+  enum STATES {
     ON_RESTORATION("ER"), ON_SHOP("M"), ON_SALE("EV"), UNDER_OPTION("O"), SOLD("V"), DELIVERY(
         "EL"), DELIVERED("L"), TO_TAKE_AWAY("AE"), TAKE_AWAY("E"), RESERVED("R"), WITHDRAW("RE");
 
@@ -16,10 +16,10 @@ public interface FurnitureDTO {
       return value;
     }
 
-    private STATES(String value) {
+    STATES(String value) {
       this.value = value;
     }
-  };
+  }
 
   int getFurnitureId();
 
