@@ -5,14 +5,13 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
-import be.vinci.pae.services.UserDAO;
+import be.vinci.pae.api.utils.PresentationException;
+import be.vinci.pae.domaine.UserUCC;
 import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
-import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.ext.Provider;
 
@@ -34,7 +33,7 @@ public class AnonymousOrAuthorizationRequest implements ContainerRequestFilter {
       JWT.require(this.jwtAlgorithm).withIssuer("auth0").build();
 
   @Inject
-  private UserDAO userDAO;
+  private UserUCC userUCC;
 
   @Override
   public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -44,10 +43,9 @@ public class AnonymousOrAuthorizationRequest implements ContainerRequestFilter {
       try {
         decodedToken = this.jwtVerifier.verify(token);
       } catch (Exception e) {
-        throw new WebApplicationException(Response.status(Status.UNAUTHORIZED)
-            .entity("Malformed token : " + e.getMessage()).type("text/plain").build());
+        throw new PresentationException("Malformed token.", e, Status.UNAUTHORIZED);
       }
-      requestContext.setProperty("user", userDAO.findById(decodedToken.getClaim("user").asInt()));
+      requestContext.setProperty("user", userUCC.getUser(decodedToken.getClaim("user").asInt()));
     }
   }
 

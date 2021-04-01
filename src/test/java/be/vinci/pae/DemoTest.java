@@ -17,7 +17,6 @@ import be.vinci.pae.domaine.UserDTO;
 import be.vinci.pae.domaine.UserUCC;
 import be.vinci.pae.services.UserDAO;
 import be.vinci.pae.utils.Config;
-import be.vinci.pae.utils.MockApplicationBinder;
 
 public class DemoTest {
 
@@ -30,6 +29,7 @@ public class DemoTest {
 
   @BeforeEach
   void initAll() {
+    // BeforeEach doit devenir BeforeAll.
     Config.load("test.properties");
     ServiceLocator locator = ServiceLocatorUtilities.bind(new MockApplicationBinder());
     this.domaineFactory = locator.getService(DomaineFactory.class);
@@ -59,16 +59,14 @@ public class DemoTest {
     user.setPassword(user.hashPassword("123"));
     Mockito.when(userDAO.findByUserName("root")).thenReturn(null);
     Mockito.when(userDAO.findByUserName("Jo123")).thenReturn(userDTO);
-
+    // TODO Verifier que les methodes qui ne renvoit rien sont malgre tout bien appelee.
     assertAll(() -> assertThrows(BusinessException.class, () -> userUCC.login("root", "123")),
         () -> assertEquals(userDTO, userUCC.login("Jo123", "123")),
         () -> assertThrows(BusinessException.class, () -> userUCC.login("Jo123", "1234")));
   }
 
   /**
-   * Test register method.
-   * so first time using method returns OK. Second time returns null.
-   * because user or addressDTO should already be registered.
+   * Test register method. so first time using method returns OK. Second time returns null. because user or addressDTO should already be registered.
    */
   @Test
   public void testRegister() {
@@ -77,7 +75,7 @@ public class DemoTest {
     Mockito.when(userDAO.registerAddress(addressDTO)).thenReturn(1);
     Mockito.when(userDAO.registerUser(userDTO)).thenReturn(userDTO, (UserDTO) null);
 
-    assertAll(() -> assertNotNull(userUCC.register(userDTO, addressDTO)),
+    assertAll(() -> assertEquals(userDTO, userUCC.register(userDTO, addressDTO)),
         () -> assertThrows(BusinessException.class, () -> userUCC.register(userDTO, addressDTO)),
         () -> assertThrows(BusinessException.class, () -> userUCC.register(userDTO, addressDTO)));
   }

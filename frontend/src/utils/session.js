@@ -1,4 +1,4 @@
-import VerifyUserToken from "./VerifyUserToken.js";
+import VerifyUserToken from "./verifyUserToken.js";
 import { user_me } from "../index.js";
 
 const STORE_NAME = "user";

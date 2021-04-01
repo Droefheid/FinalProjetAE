@@ -1,5 +1,4 @@
 import HomePage from "./HomePage.js";
-import UserListPage from "./UserListPage.js";
 import LoginPage from "./LoginPage.js";
 import RegisterPage from "./RegisterPage.js";
 import LogoutComponent from "./LogoutComponent.js";
@@ -11,7 +10,6 @@ import ConfirmUserPage from "./ConfirmUserPage.js";
 
 const routes = {
   "/": HomePage,
-  "/list": UserListPage,
   "/login": LoginPage,
   "/register": RegisterPage,
   "/logout": LogoutComponent,

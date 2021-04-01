@@ -18,7 +18,7 @@ const ConfirmUserPage = () => {
   
   page.innerHTML = list;
 
-  fetch(API_URL + "users/allUsers", {
+  fetch(API_URL + "users/", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -77,7 +77,7 @@ const onClick = (e) => {
 
     if(userId == null) return;
   
-    fetch(API_URL + "users/confirmation/" + userId, {
+    fetch(API_URL + "users/" + userId, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -148,8 +148,8 @@ const onConfirmUser = (e) =>{
     "user_id" : userId,
   };
 
-  fetch(API_URL + "users/updateConfirmed", {
-    method: "POST",
+  fetch(API_URL + "users/", {
+    method: "PUT",
     body: JSON.stringify(user),
     headers: {
       "Content-Type": "application/json",

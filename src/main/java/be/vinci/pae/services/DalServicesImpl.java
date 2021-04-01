@@ -24,8 +24,8 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
     bds.setDriverClassName(Config.getProperty("db.driver"));
     bds.setUsername(Config.getProperty("db.username"));
     bds.setPassword(Config.getProperty("db.password"));
+    // Inutile avec Elephant DB.
     bds.setMaxActive(5);
-    bds.setDefaultAutoCommit(false);
   }
 
   /**
@@ -34,18 +34,25 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
    * @param query from which to get a Statement.
    */
   public PreparedStatement getPreparedStatement(String query) {
+    if (threadConnection.get() == null) {
+      throw new FatalException("Error can't find connection: transaction hasn't been started.");
+    }
     PreparedStatement ps = null;
     try {
       ps = threadConnection.get().prepareStatement(query);
       return ps;
     } catch (SQLException e) {
-      throw new FatalException("Error can't find connection", e);
+      throw new FatalException("Error can't create prepareStatement.", e);
     }
   }
 
   @Override
   public void startTransaction() {
+    if (threadConnection.get() != null) {
+      throw new FatalException("Already a transaction active.");
+    }
     try {
+      bds.setDefaultAutoCommit(false);
       Connection c = bds.getConnection();
       threadConnection.set(c);
     } catch (SQLException e) {
@@ -56,9 +63,13 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 
   @Override
   public void commitTransaction() {
+    Connection c = threadConnection.get();
+    if (c == null) {
+      throw new FatalException("No connection: transaction hasn't been started.");
+    }
     try {
-      Connection c = threadConnection.get();
       c.commit();
+      bds.setDefaultAutoCommit(true);
       threadConnection.remove();
       c.close();
     } catch (SQLException e) {
@@ -68,12 +79,17 @@ public class DalServicesImpl implements DalBackendServices, DalServices {
 
   @Override
   public void rollbackTransaction() {
+    Connection c = threadConnection.get();
+    if (c == null) {
+      throw new FatalException("No connection: transaction hasn't been started.");
+    }
     try {
-      Connection c = threadConnection.get();
       c.rollback();
+      bds.setDefaultAutoCommit(true);
+      threadConnection.remove();
       c.close();
     } catch (SQLException e) {
-      throw new FatalException("commit error", e);
+      throw new FatalException("rollback error", e);
     }
   }
 

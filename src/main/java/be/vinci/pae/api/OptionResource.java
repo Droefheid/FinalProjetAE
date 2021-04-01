@@ -3,9 +3,9 @@ package be.vinci.pae.api;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import org.glassfish.grizzly.http.util.HttpStatus;
 import com.fasterxml.jackson.databind.JsonNode;
-import be.vinci.pae.api.utils.BusinessException;
+import be.vinci.pae.api.filters.Authorize;
+import be.vinci.pae.api.utils.PresentationException;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.OptionDTO;
 import be.vinci.pae.domaine.OptionUCC;
@@ -16,6 +16,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 @Singleton
 @Path("/options")
@@ -33,18 +34,15 @@ public class OptionResource {
    * @return Response ok ou une erreur.
    */
   @POST
-  @Path("/introduceOption")
   @Consumes(MediaType.APPLICATION_JSON)
+  @Authorize
   public Response introduceOption(JsonNode json) {
-    if (json.get("userID").asText().equals("")) {
-      throw new BusinessException("User doesn't exist or isn't conencted",
-          HttpStatus.BAD_REQUEST_400);
-    }
+    // TODO verifier user
     if (json.get("optionTerm").asText().equals("")) {
-      throw new BusinessException("You must enter a date", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("You must enter a date", Status.BAD_REQUEST);
     }
     if (json.get("furnitureID").asText().equals("")) {
-      throw new BusinessException("You must choose a furniture", HttpStatus.BAD_REQUEST_400);
+      throw new PresentationException("You must choose a furniture", Status.BAD_REQUEST);
     }
 
     OptionDTO option = domaineFactory.getOptionDTO();

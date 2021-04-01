@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import be.vinci.pae.api.utils.PresentationException;
+import be.vinci.pae.domaine.UserDTO;
 import be.vinci.pae.domaine.UserUCC;
 import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
@@ -20,8 +21,8 @@ import jakarta.ws.rs.ext.Provider;
 
 @Singleton
 @Provider
-@Authorize
-public class AuthorizationRequestFilter implements ContainerRequestFilter {
+@AuthorizeBoss
+public class AuthorizationBossRequestFilter implements ContainerRequestFilter {
 
   private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
   private final JWTVerifier jwtVerifier =
@@ -48,8 +49,12 @@ public class AuthorizationRequestFilter implements ContainerRequestFilter {
       } catch (Exception e) {
         throw new PresentationException("Malformed token", e, Status.UNAUTHORIZED);
       }
-      requestContext.setProperty("user",
-          this.userUCC.getUser(decodedToken.getClaim("user").asInt()));
+      UserDTO user = this.userUCC.getUser(decodedToken.getClaim("user").asInt());
+      if (user.isBoss()) {
+        requestContext.setProperty("user", user);
+      } else {
+        throw new PresentationException("You are not a boss.", Status.UNAUTHORIZED);
+      }
     }
   }
 
