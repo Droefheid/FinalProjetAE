@@ -11,7 +11,6 @@ let page = document.querySelector("#page");
 
 const ModificationFurniturePage = () => {    
     Sidebar(true);
-    console.log(user_me.furnitureId);
 
     const user = getUserSessionData();
     if (!user || !user.isBoss || !user_me.furnitureId) {
@@ -40,7 +39,6 @@ const onPageCreate = (data) => {
     let furniture = data.furniture;
     let types = data.types;
     let users = data.users;
-    console.log(furniture, types, users);
 
     // Modification of Timestamp into Date.
     let Timestamp = null;

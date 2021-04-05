@@ -47,19 +47,19 @@ const onFurnitureList = (data) => {
   data.list.forEach(element => {
     table += `
         <li id="${element.furnitureId}" class="list-group-item" data-toggle="collapse"
-              href="#collapse${element.furnitureId}" role="button"
-              aria-expanded="false" aria-controls="collapse${element.furnitureId}">
-                <div class="row" id="${element.furnitureId}" >
-                  <div class="col-sm-4" id="${element.furnitureId}">
-                    <img src="assets/Images/Bureau_1.png" class="rounded" style="width:100%;"/>
-                  </div>
-                  <div class="col-sm-">
-                    <p>
-                      <h5>${element.furnitureTitle}</h5>
-                      Type : ${element.type}
-                    </p>
-                  </div>
-                </div>
+        href="#collapse${element.furnitureId}" role="button"
+        aria-expanded="false" aria-controls="collapse${element.furnitureId}">
+          <div class="row" id="${element.furnitureId}" >
+            <div class="col-sm-4" id="${element.furnitureId}">
+              <img src="assets/Images/Bureau_1.png" class="rounded" style="width:100%;"/>
+            </div>
+            <div class="col-sm-">
+              <p>
+                <h5>${element.furnitureTitle}</h5>
+                Type : ${element.type}
+              </p>
+            </div>
+          </div>
         </li>`;
   });
 
@@ -76,8 +76,12 @@ const onFurnitureList = (data) => {
 }
  
 const onClick = (e) => {
-    console.log("onClick");
-    const furnitureId = e.target.parentElement.parentElement.id;
+  let furnitureId = -1;
+    if(e.target.id){
+      furnitureId = e.target.id;
+    }else {
+      furnitureId = e.target.parentElement.parentElement.id;
+    }
 
     if(furnitureId == 'nav_furniture') return;
   
@@ -97,8 +101,6 @@ const onClick = (e) => {
 };
 
 const onFurnitureDescription = (data) => {
-  console.log(data.furniture);
-
   let info = document.querySelector("#furnitureDesc");
 
   let description = `
