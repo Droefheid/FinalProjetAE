@@ -8,4 +8,6 @@ public interface DomaineFactory {
   AddressDTO getAdressDTO();
 
   OptionDTO getOptionDTO();
+
+  TypeDTO getTypeDTO();
 }

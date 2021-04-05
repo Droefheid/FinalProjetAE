@@ -9,79 +9,6 @@ const STATES = [ "ER", "M", "EV", "O", "V", "EL", "L", "AE", "E", "R", "RE" ];
 
 let page = document.querySelector("#page");
 
-let modifPage = `
-<form id="update" class="form-inline">
-    <input id="furnitureId" value="1" hidden>
-    <div class="row">
-        <div class="col-sm-6 bg-info">
-            <label for="title">Titre: </label>
-            <input type="text" class="form-control" id="title" placeholder="Enter title" name="title" required>
-            <label for="state">Etat: </label>
-            <div class="form-group">
-                <select class="form-control" id="state" name="state">
-                    <option value="ER">En restauration</option>
-                    <option value="M">En magasin</option>
-                    <option value="EV">En vente</option>
-                    <option value="O">Sous option</option>
-                    <option value="V">Vendu</option>
-                    <option value="EL">En livraison</option>
-                    <option value="L">Livré</option>
-                    <option value="AE">a emporté</option>
-                    <option value="E">Emporté</option>
-                    <option value="R">Reservé</option>
-                    <option value="RE">Retiré</option>
-                </select>
-            </div>
-            <label for="depositDate">Date de dépot: </label>
-            <input type="text" class="form-control" id="depositDate" placeholder="Enter date of deposit" name="depositDate">
-            <label for="seller">Vendeur: </label>
-            <div class="form-group">
-                <select class="form-control" id="seller" name="seller">
-                    <option value="1">Livi Satcho</option>
-                    <option value="2">George</option>
-                    <option value="3">Michael</option>
-                </select>
-            </div>
-            <label for="type">Type: </label>
-            <div class="form-group">
-                <select class="form-control" id="type" name="type">
-                    <option value="1">Armoire</option>
-                    <option value="2">Bahut</option>
-                    <option value="3">Bibliotheque</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-sm-6 bg-warning">
-            <label for="furnitureDateCollection">Date emporter: </label>
-            <input type="text" class="form-control" id="furnitureDateCollection" placeholder="Enter furnitureDateCollection" name="furnitureDateCollection">
-            <label for="dateOfSale">Date de vente: </label>
-            <input type="text" class="form-control" id="dateOfSale" placeholder="Enter date Of Sale" name="dateOfSale">
-            <label for="saleWithdrawalDate">Date de retrait: </label>
-            <input type="text" class="form-control" id="saleWithdrawalDate" placeholder="Enter sale With drawal Date" name="saleWithdrawalDate">
-            <label for="purchasePrice">Prix d'achat: </label>
-            <input type="text" class="form-control" id="purchasePrice" placeholder="Enter purchase Price" name="purchasePrice" required>
-            <label for="sellingPrice">Prix de vente: </label>
-            <input type="text" class="form-control" id="sellingPrice" placeholder="Enter selling Price" name="sellingPrice">
-            <label for="specialSalePrice">Prix antiquaire: </label>
-            <input type="text" class="form-control" id="specialSalePrice" placeholder="Enter special Sale Price" name="specialSalePrice">
-            <label for="buyer">Acheteur: </label>
-            <div class="form-group">
-                <select class="form-control" id="buyer" name="buyer">
-                    <option value="" selected>Nobody</option>
-                    <option value="1">Livi Satcho</option>
-                    <option value="2">George</option>
-                    <option value="3">Michael</option>
-                </select>
-            </div>
-            <label for="delivery">Livraison: </label>
-            <input type="text" class="form-control" id="delivery" placeholder="Enter delivery" name="delivery">
-            <label for="pickUpDate">Pick-up date: </label>
-            <input type="text" class="form-control" id="pickUpDate" placeholder="Enter pickUpDate" name="pickUpDate" required>
-            <input type="submit" value="update" class="btn btn-lg btn-primary btn-block">
-        </div>
-    </div>
-</form><div>`;
-
 const ModificationFurniturePage = () => {    
     Sidebar(true);
     console.log(user_me.furnitureId);
@@ -93,7 +20,7 @@ const ModificationFurniturePage = () => {
         RedirectUrl("/");
     } else {
         // Fetch pour recup
-        fetch(API_URL + "furnitures/" + user_me.furnitureId, {
+        fetch(API_URL + "furnitures/infosUpdate/" + user_me.furnitureId, {
             method: "GET", 
             headers: {
               "Content-Type": "application/json",
@@ -111,9 +38,43 @@ const ModificationFurniturePage = () => {
 
 const onPageCreate = (data) => {
     let furniture = data.furniture;
-    let Timestamp = new Date(furniture.pickUpDate);
-    let timeSplit = Timestamp.toLocaleString().split("/");
-    furniture.pickUpDate = timeSplit[2].substr(0, 4)+"-"+timeSplit[1]+"-"+timeSplit[0]+" "+Timestamp.toLocaleTimeString();
+    let types = data.types;
+    let users = data.users;
+    console.log(furniture, types, users);
+
+    // Modification of Timestamp into Date.
+    let Timestamp = null;
+    let timeSplit = null;
+    // Furniture date collection.
+    if(furniture.furnitureDateCollection){
+        Timestamp = new Date(furniture.furnitureDateCollection);
+        timeSplit = Timestamp.toLocaleString().split("/");
+        furniture.furnitureDateCollection = timeSplit[2].substr(0, 4)+"-"+timeSplit[1]+"-"+timeSplit[0]+" "+Timestamp.toLocaleTimeString();
+    }
+    // Deposit date.
+    if(furniture.depositDate){
+        Timestamp = new Date(furniture.depositDate);
+        timeSplit = Timestamp.toLocaleString().split("/");
+        furniture.depositDate = timeSplit[2].substr(0, 4)+"-"+timeSplit[1]+"-"+timeSplit[0]+" "+Timestamp.toLocaleTimeString();
+    }
+    // Date of sale.
+    if(furniture.dateOfSale){
+        Timestamp = new Date(furniture.dateOfSale);
+        timeSplit = Timestamp.toLocaleString().split("/");
+        furniture.dateOfSale = timeSplit[2].substr(0, 4)+"-"+timeSplit[1]+"-"+timeSplit[0]+" "+Timestamp.toLocaleTimeString();
+    }
+    // Sale withdrawal date.
+    if(furniture.saleWithdrawalDate){
+        Timestamp = new Date(furniture.saleWithdrawalDate);
+        timeSplit = Timestamp.toLocaleString().split("/");
+        furniture.saleWithdrawalDate = timeSplit[2].substr(0, 4)+"-"+timeSplit[1]+"-"+timeSplit[0]+" "+Timestamp.toLocaleTimeString();
+    }
+    // Pick-up date.
+    if(furniture.pickUpDate){
+        Timestamp = new Date(furniture.pickUpDate);
+        timeSplit = Timestamp.toLocaleString().split("/");
+        furniture.pickUpDate = timeSplit[2].substr(0, 4)+"-"+timeSplit[1]+"-"+timeSplit[0]+" "+Timestamp.toLocaleTimeString();
+    }
     
     let modifPage = `
     <form id="update" class="form-inline">
@@ -125,17 +86,39 @@ const onPageCreate = (data) => {
                 <label for="state">Etat: </label>
                 <div class="form-group">
                     <select class="form-control" id="state" name="state">
-                        <option value="ER">En restauration</option>
-                        <option value="M">En magasin</option>
-                        <option value="EV">En vente</option>
-                        <option value="O">Sous option</option>
-                        <option value="V">Vendu</option>
-                        <option value="EL">En livraison</option>
-                        <option value="L">Livré</option>
-                        <option value="AE">a emporté</option>
-                        <option value="E">Emporté</option>
-                        <option value="R">Reservé</option>
-                        <option value="RE">Retiré</option>
+                        <option value="ER"`;
+                        if(furniture.state == "ER") modifPage += ` selected`;
+                        modifPage += `>En restauration</option>
+                        <option value="M"`;
+                        if(furniture.state == "M") modifPage += ` selected`;
+                        modifPage += `>En magasin</option>
+                        <option value="EV"`;
+                        if(furniture.state == "EV") modifPage += ` selected`;
+                        modifPage += `>En vente</option>
+                        <option value="O"`;
+                        if(furniture.state == "O") modifPage += ` selected`;
+                        modifPage += `>Sous option</option>
+                        <option value="V"`;
+                        if(furniture.state == "V") modifPage += ` selected`;
+                        modifPage += `>Vendu</option>
+                        <option value="EL"`;
+                        if(furniture.state == "EL") modifPage += ` selected`;
+                        modifPage += `>En livraison</option>
+                        <option value="L"`;
+                        if(furniture.state == "L") modifPage += ` selected`;
+                        modifPage += `>Livré</option>
+                        <option value="AE"`;
+                        if(furniture.state == "AE") modifPage += ` selected`;
+                        modifPage += `>a emporté</option>
+                        <option value="E"`;
+                        if(furniture.state == "E") modifPage += ` selected`;
+                        modifPage += `>Emporté</option>
+                        <option value="R"`;
+                        if(furniture.state == "R") modifPage += ` selected`;
+                        modifPage += `>Reservé</option>
+                        <option value="RE"`;
+                        if(furniture.state == "RE") modifPage += ` selected`;
+                        modifPage += `>Retiré</option>
                     </select>
                 </div>
                 <label for="depositDate">Date de dépot: </label>
@@ -144,18 +127,24 @@ const onPageCreate = (data) => {
                 modifPage += `" placeholder="Enter date of deposit" name="depositDate">
                 <label for="seller">Vendeur: </label>
                 <div class="form-group">
-                    <select class="form-control" id="seller" name="seller">
-                        <option value="1">Livi Satcho</option>
-                        <option value="2">George</option>
-                        <option value="3">Michael</option>
+                    <select class="form-control" id="seller" name="seller">`;
+                    users.forEach(user => {
+                        modifPage += `<option value="${user.id}"`;
+                        if(furniture.seller == user.id) modifPage += ` selected`;
+                        modifPage += `>${user.username}</option>`;
+                    });
+                    modifPage += `
                     </select>
                 </div>
                 <label for="type">Type: </label>
                 <div class="form-group">
-                    <select class="form-control" id="type" name="type">
-                        <option value="1">Armoire</option>
-                        <option value="2">Bahut</option>
-                        <option value="3">Bibliotheque</option>
+                    <select class="form-control" id="type" name="type">`;
+                        types.forEach(type => {
+                            modifPage += `<option value="${type.typeId}"`;
+                            if(furniture.type == type.typeId) modifPage += ` selected`;
+                            modifPage += `>${type.name}</option>`;
+                        });
+                        modifPage += `
                     </select>
                 </div>
             </div>
@@ -181,16 +170,17 @@ const onPageCreate = (data) => {
                 <label for="buyer">Acheteur: </label>
                 <div class="form-group">
                     <select class="form-control" id="buyer" name="buyer">
-                        <option value="" selected>Nobody</option>
-                        <option value="1">Livi Satcho</option>
-                        <option value="2">George</option>
-                        <option value="3">Michael</option>
+                        <option value="0">Nobody</option>`;
+                        users.forEach(user => {
+                            modifPage += `<option value="${user.id}"`;
+                            if(furniture.buyer == user.id) modifPage += ` selected`;
+                            modifPage += `>${user.username}</option>`;
+                        });
+                        modifPage += `
                     </select>
                 </div>
                 <label for="delivery">Livraison: </label>
-                <input type="text" class="form-control" id="delivery"`;
-                if(furniture.delivery) modifPage += ` value="${furniture.delivery}"`;
-                modifPage += ` placeholder="Enter delivery" name="delivery">
+                <input type="text" class="form-control" id="delivery" value="${furniture.delivery}" placeholder="Enter delivery" name="delivery">
                 <label for="pickUpDate">Pick-up date: </label>
                 <input type="text" class="form-control" id="pickUpDate"`;
                 if(furniture.pickUpDate) modifPage += ` value="${furniture.pickUpDate}"`;
@@ -263,29 +253,29 @@ const onSubmit = (e) => {
     }
 
     // Check for buyer.
-    if(!buyer && (state == "V" || state == "EL" || state == "L" || state == "AE" || state == "E" 
+    if((!buyer || buyer == "0") && (state == "V" || state == "EL" || state == "L" || state == "AE" || state == "E" 
     || state == "R")) {
         let err = { message: "You need a buyer if the state is sold, on delivery, "
         + "delivered, to go, taken away or reserved." };
         return onError(err);
     }
-    if(buyer && state != "V" && state != "EL" && state != "L" && state != "AE" 
+    if(buyer && buyer != "0" && state != "V" && state != "EL" && state != "L" && state != "AE" 
     && state != "E" && state != "R") {
         let err = { message: ("You cant have a buyer if the state is not vendu or "
         + "not en livraison or not livre or not emporte or not reserve.") };
         return onError(err);
     }
-    if(buyer && !dateOfSale) {
+    if(buyer && buyer != "0" && !dateOfSale) {
         let err = { message: "You need a date of sale if a buyer is specify." };
         return onError(err);
     }
 
     // Check for delivery
-    if(delivery && !buyer) {
+    if(delivery && delivery != "0" && (!buyer|| buyer == "0")) {
         let err = { message: "You need a buyer if the delivery is specify." };
         return onError(err);
     }
-    if(!delivery && (state == "EL" || state == "L")) {
+    if((!delivery || delivery == "0") && (state == "EL" || state == "L")) {
         let err = { message: "Delivery is needed if the state is on delivery or delivered." };
         return onError(err);
     }
@@ -304,7 +294,7 @@ const onSubmit = (e) => {
         "on restoration, in shop, on sale, under option or withdraw.") };
         return onError(err);
     }
-    if(specialSalePrice && specialSalePrice != "0" && !buyer) {
+    if(specialSalePrice && specialSalePrice != "0" && (!buyer || buyer == "0")) {
         let err = { message: "You need a buyer if the special price is specify." };
         return onError(err);
     }

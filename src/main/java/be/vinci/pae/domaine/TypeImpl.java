@@ -3,17 +3,17 @@ package be.vinci.pae.domaine;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TypesImpl implements Types {
+public class TypeImpl implements TypeDTO {
 
-  private int id;
+  private int typeId;
   private String name;
 
-  public int getId() {
-    return id;
+  public int getTypeId() {
+    return typeId;
   }
 
-  public void setId(int id) {
-    this.id = id;
+  public void setTypeId(int id) {
+    this.typeId = id;
   }
 
   public String getName() {
@@ -26,14 +26,14 @@ public class TypesImpl implements Types {
 
   @Override
   public String toString() {
-    return "TypesImpl [id=" + id + ", name=" + name + "]";
+    return "TypesImpl [id=" + typeId + ", name=" + name + "]";
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + id;
+    result = prime * result + typeId;
     return result;
   }
 
@@ -48,8 +48,8 @@ public class TypesImpl implements Types {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    TypesImpl other = (TypesImpl) obj;
-    if (id != other.id) {
+    TypeImpl other = (TypeImpl) obj;
+    if (typeId != other.typeId) {
       return false;
     }
     return true;
