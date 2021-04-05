@@ -1,16 +1,24 @@
-package be.vinci.pae.domaine;
+package be.vinci.pae.domaine.furniture;
 
 import java.util.List;
 import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.FurnitureDAO;
+import be.vinci.pae.services.TypeDAO;
+import be.vinci.pae.services.UserDAO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response.Status;
 
 public class FurnitureUCCImpl implements FurnitureUCC {
 
   @Inject
-  FurnitureDAO furnitureDAO;
+  private FurnitureDAO furnitureDAO;
+
+  @Inject
+  private TypeDAO typeDAO;
+
+  @Inject
+  private UserDAO userDAO;
 
   @Inject
   private DalServices dalservices;
@@ -57,6 +65,18 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     }
     dalservices.commitTransaction();
     return furnitureDTO;
+  }
+
+  @Override
+  public Object[] getAllInfosForUpdate(int id) {
+    dalservices.startTransaction();
+    Object[] allLists = new Object[3];
+    int i = 0;
+    allLists[i++] = furnitureDAO.findById(id);
+    allLists[i++] = typeDAO.getAll();
+    allLists[i++] = userDAO.getAll();
+    dalservices.commitTransaction();
+    return allLists;
   }
 
 }

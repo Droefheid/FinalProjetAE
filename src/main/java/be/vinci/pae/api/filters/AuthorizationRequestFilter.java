@@ -1,7 +1,7 @@
 package be.vinci.pae.api.filters;
 
 import java.io.IOException;
-import be.vinci.pae.domaine.UserDTO;
+import be.vinci.pae.domaine.user.UserDTO;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;

@@ -1,4 +1,4 @@
-package be.vinci.pae.domaine;
+package be.vinci.pae.domaine.furniture;
 
 import java.util.List;
 
@@ -9,7 +9,9 @@ public interface FurnitureUCC {
   FurnitureDTO findById(int id);
 
   List<FurnitureDTO> getAll();
-  
+
   FurnitureDTO update(FurnitureDTO furniture);
+
+  Object[] getAllInfosForUpdate(int id);
 
 }

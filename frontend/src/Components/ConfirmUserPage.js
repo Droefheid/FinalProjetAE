@@ -40,7 +40,6 @@ const ConfirmUserPage = () => {
 };
 
 const onUserList = (data) => {
-console.log(data);
   let userList = document.querySelector("#list");
 
   if (!data) return;

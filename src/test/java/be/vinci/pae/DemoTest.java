@@ -10,11 +10,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import be.vinci.pae.api.utils.BusinessException;
-import be.vinci.pae.domaine.AddressDTO;
 import be.vinci.pae.domaine.DomaineFactory;
-import be.vinci.pae.domaine.User;
-import be.vinci.pae.domaine.UserDTO;
-import be.vinci.pae.domaine.UserUCC;
+import be.vinci.pae.domaine.address.AddressDTO;
+import be.vinci.pae.domaine.user.User;
+import be.vinci.pae.domaine.user.UserDTO;
+import be.vinci.pae.domaine.user.UserUCC;
 import be.vinci.pae.services.UserDAO;
 import be.vinci.pae.utils.Config;
 

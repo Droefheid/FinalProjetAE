@@ -3,6 +3,8 @@ package be.vinci.pae.api;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,9 +12,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.filters.AuthorizeBoss;
 import be.vinci.pae.api.utils.PresentationException;
 import be.vinci.pae.domaine.DomaineFactory;
-import be.vinci.pae.domaine.FurnitureDTO;
-import be.vinci.pae.domaine.FurnitureUCC;
-import be.vinci.pae.domaine.UserDTO;
+import be.vinci.pae.domaine.furniture.FurnitureDTO;
+import be.vinci.pae.domaine.furniture.FurnitureUCC;
+import be.vinci.pae.domaine.user.UserDTO;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -50,8 +52,7 @@ public class FurnitureResource {
     List<FurnitureDTO> listFurnitures = new ArrayList<FurnitureDTO>();
     listFurnitures = furnitureUCC.getAll();
 
-    ObjectNode node = jsonMapper.createObjectNode().putPOJO("list", listFurnitures);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+    return createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
   }
 
   /**
@@ -64,7 +65,6 @@ public class FurnitureResource {
   @AuthorizeBoss
   public Response updateFurniture(@Context ContainerRequest request, JsonNode json) {
     UserDTO currentUser = (UserDTO) request.getProperty("user");
-    System.out.println(currentUser.getUserName());
     if (currentUser == null || !currentUser.isBoss()) {
       throw new PresentationException("You dont have the permission.", Status.BAD_REQUEST);
     }
@@ -74,8 +74,7 @@ public class FurnitureResource {
 
     furniture = furnitureUCC.update(furniture);
 
-    ObjectNode node = jsonMapper.createObjectNode().putPOJO("furniture", furniture);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+    return createResponseWithObjectNodeWith1PutPOJO("furniture", furniture);
   }
 
   private void checkAllCredentialFurniture(JsonNode json) {
@@ -102,7 +101,13 @@ public class FurnitureResource {
     if (json.get("pickUpDate").asText().equals("")) {
       throw new PresentationException("Pick-up date is needed.", Status.BAD_REQUEST);
     }
-    // TODO Verifier que furnitureDateCollection est bien un timestamp.
+    String timestampPattern = "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$";
+    Pattern pattern = Pattern.compile(timestampPattern, Pattern.CASE_INSENSITIVE);
+    Matcher matcher = pattern.matcher(json.get("pickUpDate").asText());
+    if (!matcher.find()) {
+      throw new PresentationException("Pick-up date is not matching a Timestamp pattern.",
+          Status.BAD_REQUEST);
+    }
     if (json.get("type").asText().equals("") || json.get("type").asInt() < 1) {
       throw new PresentationException("Type is needed ", Status.BAD_REQUEST);
     }
@@ -151,22 +156,25 @@ public class FurnitureResource {
 
 
     // Check when the furniture is buy.
-    if (json.get("buyer").asText().equals("") && (state.equals("V") || state.equals("EL")
-        || state.equals("L") || state.equals("AE") || state.equals("E") || state.equals("R"))) {
+    if ((json.get("buyer").asText().equals("") || json.get("buyer").asText().equals("0"))
+        && (state.equals("V") || state.equals("EL") || state.equals("L") || state.equals("AE")
+            || state.equals("E") || state.equals("R"))) {
       throw new PresentationException("Buyer is needed ", Status.BAD_REQUEST);
     }
     int buyerId = json.get("buyer").asInt();
     if (buyerId != 0 && (buyerId < 1 || userRessource.getUserById(buyerId) == null)) {
       throw new PresentationException("Buyer does not exist ", Status.BAD_REQUEST);
     }
-    if (!json.get("buyer").asText().equals("") && !state.equals("V") && !state.equals("EL")
-        && !state.equals("L") && !state.equals("AE") && !state.equals("E") && !state.equals("R")) {
+    if (!json.get("buyer").asText().equals("") && !json.get("buyer").asText().equals("0")
+        && !state.equals("V") && !state.equals("EL") && !state.equals("L") && !state.equals("AE")
+        && !state.equals("E") && !state.equals("R")) {
       throw new PresentationException(
           "You cant have a buyer if the state is not (sold, on delivery, "
               + "delivered, to go, taken away, reserved).",
           Status.BAD_REQUEST);
     }
-    if (!json.get("buyer").asText().equals("") && json.get("dateOfSale").asText().equals("")) {
+    if (!json.get("buyer").asText().equals("") && !json.get("buyer").asText().equals("0")
+        && json.get("dateOfSale").asText().equals("")) {
       throw new PresentationException("A date of sale is needed if a buyer is specify.",
           Status.BAD_REQUEST);
     }
@@ -174,7 +182,8 @@ public class FurnitureResource {
     // TODO Verifier que si il y a un buyer, il y a soit delivery/saleWithdrawalDate.
 
     // Case if delivery.
-    if ((state.equals("EL") || state.equals("EL")) && json.get("delivery").asText().equals("")) {
+    if ((state.equals("EL") || state.equals("EL")) && (json.get("delivery").asText().equals("")
+        || json.get("delivery").asText().equals("0"))) {
       throw new PresentationException(
           "Delivery is needed if the state is on delivery or delivered.", Status.BAD_REQUEST);
     }
@@ -206,7 +215,7 @@ public class FurnitureResource {
     }
     if (!json.get("specialSalePrice").asText().equals("")
         && !json.get("specialSalePrice").asText().equals("0")
-        && json.get("buyer").asText().equals("")) {
+        && (json.get("buyer").asText().equals("") || json.get("buyer").asText().equals("0"))) {
       throw new PresentationException("Buyer is needed if a special sale price is specify.",
           Status.BAD_REQUEST);
     }
@@ -285,7 +294,56 @@ public class FurnitureResource {
     }
     FurnitureDTO furniture = this.furnitureUCC.findById(id);
 
-    ObjectNode node = jsonMapper.createObjectNode().putPOJO("furniture", furniture);
+    return createResponseWithObjectNodeWith1PutPOJO("furniture", furniture);
+  }
+
+  /**
+   * get the furniture by is id and all types and users.
+   * 
+   * @param id id of the furniture.
+   * @return list of all types, users and the furniture where the id is the same.
+   */
+  @GET
+  @Path("/infosUpdate/{id}")
+  public Response allInfosForUpdateFurniture(@PathParam("id") int id) {
+    if (id < 1) {
+      throw new PresentationException("Id cannot be under 1", Status.BAD_REQUEST);
+    }
+
+    Object[] listOfAll = furnitureUCC.getAllInfosForUpdate(id);
+
+    int i = 0;
+    return createResponseWithObjectNodeWith3PutPOJO("furniture", listOfAll[i++], "types",
+        listOfAll[i++], "users", listOfAll[i++]);
+  }
+
+  /**
+   * create a response with a ObjectNode with 1 putPOJO.
+   * 
+   * @param <E> the type of the object.
+   * @param namePOJO the name of the POJO put.
+   * @param object object to put.
+   * @return a response.ok build with the ObjectNode inside.
+   */
+  private <E> Response createResponseWithObjectNodeWith1PutPOJO(String namePOJO, E object) {
+    ObjectNode node = jsonMapper.createObjectNode().putPOJO(namePOJO, object);
+    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+  }
+
+  /**
+   * create a response with a ObjectNode with 3 putPOJO.
+   * 
+   * @param <E> the type of the first object.
+   * @param <F> the type of the second object.
+   * @param <G> the type of the third object.
+   * @param namePOJO1 the name of the POJO put.
+   * @param object1 object to put.
+   * @return a response.ok build with all the ObjectNode inside.
+   */
+  private <E, F, G> Response createResponseWithObjectNodeWith3PutPOJO(String namePOJO1, E object1,
+      String namePOJO2, F object2, String namePOJO3, G object3) {
+    ObjectNode node = jsonMapper.createObjectNode().putPOJO(namePOJO1, object1)
+        .putPOJO(namePOJO2, object2).putPOJO(namePOJO3, object3);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
 }

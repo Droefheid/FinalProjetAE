@@ -1,6 +1,7 @@
-package be.vinci.pae.domaine;
+package be.vinci.pae.domaine.user;
 
 import java.util.List;
+import be.vinci.pae.domaine.address.AddressDTO;
 
 public interface UserUCC {
 

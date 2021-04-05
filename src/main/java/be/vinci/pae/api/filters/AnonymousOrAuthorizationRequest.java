@@ -7,7 +7,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import be.vinci.pae.api.utils.PresentationException;
-import be.vinci.pae.domaine.UserUCC;
+import be.vinci.pae.domaine.user.UserUCC;
 import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

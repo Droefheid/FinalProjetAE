@@ -1,6 +1,6 @@
 package be.vinci.pae.services;
 
-import be.vinci.pae.domaine.OptionDTO;
+import be.vinci.pae.domaine.option.OptionDTO;
 
 public interface OptionDAO {
 

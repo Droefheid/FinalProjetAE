@@ -6,9 +6,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import be.vinci.pae.api.utils.FatalException;
-import be.vinci.pae.domaine.AddressDTO;
 import be.vinci.pae.domaine.DomaineFactory;
-import be.vinci.pae.domaine.UserDTO;
+import be.vinci.pae.domaine.address.AddressDTO;
+import be.vinci.pae.domaine.user.UserDTO;
 import jakarta.inject.Inject;
 
 public class UserDAOImpl implements UserDAO {
@@ -191,7 +191,8 @@ public class UserDAOImpl implements UserDAO {
     PreparedStatement ps =
         this.dalBackendServices.getPreparedStatement("SELECT user_id , last_name , "
             + "first_name,username ,password , address , email , is_boss ,"
-            + " is_antique_dealer , is_confirmed , " + " registration_date FROM projet.users");
+            + " is_antique_dealer , is_confirmed , " + " registration_date FROM projet.users"
+            + " ORDER BY user_id");
 
 
     List<UserDTO> list = new ArrayList<UserDTO>();

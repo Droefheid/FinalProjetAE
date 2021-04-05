@@ -1,16 +1,15 @@
-package be.vinci.pae.domaine;
+package be.vinci.pae.domaine.delivery;
 
 import java.sql.Timestamp;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OptionImpl implements OptionDTO {
+public class DeliveryImpl implements DeliveryDTO {
 
   private int id;
-  private Timestamp optionTerm;
-  private Timestamp beginningOptionDate;
+  private Timestamp estimatedDeliveryDate;
+  private boolean isDelivered;
   private int customer;
-  private int furniture;
 
 
   public int getId() {
@@ -21,20 +20,20 @@ public class OptionImpl implements OptionDTO {
     this.id = id;
   }
 
-  public Timestamp getOptionTerm() {
-    return optionTerm;
+  public Timestamp getEstimatedDeliveryDate() {
+    return estimatedDeliveryDate;
   }
 
-  public void setOptionTerm(Timestamp optionTerm) {
-    this.optionTerm = optionTerm;
+  public void setEstimatedDeliveryDate(Timestamp estimatedDeliveryDate) {
+    this.estimatedDeliveryDate = estimatedDeliveryDate;
   }
 
-  public Timestamp getBeginningOptionDate() {
-    return beginningOptionDate;
+  public boolean isDelivered() {
+    return isDelivered;
   }
 
-  public void setBeginningOptionDate(Timestamp beginningOptionDate) {
-    this.beginningOptionDate = beginningOptionDate;
+  public void setDelivered(boolean isDelivered) {
+    this.isDelivered = isDelivered;
   }
 
   public int getCustomer() {
@@ -45,12 +44,10 @@ public class OptionImpl implements OptionDTO {
     this.customer = customer;
   }
 
-  public int getFurniture() {
-    return furniture;
-  }
-
-  public void setFurniture(int furniture) {
-    this.furniture = furniture;
+  @Override
+  public String toString() {
+    return "DeliveryImpl [id=" + id + ", estimatedDeliveryDate=" + estimatedDeliveryDate
+        + ", isDelivered=" + isDelivered + ", customer=" + customer + "]";
   }
 
   @Override
@@ -72,7 +69,7 @@ public class OptionImpl implements OptionDTO {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    OptionImpl other = (OptionImpl) obj;
+    DeliveryImpl other = (DeliveryImpl) obj;
     if (id != other.id) {
       return false;
     }

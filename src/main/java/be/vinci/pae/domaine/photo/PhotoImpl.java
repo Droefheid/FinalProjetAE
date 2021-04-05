@@ -1,11 +1,12 @@
-package be.vinci.pae.domaine;
+package be.vinci.pae.domaine.photo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TypesImpl implements Types {
+public class PhotoImpl implements PhotoDTO {
 
   private int id;
+  private String picture;
   private String name;
 
   public int getId() {
@@ -14,6 +15,14 @@ public class TypesImpl implements Types {
 
   public void setId(int id) {
     this.id = id;
+  }
+
+  public String getPicture() {
+    return picture;
+  }
+
+  public void setPicture(String picture) {
+    this.picture = picture;
   }
 
   public String getName() {
@@ -26,7 +35,7 @@ public class TypesImpl implements Types {
 
   @Override
   public String toString() {
-    return "TypesImpl [id=" + id + ", name=" + name + "]";
+    return "PhotoImpl [id=" + id + ", picture=" + picture + ", name=" + name + "]";
   }
 
   @Override
@@ -48,13 +57,12 @@ public class TypesImpl implements Types {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    TypesImpl other = (TypesImpl) obj;
+    PhotoImpl other = (PhotoImpl) obj;
     if (id != other.id) {
       return false;
     }
     return true;
   }
-
 
 
 }
