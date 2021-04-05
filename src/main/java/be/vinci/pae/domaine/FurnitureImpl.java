@@ -153,4 +153,40 @@ public class FurnitureImpl implements FurnitureDTO {
     this.seller = seller;
   }
 
+  @Override
+  public String toString() {
+    return "FurnitureImpl [furnitureId=" + furnitureId + ", type=" + type + ", buyer=" + buyer
+        + ", furnitureTitle=" + furnitureTitle + ", purchasePrice=" + purchasePrice
+        + ", furnitureDateCollection=" + furnitureDateCollection + ", sellingPrice=" + sellingPrice
+        + "\n, specialSalePrice=" + specialSalePrice + ", delivery=" + delivery + ", state=" + state
+        + ", depositDate=" + depositDate + ", dateOfSale=" + dateOfSale + ", saleWithdrawalDate="
+        + saleWithdrawalDate + ", seller=" + seller + "\n, pickUpDate=" + pickUpDate + "]";
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + furnitureId;
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    FurnitureImpl other = (FurnitureImpl) obj;
+    if (furnitureId != other.furnitureId) {
+      return false;
+    }
+    return true;
+  }
+
 }

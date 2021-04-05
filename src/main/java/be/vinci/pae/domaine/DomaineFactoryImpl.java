@@ -23,4 +23,9 @@ public class DomaineFactoryImpl implements DomaineFactory {
     return new OptionImpl();
   }
 
+  @Override
+  public TypeDTO getTypeDTO() {
+    return new TypeImpl();
+  }
+
 }

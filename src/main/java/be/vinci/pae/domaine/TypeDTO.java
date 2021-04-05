@@ -1,11 +1,11 @@
 package be.vinci.pae.domaine;
 
-public interface Types {
+public interface TypeDTO {
 
 
-  int getId();
+  int getTypeId();
 
-  void setId(int id);
+  void setTypeId(int id);
 
   String getName();
 
