@@ -6,9 +6,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import be.vinci.pae.api.utils.FatalException;
-import be.vinci.pae.domaine.AddressDTO;
 import be.vinci.pae.domaine.DomaineFactory;
-import be.vinci.pae.domaine.UserDTO;
+import be.vinci.pae.domaine.address.AddressDTO;
+import be.vinci.pae.domaine.user.UserDTO;
 import jakarta.inject.Inject;
 
 public class UserDAOImpl implements UserDAO {

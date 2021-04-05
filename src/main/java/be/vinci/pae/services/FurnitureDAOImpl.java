@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import be.vinci.pae.api.utils.FatalException;
 import be.vinci.pae.domaine.DomaineFactory;
-import be.vinci.pae.domaine.FurnitureDTO;
+import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import jakarta.inject.Inject;
 
 public class FurnitureDAOImpl implements FurnitureDAO {
@@ -81,7 +81,6 @@ public class FurnitureDAOImpl implements FurnitureDAO {
 
   @Override
   public FurnitureDTO update(FurnitureDTO furniture) {
-    System.out.println(furniture);
     PreparedStatement ps = this.dalBackendServices.getPreparedStatement("UPDATE projet.furnitures "
         + "SET type = ?" + ", buyer = ?, furniture_title = ?, purchase_price = ?,"
         + " furniture_date_collection = ?, selling_price = ?, special_sale_price = ?,"

@@ -1,9 +1,9 @@
-package be.vinci.pae.domaine;
+package be.vinci.pae.domaine.photo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PhotoImpl implements Photo {
+public class PhotoImpl implements PhotoDTO {
 
   private int id;
   private String picture;

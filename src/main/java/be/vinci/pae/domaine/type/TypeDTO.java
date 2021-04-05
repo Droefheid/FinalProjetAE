@@ -1,4 +1,4 @@
-package be.vinci.pae.domaine;
+package be.vinci.pae.domaine.type;
 
 public interface TypeDTO {
 

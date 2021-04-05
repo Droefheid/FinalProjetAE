@@ -1,10 +1,10 @@
-package be.vinci.pae.domaine;
+package be.vinci.pae.domaine.delivery;
 
 import java.sql.Timestamp;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DeliveryImpl implements Delivery {
+public class DeliveryImpl implements DeliveryDTO {
 
   private int id;
   private Timestamp estimatedDeliveryDate;

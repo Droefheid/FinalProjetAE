@@ -1,7 +1,8 @@
-package be.vinci.pae.domaine;
+package be.vinci.pae.domaine.user;
 
 import java.util.List;
 import be.vinci.pae.api.utils.BusinessException;
+import be.vinci.pae.domaine.address.AddressDTO;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.UserDAO;
 import jakarta.inject.Inject;

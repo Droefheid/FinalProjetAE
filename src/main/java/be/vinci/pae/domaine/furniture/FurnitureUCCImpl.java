@@ -1,4 +1,4 @@
-package be.vinci.pae.domaine;
+package be.vinci.pae.domaine.furniture;
 
 import java.util.List;
 import be.vinci.pae.api.utils.BusinessException;

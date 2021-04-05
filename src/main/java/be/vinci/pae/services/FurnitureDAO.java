@@ -1,7 +1,7 @@
 package be.vinci.pae.services;
 
 import java.util.List;
-import be.vinci.pae.domaine.FurnitureDTO;
+import be.vinci.pae.domaine.furniture.FurnitureDTO;
 
 public interface FurnitureDAO {
 
