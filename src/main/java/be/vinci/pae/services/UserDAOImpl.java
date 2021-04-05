@@ -211,18 +211,47 @@ public class UserDAOImpl implements UserDAO {
     return list;
   }
 
+  @Override
+  public List<UserDTO> getAllConfirmed() {
+    PreparedStatement ps =
+        this.dalBackendServices.getPreparedStatement("SELECT user_id , last_name , "
+            + "first_name,username ,password , address , email , is_boss ,"
+            + " is_antique_dealer , is_confirmed," + " registration_date FROM projet.users "
+            + "WHERE is_confirmed =?");
+
+
+    List<UserDTO> list = new ArrayList<UserDTO>();
+
+    try {
+      ps.setBoolean(1, false);
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        UserDTO user = domaineFactory.getUserDTO();
+        fullFillListUsers(rs, user);
+        list.add(user);
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("error fullFillUsers", e);
+    }
+
+    return list;
+  }
+
 
 
   @Override
-  public void updateConfirmed(boolean confirmed, boolean antiqueDealer, int userId) {
-    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
-        "UPDATE projet.users SET is_confirmed = ? , is_antique_dealer = ? WHERE user_id = ?");
+  public void updateConfirmed(UserDTO user) {
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("UPDATE projet.users SET is_confirmed = ? , is_antique_dealer = ?"
+            + ", is_boss=? WHERE user_id = ?");
 
 
     try {
-      ps.setBoolean(1, confirmed);
-      ps.setBoolean(2, antiqueDealer);
-      ps.setInt(3, userId);
+      ps.setBoolean(1, user.isConfirmed());
+      ps.setBoolean(2, user.isAntiqueDealer());
+      ps.setBoolean(3, user.isBoss());
+      ps.setInt(4, user.getID());
       ps.executeUpdate();
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();

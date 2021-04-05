@@ -141,7 +141,7 @@ public class UserResource {
     // Build response
     // load the user data from a public JSON view to filter out the private info not
     // to be returned by the API (such as password)
-    UserDTO publicUser = Json.filterPublicJsonView(user, UserDTO.class);
+    UserDTO publicUser = Json.filterBossJsonView(user, UserDTO.class);
     return jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
   }
 
@@ -230,6 +230,22 @@ public class UserResource {
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
 
+  /**
+   * get all users.
+   * 
+   * @return list of all users.
+   */
+  @GET
+  @Path("/notConfirmed")
+  @AuthorizeBoss
+  public Response allUsersConfirmed() {
+    List<UserDTO> listUsers = new ArrayList<UserDTO>();
+    listUsers = userUcc.getAllNotConfirmed();
+
+    ObjectNode node = jsonMapper.createObjectNode().putPOJO("list", listUsers);
+    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+  }
+
 
   /**
    * update confirmation.
@@ -240,11 +256,16 @@ public class UserResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeBoss
   public Response updateConfirmed(JsonNode json) {
-    int userId = json.get("user_id").asInt();
-    // TODO boolean isBoss.
-    boolean antiqueDealer = json.get("is_antique_dealer").asBoolean();
-    boolean confirmed = json.get("is_confirmed").asBoolean();
-    this.userUcc.updateConfirmed(confirmed, antiqueDealer, userId);
+    int userId = json.get("userId").asInt();
+    boolean isBoss = json.get("isBoss").asBoolean();
+    boolean antiqueDealer = json.get("isAntiqueDealer").asBoolean();
+    boolean confirmed = json.get("isConfirmed").asBoolean();
+    UserDTO user = domaineFactory.getUserDTO();
+    user.setID(userId);
+    user.setBoss(isBoss);
+    user.setConfirmed(confirmed);
+    user.setAntiqueDealer(antiqueDealer);
+    this.userUcc.updateConfirmed(user);
     return Response.ok(MediaType.APPLICATION_JSON).build();
   }
 

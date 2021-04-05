@@ -354,14 +354,8 @@ const onFurnitureUpdate = (furnitureData) => {
 };
   
 const onError = (err) => {
-    let messageBoard = document.querySelector("#messageBoard");
-    let errorMessage = "";
-    if (err.message.includes("401")) {
-      messageBoard.innerHTML = '<div class="alert alert-danger">Wrong username or password.</div>';
-    }else{
-      errorMessage = err.message;
-      ALERT_BOX(messageBoard, errorMessage);
-    }
+    let messageBoard = document.querySelector("#messageBoardForm");
+    messageBoard.innerHTML=err;
 };
  
 export default ModificationFurniturePage;
