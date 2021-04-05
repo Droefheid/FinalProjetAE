@@ -36,7 +36,9 @@ public interface UserDAO {
 
 
 
-  void updateConfirmed(boolean confirmed, boolean antiqueDealer, int userId);
+  void updateConfirmed(UserDTO user);
+
+  List<UserDTO> getAllConfirmed();
 
 
 

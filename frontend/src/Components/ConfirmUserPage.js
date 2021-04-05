@@ -1,6 +1,5 @@
 import { RedirectUrl } from "./Router.js";
-import Navbar from "./Navbar.js";
-import { setUserSessionData } from "../utils/session.js";
+import { getTokenSessionDate } from "../utils/session";
 import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
 
@@ -10,18 +9,25 @@ const ConfirmUserPage = () => {
   Sidebar(true);
 
   let list = `
-  
-  <div class="container-fluid row justify-content-center" id="list"> </div>
-  <div class="container-fluid row justify-content-center"  id="confirmUserDesc"></div>
-  
+  <div class="containerForm">
+<div class="d-flex justify-content-center h-100 mt-4">
+  <div class="card">
+    <div class="card-header">
+  <div class="col-sm-3" id="list"> </div>
+  </div>
+  </div>
+  <div class="col-sm-3"  id="confirmUserDesc"></div>
+  <div id="messageBoardForm"></div>
+  </div>
+  </div>
   `;
-  
+  let id = getTokenSessionDate();
   page.innerHTML = list;
-
-  fetch(API_URL + "users/", {
+  fetch(API_URL + "users/notConfirmed", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": id,
     },
   })
     .then((response) => {
@@ -77,10 +83,12 @@ const onClick = (e) => {
 
     if(userId == null) return;
   
+    let id = getTokenSessionDate();
     fetch(API_URL + "users/" + userId, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": id,
       },
     })
       .then((response) => {
@@ -93,33 +101,26 @@ const onClick = (e) => {
 };
 
 const onConfirmUserDescription = (data) => {
-  
   let info = document.querySelector("#confirmUserDesc");
-
   let description = `
   <div id="description_user">
-    <h4>${data.user.username}</h4>
-   
-    <p>Last name : ${data.user.lastName} </br>
-       First name : ${data.user.firstName}</br>
-        Email : ${data.user.email}</br>
-    </p>
+  <p> Username: ${data.user.username}</p>
+  <p> Lastname: ${data.user.lastName}</p>
+  <p> Firstname: ${data.user.firstName}</p>
+  <p> Email: ${data.user.email}</p>
+    <input type="hidden" id="id" value="${data.user.id}">
+    <br>
 
-    <div class="form-check">
-  <input class="form-check-input" type="checkbox" id="is_confirmed" >
-  <label class="form-check-label" for="flexCheckChecked">
-    Is confirmed
-  </label>
-
-  <div class="form-check" id="${data.user.id}">
-  <input class="form-check-input" type="checkbox" id="is_antique_dealer" >
-  <label class="form-check-label" for="flexCheckChecked">
-    Is antique dealer
-  </label>
+    <input class="form-check-input" type="checkbox" id="is_confirmed" >
+    <label class="form-check-label" for="is_confirmed">Is confirmed </label>
+    <br>
+    <input class="form-check-input" type="checkbox" id="is_antique_dealer" >
+    <label class="form-check-label" for="is_antique_dealer">Is antique dealer </label>
+    <br>
+    <input class="form-check-input" type="checkbox" id="is_boss" >
+    <label class="form-check-label" for="is_boss">Is Boss </label>
   <br>
   <input class="btn btn-primary" type="button" id="button_confirmed" value="Submit">
-</div>
-</div>
   </div>`;
 
   info.innerHTML = description; 
@@ -130,29 +131,25 @@ const onConfirmUserDescription = (data) => {
 
 const onConfirmUser = (e) =>{
   e.preventDefault();
-  var userId = e.target.parentElement.id;
-  var confirmed = false ;
-  var antique_dealer = false;
- 
-  if (document.getElementById("is_confirmed").checked === true) {   
-    confirmed = true;
+  let userId = document.getElementById("id").value;
+  let confirmed = document.getElementById("is_confirmed").checked ;
+  let antique_dealer = document.getElementById("is_antique_dealer").checked;
+  let is_boss = document.getElementById("is_boss").checked;
 
-  }
-
-  if (document.getElementById("is_antique_dealer").checked === true) {   
-    antique_dealer = true;
-  }
   let user = { 
-    "is_confirmed" : confirmed ,
-    "is_antique_dealer" : antique_dealer,
-    "user_id" : userId,
+    "isConfirmed" : confirmed ,
+    "isAntiqueDealer" : antique_dealer,
+    "userId" : userId,
+    "isBoss": is_boss,
   };
-
+  let id = getTokenSessionDate();
   fetch(API_URL + "users/", {
     method: "PUT",
     body: JSON.stringify(user),
     headers: {
       "Content-Type": "application/json",
+      "Authorization": id,
+
     },
   })
     .then((response) => {
@@ -160,13 +157,12 @@ const onConfirmUser = (e) =>{
         return response.text().then((err) => onError(err));
       }
       else
-        return response.json().then((data) => onConfirmedUser());
+        return onConfirmedUser();
     }) 
 };
  
-const onConfirmedUser = (e) => {
-
-  RedirectUrl("/");
+const onConfirmedUser = () => {
+  RedirectUrl("/confirmUser");
 }
 
 

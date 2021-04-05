@@ -68,11 +68,19 @@ public class UserUCCImpl implements UserUCC {
     return list;
   }
 
+  @Override
+  public List<UserDTO> getAllNotConfirmed() {
+    dalservices.startTransaction();
+    List<UserDTO> list = userDao.getAllConfirmed();
+    dalservices.commitTransaction();
+    return list;
+  }
+
 
   @Override
-  public void updateConfirmed(boolean confirmed, boolean antiqueDealer, int userId) {
+  public void updateConfirmed(UserDTO user) {
     dalservices.startTransaction();
-    this.userDao.updateConfirmed(confirmed, antiqueDealer, userId);
+    this.userDao.updateConfirmed(user);
     dalservices.commitTransaction();
   }
 
