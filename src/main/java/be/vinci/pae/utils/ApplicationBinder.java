@@ -7,8 +7,6 @@ import be.vinci.pae.domaine.FurnitureUCC;
 import be.vinci.pae.domaine.FurnitureUCCImpl;
 import be.vinci.pae.domaine.OptionUCC;
 import be.vinci.pae.domaine.OptionUCCImpl;
-import be.vinci.pae.domaine.TypeUCC;
-import be.vinci.pae.domaine.TypeUCCImpl;
 import be.vinci.pae.domaine.UserUCC;
 import be.vinci.pae.domaine.UserUCCImpl;
 import be.vinci.pae.services.DalBackendServices;
@@ -39,7 +37,6 @@ public class ApplicationBinder extends AbstractBinder {
     bind(OptionUCCImpl.class).to(OptionUCC.class).in(Singleton.class);
     bind(FurnitureUCCImpl.class).to(FurnitureUCC.class).in(Singleton.class);
     bind(FurnitureDAOImpl.class).to(FurnitureDAO.class).in(Singleton.class);
-    bind(TypeUCCImpl.class).to(TypeUCC.class).in(Singleton.class);
     bind(TypeDAOImpl.class).to(TypeDAO.class).in(Singleton.class);
   }
 
