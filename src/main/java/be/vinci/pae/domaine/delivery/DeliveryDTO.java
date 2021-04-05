@@ -1,8 +1,8 @@
-package be.vinci.pae.domaine;
+package be.vinci.pae.domaine.delivery;
 
 import java.sql.Timestamp;
 
-public interface Delivery {
+public interface DeliveryDTO {
 
   int getId();
 

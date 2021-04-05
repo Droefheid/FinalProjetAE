@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import be.vinci.pae.api.utils.FatalException;
 import be.vinci.pae.domaine.DomaineFactory;
-import be.vinci.pae.domaine.TypeDTO;
+import be.vinci.pae.domaine.type.TypeDTO;
 import jakarta.inject.Inject;
 
 public class TypeDAOImpl implements TypeDAO {

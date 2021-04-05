@@ -2,8 +2,8 @@ package be.vinci.pae.services;
 
 
 import java.util.List;
-import be.vinci.pae.domaine.AddressDTO;
-import be.vinci.pae.domaine.UserDTO;
+import be.vinci.pae.domaine.address.AddressDTO;
+import be.vinci.pae.domaine.user.UserDTO;
 
 public interface UserDAO {
 

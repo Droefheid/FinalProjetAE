@@ -1,4 +1,4 @@
-package be.vinci.pae.domaine;
+package be.vinci.pae.domaine.option;
 
 import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.services.DalServices;

@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import be.vinci.pae.api.utils.FatalException;
-import be.vinci.pae.domaine.OptionDTO;
+import be.vinci.pae.domaine.option.OptionDTO;
 import jakarta.inject.Inject;
 
 public class OptionDAOImpl implements OptionDAO {

@@ -1,4 +1,4 @@
-package be.vinci.pae.domaine;
+package be.vinci.pae.domaine.address;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

@@ -1,5 +1,11 @@
 package be.vinci.pae.domaine;
 
+import be.vinci.pae.domaine.address.AddressDTO;
+import be.vinci.pae.domaine.furniture.FurnitureDTO;
+import be.vinci.pae.domaine.option.OptionDTO;
+import be.vinci.pae.domaine.type.TypeDTO;
+import be.vinci.pae.domaine.user.UserDTO;
+
 public interface DomaineFactory {
   UserDTO getUserDTO();
 

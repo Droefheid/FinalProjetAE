@@ -1,6 +1,6 @@
-package be.vinci.pae.domaine;
+package be.vinci.pae.domaine.photo;
 
-public interface Photo {
+public interface PhotoDTO {
 
   int getId();
 
