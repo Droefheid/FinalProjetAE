@@ -18,6 +18,7 @@ public class TypeDAOImpl implements TypeDAO {
   @Inject
   private DalBackendServices dalBackendServices;
 
+  @Override
   public List<TypeDTO> getAll() {
     PreparedStatement ps = this.dalBackendServices
         .getPreparedStatement("SELECT type_id , name FROM projet.types" + " ORDER BY type_id");
