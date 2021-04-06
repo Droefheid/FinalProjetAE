@@ -48,9 +48,10 @@ CREATE TABLE projet.visits (
 	visit_id SERIAL PRIMARY KEY,
 	request_date TIMESTAMP NOT NULL,
 	time_slot VARCHAR(100) NOT NULL,
-	date_and_hours_visit TIMESTAMP NOT NULL,
-	explanatory_note VARCHAR(100) NOT NULL,
+	date_and_hours_visit TIMESTAMP NULL,
+	explanatory_note VARCHAR(100) NULL,
 	label_furniture VARCHAR(100) NOT NULL,
+	is_confirmed BOOLEAN DEFAULT FALSE,
 	users INTEGER REFERENCES projet.users(user_id) NOT NULL,
 	address INTEGER REFERENCES projet.addresses(address_id) NOT NULL
 );
