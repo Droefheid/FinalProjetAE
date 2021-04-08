@@ -75,7 +75,7 @@ const onPageCreate = (data) => {
     }
     
     let modifPage = `
-    <form id="update" class="form-inline">
+    <form id="update" class="form-inline" enctype="multipart/form-data">
         <input id="furnitureId" value="${furniture.furnitureId}" hidden>
         <div class="row">
             <div class="col-sm-6 bg-info">
@@ -145,6 +145,9 @@ const onPageCreate = (data) => {
                         modifPage += `
                     </select>
                 </div>
+                <br>
+                <input type="file" id="files" name="files[]" multiple>
+                <p class="text-muted">* Veuillez selectionner toutes les photos en une seule fois.</p>
             </div>
             <div class="col-sm-6 bg-warning">
                 <label for="furnitureDateCollection">Date emporter: </label>
@@ -195,6 +198,17 @@ const onPageCreate = (data) => {
 
 const onSubmit = (e) => {
     e.preventDefault();
+
+    let files = document.getElementById("files").files;
+    console.log(files);
+
+    const formData = new FormData();
+    formData.append("furnitureId", document.getElementById("furnitureId").value);
+    for(let i = 0; i < files.length; i++){
+        console.log(files[i]);
+        formData.append("photo"+i, files[i]);
+    }
+    console.log(formData, formData.get("photo0"));
 
     let furnitureId = document.getElementById("furnitureId").value;
     let title = document.getElementById("title").value;
@@ -327,7 +341,11 @@ const onSubmit = (e) => {
       "saleWithdrawalDate": saleWithdrawalDate,
       "seller": seller,
       "pickUpDate": pickUpDate,
+
+      "files": files,
+      "formData": formData,
     };
+    console.log(furniture);
   
     let id = getTokenSessionDate();
     fetch(API_URL + "furnitures", {

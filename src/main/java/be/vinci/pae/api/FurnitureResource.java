@@ -68,6 +68,9 @@ public class FurnitureResource {
     if (currentUser == null || !currentUser.isBoss()) {
       throw new PresentationException("You dont have the permission.", Status.BAD_REQUEST);
     }
+    System.out.println(json);
+    System.out.println(json.get("files").get(0));
+    System.out.println(json.get("formDate").asText());
 
     checkAllCredentialFurniture(json); // pourrais renvoyer le type si besoin en dessous.
     FurnitureDTO furniture = createFullFillFurniture(json);
@@ -346,4 +349,5 @@ public class FurnitureResource {
         .putPOJO(namePOJO2, object2).putPOJO(namePOJO3, object3);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
+
 }

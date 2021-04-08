@@ -112,11 +112,11 @@ const onFurnitureDescription = (data) => {
        State : ${data.furniture.state}
          </p>
          <form class="btn" id="option">
-         <input id="id" value="${data.furniture.furnitureId}" hidden>
+         <input id="idUpdate" value="${data.furniture.furnitureId}" hidden>
          <input class="btn-primary" type="submit" value="Introduce option">
          </form>
          <form class="btn" id="updateB">
-         <input id="id" value="${data.furniture.furnitureId}" hidden>
+         <input id="idOption" value="${data.furniture.furnitureId}" hidden>
          <input class="btn-primary" type="submit" value="Update">
         </form>
      
@@ -131,14 +131,14 @@ const onFurnitureDescription = (data) => {
 
 const onUpdate = (e) => {
   e.preventDefault();
-  let furnitureId = document.getElementById("id").value;
+  let furnitureId = document.getElementById("idUpdate").value;
   user_me.furnitureId = furnitureId;
   RedirectUrl(`/updateFurniture`);
 }
 
 const onOption = (e) => {
   e.preventDefault();
-  let furnitureId = document.getElementById("id").value;
+  let furnitureId = document.getElementById("idOption").value;
   user_me.furnitureId = furnitureId;
   RedirectUrl(`/introduceOption`);
 }
