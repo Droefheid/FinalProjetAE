@@ -57,7 +57,6 @@ const onFurnitureDescription = (data) => {
 
 const introduceOption = (e) => {
   e.preventDefault();
-  console.log("******************")
   let id = getTokenSessionDate();
   let datetime = document.getElementById("datetime-local").value;
   let furniture = user_me.furnitureId;
