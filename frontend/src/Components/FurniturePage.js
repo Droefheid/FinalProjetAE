@@ -110,16 +110,21 @@ const onFurnitureDescription = (data) => {
     <p>Type : ${data.furniture.type} </br>
        State : ${data.furniture.state}
          </p>
-         <button type="button" class="btn btn-primary">Option</button>
-         <a class="btn btn-info" id="update">Modifier</a>
-         <form id="updateB">
-          <input id="id" value="${data.furniture.furnitureId}" hidden>
-          <input type="submit" value="Update" class="btn btn-lg btn-outline-primary btn-block">
+         <form class="btn" id="option">
+         <input id="id" value="${data.furniture.furnitureId}" hidden>
+         <input class="btn-primary" type="submit" value="Introduce option">
          </form>
+         <form class="btn" id="updateB">
+         <input id="id" value="${data.furniture.furnitureId}" hidden>
+         <input class="btn-primary" type="submit" value="Update">
+        </form>
+     
   </div>`;
 
   info.innerHTML = description; 
   let updateButton = document.querySelector("#updateB");
+  let optionButton = document.querySelector("#option");
+  optionButton.addEventListener("submit", onOption);
   updateButton.addEventListener("submit", onUpdate);
 };
 
@@ -128,6 +133,13 @@ const onUpdate = (e) => {
   let furnitureId = document.getElementById("id").value;
   user_me.furnitureId = furnitureId;
   RedirectUrl(`/updateFurniture`);
+}
+
+const onOption = (e) => {
+  e.preventDefault();
+  let furnitureId = document.getElementById("id").value;
+  user_me.furnitureId = furnitureId;
+  RedirectUrl(`/introduceOption`);
 }
 
 const onError = (err) => {
