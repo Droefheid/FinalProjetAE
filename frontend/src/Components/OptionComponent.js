@@ -1,50 +1,68 @@
 
+import { user_me } from "../index.js";
 import { API_URL } from "../utils/server.js";
-import { getUserSessionData } from "../utils/session.js";
-
-let optionPage = `
-<div id="option">
-  <img class="img-fluid" src="assets/Images/Bureau_1.png"  style="width:350px;">
-
-  <div class="row">
-    <div id="furniture" class="col-sm-8">
-        <img class="img-fluid"  src="assets/Images/Bureau_1.png"  style="width:200px;">
-        <img class="img-fluid"  src="assets/Images/Bureau_1.png"  style="width:200px;">
-        <h4 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"> Types : </h4>
-    </div>
-
-
-<label class="col-2 col-form-label">Date de fin de l'option</label>
-<div id="messageBoardForm"></div>
-<div>
-    <div class="form-group row">
-  
-  <div class="col-10">
-    <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00" id="datetime-local">
-  </div>
-</div>
-    <div>
-    <input type="submit" class="btn btn-info">Introduire votre option</input>
-    </div>
-  </div>
-</div>
-</div>
-`;
-
+import { getUserSessionData, getTokenSessionDate } from "../utils/session";
 
 const OptionPage = () => {
-  let page = document.querySelector("#content");
-  page.innerHTML = optionPage;
-  let optionForm = document.querySelector("form");
-  optionForm.addEventListener("submit", introduceOption);
+  const user = getUserSessionData();
+  if (!user || !user.isBoss || !user_me.furnitureId) {
+      // re-render the navbar for the authenticated user.
+      Navbar();
+      RedirectUrl("/");
+  }else{
+    fetch(API_URL + "furnitures/" + user_me.furnitureId, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then((err) => onError(err));
+        }
+        else
+          return response.json().then((data) => onFurnitureDescription(data));
+      });
+  }
 };
+
+const onFurnitureDescription = (data) => {
+  let optionPage = `
+  <div id="option">
+  <div id="messageBoardForm"></div>
+    <img class="img-fluid" src="assets/Images/Bureau_1.png"  style="width:350px;">
+  
+    <div class="row">
+      <div id="furniture" class="column">
+          <img class="img-fluid"  src="assets/Images/Bureau_1.png"  style="width:200px;">
+          <img class="img-fluid"  src="assets/Images/Bureau_1.png"  style="width:200px;">
+      </div>
+      <div class="column">
+          <h4 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"> Types : ${data.furniture.type} </h4>
+        <label for="datetime-local" >Date de fin de l'option</label>
+       <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00" id="datetime-local">
+       <form class="btn" id="introduceOption">
+       <input type="submit" value="Introduce option" class="btn btn-info"></input>
+       </form>
+      </div>
+
+  </div>
+  `;
+
+  let page = document.querySelector("#page");
+  page.innerHTML = optionPage;
+  let optionForm = document.querySelector("#introduceOption");
+  optionForm.addEventListener("submit", introduceOption);
+}
 
 const introduceOption = (e) => {
   e.preventDefault();
-  let userID = getUserSessionData().id;
+  let id = getTokenSessionDate();
   let datetime = document.getElementById("datetime-local").value;
-  let furniture = document.getElementById(""); // a completer
+  let furniture = user_me.furnitureId;
+  let userID = getUserSessionData().id;
 
+  console.log(userID);
   let option ={
     "userID":userID,
     "optionTerm":datetime,
@@ -56,6 +74,7 @@ const introduceOption = (e) => {
     body: JSON.stringify(option),
     headers: {
       "Content-Type": "application/json",
+      "Authorization":id
     },
   })
     .then((response) => {

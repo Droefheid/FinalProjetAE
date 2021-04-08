@@ -35,6 +35,7 @@ public class OptionResource {
    */
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
+  @Path("/introduceOption")
   @Authorize
   public Response introduceOption(JsonNode json) {
     // TODO verifier user
