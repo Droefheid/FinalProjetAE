@@ -99,7 +99,8 @@ CREATE TABLE projet.options (
 	option_term TIMESTAMP NOT NULL,
 	beginning_option_date TIMESTAMP NOT NULL,
 	customer INTEGER REFERENCES projet.users(user_id) NOT NULL,
-	furniture INTEGER REFERENCES projet.furnitures(furniture_id) NOT NULL
+	furniture INTEGER REFERENCES projet.furnitures(furniture_id) NOT NULL,
+	pick_up_date TIMESTAMP NOT NULL
 );
 
 /*

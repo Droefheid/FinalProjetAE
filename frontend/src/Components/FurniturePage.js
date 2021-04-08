@@ -84,6 +84,7 @@ const onClick = (e) => {
     }
 
     if(furnitureId == 'nav_furniture') return;
+    if(furnitureId == null ) return;
   
     fetch(API_URL + "furnitures/" + furnitureId, {
       method: "GET",
@@ -106,7 +107,7 @@ const onFurnitureDescription = (data) => {
   let description = `
   <div id="description_furniture">
     <h4>${data.furniture.furnitureTitle}</h4>
-    <img src="assets/Images/Bureau_1.png" style="width:20%;"/>
+    <img src="assets/Images/Bureau_1.png" style="width:15%;"/>
     <p>Type : ${data.furniture.type} </br>
        State : ${data.furniture.state}
          </p>
