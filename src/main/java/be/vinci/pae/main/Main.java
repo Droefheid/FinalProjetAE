@@ -5,7 +5,6 @@ import java.net.URI;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.jackson.JacksonFeature;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import be.vinci.pae.utils.ApplicationBinder;
 import be.vinci.pae.utils.Config;
@@ -25,8 +24,7 @@ public class Main {
     // Create a resource config that scans for JAX-RS resources and providers
     final ResourceConfig rc = new ResourceConfig().packages("be.vinci.pae.api")
         .packages("be.vinci.pae.api.utils").register(JacksonFeature.class)
-        .register(ApplicationBinder.class).register(MultiPartFeature.class)
-        .property("jersey.config.server.wadl.disableWadl", true);
+        .register(ApplicationBinder.class).property("jersey.config.server.wadl.disableWadl", true);
 
     // Create and start a new instance of grizzly http server
     return GrizzlyHttpServerFactory.createHttpServer(URI.create(Config.getProperty("BaseUri")), rc);

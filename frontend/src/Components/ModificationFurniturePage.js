@@ -39,6 +39,10 @@ const onPageCreate = (data) => {
     let furniture = data.furniture;
     let types = data.types;
     let users = data.users;
+    let photos = data.photos;
+    let photosFurnitures = data.photosFurnitures;
+
+    console.log(photos, photosFurnitures);
 
     // Modification of Timestamp into Date.
     let Timestamp = null;
@@ -147,6 +151,7 @@ const onPageCreate = (data) => {
                 </div>
                 <br>
                 <input type="file" id="files" name="files[]" multiple>
+                <span id="showImg"></span>
                 <p class="text-muted">* Veuillez selectionner toutes les photos en une seule fois.</p>
             </div>
             <div class="col-sm-6 bg-warning">
@@ -194,13 +199,42 @@ const onPageCreate = (data) => {
     page.innerHTML = modifPage;
     let form = document.querySelector("#update");
     form.addEventListener("submit", onSubmit);
+    let uploadImage = document.querySelector("#files");
+    uploadImage.addEventListener("change", onUpload);
+}
+
+let filesBase64 = [];
+let filesName = [];
+
+const onUpload = (e) => {
+    let files = e.target.files;
+    
+    // Reset visuel
+    document.getElementById('showImg').innerHTML = "";
+    filesBase64 = [];
+    filesName = [];
+
+    // Add visuel and 
+    for(let i = 0; i < files.length; i++){
+        let reader = new FileReader();
+        reader.onloadend = function() {
+            document.getElementById('showImg').innerHTML += `<img id="blah" src="` 
+            + reader.result + `" style="width: 100px" alt="your image" />`;
+            //console.log(reader.result);
+            filesBase64.push(reader.result);
+            filesName.push(files[i].name.substr(0, files[i].name.length - 4));
+            //console.log(files[i].name.substr(0, files[i].name.length - 4));
+        }
+        reader.readAsDataURL(files[i]);
+    }
 }
 
 const onSubmit = (e) => {
     e.preventDefault();
+    //console.log("FilesBase64:",filesBase64);
 
-    let files = document.getElementById("files").files;
-    console.log(files);
+    /*let files = document.getElementById("files").files;
+    console.log("Avant base64", files);
 
     const formData = new FormData();
     formData.append("furnitureId", document.getElementById("furnitureId").value);
@@ -208,7 +242,7 @@ const onSubmit = (e) => {
         console.log(files[i]);
         formData.append("photo"+i, files[i]);
     }
-    console.log(formData, formData.get("photo0"));
+    console.log(formData, formData.get("photo0"));*/
 
     let furnitureId = document.getElementById("furnitureId").value;
     let title = document.getElementById("title").value;
@@ -325,6 +359,11 @@ const onSubmit = (e) => {
         return onError(err);
     }
   
+    /*let photo = {
+        "filesBase64": filesBase64,
+        "filesName": filesName,
+    };*/
+
     let furniture = {
       "furnitureId": furnitureId,
       "title": title,
@@ -342,10 +381,17 @@ const onSubmit = (e) => {
       "seller": seller,
       "pickUpDate": pickUpDate,
 
-      "files": files,
-      "formData": formData,
+      /*"files": files,
+      "formData": formData,*/
+      "filesBase64": filesBase64,
+      "filesName": filesName,
     };
     console.log(furniture);
+    /*let allInfosForUpdate = {
+        "furniture": furniture,
+        "photo": photo,
+    };
+    console.log(allInfosForUpdate);*/
   
     let id = getTokenSessionDate();
     fetch(API_URL + "furnitures", {

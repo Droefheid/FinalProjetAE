@@ -51,7 +51,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
 
       ps.executeUpdate();
     } catch (SQLException e) {
-      throw new FatalException("error add", e);
+      throw new FatalException("Error add", e);
     }
     return findById(furniture.getFurnitureId());
   }
@@ -150,4 +150,5 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     ps.setTimestamp(14, furniture.getPickUpDate());
     return ps;
   }
+
 }

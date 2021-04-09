@@ -14,6 +14,8 @@ import be.vinci.pae.api.utils.PresentationException;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.domaine.furniture.FurnitureUCC;
+import be.vinci.pae.domaine.photo.PhotoDTO;
+import be.vinci.pae.domaine.photo.PhotoFurnitureDTO;
 import be.vinci.pae.domaine.user.UserDTO;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -68,14 +70,17 @@ public class FurnitureResource {
     if (currentUser == null || !currentUser.isBoss()) {
       throw new PresentationException("You dont have the permission.", Status.BAD_REQUEST);
     }
-    System.out.println(json);
-    System.out.println(json.get("files").get(0));
-    System.out.println(json.get("formDate").asText());
+    // System.out.println(json);
+    // System.out.println(json.get("files").get(0));
+    // System.out.println(json.get("formData").get("photo0"));
+    // System.out.println(json.get("filesBase64").get(0));
 
     checkAllCredentialFurniture(json); // pourrais renvoyer le type si besoin en dessous.
     FurnitureDTO furniture = createFullFillFurniture(json);
+    List<PhotoDTO> photos = createAllPhotosFullFilled(json);
+    PhotoFurnitureDTO photoFurniture = createFullFillPhotoFurniture();
 
-    furniture = furnitureUCC.update(furniture);
+    furniture = furnitureUCC.update(furniture, photos, photoFurniture);
 
     return createResponseWithObjectNodeWith1PutPOJO("furniture", furniture);
   }
@@ -281,6 +286,46 @@ public class FurnitureResource {
     return furniture;
   }
 
+  private List<PhotoDTO> createAllPhotosFullFilled(JsonNode json) {
+    if (json.get("filesBase64").size() != json.get("filesName").size()) {
+      throw new PresentationException(
+          "The number of files is not the same then the number of names.", Status.BAD_REQUEST);
+    }
+
+    List<PhotoDTO> photos = new ArrayList<PhotoDTO>();
+
+    int i = 0;
+    while (json.get("filesBase64").get(i) != null) {
+      if (json.get("filesBase64").get(i).asText().equals("")) {
+        throw new PresentationException("A file base64 cannot be empty.", Status.BAD_REQUEST);
+      }
+      if (json.get("filesName").get(i).asText().equals("")) {
+        throw new PresentationException("A name cannot be empty.", Status.BAD_REQUEST);
+      }
+
+      String picture = json.get("filesBase64").get(i).asText();
+      String name = json.get("filesName").get(i).asText();
+      PhotoDTO photo = domaineFactory.getPhotoDTO();
+
+      photo.setPicture(picture);
+      photo.setName(name);
+
+      photos.add(photo);
+
+      i++;
+    }
+
+    return photos;
+  }
+
+  private PhotoFurnitureDTO createFullFillPhotoFurniture() {
+    PhotoFurnitureDTO photoFurniture = domaineFactory.getPhotoFurnitureDTO();
+
+    photoFurniture.setVisible(false);
+    photoFurniture.setFavourite(false);
+
+    return photoFurniture;
+  }
 
   /**
    * Get the furniture with an ID if exists or send error message.
@@ -316,8 +361,9 @@ public class FurnitureResource {
     Object[] listOfAll = furnitureUCC.getAllInfosForUpdate(id);
 
     int i = 0;
-    return createResponseWithObjectNodeWith3PutPOJO("furniture", listOfAll[i++], "types",
-        listOfAll[i++], "users", listOfAll[i++]);
+    return createResponseWithObjectNodeWith5PutPOJO("furniture", listOfAll[i++], "types",
+        listOfAll[i++], "users", listOfAll[i++], "photos", listOfAll[i++], "photosFurnitures",
+        listOfAll[i++]);
   }
 
   /**
@@ -343,11 +389,38 @@ public class FurnitureResource {
    * @param object1 object to put.
    * @return a response.ok build with all the ObjectNode inside.
    */
-  private <E, F, G> Response createResponseWithObjectNodeWith3PutPOJO(String namePOJO1, E object1,
-      String namePOJO2, F object2, String namePOJO3, G object3) {
-    ObjectNode node = jsonMapper.createObjectNode().putPOJO(namePOJO1, object1)
-        .putPOJO(namePOJO2, object2).putPOJO(namePOJO3, object3);
+  private <E, F, G, H, I> Response createResponseWithObjectNodeWith5PutPOJO(String namePOJO1,
+      E object1, String namePOJO2, F object2, String namePOJO3, G object3, String namePOJO4,
+      H object4, String namePOJO5, I object5) {
+    ObjectNode node =
+        jsonMapper.createObjectNode().putPOJO(namePOJO1, object1).putPOJO(namePOJO2, object2)
+            .putPOJO(namePOJO3, object3).putPOJO(namePOJO4, object4).putPOJO(namePOJO5, object5);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
-
+  /*
+   * @PUT
+   * 
+   * @Path("/test1")
+   * 
+   * @Consumes("multipart/mixed") public Response test1(final FormDataMultiPart multiPart) { System.out.println("Coucou");
+   * System.out.println(multiPart); return createResponseWithObjectNodeWith1PutPOJO("furniture", 31); }
+   * 
+   * @PUT
+   * 
+   * @Path("/test2")
+   * 
+   * @Consumes(MediaType.MULTIPART_FORM_DATA) public Response test2(final FormDataMultiPart multiPart) { System.out.println("Coucou");
+   * System.out.println(multiPart); return createResponseWithObjectNodeWith1PutPOJO("furniture", 31); }
+   * 
+   * @PUT
+   * 
+   * @Path("/test3")
+   * 
+   * @Consumes(MediaType.MULTIPART_FORM_DATA) public Response test3(@FormDataParam("furnitureId") int id,
+   * 
+   * @FormDataParam("photo0") FileDataBodyPart bean, @FormDataParam("photo1") InputStream file,
+   * 
+   * @FormDataParam("photo2") FormDataContentDisposition fileDisposition) { System.out.println("Coucou"); System.out.println(id + " " + bean + " " +
+   * file + " " + fileDisposition); return createResponseWithObjectNodeWith1PutPOJO("furniture", 31); }
+   */
 }

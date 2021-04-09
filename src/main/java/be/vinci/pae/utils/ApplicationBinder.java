@@ -16,6 +16,10 @@ import be.vinci.pae.services.FurnitureDAO;
 import be.vinci.pae.services.FurnitureDAOImpl;
 import be.vinci.pae.services.OptionDAO;
 import be.vinci.pae.services.OptionDAOImpl;
+import be.vinci.pae.services.PhotoDAO;
+import be.vinci.pae.services.PhotoDAOImpl;
+import be.vinci.pae.services.PhotoFurnitureDAO;
+import be.vinci.pae.services.PhotoFurnitureDAOImpl;
 import be.vinci.pae.services.TypeDAO;
 import be.vinci.pae.services.TypeDAOImpl;
 import be.vinci.pae.services.UserDAO;
@@ -35,9 +39,11 @@ public class ApplicationBinder extends AbstractBinder {
     bind(UserUCCImpl.class).to(UserUCC.class).in(Singleton.class);
     bind(OptionDAOImpl.class).to(OptionDAO.class).in(Singleton.class);
     bind(OptionUCCImpl.class).to(OptionUCC.class).in(Singleton.class);
-    bind(FurnitureUCCImpl.class).to(FurnitureUCC.class).in(Singleton.class);
     bind(FurnitureDAOImpl.class).to(FurnitureDAO.class).in(Singleton.class);
+    bind(FurnitureUCCImpl.class).to(FurnitureUCC.class).in(Singleton.class);
     bind(TypeDAOImpl.class).to(TypeDAO.class).in(Singleton.class);
+    bind(PhotoDAOImpl.class).to(PhotoDAO.class).in(Singleton.class);
+    bind(PhotoFurnitureDAOImpl.class).to(PhotoFurnitureDAO.class).in(Singleton.class);
   }
 
 }
