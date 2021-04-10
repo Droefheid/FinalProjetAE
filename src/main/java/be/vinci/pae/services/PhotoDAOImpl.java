@@ -76,7 +76,6 @@ public class PhotoDAOImpl implements PhotoDAO {
 
     try {
       setAllPsAttributNotNull(ps, photo);
-      System.out.println(photo);
 
       ps.executeUpdate();
     } catch (SQLException e) {

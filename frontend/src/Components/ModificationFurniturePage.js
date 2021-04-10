@@ -387,6 +387,7 @@ const onSubmit = (e) => {
       "filesName": filesName,
     };
     console.log(furniture);
+    console.log("La taille de la String (Base64) de la photo '" + furniture.filesName[0] + "' est de " + furniture.filesBase64[0].length);
     /*let allInfosForUpdate = {
         "furniture": furniture,
         "photo": photo,
@@ -418,8 +419,8 @@ const onFurnitureUpdate = (furnitureData) => {
 };
   
 const onError = (err) => {
-    let messageBoard = document.querySelector("#messageBoardForm");
-    messageBoard.innerHTML=err;
+    let messageBoard = document.querySelector("#messageBoard");
+    ALERT_BOX(messageBoard, err.message);
 };
  
 export default ModificationFurniturePage;
