@@ -32,7 +32,6 @@ const Navbar = () => {
       <a class="btn btn-info" href="#" data-uri="" style="margin:15px;">Introduce a visit</a>
   
     <a class="btn btn-info" href="#" data-uri="/confirmUser" style="margin:15px;">Confirm a user</a>
-      <a class="btn btn-info" href="#" data-uri="/option">Introduire Option</a>
       </div>
     </div>
   </nav>`;

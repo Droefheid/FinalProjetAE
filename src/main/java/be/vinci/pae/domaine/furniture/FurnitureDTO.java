@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 public interface FurnitureDTO {
 
   enum STATES {
-    ON_RESTORATION("ER"), ON_SHOP("M"), ON_SALE("EV"), UNDER_OPTION("O"), SOLD("V"), DELIVERY(
+    ON_RESTORATION("ER"), IN_SHOP("M"), ON_SALE("EV"), UNDER_OPTION("O"), SOLD("V"), DELIVERY(
         "EL"), DELIVERED("L"), TO_TAKE_AWAY("AE"), TAKE_AWAY("E"), RESERVED("R"), WITHDRAW("RE");
 
     private String value;

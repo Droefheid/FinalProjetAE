@@ -13,7 +13,7 @@ const routes = {
   "/login": LoginPage,
   "/register": RegisterPage,
   "/logout": LogoutComponent,
-  "/option": OptionComponent,
+  "/introduceOption": OptionComponent,
   "/furniture": FurniturePage,
   "/confirmUser": ConfirmUserPage,
   "/error": ErrorPage,

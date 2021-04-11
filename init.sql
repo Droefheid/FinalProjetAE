@@ -4,7 +4,7 @@ CREATE SCHEMA projet;
 ------------
 ---TABLES---
 ------------
----------CREATE TYPE state_furniture AS ENUM ('R','V','A','O','RE','VE'); 
+------------
 
 CREATE TABLE projet.addresses (
 	address_id SERIAL PRIMARY KEY,
@@ -63,14 +63,15 @@ CREATE TABLE projet.furnitures (
 	furniture_date_collection TIMESTAMP NULL,
 	selling_price FLOAT NOT NULL,
 	special_sale_price FLOAT NOT NULL,
-	state_furniture state_furniture,
+	state_furniture VARCHAR(2) NOT NULL,
 	deposit_date TIMESTAMP NULL,
 	date_of_sale TIMESTAMP NULL,
 	sale_withdrawal_date TIMESTAMP NULL,
 	delivery INTEGER REFERENCES projet.deliveries(delivery_id) NULL,
 	type INTEGER REFERENCES projet.types(type_id) NOT NULL,
 	buyer INTEGER REFERENCES projet.users(user_id) NULL,
-	seller INTEGER REFERENCES projet.users(user_id) NOT NULL
+	seller INTEGER REFERENCES projet.users(user_id) NOT NULL,
+	pick_up_date TIMESTAMP NOT NULL 
 );
 
 
@@ -100,21 +101,4 @@ CREATE TABLE projet.options (
 	beginning_option_date TIMESTAMP NOT NULL,
 	customer INTEGER REFERENCES projet.users(user_id) NOT NULL,
 	furniture INTEGER REFERENCES projet.furnitures(furniture_id) NOT NULL
-	pick_up_date TIMESTAMP NULL
 );
-
-/*
-INSERT INTO projet.types(
-	type_id, name)
-	VALUES (DEFAULT, 'Chenes');
-INSERT INTO projet.addresses(
-	address_id, street, building_number, postcode, commune, country, unit_number)
-	VALUES (DEFAULT, 'test', '10', '1120', '1', 'Belgique', '12');
-INSERT INTO projet.users(
-	user_id, last_name, first_name, username, password, address, email, is_boss, is_antique_dealer, is_confirmed, registration_date)
-	VALUES (DEFAULT, 'Bryan', 'VM', 'Bracouz', 'azerty', 1, 'test@test.com', FALSE, FALSE, FALSE, '1970-01-01 00:00:01');
-INSERT INTO projet.furnitures(
-	furniture_id, furniture_title, purchase_price, furniture_date_collection, selling_price, special_sale_price, state_furniture, deposit_date, date_of_sale, sale_withdrawal_date, delivery, type, buyer, seller)
-	VALUES (DEFAULT, 'Title furniture 4', 0, NULL, 0, 0, 'V', NULL, NULL, NULL, NULL, 1, NULL,2 );
-*/
-
