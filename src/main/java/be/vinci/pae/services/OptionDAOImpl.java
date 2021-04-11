@@ -37,7 +37,7 @@ public class OptionDAOImpl implements OptionDAO {
   /**
    * returns the id of the option or -1 if non-existent.
    */
-  public int findOptionByInfo(OptionDTO option) {
+  public int findOptionIdByInfo(OptionDTO option) {
     PreparedStatement ps = this.dalBackendServices
         .getPreparedStatement("SELECT option_id FROM projet.options WHERE option_term  = ?"
             + "AND beginning_option_date =? AND customer = ? AND furniture = ? ");
@@ -100,6 +100,43 @@ public class OptionDAOImpl implements OptionDAO {
     }
 
     return list;
+  }
+
+  @Override
+  public OptionDTO findOptionByID(int optionID) {
+    PreparedStatement ps =
+        this.dalBackendServices.getPreparedStatement("SELECT option_id,option_term,"
+            + "beginning_option_date,customer,furniture" + "FROM projet.options WHERE option_id=?");
+    OptionDTO optionDTO = domaineFactory.getOptionDTO();
+    try {
+      ps.setInt(1, optionID);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          optionDTO.setId(rs.getInt(1));
+          optionDTO.setOptionTerm(rs.getTimestamp(2));
+          optionDTO.setBeginningOptionDate(rs.getTimestamp(3));
+          optionDTO.setCustomer(rs.getInt(4));
+          optionDTO.setFurniture(rs.getInt(5));
+        }
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+    return optionDTO;
+  }
+
+  @Override
+  public void deleteOption(int optionID) {
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("DELETE FROM projet.options WHERE option_id = ? ");
+    try {
+      ps.setInt(1, optionID);
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
   }
 
 }

@@ -7,7 +7,6 @@ import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.FurnitureDAO;
 import be.vinci.pae.services.OptionDAO;
-import be.vinci.pae.services.UserDAO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response.Status;
 
@@ -16,9 +15,6 @@ public class OptionUCCImpl implements OptionUCC {
 
   @Inject
   private OptionDAO optionDao;
-
-  @Inject
-  private UserDAO userDao;
 
   @Inject
   private FurnitureDAO furnitureDao;
@@ -58,18 +54,28 @@ public class OptionUCCImpl implements OptionUCC {
           "You have already reserved this" + " furniture for more than 5 days");
     }
 
-    int userID = option.getId();
-    if (userDao.findById(userID) == null) {
-      throw new BusinessException("User ID does not exist!");
-    }
     optionDao.introduceOption(option);
     optionDao.changeFurnitureState("O", option.getFurniture());
     dalservices.commitTransaction();
   }
 
   @Override
-  public OptionDTO stopOption() {
-    return null;
+  public OptionDTO getOption(int optionID) {
+    dalservices.startTransaction();
+    OptionDTO option = optionDao.findOptionByID(optionID);
+    if (option == null) {
+      dalservices.rollbackTransaction();
+      throw new BusinessException("Option doesn't exist");
+    }
+    dalservices.commitTransaction();
+    return option;
+  }
+
+  @Override
+  public void deleteOption(int optionID) {
+    dalservices.startTransaction();
+    optionDao.deleteOption(optionID);
+    dalservices.commitTransaction();
   }
 
 }

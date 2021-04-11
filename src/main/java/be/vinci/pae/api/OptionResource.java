@@ -7,11 +7,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.utils.PresentationException;
 import be.vinci.pae.domaine.DomaineFactory;
+import be.vinci.pae.domaine.furniture.FurnitureUCC;
 import be.vinci.pae.domaine.option.OptionDTO;
 import be.vinci.pae.domaine.option.OptionUCC;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
@@ -28,10 +30,13 @@ public class OptionResource {
   @Inject
   OptionUCC optionUCC;
 
+  @Inject
+  FurnitureUCC furnitureUCC;
+
   /**
-   * introduire une option.
+   * introduce an option.
    * 
-   * @return Response ok ou une erreur.
+   * @return Response ok or error.
    */
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
@@ -43,6 +48,9 @@ public class OptionResource {
     }
     if (json.get("furnitureID").asText().equals("")) {
       throw new PresentationException("You must choose a furniture", Status.BAD_REQUEST);
+    }
+    if (json.get("userID").asText().equals("")) {
+      throw new PresentationException("UserID is empty");
     }
 
     OptionDTO option = domaineFactory.getOptionDTO();
@@ -68,5 +76,34 @@ public class OptionResource {
 
   }
 
+  /**
+   * deletes an option
+   * 
+   * @return Response ok or error.
+   */
+  @DELETE
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Authorize
+  public Response deleteOption(JsonNode json) {
 
+    if (json.get("furnitureID").asText().equals("")) {
+      throw new PresentationException("You must choose a furniture", Status.BAD_REQUEST);
+    }
+    if (json.get("userID").asText().equals("")) {
+      throw new PresentationException("UserID is empty");
+    }
+    if (json.get("optionID").asInt() == 0) {
+      throw new PresentationException("optionID is empty");
+    }
+
+    OptionDTO option = optionUCC.getOption(json.get("optionID").asInt());
+
+    if (option.getCustomer() != json.get("userID").asInt()) {
+      throw new PresentationException("Furniture was not reserved by you");
+    }
+
+    furnitureUCC.findById(json.get("furnitureID").asInt());
+    optionUCC.deleteOption(option.getId());
+    return Response.ok(MediaType.APPLICATION_JSON).build();
+  }
 }

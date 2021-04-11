@@ -4,5 +4,7 @@ public interface OptionUCC {
 
   void introduceOption(OptionDTO option);
 
-  OptionDTO stopOption();
+  OptionDTO getOption(int optionID);
+
+  void deleteOption(int optionID);
 }
