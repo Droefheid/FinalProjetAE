@@ -11,7 +11,7 @@ public interface OptionDAO {
 
   OptionDTO findOptionByID(int optionID);
 
-  void deleteOption(int optionID);
+  void stopOption(OptionDTO option);
 
   void changeFurnitureState(String state, int furnitureID);
 

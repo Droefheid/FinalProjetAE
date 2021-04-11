@@ -1,5 +1,6 @@
 package be.vinci.pae.domaine.option;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import be.vinci.pae.api.utils.BusinessException;
@@ -72,9 +73,10 @@ public class OptionUCCImpl implements OptionUCC {
   }
 
   @Override
-  public void deleteOption(int optionID) {
+  public void stopOption(OptionDTO option) {
     dalservices.startTransaction();
-    optionDao.deleteOption(optionID);
+    option.setOptionTerm(Timestamp.valueOf(LocalDateTime.now()));
+    optionDao.stopOption(option);
     dalservices.commitTransaction();
   }
 

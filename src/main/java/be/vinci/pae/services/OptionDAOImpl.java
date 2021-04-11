@@ -127,11 +127,12 @@ public class OptionDAOImpl implements OptionDAO {
   }
 
   @Override
-  public void deleteOption(int optionID) {
+  public void stopOption(OptionDTO option) {
     PreparedStatement ps = this.dalBackendServices
-        .getPreparedStatement("DELETE FROM projet.options WHERE option_id = ? ");
+        .getPreparedStatement("UPDATE projet.options SET option_term =? " + "WHERE option_id = ? ");
     try {
-      ps.setInt(1, optionID);
+      ps.setInt(1, option.getId());
+      ps.setTimestamp(2, option.getOptionTerm());
       ps.executeUpdate();
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();

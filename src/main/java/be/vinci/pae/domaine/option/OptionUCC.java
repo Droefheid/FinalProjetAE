@@ -6,5 +6,5 @@ public interface OptionUCC {
 
   OptionDTO getOption(int optionID);
 
-  void deleteOption(int optionID);
+  void stopOption(OptionDTO option);
 }

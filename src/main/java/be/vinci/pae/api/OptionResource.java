@@ -13,8 +13,8 @@ import be.vinci.pae.domaine.option.OptionUCC;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -81,7 +81,7 @@ public class OptionResource {
    * 
    * @return Response ok or error.
    */
-  @DELETE
+  @PUT
   @Consumes(MediaType.APPLICATION_JSON)
   @Authorize
   public Response deleteOption(JsonNode json) {
@@ -103,7 +103,7 @@ public class OptionResource {
     }
 
     furnitureUCC.findById(json.get("furnitureID").asInt());
-    optionUCC.deleteOption(option.getId());
+    optionUCC.stopOption(option);
     return Response.ok(MediaType.APPLICATION_JSON).build();
   }
 }
