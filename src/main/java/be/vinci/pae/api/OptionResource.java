@@ -38,7 +38,6 @@ public class OptionResource {
   @Path("/introduceOption")
   @Authorize
   public Response introduceOption(JsonNode json) {
-    // TODO verifier user
     if (json.get("optionTerm").asText().equals("")) {
       throw new PresentationException("You must enter a date", Status.BAD_REQUEST);
     }
@@ -48,11 +47,20 @@ public class OptionResource {
 
     OptionDTO option = domaineFactory.getOptionDTO();
     LocalDateTime now = LocalDateTime.now();
+
     option.setBeginningOptionDate(Timestamp.valueOf(now));
     option.setCustomer(json.get("userID").asInt());
     option.setFurniture(json.get("furnitureID").asInt());
     String term = json.get("optionTerm").asText();
     LocalDateTime optionTerm = LocalDateTime.parse(term);
+
+    int d = optionTerm.getDayOfYear() - now.getDayOfYear();
+    if (optionTerm.getYear() != now.getYear()) {
+      throw new PresentationException("Furniture can't be reserved for more than 5 days");
+    }
+    if (d >= 5) {
+      throw new PresentationException("Furniture can't be reserved for more than 5 days");
+    }
     option.setOptionTerm(Timestamp.valueOf(optionTerm));
     optionUCC.introduceOption(option);
 

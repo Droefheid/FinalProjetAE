@@ -1,7 +1,11 @@
 package be.vinci.pae.domaine.option;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import be.vinci.pae.api.utils.BusinessException;
+import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.services.DalServices;
+import be.vinci.pae.services.FurnitureDAO;
 import be.vinci.pae.services.OptionDAO;
 import be.vinci.pae.services.UserDAO;
 import jakarta.inject.Inject;
@@ -17,16 +21,43 @@ public class OptionUCCImpl implements OptionUCC {
   private UserDAO userDao;
 
   @Inject
+  private FurnitureDAO furnitureDao;
+
+  @Inject
   private DalServices dalservices;
 
   @Override
   public void introduceOption(OptionDTO option) {
     dalservices.startTransaction();
-    int optionID = optionDao.findOptionByInfo(option);
-    if (optionID > 0) {
+    FurnitureDTO furniture = furnitureDao.findById(option.getFurniture());
+    if (furniture == null) {
+      dalservices.rollbackTransaction();
+      throw new BusinessException("This furniture doesn't exist!", Status.BAD_REQUEST);
+    }
+    if (furniture.getState().equals("O")) {
       dalservices.rollbackTransaction();
       throw new BusinessException("This furniture is already reserved", Status.BAD_REQUEST);
     }
+    if (furniture.getState().equals("V")) {
+      dalservices.rollbackTransaction();
+      throw new BusinessException("This furniture has already been sold", Status.BAD_REQUEST);
+    }
+
+    List<OptionDTO> list = optionDao.listOfOptionsFromSameCustomerAndFurniture(option);
+
+    int d = 0;
+    for (int i = 0; i < list.size(); i++) {
+      OptionDTO o = list.get(i);
+      LocalDateTime beginning = o.getBeginningOptionDate().toLocalDateTime();
+      LocalDateTime term = o.getOptionTerm().toLocalDateTime();
+      d += term.getDayOfYear() - beginning.getDayOfYear();
+    }
+
+    if (d >= 5) {
+      throw new BusinessException(
+          "You have already reserved this" + " furniture for more than 5 days");
+    }
+
     int userID = option.getId();
     if (userDao.findById(userID) == null) {
       throw new BusinessException("User ID does not exist!");
