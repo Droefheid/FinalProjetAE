@@ -77,7 +77,7 @@ public class OptionResource {
   }
 
   /**
-   * deletes an option
+   * deletes an option.
    * 
    * @return Response ok or error.
    */
