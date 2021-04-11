@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import be.vinci.pae.api.utils.BusinessException;
 import jakarta.ws.rs.core.Response.Status;
 
+
 public class FurnitureImpl implements FurnitureDTO {
 
   private int furnitureId;
