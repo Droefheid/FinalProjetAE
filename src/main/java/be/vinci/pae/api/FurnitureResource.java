@@ -397,30 +397,34 @@ public class FurnitureResource {
             .putPOJO(namePOJO3, object3).putPOJO(namePOJO4, object4).putPOJO(namePOJO5, object5);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
-  /*
-   * @PUT
-   * 
-   * @Path("/test1")
-   * 
-   * @Consumes("multipart/mixed") public Response test1(final FormDataMultiPart multiPart) { System.out.println("Coucou");
-   * System.out.println(multiPart); return createResponseWithObjectNodeWith1PutPOJO("furniture", 31); }
-   * 
-   * @PUT
-   * 
-   * @Path("/test2")
-   * 
-   * @Consumes(MediaType.MULTIPART_FORM_DATA) public Response test2(final FormDataMultiPart multiPart) { System.out.println("Coucou");
-   * System.out.println(multiPart); return createResponseWithObjectNodeWith1PutPOJO("furniture", 31); }
-   * 
-   * @PUT
-   * 
-   * @Path("/test3")
-   * 
-   * @Consumes(MediaType.MULTIPART_FORM_DATA) public Response test3(@FormDataParam("furnitureId") int id,
-   * 
-   * @FormDataParam("photo0") FileDataBodyPart bean, @FormDataParam("photo1") InputStream file,
-   * 
-   * @FormDataParam("photo2") FormDataContentDisposition fileDisposition) { System.out.println("Coucou"); System.out.println(id + " " + bean + " " +
-   * file + " " + fileDisposition); return createResponseWithObjectNodeWith1PutPOJO("furniture", 31); }
-   */
+
+  // @PUT
+  // @Path("/test1")
+  // @Consumes("multipart/mixed")
+  // public Response test1(final FormDataMultiPart multiPart) {
+  // System.out.println("Coucou");
+  // System.out.println(multiPart);
+  // return createResponseWithObjectNodeWith1PutPOJO("furniture", 31);
+  // }
+
+  // @PUT
+  // @Path("/test2")
+  // @Consumes(MediaType.MULTIPART_FORM_DATA)
+  // public Response test2(final FormDataMultiPart multiPart) {
+  // System.out.println("Coucou");
+  // System.out.println(multiPart);
+  // return createResponseWithObjectNodeWith1PutPOJO("furniture", 31);
+  // }
+
+  // @PUT
+  // @Path("/test3")
+  // @Consumes(MediaType.MULTIPART_FORM_DATA)
+  // public Response test3(@FormDataParam("furnitureId") int id,
+  // @FormDataParam("photo0") FileDataBodyPart bean, @FormDataParam("photo1") InputStream file,
+  // @FormDataParam("photo2") FormDataContentDisposition fileDisposition) {
+  // System.out.println("Coucou");
+  // System.out.println(id + " " + bean + " " + file + " " + fileDisposition);
+  // return createResponseWithObjectNodeWith1PutPOJO("furniture", 31);
+  // }
+
 }
