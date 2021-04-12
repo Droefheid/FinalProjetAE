@@ -1,10 +1,14 @@
 package be.vinci.pae.api;
 
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,6 +25,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -398,7 +403,30 @@ public class FurnitureResource {
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
 
-  // @PUT
+
+  @POST
+  @Path("/test1")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  public Response test1(@FormDataParam("photo0") InputStream file,
+      @FormDataParam("photo0") FormDataContentDisposition fileDisposition) {
+    System.out.println("Coucou");
+    System.out.println("InputStream: " + file + "\nFormDataContentDisposition: " + fileDisposition);
+    return createResponseWithObjectNodeWith1PutPOJO("furniture", 31);
+  }
+
+  @POST
+  @Path("/test2")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  public Response test2(final FormDataMultiPart multiPart) {
+    System.out.println("Coucou");
+    System.out.println("FormDataMultiPart: " + multiPart);
+    System.out.println("Name of field 'photo0': " + multiPart.getField("photo0").getName());
+    System.out.println("Value: " + multiPart.getField("photo0").getMediaType());
+    System.out.println(multiPart.getField("photo0").getEntity().toString());
+    return createResponseWithObjectNodeWith1PutPOJO("furniture", 31);
+  }
+
+  // @POST
   // @Path("/test1")
   // @Consumes("multipart/mixed")
   // public Response test1(final FormDataMultiPart multiPart) {
@@ -407,7 +435,7 @@ public class FurnitureResource {
   // return createResponseWithObjectNodeWith1PutPOJO("furniture", 31);
   // }
 
-  // @PUT
+  // @POST
   // @Path("/test2")
   // @Consumes(MediaType.MULTIPART_FORM_DATA)
   // public Response test2(final FormDataMultiPart multiPart) {
@@ -416,7 +444,7 @@ public class FurnitureResource {
   // return createResponseWithObjectNodeWith1PutPOJO("furniture", 31);
   // }
 
-  // @PUT
+  // @POST
   // @Path("/test3")
   // @Consumes(MediaType.MULTIPART_FORM_DATA)
   // public Response test3(@FormDataParam("furnitureId") int id,

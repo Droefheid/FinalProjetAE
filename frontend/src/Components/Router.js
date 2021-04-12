@@ -7,6 +7,7 @@ import ErrorPage from "./ErrorPage.js";
 import ModificationFurniturePage from "./ModificationFurniturePage.js"
 import FurniturePage from "./FurniturePage.js";
 import ConfirmUserPage from "./ConfirmUserPage.js";
+import TestMultipartPage from "./TestMultipart.js";
 
 const routes = {
   "/": HomePage,
@@ -17,7 +18,7 @@ const routes = {
   "/furniture": FurniturePage,
   "/confirmUser": ConfirmUserPage,
   "/error": ErrorPage,
-  "/updateFurniture": ModificationFurniturePage,
+  "/updateFurniture": TestMultipartPage,
 };
 
 let page = document.querySelector("#page");
