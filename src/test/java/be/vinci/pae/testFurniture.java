@@ -100,12 +100,13 @@ class testFurniture {
     assertThrows(BusinessException.class, () -> furnitureUCC.update(furnitureDTO));
   }
 
+  /**
+   * Success test : the furniture list is well returned.
+   */
   @Test
   public void testGetAllFurnitureV1() {
     List<FurnitureDTO> list = null;
     Mockito.when(furnitureDAO.getAll()).thenReturn(list);
     assertEquals(list, furnitureUCC.getAll());
   }
-
-
 }
