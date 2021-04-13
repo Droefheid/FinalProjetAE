@@ -16,10 +16,10 @@ let addFurniturePage = `
     <label class="input-group-text" for="inputGroupSelect01">State</label>
   </div>
   <select class="custom-select" id="inputGroupSelect01">
-    <option selected>Choose...</option>
-    <option value="1">One</option>
-    <option value="2">Two</option>
-    <option value="3">Three</option>
+    <option selected>En restauration</option>
+    <option value="1">En magasin</option>
+    <option value="2">En vente</option>
+    <option value="3">Sous option</option>
   </select>
 </div>
 <input class="form-control mb-3 " type="datetime-local" value="2011-08-19T13:45:00" id="datetime-local">
