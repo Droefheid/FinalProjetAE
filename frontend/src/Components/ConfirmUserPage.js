@@ -161,7 +161,7 @@ const onConfirmUser = (e) =>{
 };
  
 const onConfirmedUser = () => {
-  RedirectUrl("/confirmUser");
+  RedirectUrl(`/confirmUser`);
 }
 
 

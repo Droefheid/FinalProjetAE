@@ -2,6 +2,7 @@ import { RedirectUrl } from "./Router.js";
 import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
 import { user_me } from "../index.js";
+import { getTokenSessionDate, getUserSessionData } from "../utils/session.js";
 
 let page = document.querySelector("#page");
 
@@ -9,6 +10,7 @@ const FurniturePage = async () => {
   Sidebar(true);
 
   page.innerHTML = `
+    <div id="messageBoardForm"></div>
     <div id="list"></div>
     <div id="furnitureDesc"></div> 
     `;
@@ -111,22 +113,49 @@ const onFurnitureDescription = (data) => {
     <p>Type : ${data.furniture.type} </br>
        State : ${data.furniture.state}
          </p>
-         <form class="btn" id="option">
-         <input id="id" value="${data.furniture.furnitureId}" hidden>
-         <input class="btn-primary" type="submit" value="Introduce option">
-         </form>
-         <form class="btn" id="updateB">
-         <input id="id" value="${data.furniture.furnitureId}" hidden>
-         <input class="btn-primary" type="submit" value="Update">
-        </form>
+         <span id="optionform"> </span>
+         <span id="updateForm"></span>
      
   </div>`;
 
   info.innerHTML = description; 
-  let updateButton = document.querySelector("#updateB");
-  let optionButton = document.querySelector("#option");
-  optionButton.addEventListener("submit", onOption);
-  updateButton.addEventListener("submit", onUpdate);
+
+  const user = getUserSessionData();
+  if(user.isBoss){
+    let updateFurniture = document.querySelector("#updateForm");
+    updateFurniture.innerHTML += `<form class="btn" id="updateB">
+    <input id="id" value="${data.furniture.furnitureId}" hidden>
+    <input class="btn-primary" type="submit" value="Update">
+   </form>`;
+   let updateButton = document.querySelector("#updateB");
+   updateButton.addEventListener("submit", onUpdate);
+  }
+
+  if(data.furniture.state !== "O" && data.furniture.state !== "V" ) {
+    let divOption = document.querySelector("#optionform");
+    divOption.innerHTML+= `<form class="btn" id="option">
+    <input id="id" value="${data.furniture.furnitureId}" hidden>
+    <input class="btn-primary" type="submit" value="Introduce option">
+    </form>`;
+    let optionButton = document.querySelector("#option");
+    optionButton.addEventListener("submit", onOption);
+  }else if(data.furniture.state === "O"){
+    let id = getTokenSessionDate();
+    fetch(API_URL + "options/"+ data.furniture.furnitureId, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization":id
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+           return response.text().then((err) => onError(err));
+        }
+        else
+           return response.json().then((data) => showStopOptionButton(data));
+      })
+  }
 };
 
 const onUpdate = (e) => {
@@ -143,8 +172,50 @@ const onOption = (e) => {
   RedirectUrl(`/introduceOption`);
 }
 
+
+const showStopOptionButton = (data) => {
+  let divOption = document.querySelector("#optionform");
+  console.log(data,data.option);
+  divOption.innerHTML +=`<form class="btn" id="option">
+  <input id="furnitureID" value="${data.option.furnitureID}" hidden>
+  <input id="optionID" value="${data.option.optionID}" hidden>
+  <input class="btn-primary" type="submit" value="Stop option">
+  </form>`;
+  let optionButton = document.querySelector("#option");
+  optionButton.addEventListener("submit", stopOption);
+}
+
+const stopOption = (e) => {
+  e.preventDefault();
+  let id =getTokenSessionDate();
+  let furnitureID = document.getElementById("furnitureID").value;
+  let optionID = document.getElementById("optionID").value;
+  let option ={
+    "furnitureID":furnitureID,
+    "optionID":optionID,
+  }
+  fetch(API_URL + "options/", {
+    method: "PUT",
+    body: option,
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization":id
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.text().then((err) => onError(err));
+      }
+      else{
+        alert("The option on this furniture has been stopped.");
+        RedirectUrl(`/furniture`);
+      }
+    })
+}
+
+
 const onError = (err) => {
-  let messageBoard = document.querySelector("#messageBoard");
+  let messageBoard = document.querySelector("#messageBoardForm");
   messageBoard.innerHTML = err;
 };
 

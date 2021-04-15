@@ -80,4 +80,15 @@ public class OptionUCCImpl implements OptionUCC {
     dalservices.commitTransaction();
   }
 
+  @Override
+  public OptionDTO findOption(int furnitureID, int customerID) {
+    dalservices.startTransaction();
+    OptionDTO option = optionDao.findOptionByFurnitureIdANDCustomerId(furnitureID, customerID);
+    if (option == null) {
+      dalservices.rollbackTransaction();
+      throw new BusinessException("There is no option currently on this furniture");
+    }
+    return option;
+  }
+
 }
