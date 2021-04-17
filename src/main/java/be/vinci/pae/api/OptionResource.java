@@ -123,7 +123,6 @@ public class OptionResource {
   }
 
   /**
-   * 
    * Get the option belonging to a user and furniture.
    * 
    * @param request .
