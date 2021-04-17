@@ -36,7 +36,7 @@ const onFurnitureList = (data) => {
 
   if (!data) return;
 
-  var table = `
+  let table = `
           <div class="input-group rounded" id="search_furniture_list">
             <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
               aria-describedby="search-addon" />

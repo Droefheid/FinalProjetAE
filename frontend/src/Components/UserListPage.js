@@ -5,7 +5,7 @@ import Sidebar from "./SideBar.js";
 
 let page = document.querySelector("#page");
 
-const UserListPage = () => {
+const UserListPage = async () => {
     Sidebar(true);
   let list = `
   <div class="containerForm">

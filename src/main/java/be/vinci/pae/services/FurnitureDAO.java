@@ -13,4 +13,6 @@ public interface FurnitureDAO {
 
   FurnitureDTO update(FurnitureDTO furniture);
 
+  List<FurnitureDTO> getMyFurniture(int userID);
+
 }
