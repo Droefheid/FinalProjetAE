@@ -112,11 +112,7 @@ public class OptionDAOImpl implements OptionDAO {
       ps.setInt(1, optionID);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          optionDTO.setId(rs.getInt(1));
-          optionDTO.setOptionTerm(rs.getTimestamp(2));
-          optionDTO.setBeginningOptionDate(rs.getTimestamp(3));
-          optionDTO.setCustomer(rs.getInt(4));
-          optionDTO.setFurniture(rs.getInt(5));
+          fullFillOption(rs, optionDTO);
         }
       }
     } catch (SQLException e) {
@@ -155,11 +151,7 @@ public class OptionDAOImpl implements OptionDAO {
       ps.setInt(3, customerID);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          optionDTO.setId(rs.getInt(1));
-          optionDTO.setOptionTerm(rs.getTimestamp(2));
-          optionDTO.setBeginningOptionDate(rs.getTimestamp(3));
-          optionDTO.setCustomer(rs.getInt(4));
-          optionDTO.setFurniture(rs.getInt(5));
+          fullFillOption(rs, optionDTO);
         }
       }
     } catch (SQLException e) {
@@ -169,4 +161,18 @@ public class OptionDAOImpl implements OptionDAO {
     return optionDTO;
   }
 
+  private OptionDTO fullFillOption(ResultSet rs, OptionDTO optionDTO) {
+    try {
+      optionDTO.setId(rs.getInt(1));
+      optionDTO.setOptionTerm(rs.getTimestamp(2));
+      optionDTO.setBeginningOptionDate(rs.getTimestamp(3));
+      optionDTO.setCustomer(rs.getInt(4));
+      optionDTO.setFurniture(rs.getInt(5));
+
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("error fullFillFurnitures", e);
+    }
+    return optionDTO;
+  }
 }

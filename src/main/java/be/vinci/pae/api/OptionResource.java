@@ -122,6 +122,14 @@ public class OptionResource {
     return Response.ok(MediaType.APPLICATION_JSON).build();
   }
 
+  /**
+   * 
+   * Get the option belonging to a user and furniture.
+   * 
+   * @param request .
+   * @param id .
+   * @return the option or throws an exception.
+   */
   @GET
   @Path("/{id}")
   @Authorize
