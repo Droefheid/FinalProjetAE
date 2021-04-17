@@ -150,7 +150,7 @@ const onFurnitureDescription = (data) => {
     })
       .then((response) => {
         if (!response.ok) {
-           return response.text().then((err) => onError(err));
+           return;
         }
         else
            return response.json().then((data) => showStopOptionButton(data));
@@ -175,10 +175,9 @@ const onOption = (e) => {
 
 const showStopOptionButton = (data) => {
   let divOption = document.querySelector("#optionform");
-  console.log(data,data.option);
   divOption.innerHTML +=`<form class="btn" id="option">
-  <input id="furnitureID" value="${data.option.furnitureID}" hidden>
-  <input id="optionID" value="${data.option.optionID}" hidden>
+  <input id="furnitureID" value="${data.option.furniture}" hidden>
+  <input id="optionID" value="${data.option.id}" hidden>
   <input class="btn-primary" type="submit" value="Stop option">
   </form>`;
   let optionButton = document.querySelector("#option");
@@ -196,7 +195,7 @@ const stopOption = (e) => {
   }
   fetch(API_URL + "options/", {
     method: "PUT",
-    body: option,
+    body: JSON.stringify(option),
     headers: {
       "Content-Type": "application/json",
       "Authorization":id

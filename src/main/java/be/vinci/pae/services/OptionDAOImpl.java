@@ -104,9 +104,9 @@ public class OptionDAOImpl implements OptionDAO {
 
   @Override
   public OptionDTO findOptionByID(int optionID) {
-    PreparedStatement ps =
-        this.dalBackendServices.getPreparedStatement("SELECT option_id,option_term,"
-            + "beginning_option_date,customer,furniture" + "FROM projet.options WHERE option_id=?");
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
+        "SELECT option_id,option_term," + "beginning_option_date,customer,furniture "
+            + "FROM projet.options WHERE option_id=?");
     OptionDTO optionDTO = domaineFactory.getOptionDTO();
     try {
       ps.setInt(1, optionID);
@@ -129,10 +129,12 @@ public class OptionDAOImpl implements OptionDAO {
   @Override
   public void stopOption(OptionDTO option) {
     PreparedStatement ps = this.dalBackendServices
-        .getPreparedStatement("UPDATE projet.options SET option_term =? " + "WHERE option_id = ? ");
+        .getPreparedStatement("UPDATE projet.options SET option_term =?, is_currently_reserved=? "
+            + "WHERE option_id = ? ");
     try {
-      ps.setInt(1, option.getId());
-      ps.setTimestamp(2, option.getOptionTerm());
+      ps.setTimestamp(1, option.getOptionTerm());
+      ps.setBoolean(2, false);
+      ps.setInt(3, option.getId());
       ps.executeUpdate();
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();

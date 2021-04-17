@@ -1,4 +1,4 @@
-
+import { RedirectUrl } from "./Router.js";
 import { user_me } from "../index.js";
 import { API_URL } from "../utils/server.js";
 import { getUserSessionData, getTokenSessionDate } from "../utils/session";
@@ -85,7 +85,7 @@ const introduceOption = (e) => {
 
 const onOptionIntroduced = () => {
   alert("An option has been introduced");
-  RedirectUrl(`/`);
+  RedirectUrl(`/furniture`);
 };
 
 const onError = (err) => {
