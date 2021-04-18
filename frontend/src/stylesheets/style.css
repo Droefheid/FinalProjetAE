@@ -187,3 +187,12 @@ img {
 .centrer {
   padding: 30px 200px;
 }
+
+/* ViSIT FORM*/
+#flexbox {
+  column-gap: 50px;
+}
+
+#flexbox > div {
+  flex: auto;
+}
