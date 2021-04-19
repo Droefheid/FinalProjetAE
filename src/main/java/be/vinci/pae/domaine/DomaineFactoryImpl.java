@@ -10,6 +10,8 @@ import be.vinci.pae.domaine.type.TypeDTO;
 import be.vinci.pae.domaine.type.TypeImpl;
 import be.vinci.pae.domaine.user.UserDTO;
 import be.vinci.pae.domaine.user.UserImpl;
+import be.vinci.pae.domaine.visit.VisitDTO;
+import be.vinci.pae.domaine.visit.VisitImpl;
 
 public class DomaineFactoryImpl implements DomaineFactory {
 
@@ -37,6 +39,11 @@ public class DomaineFactoryImpl implements DomaineFactory {
   @Override
   public TypeDTO getTypeDTO() {
     return new TypeImpl();
+  }
+
+  @Override
+  public VisitDTO getVisitDTO() {
+    return new VisitImpl();
   }
 
 }
