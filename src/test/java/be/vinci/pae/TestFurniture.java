@@ -1,5 +1,6 @@
 package be.vinci.pae;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.List;
@@ -19,7 +20,7 @@ import be.vinci.pae.services.TypeDAO;
 import be.vinci.pae.services.UserDAO;
 import be.vinci.pae.utils.Config;
 
-class testFurniture {
+class TestFurniture {
 
   private FurnitureUCC furnitureUCC;
   private FurnitureDTO furnitureDTO;
@@ -74,7 +75,8 @@ class testFurniture {
   }
 
   /**
-   * Failed test : the furniture is not added.
+   * 
+   * Failed test : if the furniture is not added, return null.
    */
   @Test
   public void testAddFurnitureV2() {
@@ -108,5 +110,27 @@ class testFurniture {
     List<FurnitureDTO> list = null;
     Mockito.when(furnitureDAO.getAll()).thenReturn(list);
     assertEquals(list, furnitureUCC.getAll());
+  }
+
+  @Test
+  public void testGetAllInfosUpdateV1() {
+    Object[] allLists = new Object[3];
+    List<TypeDTO> listType = null;
+    List<UserDTO> listUser = null;
+
+    Mockito.when(furnitureDAO.findById(furnitureDTO.getFurnitureId())).thenReturn(furnitureDTO);
+    Mockito.when(typeDAO.getAll()).thenReturn(listType);
+    Mockito.when(userDAO.getAll()).thenReturn(listUser);
+
+    allLists[0] = furnitureDTO;
+    allLists[1] = listType;
+    allLists[2] = listUser;
+
+    Object[] test = furnitureUCC.getAllInfosForUpdate(furnitureDTO.getFurnitureId());
+
+
+
+    assertAll(() -> assertEquals(allLists[0], test[0]), () -> assertEquals(allLists[1], test[1]),
+        () -> assertEquals(allLists[2], test[2]));
   }
 }
