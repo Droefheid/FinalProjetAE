@@ -3,8 +3,6 @@ package be.vinci.pae.domaine.visit;
 import java.sql.Timestamp;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
-import be.vinci.pae.domaine.address.Address;
-import be.vinci.pae.domaine.user.User;
 import views.Views;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -27,126 +25,116 @@ public class VisitImpl implements Visit {
   @JsonView(Views.Boss.class)
   private boolean isConfirmed;
   @JsonView(Views.Boss.class)
-  private User users;
+  private int userId;
   @JsonView(Views.Boss.class)
-  private Address address;
+  private int addressId;
 
 
 
   @Override
   public int getId() {
-    // TODO Auto-generated method stub
+
     return id;
   }
 
   @Override
   public void setId(int id) {
-    // TODO Auto-generated method stub
+
     this.id = id;
 
   }
 
   @Override
   public Timestamp getRequestDate() {
-    // TODO Auto-generated method stub
+
     return requestDate;
   }
 
   @Override
   public void setRequestDate(Timestamp requestDate) {
-    // TODO Auto-generated method stub
+
     this.requestDate = requestDate;
 
   }
 
   @Override
   public String getTimeSlot() {
-    // TODO Auto-generated method stub
+
     return timeSlot;
   }
 
   @Override
   public void setTimeSLot(String timeSlot) {
-    // TODO Auto-generated method stub
+
     this.timeSlot = timeSlot;
 
   }
 
   @Override
   public Timestamp getDateAndHoursVisit() {
-    // TODO Auto-generated method stub
+
     return dateAndHoursVisit;
   }
 
   @Override
   public void setDateAndHoursVisit(Timestamp dateAndHoursVisit) {
-    // TODO Auto-generated method stub
+
     this.dateAndHoursVisit = dateAndHoursVisit;
   }
 
   @Override
   public String getExplanatoryNote() {
-    // TODO Auto-generated method stub
+
     return explanatoryNote;
   }
 
   @Override
   public void setExplanatoryNote(String explanatoryNote) {
-    // TODO Auto-generated method stub
+
     this.explanatoryNote = explanatoryNote;
 
   }
 
   @Override
   public String getLabelFurniture() {
-    // TODO Auto-generated method stub
+
     return labelFurniture;
   }
 
   @Override
   public void setLabelFurniture(String labelFurniture) {
-    // TODO Auto-generated method stub
+
     this.labelFurniture = labelFurniture;
 
   }
 
   @Override
   public boolean getIsConfirmed() {
-    // TODO Auto-generated method stub
+
     return isConfirmed;
   }
 
   @Override
   public void setIsConfirmed(boolean isConfirmed) {
-    // TODO Auto-generated method stub
+
     this.isConfirmed = isConfirmed;
 
   }
 
+
   @Override
-  public User getUsers() {
-    // TODO Auto-generated method stub
-    return users;
+  public int getUserId() {
+
+    return userId;
   }
 
   @Override
-  public void setUsers(User users) {
-    // TODO Auto-generated method stub
-    this.users = users;
+  public void setUserId(int userId) {
+
+    this.userId = userId;
   }
 
-  @Override
-  public Address getAddress() {
-    // TODO Auto-generated method stub
-    return address;
-  }
 
-  @Override
-  public void setAdress(Address address) {
-    // TODO Auto-generated method stub
-    this.address = address;
-
-  }
 
   @Override
   public int hashCode() {
@@ -168,6 +156,16 @@ public class VisitImpl implements Visit {
     if (id != other.id)
       return false;
     return true;
+  }
+
+  @Override
+  public int getAddressId() {
+    return addressId;
+  }
+
+  @Override
+  public void setAddressId(int adresseId) {
+    this.addressId = adresseId;
   }
 
 

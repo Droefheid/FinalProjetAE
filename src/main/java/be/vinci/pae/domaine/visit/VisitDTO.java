@@ -2,8 +2,6 @@ package be.vinci.pae.domaine.visit;
 
 import java.sql.Timestamp;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import be.vinci.pae.domaine.address.Address;
-import be.vinci.pae.domaine.user.User;
 
 
 @JsonDeserialize(as = VisitImpl.class)
@@ -37,13 +35,13 @@ public interface VisitDTO {
 
   void setIsConfirmed(boolean isConfirmed);
 
-  User getUsers();
+  int getUserId();
 
-  void setUsers(User users);
+  void setUserId(int users);
 
-  Address getAddress();
+  int getAddressId();
 
-  void setAdress(Address adresseId);
+  void setAddressId(int adresseId);
 
 
 }

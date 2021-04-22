@@ -41,15 +41,15 @@ public class VisitUCCImpl implements VisitUCC {
   public VisitDTO introduceVisit(VisitDTO visitDTO, AddressDTO addressDTO, UserDTO userDTO) {
     // TODO Auto-generated method stub
     dalservices.startTransaction();
-    int adresseId = visitDao.getAddressByInfo(addressDTO.getStreet(),
+    int addressId = visitDao.getAddressByInfo(addressDTO.getStreet(),
         addressDTO.getBuildingNumber(), addressDTO.getCommune(), addressDTO.getCountry());
-    if (adresseId == -1) {
-      adresseId = visitDao.registerAddress(addressDTO);
+    if (addressId == -1) {
+      addressId = visitDao.registerAddress(addressDTO);
     }
     Visit visit = (Visit) visitDTO;
-    // visit.setAdress(address);
+    visit.setAddressId(addressId);
 
-
+    // AJouter POUR USER ID
     visit = (Visit) visitDao.introduceVisit(visit);
     if (visit == null) {
       dalservices.rollbackTransaction();
