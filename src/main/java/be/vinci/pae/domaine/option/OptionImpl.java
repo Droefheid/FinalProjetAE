@@ -11,6 +11,7 @@ public class OptionImpl implements OptionDTO {
   private Timestamp beginningOptionDate;
   private int customer;
   private int furniture;
+  private boolean isCurrentlyReserved;
 
 
   public int getId() {
@@ -77,6 +78,16 @@ public class OptionImpl implements OptionDTO {
       return false;
     }
     return true;
+  }
+
+  @Override
+  public boolean isCurrentlyReserved() {
+    return isCurrentlyReserved;
+  }
+
+  @Override
+  public void setIsCurrentyReserved(boolean answer) {
+    this.isCurrentlyReserved = answer;
   }
 
 

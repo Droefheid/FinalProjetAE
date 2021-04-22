@@ -99,6 +99,7 @@ CREATE TABLE projet.options (
 	option_id SERIAL PRIMARY KEY,
 	option_term TIMESTAMP NOT NULL,
 	beginning_option_date TIMESTAMP NOT NULL,
+	is_currently_reserved BOOLEAN DEFAULT FALSE,
 	customer INTEGER REFERENCES projet.users(user_id) NOT NULL,
 	furniture INTEGER REFERENCES projet.furnitures(furniture_id) NOT NULL
 );

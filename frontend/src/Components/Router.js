@@ -7,6 +7,7 @@ import ErrorPage from "./ErrorPage.js";
 import ModificationFurniturePage from "./ModificationFurniturePage.js"
 import FurniturePage from "./FurniturePage.js";
 import ConfirmUserPage from "./ConfirmUserPage.js";
+import UserListPage from "./UserListPage.js";
 
 const routes = {
   "/": HomePage,
@@ -16,6 +17,7 @@ const routes = {
   "/introduceOption": OptionComponent,
   "/furniture": FurniturePage,
   "/confirmUser": ConfirmUserPage,
+  "/userList": UserListPage,
   "/error": ErrorPage,
   "/updateFurniture": ModificationFurniturePage,
 };

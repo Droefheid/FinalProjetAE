@@ -25,4 +25,8 @@ public interface OptionDTO {
   int getFurniture();
 
   void setFurniture(int furniture);
+
+  boolean isCurrentlyReserved();
+
+  void setIsCurrentyReserved(boolean answer);
 }
