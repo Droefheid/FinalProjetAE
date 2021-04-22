@@ -9,6 +9,7 @@ import org.glassfish.jersey.server.ContainerRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeBoss;
 import be.vinci.pae.api.utils.PresentationException;
 import be.vinci.pae.domaine.DomaineFactory;
@@ -51,6 +52,25 @@ public class FurnitureResource {
   public Response allFurnitures() {
     List<FurnitureDTO> listFurnitures = new ArrayList<FurnitureDTO>();
     listFurnitures = furnitureUCC.getAll();
+
+    return createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
+  }
+
+  /**
+   * get a clients furniture.
+   * 
+   * @return list of all the clients furnitures.
+   */
+  @GET
+  @Authorize
+  @Path("myFurnitures")
+  public Response myFurnitures(@Context ContainerRequest request) {
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    if (currentUser == null || !currentUser.isBoss()) {
+      throw new PresentationException("You dont have the permission.", Status.BAD_REQUEST);
+    }
+    List<FurnitureDTO> listFurnitures = new ArrayList<FurnitureDTO>();
+    listFurnitures = furnitureUCC.getMyFurniture(currentUser.getID());
 
     return createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
   }

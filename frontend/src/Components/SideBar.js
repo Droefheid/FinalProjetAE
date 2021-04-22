@@ -22,11 +22,11 @@ const Sidebar = (needed) => {
       sidebar += `
       <div class="onLeft">
         <div class="navbar navbar-nav ml-auto mr-auto pt-3">
-          <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/confirmUser">Liste d'inscriptions</a>
-              <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/">Liste des clients</a>
-              <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/addFurniture">Ajouter un meuble</a>
-              <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/">Validation des visites</a>
-              <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/">Liste des visites</a>
+          <a class="btn btn-info mb-1 samebutton" href="/confirmUser">Liste d'inscriptions</a>
+              <a class="btn btn-info mb-1 samebutton" href="/userList">Liste des clients</a>
+              <a class="btn btn-info mb-1 samebutton" href="/addFurniture">Ajouter un meuble</a>
+              <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/furniture">Validation des visites</a>
+              <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/furniture">Liste des visites</a>
         </div>
       </div>`;
     }
