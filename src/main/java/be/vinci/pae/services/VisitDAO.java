@@ -1,5 +1,6 @@
 package be.vinci.pae.services;
 
+import java.sql.Timestamp;
 import java.util.List;
 import be.vinci.pae.domaine.address.AddressDTO;
 import be.vinci.pae.domaine.visit.VisitDTO;
@@ -37,4 +38,7 @@ public interface VisitDAO {
   void updateConfirmed(VisitDTO visit);
 
   List<VisitDTO> getAllConfirmed();
+
+
+  VisitDTO findByDate(Timestamp date);
 }

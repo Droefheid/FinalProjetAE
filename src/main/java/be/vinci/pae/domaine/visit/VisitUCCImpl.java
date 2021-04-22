@@ -3,7 +3,6 @@ package be.vinci.pae.domaine.visit;
 import java.util.List;
 import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.domaine.address.AddressDTO;
-import be.vinci.pae.domaine.user.UserDTO;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.VisitDAO;
 import jakarta.inject.Inject;
@@ -38,7 +37,7 @@ public class VisitUCCImpl implements VisitUCC {
 
 
   @Override
-  public VisitDTO introduceVisit(VisitDTO visitDTO, AddressDTO addressDTO, UserDTO userDTO) {
+  public VisitDTO introduceVisit(VisitDTO visitDTO, AddressDTO addressDTO) {
     // TODO Auto-generated method stub
     dalservices.startTransaction();
     int addressId = visitDao.getAddressByInfo(addressDTO.getStreet(),
@@ -49,7 +48,7 @@ public class VisitUCCImpl implements VisitUCC {
     Visit visit = (Visit) visitDTO;
     visit.setAddressId(addressId);
 
-    // AJouter POUR USER ID
+    // AJouter POUR USER ID?
     visit = (Visit) visitDao.introduceVisit(visit);
     if (visit == null) {
       dalservices.rollbackTransaction();
