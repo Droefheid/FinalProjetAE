@@ -27,27 +27,24 @@ const ConfirmUserPage = () => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": id,
+      Authorization: id,
     },
-  })
-    .then((response) => {
-      if (!response.ok) {
-        return response.text().then((err) => onError(err));
-      }
-      else
-        return response.json().then((data) => onUserList(data));
-    })
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((err) => onError(err));
+    } else return response.json().then((data) => onUserList(data));
+  });
 };
 
 const onUserList = (data) => {
   let userList = document.querySelector("#list");
 
   if (!data) return;
-  
+
   let table = `
           <nav id="nav_user">
             <ul class="list-group">`;
-  data.list.forEach(element => {
+  data.list.forEach((element) => {
     table += `
         <li id="${element.id}" class="list-group-item" data-toggle="collapse"
               href="#collapse${element.id}" role="button"
@@ -70,33 +67,31 @@ const onUserList = (data) => {
   userList.innerHTML = table;
 
   const viewUsers = document.querySelectorAll("li");
-  viewUsers.forEach((elem) =>{
+  viewUsers.forEach((elem) => {
     elem.addEventListener("click", onClick);
-  })
-}
- 
+  });
+};
+
 const onClick = (e) => {
   e.preventDefault();
-    const userId = e.target.parentElement.parentElement.id;
-    if(userId == 'nav_user') return;
+  const userId = e.target.parentElement.parentElement.id;
+  if (userId == "nav_user") return;
 
-    if(userId == null) return;
-  
-    let id = getTokenSessionDate();
-    fetch(API_URL + "users/" + userId, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": id,
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.text().then((err) => onError(err));
-        }
-        else
-          return response.json().then((data) => onConfirmUserDescription(data));
-      })
+  if (userId == null) return;
+
+  let id = getTokenSessionDate();
+  fetch(API_URL + "users/" + userId, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: id,
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((err) => onError(err));
+    } else
+      return response.json().then((data) => onConfirmUserDescription(data));
+  });
 };
 
 const onConfirmUserDescription = (data) => {
@@ -122,24 +117,24 @@ const onConfirmUserDescription = (data) => {
   <input class="btn btn-primary" type="button" id="button_confirmed" value="Submit">
   </div>`;
 
-  info.innerHTML = description; 
+  info.innerHTML = description;
 
   let btn = document.getElementById("button_confirmed");
-  btn.addEventListener("click",onConfirmUser);
+  btn.addEventListener("click", onConfirmUser);
 };
 
-const onConfirmUser = (e) =>{
+const onConfirmUser = (e) => {
   e.preventDefault();
   let userId = document.getElementById("id").value;
-  let confirmed = document.getElementById("is_confirmed").checked ;
+  let confirmed = document.getElementById("is_confirmed").checked;
   let antique_dealer = document.getElementById("is_antique_dealer").checked;
   let is_boss = document.getElementById("is_boss").checked;
 
-  let user = { 
-    "isConfirmed" : confirmed ,
-    "isAntiqueDealer" : antique_dealer,
-    "userId" : userId,
-    "isBoss": is_boss,
+  let user = {
+    isConfirmed: confirmed,
+    isAntiqueDealer: antique_dealer,
+    userId: userId,
+    isBoss: is_boss,
   };
   let id = getTokenSessionDate();
   fetch(API_URL + "users/", {
@@ -147,28 +142,22 @@ const onConfirmUser = (e) =>{
     body: JSON.stringify(user),
     headers: {
       "Content-Type": "application/json",
-      "Authorization": id,
-
+      Authorization: id,
     },
-  })
-    .then((response) => {
-      if (!response.ok) {
-        return response.text().then((err) => onError(err));
-      }
-      else
-        return onConfirmedUser();
-    }) 
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((err) => onError(err));
+    } else return onConfirmedUser();
+  });
 };
- 
+
 const onConfirmedUser = () => {
   RedirectUrl("/confirmUser");
-}
-
+};
 
 const onError = (err) => {
   let messageBoard = document.querySelector("#messageBoardForm");
   messageBoard.innerHTML = err;
 };
-
 
 export default ConfirmUserPage;

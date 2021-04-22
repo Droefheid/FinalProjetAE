@@ -1,5 +1,6 @@
 import { RedirectUrl } from "./Router.js";
 import { API_URL } from "../utils/server.js";
+import { getTokenSessionDate } from "../utils/session";
 import Sidebar from "./SideBar.js";
 
 let introduceVisits = `
@@ -31,7 +32,7 @@ let introduceVisits = `
             <span class="input-group-text"><i class="fa fa-calendar" aria-hidden="true"></i></span>
           </div>
         
-          <input placeholder="Date of visit" class="textbox-n" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" id="date" />
+          <input placeholder="Date of visit" class="textbox-n" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" id="request_date" />
           
         </div>
       
@@ -114,7 +115,7 @@ let introduceVisits = `
         <div class="input-group-prepend">
           <span class="input-group-text"><i class="fas fa-info"></i></span>
         </div>
-        <textarea class="form-control" placeholder="Chairs in perfect condition"  id="description" ></textarea>
+        <textarea class="form-control" placeholder="Chairs in perfect condition"  id="explanatory_note" ></textarea>
  
         </div>
         </div>
@@ -149,9 +150,41 @@ const IntroduceVisits = () => {
   Sidebar();
   let page = document.querySelector("#page");
   page.innerHTML = introduceVisits;
-  return page.innerHTML;
-  //let introduceVisitsForm = document.querySelector("form");
-  //introduceVisitsForm.addEventListener("submit", onIntroduceVisits);
+  let introduceVisitsForm = document.querySelector("form");
+  introduceVisitsForm.addEventListener("submit", onIntroduceVisits);
+};
+
+const onIntroduceVisits = (e) => {
+  e.preventDefault();
+
+  let visit = {
+    request_date: document.getElementById("request_date").value,
+    explanatory_note: document.getElementById("explanatory_note").value,
+    street: document.getElementById("street").value,
+    building_number: document.getElementById("building_number").value,
+    postcode: document.getElementById("postcode").value,
+    commune: document.getElementById("commune").value,
+    country: document.getElementById("country").value,
+    unit_number: document.getElementById("unit_number").value,
+  };
+  let id = getTokenSessionDate();
+  fetch(API_URL + "visits/introduceVisits", {
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    body: JSON.stringify(visit), // body data type must match "Content-Type" header
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: id,
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((err) => onError(err));
+    } else return onVisitRequest();
+  });
+};
+
+const onVisitRequest = () => {
+  alert("Your request has been sent. An admin must now confirm your visit.");
+  RedirectUrl("/");
 };
 
 const onError = (err) => {
