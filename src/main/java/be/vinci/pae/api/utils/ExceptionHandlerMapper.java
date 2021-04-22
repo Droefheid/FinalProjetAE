@@ -1,5 +1,6 @@
 package be.vinci.pae.api.utils;
 
+
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
@@ -9,6 +10,7 @@ public class ExceptionHandlerMapper implements ExceptionMapper<Throwable> {
 
   @Override
   public Response toResponse(Throwable exception) {
+    LogToFile.log((Exception) exception);
     return Response.status(getStatusCode(exception)).entity(getEntity(exception)).build();
   }
 
@@ -26,7 +28,6 @@ public class ExceptionHandlerMapper implements ExceptionMapper<Throwable> {
   }
 
   private String getEntity(Throwable exception) {
-
     return exception.getMessage();
   }
 
