@@ -298,6 +298,22 @@ public class FurnitureResource {
   }
 
   /**
+   * get all types and users from DB.
+   * 
+   * 
+   * @return list of all types, users to display them in add form.
+   */
+  @GET
+  @Path("/infosAdd")
+  public Response allInfosForAddFurniture() {
+    Object[] listOfAll = furnitureUCC.getAllInfosForAdd();
+    int i = 0;
+    return createResponseWithObjectNodeWith2PutPOJO("types", listOfAll[i++], "users",
+        listOfAll[i++]);
+  }
+
+
+  /**
    * get the furniture by is id and all types and users.
    * 
    * @param id id of the furniture.
@@ -335,6 +351,22 @@ public class FurnitureResource {
    * 
    * @param <E> the type of the first object.
    * @param <F> the type of the second object.
+   * @param namePOJO1 the name of the POJO put.
+   * @param object1 object to put.
+   * @return a response.ok build with all the ObjectNode inside.
+   */
+  private <E, F> Response createResponseWithObjectNodeWith2PutPOJO(String namePOJO1, E object1,
+      String namePOJO2, F object2) {
+    ObjectNode node =
+        jsonMapper.createObjectNode().putPOJO(namePOJO1, object1).putPOJO(namePOJO2, object2);
+    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+  }
+
+  /**
+   * create a response with a ObjectNode with 3 putPOJO.
+   * 
+   * @param <E> the type of the first object.
+   * @param <F> the type of the second object.
    * @param <G> the type of the third object.
    * @param namePOJO1 the name of the POJO put.
    * @param object1 object to put.
@@ -346,4 +378,6 @@ public class FurnitureResource {
         .putPOJO(namePOJO2, object2).putPOJO(namePOJO3, object3);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
   }
+
+
 }

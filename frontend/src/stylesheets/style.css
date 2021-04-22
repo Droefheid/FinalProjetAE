@@ -191,3 +191,11 @@ img {
 .centrer {
   padding: 30px 200px;
 }
+
+/* AJOUTER UN MEUBLE */
+#addFurniture {
+  display: block;
+  margin-bottom: 200px;
+  width: 600px;
+  margin-top: 0px;
+}
