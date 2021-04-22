@@ -8,12 +8,16 @@ let formPage = `<form id="photo" class="form-inline" enctype="multipart/form-dat
     <input type="file" id="files" name="file" multiple>
     <div id="showImg"></div>
     <input type="submit" value="update" class="btn btn-lg btn-primary btn-block">
-</form>`;
+</form>
+<div id="afterFetch"></div>`;
 
 const TestMultipartPage = () => {   
     Sidebar(true);
     let page = document.querySelector("#page");
     page.innerHTML = formPage;
+    
+    let afterFetch = document.querySelector("#afterFetch");
+    afterFetch.innerHTML = "";
 
     let form = document.querySelector("#photo");
     form.addEventListener("submit", onSubmit);
@@ -54,7 +58,7 @@ const onSubmit = (e) => {
     /**************************************/
 
     let id = getTokenSessionDate();
-    fetch(API_URL + "furnitures/test1", {
+    fetch(API_URL + "furnitures/test3", {
         method: "POST", 
         body: formData, 
         headers: {
@@ -71,9 +75,9 @@ const onSubmit = (e) => {
 }
 
 const onFurnitureUpdate = (furnitureData) => {
-    // re-render the navbar for the authenticated user
-    Navbar();
-    RedirectUrl("/updateFurniture");
+    console.log(furnitureData, furnitureData.photo);
+    document.querySelector("#afterFetch").innerHTML = `<img id="blah" src="` 
+    + furnitureData.photo + `" style="width: 100px" alt="your image" />`;
 };
   
 const onError = (err) => {

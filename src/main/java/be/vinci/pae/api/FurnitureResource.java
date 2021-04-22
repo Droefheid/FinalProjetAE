@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -409,7 +410,7 @@ public class FurnitureResource {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response test1(@FormDataParam("photo0") InputStream file,
       @FormDataParam("photo0") FormDataContentDisposition fileDisposition) {
-    System.out.println("Coucou");
+    System.out.println("Coucou1");
     System.out.println("InputStream: " + file + "\nFormDataContentDisposition: " + fileDisposition);
     return createResponseWithObjectNodeWith1PutPOJO("furniture", 31);
   }
@@ -418,12 +419,31 @@ public class FurnitureResource {
   @Path("/test2")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response test2(final FormDataMultiPart multiPart) {
-    System.out.println("Coucou");
+    System.out.println("Coucou2");
     System.out.println("FormDataMultiPart: " + multiPart);
     System.out.println("Name of field 'photo0': " + multiPart.getField("photo0").getName());
-    System.out.println("Value: " + multiPart.getField("photo0").getMediaType());
-    System.out.println(multiPart.getField("photo0").getEntity().toString());
-    return createResponseWithObjectNodeWith1PutPOJO("furniture", 31);
+    System.out.println("ValueAs: " + multiPart.getField("photo0").getValueAs(InputStream.class));
+    System.out.println("Field: " + multiPart.getField("photo0"));
+    System.out.println("Entity: " + multiPart.getField("photo0").getEntity());
+
+    ObjectNode node = jsonMapper.createObjectNode().putPOJO("photo",
+        multiPart.getField("photo0").getValueAs(InputStream.class));
+    System.out.println("Node: " + node);
+    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+  }
+
+  @POST
+  @Path("/test3")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  public FormDataBodyPart test3(final FormDataMultiPart multiPart) {
+    System.out.println("Coucou3");
+    System.out.println("FormDataMultiPart: " + multiPart);
+    System.out.println("Name of field 'photo0': " + multiPart.getField("photo0").getName());
+    System.out.println("Value: " + multiPart.getField("photo0").getValueAs(InputStream.class));
+    System.out.println("Value2: " + multiPart.getField("photo0"));
+    System.out.println("Entity: " + multiPart.getField("photo0").getEntity());
+
+    return multiPart.getField("photo0");
   }
 
   // @POST
