@@ -31,6 +31,7 @@ import be.vinci.pae.domaine.furniture.FurnitureUCC;
 import be.vinci.pae.domaine.photo.PhotoDTO;
 import be.vinci.pae.domaine.photo.PhotoFurnitureDTO;
 import be.vinci.pae.domaine.user.UserDTO;
+import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -463,166 +464,85 @@ public class FurnitureResource {
   }
 
   @POST
-  @Path("/test1B")
+  @Path("/uploadPhotos")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   // @Authorize
   public Response uploadMultiplePhotos(final FormDataMultiPart multiPart) {
-    System.out.println("Coucou1B");
-    System.out.println("Multipart: " + multiPart);
-    System.out
-        .println("InputStream: " + multiPart.getField("photo0").getValueAs(InputStream.class));
     Map<String, List<FormDataBodyPart>> fields = multiPart.getFields();
 
     List<String> paths = new ArrayList<>();
-    System.out.println(
-        "**************************************Keys presente**************************************");
     for (String keyField : fields.keySet()) {
-      System.out.println(keyField);
       List<FormDataBodyPart> values = fields.get(keyField);
       for (FormDataBodyPart formDataBodyPart : values) {
-        System.out.println(formDataBodyPart.getName());
-        System.out.println(formDataBodyPart);
-        System.out.println(formDataBodyPart.getValueAs(InputStream.class));
+        // System.out.println(keyField + " == " + formDataBodyPart.getName());
+        // System.out.println(formDataBodyPart.getHeaders());
+        // for (String formDataBodyPart2 : formDataBodyPart.getHeaders().keySet()) {
+        // System.out.println(formDataBodyPart2);
+        // System.out.println(formDataBodyPart.getHeaders().get(formDataBodyPart2));
+        // }
+        // System.out.println(formDataBodyPart.getHeaders().get("Content-Disposition"));
         String fileName =
             formDataBodyPart.getHeaders().get("Content-Disposition").get(0).split(";")[2].substring(
                 11, formDataBodyPart.getHeaders().get("Content-Disposition").get(0).split(";")[2]
                     .length() - 1);
-        System.out.println("Name : " + fileName);
+        // System.out.println("Name : " + fileName);
         String uploadedFileLocation =
-            "C:\\Ecole Vinci\\projet-ae-groupe-05/" + "src/main/resources/photos/" + fileName;
-        System.out.println(uploadedFileLocation);
+            Config.getProperty("ServerPath") + Config.getProperty("PhotosPath") + fileName;
+        // System.out.println(uploadedFileLocation);
 
         // save it
         writeToFile(formDataBodyPart.getValueAs(InputStream.class), uploadedFileLocation);
 
         // Test for return
-        File f = new File(uploadedFileLocation);
-        String encodstring = "data:image/png;base64," + encodeFileToBase64Binary(f);
-        paths.add(encodstring);
-      }
-    }
-    System.out.println(
-        "**************************************Value**************************************");
-    for (List<FormDataBodyPart> value : fields.values()) {
-      for (FormDataBodyPart formDataBodyPart : value) {
-        System.out.println(formDataBodyPart);
-        System.out.println(formDataBodyPart.getName());
-        System.out.println(formDataBodyPart.getClass());
-        System.out.println(formDataBodyPart.getEntity());
-        System.out.println(formDataBodyPart.getHeaders().get("Content-Disposition").size());
-        System.out.println("Name : "
-            + formDataBodyPart.getHeaders().get("Content-Disposition").get(0).split(";")[2]
-                .substring(11,
-                    formDataBodyPart.getHeaders().get("Content-Disposition").get(0).split(";")[2]
-                        .length() - 1));
-        // System.out.println(formDataBodyPart.getValueAs(FormDataContentDisposition.class));
-        for (String formDataBodyPart2 : formDataBodyPart.getHeaders().keySet()) {
-          System.out.println(formDataBodyPart2);
-          System.out.println(formDataBodyPart.getHeaders().get(formDataBodyPart2));
-        }
+        paths.add(encodeFileToBase64Binary(uploadedFileLocation));
       }
     }
 
     return createResponseWithObjectNodeWith1PutPOJO("photos", paths);
   }
 
-  @POST
-  @Path("/test2")
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response test2(final FormDataMultiPart multiPart) {
-    System.out.println("Coucou2");
-    System.out.println("FormDataMultiPart: " + multiPart);
-    System.out.println("Name of field 'photo0': " + multiPart.getField("photo0").getName());
-    System.out.println("ValueAs: " + multiPart.getField("photo0").getValueAs(InputStream.class));
-    System.out.println("Field: " + multiPart.getField("photo0"));
-    System.out.println("Entity: " + multiPart.getField("photo0").getEntity());
-
-    ObjectNode node = jsonMapper.createObjectNode().putPOJO("photo",
-        multiPart.getField("photo0").getValueAs(InputStream.class));
-    System.out.println("Node: " + node);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
-  }
-
-  @POST
-  @Path("/test3")
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public FormDataBodyPart test3(final FormDataMultiPart multiPart) {
-    System.out.println("Coucou3");
-    System.out.println("FormDataMultiPart: " + multiPart);
-    System.out.println("Name of field 'photo0': " + multiPart.getField("photo0").getName());
-    System.out.println("Value: " + multiPart.getField("photo0").getValueAs(InputStream.class));
-    System.out.println("Value2: " + multiPart.getField("photo0"));
-    System.out.println("Entity: " + multiPart.getField("photo0").getEntity());
-
-    return multiPart.getField("photo0");
-  }
-
-  // save uploaded file to new location
-  private OutputStream writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
-    try {
-      OutputStream out = new FileOutputStream(new File(uploadedFileLocation));
+  /**
+   * Save uploaded file to the new location.
+   * 
+   * @param uploadedInputStream the uploaded file.
+   * @param uploadedFileLocation the new location.
+   */
+  private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
+    try (OutputStream out = new FileOutputStream(new File(uploadedFileLocation))) {
       int read = 0;
       byte[] bytes = new byte[1024];
 
-      out = new FileOutputStream(new File(uploadedFileLocation));
       while ((read = uploadedInputStream.read(bytes)) != -1) {
         out.write(bytes, 0, read);
       }
-      // System.out.println(out);
-      // System.out.println(bytes);
       out.flush();
-      out.close();
-      return out;
+      out.close(); // Puisque dans try-with-ressource, est ce encore nessesaire?
     } catch (IOException e) {
-      e.printStackTrace();
-      throw new PresentationException("A name cannot be empty.", e, Status.BAD_REQUEST);
+      throw new PresentationException("IO Exception.", e, Status.BAD_REQUEST);
     }
   }
 
-  private static String encodeFileToBase64Binary(File file) {
+  /**
+   * Return a Image into a Base64 at the location gived.
+   * 
+   * @param uploadedFileLocation the path to locate the file.
+   * @return a Base64 Image.
+   */
+  private static String encodeFileToBase64Binary(String uploadedFileLocation) {
+    File file = new File(uploadedFileLocation);
+
     String encodedfile = null;
     try (FileInputStream fileInputStreamReader = new FileInputStream(file)) {
       byte[] bytes = new byte[(int) file.length()];
       fileInputStreamReader.read(bytes);
       encodedfile = new String(Base64.encodeBase64(bytes), "UTF-8");
     } catch (FileNotFoundException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      throw new PresentationException("File Not Found.", e, Status.BAD_REQUEST);
     } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      throw new PresentationException("IO Exception.", e, Status.BAD_REQUEST);
     }
 
-    return encodedfile;
+    return "data:image/png;base64," + encodedfile;
   }
-
-  // @POST
-  // @Path("/test1")
-  // @Consumes("multipart/mixed")
-  // public Response test1(final FormDataMultiPart multiPart) {
-  // System.out.println("Coucou");
-  // System.out.println(multiPart);
-  // return createResponseWithObjectNodeWith1PutPOJO("furniture", 31);
-  // }
-
-  // @POST
-  // @Path("/test2")
-  // @Consumes(MediaType.MULTIPART_FORM_DATA)
-  // public Response test2(final FormDataMultiPart multiPart) {
-  // System.out.println("Coucou");
-  // System.out.println(multiPart);
-  // return createResponseWithObjectNodeWith1PutPOJO("furniture", 31);
-  // }
-
-  // @POST
-  // @Path("/test3")
-  // @Consumes(MediaType.MULTIPART_FORM_DATA)
-  // public Response test3(@FormDataParam("furnitureId") int id,
-  // @FormDataParam("photo0") FileDataBodyPart bean, @FormDataParam("photo1") InputStream file,
-  // @FormDataParam("photo2") FormDataContentDisposition fileDisposition) {
-  // System.out.println("Coucou");
-  // System.out.println(id + " " + bean + " " + file + " " + fileDisposition);
-  // return createResponseWithObjectNodeWith1PutPOJO("furniture", 31);
-  // }
 
 }

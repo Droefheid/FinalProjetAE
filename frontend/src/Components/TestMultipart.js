@@ -58,7 +58,7 @@ const onSubmit = (e) => {
     /**************************************/
 
     let id = getTokenSessionDate();
-    fetch(API_URL + "furnitures/test1B", {
+    fetch(API_URL + "furnitures/uploadPhotos", {
         method: "POST", 
         body: formData, 
         headers: {
