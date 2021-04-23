@@ -112,8 +112,19 @@ class TestFurniture {
     assertEquals(list, furnitureUCC.getAll());
   }
 
+  /**
+   * Success test : the furniture list from the userID is well returned.
+   */
   @Test
-  public void testGetAllInfosUpdateV1() {
+  public void testGetMyFurnitureV1() {
+    List<FurnitureDTO> list = null;
+    int userID = userDTO.getID();
+    Mockito.when(furnitureDAO.getMyFurniture(userID)).thenReturn(list);
+    assertEquals(list, furnitureUCC.getMyFurniture(userID));
+  }
+
+  @Test
+  public void testGetAllInfosForUpdateV1() {
     Object[] allLists = new Object[3];
     List<TypeDTO> listType = null;
     List<UserDTO> listUser = null;
@@ -132,5 +143,22 @@ class TestFurniture {
 
     assertAll(() -> assertEquals(allLists[0], test[0]), () -> assertEquals(allLists[1], test[1]),
         () -> assertEquals(allLists[2], test[2]));
+  }
+
+  @Test
+  public void testGetAllInfosForAddV1() {
+    Object[] allLists = new Object[2];
+    List<TypeDTO> listType = null;
+    List<UserDTO> listUser = null;
+
+    Mockito.when(typeDAO.getAll()).thenReturn(listType);
+    Mockito.when(userDAO.getAll()).thenReturn(listUser);
+
+    allLists[0] = listType;
+    allLists[1] = listUser;
+
+    Object[] test = furnitureUCC.getAllInfosForAdd();
+
+    assertAll(() -> assertEquals(allLists[0], test[0]), () -> assertEquals(allLists[1], test[1]));
   }
 }
