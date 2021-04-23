@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.codec.binary.Base64;
@@ -415,7 +416,7 @@ public class FurnitureResource {
   @POST
   @Path("/test1")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response test1(@FormDataParam("photo0") InputStream file,
+  public Response upload1Photo(@FormDataParam("photo0") InputStream file,
       @FormDataParam("photo0") FormDataContentDisposition fileDisposition) {
     System.out.println("Coucou1");
     System.out.println("InputStream: " + file + "\nFormDataContentDisposition: " + fileDisposition);
@@ -439,6 +440,70 @@ public class FurnitureResource {
      * File test = new File("C:\\Ecole Vinci\\projet-ae-groupe-05/src/main/resources/photos/Bahut_2.png"); System.out.println(test); return
      * createResponseWithObjectNodeWith1PutPOJO("furniture", test);
      */
+  }
+
+  @POST
+  @Path("/test1B")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  // @Authorize
+  public Response uploadMultiplePhotos(final FormDataMultiPart multiPart) {
+    System.out.println("Coucou1B");
+    System.out.println("Multipart: " + multiPart);
+    System.out
+        .println("InputStream: " + multiPart.getField("photo0").getValueAs(InputStream.class));
+    Map<String, List<FormDataBodyPart>> fields = multiPart.getFields();
+
+    List<String> paths = new ArrayList<>();
+    System.out.println(
+        "**************************************Keys presente**************************************");
+    for (String keyField : fields.keySet()) {
+      System.out.println(keyField);
+      List<FormDataBodyPart> values = fields.get(keyField);
+      for (FormDataBodyPart formDataBodyPart : values) {
+        System.out.println(formDataBodyPart.getName());
+        System.out.println(formDataBodyPart);
+        System.out.println(formDataBodyPart.getValueAs(InputStream.class));
+        String fileName =
+            formDataBodyPart.getHeaders().get("Content-Disposition").get(0).split(";")[2].substring(
+                11, formDataBodyPart.getHeaders().get("Content-Disposition").get(0).split(";")[2]
+                    .length() - 1);
+        System.out.println("Name : " + fileName);
+        String uploadedFileLocation =
+            "C:\\Ecole Vinci\\projet-ae-groupe-05/" + "src/main/resources/photos/" + fileName;
+        System.out.println(uploadedFileLocation);
+
+        // save it
+        writeToFile(formDataBodyPart.getValueAs(InputStream.class), uploadedFileLocation);
+
+        // Test for return
+        File f = new File(uploadedFileLocation);
+        String encodstring = "data:image/png;base64," + encodeFileToBase64Binary(f);
+        paths.add(encodstring);
+      }
+    }
+    System.out.println(
+        "**************************************Value**************************************");
+    for (List<FormDataBodyPart> value : fields.values()) {
+      for (FormDataBodyPart formDataBodyPart : value) {
+        System.out.println(formDataBodyPart);
+        System.out.println(formDataBodyPart.getName());
+        System.out.println(formDataBodyPart.getClass());
+        System.out.println(formDataBodyPart.getEntity());
+        System.out.println(formDataBodyPart.getHeaders().get("Content-Disposition").size());
+        System.out.println("Name : "
+            + formDataBodyPart.getHeaders().get("Content-Disposition").get(0).split(";")[2]
+                .substring(11,
+                    formDataBodyPart.getHeaders().get("Content-Disposition").get(0).split(";")[2]
+                        .length() - 1));
+        // System.out.println(formDataBodyPart.getValueAs(FormDataContentDisposition.class));
+        for (String formDataBodyPart2 : formDataBodyPart.getHeaders().keySet()) {
+          System.out.println(formDataBodyPart2);
+          System.out.println(formDataBodyPart.getHeaders().get(formDataBodyPart2));
+        }
+      }
+    }
+
+    return createResponseWithObjectNodeWith1PutPOJO("photos", paths);
   }
 
   @POST
@@ -496,8 +561,7 @@ public class FurnitureResource {
 
   private static String encodeFileToBase64Binary(File file) {
     String encodedfile = null;
-    try {
-      FileInputStream fileInputStreamReader = new FileInputStream(file);
+    try (FileInputStream fileInputStreamReader = new FileInputStream(file)) {
       byte[] bytes = new byte[(int) file.length()];
       fileInputStreamReader.read(bytes);
       encodedfile = new String(Base64.encodeBase64(bytes), "UTF-8");

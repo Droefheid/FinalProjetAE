@@ -58,7 +58,7 @@ const onSubmit = (e) => {
     /**************************************/
 
     let id = getTokenSessionDate();
-    fetch(API_URL + "furnitures/test1", {
+    fetch(API_URL + "furnitures/test1B", {
         method: "POST", 
         body: formData, 
         headers: {
@@ -75,12 +75,13 @@ const onSubmit = (e) => {
 }
 
 const onFurnitureUpdate = (furnitureData) => {
-    console.log(furnitureData, furnitureData.photo);
-    
-    document.querySelector("#afterFetch").innerHTML = `<img id="blahblah" src="` 
-    + furnitureData.furniture + `" style="width: 100px" alt="your image" />`;
+    console.log(furnitureData, furnitureData.photos);
+    document.querySelector("#afterFetch").innerHTML = ``;
 
-    console.log(document.querySelector("#blahblah"));
+    furnitureData.photos.forEach(photo => {
+        document.querySelector("#afterFetch").innerHTML += `<img id="blahblah" src="` 
+    + photo + `" style="width: 100px" alt="your image" />`;
+    });
 };
   
 const onError = (err) => {
