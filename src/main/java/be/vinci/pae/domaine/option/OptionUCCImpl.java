@@ -77,7 +77,19 @@ public class OptionUCCImpl implements OptionUCC {
     dalservices.startTransaction();
     option.setOptionTerm(Timestamp.valueOf(LocalDateTime.now()));
     optionDao.stopOption(option);
+    optionDao.changeFurnitureState(FurnitureDTO.STATES.ON_SALE.getValue(), option.getFurniture());
     dalservices.commitTransaction();
+  }
+
+  @Override
+  public OptionDTO findOption(int furnitureID, int customerID) {
+    dalservices.startTransaction();
+    OptionDTO option = optionDao.findOptionByFurnitureIdANDCustomerId(furnitureID, customerID);
+    if (option.getBeginningOptionDate() == null) {
+      dalservices.rollbackTransaction();
+      throw new BusinessException("There is no option currently on this furniture");
+    }
+    return option;
   }
 
 }

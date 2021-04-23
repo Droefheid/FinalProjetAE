@@ -131,6 +131,25 @@ public class FurnitureResource {
   }
 
   /**
+   * get a clients furniture.
+   * 
+   * @return list of all the clients furnitures.
+   */
+  @GET
+  @Authorize
+  @Path("myFurnitures")
+  public Response myFurnitures(@Context ContainerRequest request) {
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    if (currentUser == null || !currentUser.isBoss()) {
+      throw new PresentationException("You dont have the permission.", Status.BAD_REQUEST);
+    }
+    List<FurnitureDTO> listFurnitures = new ArrayList<FurnitureDTO>();
+    listFurnitures = furnitureUCC.getMyFurniture(currentUser.getID());
+
+    return createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
+  }
+
+  /**
    * update a furniture.
    * 
    * @return the furniture updated.

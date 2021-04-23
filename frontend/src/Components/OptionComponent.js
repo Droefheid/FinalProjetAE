@@ -1,4 +1,4 @@
-
+import { RedirectUrl } from "./Router.js";
 import { user_me } from "../index.js";
 import { API_URL } from "../utils/server.js";
 import { getUserSessionData, getTokenSessionDate } from "../utils/session";
@@ -40,7 +40,7 @@ const onFurnitureDescription = (data) => {
       <div class="column">
           <h4 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"> Types : ${data.furniture.type} </h4>
         <label for="datetime-local" >Date de fin de l'option</label>
-       <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00" id="datetime-local">
+       <input class="form-control" type="datetime-local" value="2021-08-19T13:45:00" id="datetime-local">
        <form class="btn" id="introduceOption">
        <input type="submit" value="Introduce option" class="btn btn-info"></input>
        </form>
@@ -60,11 +60,8 @@ const introduceOption = (e) => {
   let id = getTokenSessionDate();
   let datetime = document.getElementById("datetime-local").value;
   let furniture = user_me.furnitureId;
-  let userID = getUserSessionData().id;
 
-  console.log(userID);
   let option ={
-    "userID":userID,
     "optionTerm":datetime,
     "furnitureID":furniture
   }
@@ -82,13 +79,13 @@ const introduceOption = (e) => {
         return response.text().then((err) => onError(err));
       }
       else
-        return response.json().then(() => onOptionIntroduced());
+        return onOptionIntroduced();
     })
 };
 
 const onOptionIntroduced = () => {
   alert("An option has been introduced");
-  RedirectUrl("/");
+  RedirectUrl(`/furniture`);
 };
 
 const onError = (err) => {
