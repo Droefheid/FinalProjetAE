@@ -31,11 +31,7 @@ const Navbar = () => {
         <a class="btn btn-info" href="#" data-uri="" style="margin:15px;">Introduce a visit</a>
         <a class="btn btn-info" href="#" data-uri="/confirmUser" style="margin:15px;">Confirm a user</a>
         <a class="btn btn-info" href="#" data-uri="/addFurniture" style="margin:15px;">Add a furniture</a>
-
-        <a class="btn btn-info" href="#" data-uri="/seeMyFurniture" style="margin:15px;">See my furniture</a>
-      <a class="btn btn-info" href="#" data-uri="" style="margin:15px;">Introduce a visit</a>
-  
-    <a class="btn btn-info" href="#" data-uri="/confirmUser" style="margin:15px;">Confirm a user</a>
+        <a class="btn btn-info" href="#" data-uri="/seeMyFurniture" style="margin:15px;">See my furniture</a>  
       </div>
     </div>
   </nav>`;

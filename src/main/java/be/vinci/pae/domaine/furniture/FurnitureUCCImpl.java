@@ -29,7 +29,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     FurnitureDTO furnitureDTO = furnitureDAO.add(furniture);
     if (furnitureDTO == null) {
       dalservices.rollbackTransaction();
-      throw new BusinessException("furniture doesn't exist", Status.BAD_REQUEST);
+      throw new BusinessException("furniture wasn't added", Status.BAD_REQUEST);
     }
     dalservices.commitTransaction();
     return furnitureDTO;

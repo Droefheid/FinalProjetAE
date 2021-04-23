@@ -1,6 +1,7 @@
 package be.vinci.pae.api;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -20,6 +21,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -56,6 +58,7 @@ public class FurnitureResource {
     return createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
   }
 
+
   /**
    * get a clients furniture.
    * 
@@ -73,6 +76,59 @@ public class FurnitureResource {
     listFurnitures = furnitureUCC.getMyFurniture(currentUser.getID());
 
     return createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
+  }
+
+  /*
+   * Add a furniture (title, purchase_price, state, seller, type, pick_up_date).
+   * 
+   * return Reponse.ok().build();
+   * 
+   */
+  @POST
+  @AuthorizeBoss
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response addFurniture(JsonNode json) {
+
+    // Check credentials
+
+    if (json.get("title").asText().equals("")) {
+      throw new PresentationException("Title cannot be empty", Status.BAD_REQUEST);
+    }
+    if (json.get("purchasePrice").asText().equals("") || json.get("purchasePrice").asInt() <= 0) {
+      throw new PresentationException("Purchase Price is needed or incorrect.", Status.BAD_REQUEST);
+    }
+    if (json.get("state").asText().equals("")) {
+      throw new PresentationException("State is needed.", Status.BAD_REQUEST);
+    }
+    if (json.get("seller").asText().equals("")) {
+      throw new PresentationException("Seller is needed.", Status.BAD_REQUEST);
+    }
+    int sellerId = json.get("seller").asInt();
+    if (sellerId < 1 || userRessource.getUserById(sellerId) == null) {
+      throw new PresentationException("Seller does not exist.", Status.BAD_REQUEST);
+    }
+    if (json.get("type").asText().equals("") || json.get("type").asInt() <= 0) {
+      throw new PresentationException("Type is incorrect or needed.", Status.BAD_REQUEST);
+    }
+    if (json.get("pickUpDate").asText().equals("")) {
+      throw new PresentationException("Pick-up date is needed.", Status.BAD_REQUEST);
+    }
+
+    FurnitureDTO furnitureDTO = domaineFactory.getFurnitureDTO();
+
+    furnitureDTO.setFurnitureTitle(json.get("title").asText());
+    furnitureDTO.setPurchasePrice(json.get("purchasePrice").asInt());
+    furnitureDTO.setState(json.get("state").asText());
+    furnitureDTO.setType(json.get("type").asInt());
+    furnitureDTO.setSeller(json.get("seller").asInt());
+
+    String term = json.get("pickUpDate").asText();
+    LocalDateTime optionTerm = LocalDateTime.parse(term);
+    furnitureDTO.setPickUpDate(Timestamp.valueOf(optionTerm));
+
+    furnitureUCC.add(furnitureDTO);
+
+    return Response.ok().build();
   }
 
   /**

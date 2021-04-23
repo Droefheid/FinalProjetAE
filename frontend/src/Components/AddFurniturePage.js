@@ -4,11 +4,7 @@ import Sidebar from "./SideBar.js";
 import { getUserSessionData, getTokenSessionDate } from "../utils/session";
 import Navbar from "./Navbar.js";
 
-const STATES = [ "ER", "M", "EV", "O", "V", "EL", "L", "AE", "E", "R", "RE" ];
-
 let page = document.querySelector("#page");
-
-
 
 const AddFurniturePage = () => {   
    Sidebar(true);
@@ -45,7 +41,7 @@ const onCreateAddPage = (data) => {
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1">Title</span>
         </div>
-        <input type="text" id="titleFurniture" class="form-control" aria-describedby="basic-addon1">
+        <input type="text" id="titleFurniture" class="form-control" aria-describedby="basic-addon1" required>
       </div>
 
       <div class="input-group mb-3 ">
@@ -55,29 +51,13 @@ const onCreateAddPage = (data) => {
         <input type="number" id="purchaseFurniture" class="form-control" aria-describedby="basic-addon1">
       </div>     
 
-      <div class="input-group mb-3 ">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1">Selling price</span>
-        </div>
-        <input type="number" id="sellingFurniture" class="form-control" aria-describedby="basic-addon1">
-      </div>
-
-      <div class="input-group mb-3 ">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1">Special sale price</span>
-        </div>
-        <input type="number" id="specialFurniture" class="form-control" aria-describedby="basic-addon1">
-      </div>
-
       <div class="input-group mb-3">
         <div class="input-group-prepend">
           <label class="input-group-text" for="inputGroupSelect01">State</label>
         </div>
         <select class="custom-select" id="stateId">
           <option value="ER" selected>En restauration</option>
-          <option value="EM">En magasin</option>
-          <option value="EV">En vente</option>
-          <option value="SO">Sous option</option>
+          <option value="M">En magasin</option>
         </select>
       </div>
 
@@ -110,6 +90,8 @@ const onCreateAddPage = (data) => {
           </select>
       </div>
       <button type="button" id="addForm" class="btn btn-primary" style="width:100%;">Add</button>
+      <div id="messageBoardForm" style="margin-top:30px;"></div>
+
     </form>
 `;
 
@@ -121,34 +103,44 @@ const onCreateAddPage = (data) => {
 
 const onAddFurniture = () => {
 
+  let id = getTokenSessionDate();
 
   let title = document.getElementById("titleFurniture").value;
   let purchasePrice = document.getElementById("purchaseFurniture").value;
-  let sellingPrice = document.getElementById("sellingFurniture").value;
-  let specialSalePrice = document.getElementById("specialFurniture").value;
   let state = document.getElementById("stateId").value;
   let type = document.getElementById("typeId").value;
   let seller = document.getElementById("sellerId").value;
   let pickUpDate = document.getElementById("datetime-local").value;
 
-  console.log(title, purchasePrice, sellingPrice,  specialSalePrice, state, type, seller , pickUpDate);
+  //Check if title is correct
+  if(!title) {
+    let messageBoard = document.getElementById("messageBoardForm");
+    messageBoard.innerHTML = '<div class="alert alert-danger">Title is missing.</div>';
+    return;
+  }
+  if(purchasePrice <= 0) {
+    let messageBoard = document.getElementById("messageBoardForm");
+    messageBoard.innerHTML = '<div class="alert alert-danger">Purchase price is negative or equals zero.</div>';
+    return;
+}
+
 
   let furniture = {
-    "title": document.getElementById("titleFurniture").value,
-    "purchasePrice": document.getElementById("purchaseFurniture").value,
-    "sellingPrice": document.getElementById("sellingFurniture").value,
-    "specialSalePrice": document.getElementById("specialFurniture").value,
-    "state": document.getElementById("stateId").value,
-    "type": document.getElementById("typeId").value,
-    "seller": document.getElementById("sellerId").value,
-    "pickUpDate": document.getElementById("datetime-local").value,
+    "title": title,
+    "purchasePrice": purchasePrice,
+    "state": state,
+    "type": type,
+    "seller": seller,
+    "pickUpDate": pickUpDate,
   }
+
 
   fetch(API_URL + "furnitures/", {
     method: "POST",
     body: JSON.stringify(furniture),
     headers: {
       "Content-Type": "application/json",
+      "Authorization": id,
     },
   })
     .then((response) => {
@@ -156,14 +148,18 @@ const onAddFurniture = () => {
         return response.text().then((err) => onError(err));
       }
       else
-        return response.json().then(() => onFurnitureAdded());
+        return onFurnitureAdded();
     })
 }
+
+const onFurnitureAdded = () => {
+  alert("Furniture has been added");
+  RedirectUrl(`/furniture`);
+};
 
 const onError = (err) => {
   let messageBoard = document.querySelector("#messageBoard");
   messageBoard.innerHTML = err;
 };
-
 
 export default AddFurniturePage;
