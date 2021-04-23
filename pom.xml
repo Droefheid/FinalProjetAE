@@ -87,6 +87,11 @@
 	    	<groupId>org.glassfish.jersey.media</groupId>
 	    	<artifactId>jersey-media-multipart</artifactId>
 		</dependency>
+		<dependency>
+		    <groupId>commons-codec</groupId>
+		    <artifactId>commons-codec</artifactId>
+		    <version>1.10</version>
+		</dependency>
 	</dependencies>
 
 	<build>

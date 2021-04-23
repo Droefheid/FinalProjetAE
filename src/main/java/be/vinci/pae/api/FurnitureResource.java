@@ -1,11 +1,18 @@
 package be.vinci.pae.api;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.codec.binary.Base64;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
@@ -412,7 +419,26 @@ public class FurnitureResource {
       @FormDataParam("photo0") FormDataContentDisposition fileDisposition) {
     System.out.println("Coucou1");
     System.out.println("InputStream: " + file + "\nFormDataContentDisposition: " + fileDisposition);
-    return createResponseWithObjectNodeWith1PutPOJO("furniture", 31);
+
+    String uploadedFileLocation = "C:\\Ecole Vinci\\projet-ae-groupe-05/"
+        + "src/main/resources/photos/" + fileDisposition.getFileName();
+    System.out.println(uploadedFileLocation);
+
+    // save it
+    writeToFile(file, uploadedFileLocation);
+
+
+    // Test for return
+    File f = new File(uploadedFileLocation);
+    String encodstring = "data:image/png;base64," + encodeFileToBase64Binary(f);
+    // System.out.println(encodstring.substring(0, 200));
+
+    return createResponseWithObjectNodeWith1PutPOJO("furniture", encodstring);
+
+    /*
+     * File test = new File("C:\\Ecole Vinci\\projet-ae-groupe-05/src/main/resources/photos/Bahut_2.png"); System.out.println(test); return
+     * createResponseWithObjectNodeWith1PutPOJO("furniture", test);
+     */
   }
 
   @POST
@@ -444,6 +470,46 @@ public class FurnitureResource {
     System.out.println("Entity: " + multiPart.getField("photo0").getEntity());
 
     return multiPart.getField("photo0");
+  }
+
+  // save uploaded file to new location
+  private OutputStream writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
+    try {
+      OutputStream out = new FileOutputStream(new File(uploadedFileLocation));
+      int read = 0;
+      byte[] bytes = new byte[1024];
+
+      out = new FileOutputStream(new File(uploadedFileLocation));
+      while ((read = uploadedInputStream.read(bytes)) != -1) {
+        out.write(bytes, 0, read);
+      }
+      // System.out.println(out);
+      // System.out.println(bytes);
+      out.flush();
+      out.close();
+      return out;
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new PresentationException("A name cannot be empty.", e, Status.BAD_REQUEST);
+    }
+  }
+
+  private static String encodeFileToBase64Binary(File file) {
+    String encodedfile = null;
+    try {
+      FileInputStream fileInputStreamReader = new FileInputStream(file);
+      byte[] bytes = new byte[(int) file.length()];
+      fileInputStreamReader.read(bytes);
+      encodedfile = new String(Base64.encodeBase64(bytes), "UTF-8");
+    } catch (FileNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    return encodedfile;
   }
 
   // @POST
