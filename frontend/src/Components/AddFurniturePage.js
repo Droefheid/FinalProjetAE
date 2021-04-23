@@ -118,11 +118,19 @@ const onAddFurniture = () => {
     messageBoard.innerHTML = '<div class="alert alert-danger">Title is missing.</div>';
     return;
   }
+  //Check if the purchase price is <= 0 
   if(purchasePrice <= 0) {
     let messageBoard = document.getElementById("messageBoardForm");
     messageBoard.innerHTML = '<div class="alert alert-danger">Purchase price is negative or equals zero.</div>';
     return;
-}
+  }
+  //Check id the date is well before now. TODO
+  var now = new Date();
+  if(pickUpDate < now){
+    let messageBoard = document.getElementById("messageBoardForm");
+    messageBoard.innerHTML = '<div class="alert alert-danger">Pick-up date is in the future</div>';
+    return;
+  }
 
 
   let furniture = {
