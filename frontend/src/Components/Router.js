@@ -22,7 +22,7 @@ const routes = {
   "/userList": UserListPage,
   "/seeMyFurniture": MyFurniturePage,
   "/error": ErrorPage,
-  "/updateFurniture": TestMultipartPage,
+  "/updateFurniture": ModificationFurniturePage,
 };
 
 let page = document.querySelector("#page");

@@ -60,6 +60,8 @@ public class FurnitureResource {
   @Inject
   private UserResource userRessource;
 
+
+
   /**
    * get all furnitures.
    * 
@@ -119,6 +121,129 @@ public class FurnitureResource {
 
     return createResponseWithObjectNodeWith1PutPOJO("furniture", furniture);
   }
+
+  /**
+   * Get the furniture with an ID if exists or send error message.
+   * 
+   * @param id id of the furniture.
+   * @return a furniture if furniture exists in database and matches the id.
+   */
+  @GET
+  @Path("/{id}")
+  public Response getFurnitureById(@PathParam("id") int id) {
+    // Check credentials.
+    if (id < 1) {
+      throw new PresentationException("Id cannot be under 1", Status.BAD_REQUEST);
+    }
+    FurnitureDTO furniture = this.furnitureUCC.findById(id);
+
+    return createResponseWithObjectNodeWith1PutPOJO("furniture", furniture);
+  }
+
+  /**
+   * get the furniture by is id and all types and users.
+   * 
+   * @param id id of the furniture.
+   * @return list of all types, users and the furniture where the id is the same.
+   */
+  @GET
+  @Path("/infosUpdate/{id}")
+  public Response allInfosForUpdateFurniture(@PathParam("id") int id) {
+    if (id < 1) {
+      throw new PresentationException("Id cannot be under 1", Status.BAD_REQUEST);
+    }
+
+    Object[] listOfAll = furnitureUCC.getAllInfosForUpdate(id);
+
+    // Transform all Url into Base64 Image.
+    // for (PhotoDTO photo : ((List<PhotoDTO>) listOfAll[3])) {
+    // String encodstring = encodeFileToBase64Binary(photo.getPicture());
+    // photo.setPicture(encodstring);
+    // }
+
+    int i = 0;
+    return createResponseWithObjectNodeWith5PutPOJO("furniture", listOfAll[i++], "types",
+        listOfAll[i++], "users", listOfAll[i++], "photos", listOfAll[i++], "photosFurnitures",
+        listOfAll[i++]);
+  }
+
+  /**
+   * save in a folder the photo given. Must be Authorize.
+   * 
+   * @param file the photo to save.
+   * @param fileDisposition information about the photo.
+   * @return Response.ok if everything is going fine.
+   */
+  @POST
+  @Path("/uploadPhoto")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Authorize
+  public Response uploadOnePhoto(@FormDataParam("photo0") InputStream file,
+      @FormDataParam("photo0") FormDataContentDisposition fileDisposition) {
+    System.out.println("Coucou1");
+    System.out.println("InputStream: " + file + "\nFormDataContentDisposition: " + fileDisposition);
+
+    String uploadedFileLocation = "C:\\Ecole Vinci\\projet-ae-groupe-05/"
+        + "src/main/resources/photos/" + fileDisposition.getFileName();
+    System.out.println(uploadedFileLocation);
+
+    // save it
+    writeToFile(file, uploadedFileLocation);
+
+
+    // Test for return
+    String encodstring = encodeFileToBase64Binary(uploadedFileLocation);
+    // System.out.println(encodstring.substring(0, 200));
+
+    return createResponseWithObjectNodeWith1PutPOJO("furniture", encodstring);
+  }
+
+  /**
+   * save in a folder all the photo in the FormDataMultipart given. Must be Authorize.
+   * 
+   * @param multiPart the FormDataMultipart with photo inside.
+   * @return Response.ok if everything is going fine.
+   */
+  @POST
+  @Path("/uploadPhotos")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Authorize
+  public Response uploadMultiplePhotos(final FormDataMultiPart multiPart) {
+    Map<String, List<FormDataBodyPart>> fields = multiPart.getFields();
+
+    List<String> paths = new ArrayList<>();
+    for (String keyField : fields.keySet()) {
+      List<FormDataBodyPart> values = fields.get(keyField);
+      for (FormDataBodyPart formDataBodyPart : values) {
+        // System.out.println(keyField + " == " + formDataBodyPart.getName());
+        // System.out.println(formDataBodyPart.getHeaders());
+        // for (String formDataBodyPart2 : formDataBodyPart.getHeaders().keySet()) {
+        // System.out.println(formDataBodyPart2);
+        // System.out.println(formDataBodyPart.getHeaders().get(formDataBodyPart2));
+        // }
+        // System.out.println(formDataBodyPart.getHeaders().get("Content-Disposition"));
+        String fileName =
+            formDataBodyPart.getHeaders().get("Content-Disposition").get(0).split(";")[2].substring(
+                11, formDataBodyPart.getHeaders().get("Content-Disposition").get(0).split(";")[2]
+                    .length() - 1);
+        // System.out.println("Name : " + fileName);
+        String uploadedFileLocation =
+            Config.getProperty("ServerPath") + Config.getProperty("PhotosPath") + fileName;
+        // System.out.println(uploadedFileLocation);
+
+        // save it
+        writeToFile(formDataBodyPart.getValueAs(InputStream.class), uploadedFileLocation);
+
+        // Test for return
+        paths.add(encodeFileToBase64Binary(uploadedFileLocation));
+      }
+    }
+
+    return createResponseWithObjectNodeWith1PutPOJO("photos", paths);
+  }
+
+
+  /******************** Private's Methods ********************/
 
   private void checkAllCredentialFurniture(JsonNode json) {
     // Required Field.
@@ -363,45 +488,6 @@ public class FurnitureResource {
   }
 
   /**
-   * Get the furniture with an ID if exists or send error message.
-   * 
-   * @param id id of the furniture.
-   * @return a furniture if furniture exists in database and matches the id.
-   */
-  @GET
-  @Path("/{id}")
-  public Response getFurnitureById(@PathParam("id") int id) {
-    // Check credentials.
-    if (id < 1) {
-      throw new PresentationException("Id cannot be under 1", Status.BAD_REQUEST);
-    }
-    FurnitureDTO furniture = this.furnitureUCC.findById(id);
-
-    return createResponseWithObjectNodeWith1PutPOJO("furniture", furniture);
-  }
-
-  /**
-   * get the furniture by is id and all types and users.
-   * 
-   * @param id id of the furniture.
-   * @return list of all types, users and the furniture where the id is the same.
-   */
-  @GET
-  @Path("/infosUpdate/{id}")
-  public Response allInfosForUpdateFurniture(@PathParam("id") int id) {
-    if (id < 1) {
-      throw new PresentationException("Id cannot be under 1", Status.BAD_REQUEST);
-    }
-
-    Object[] listOfAll = furnitureUCC.getAllInfosForUpdate(id);
-
-    int i = 0;
-    return createResponseWithObjectNodeWith5PutPOJO("furniture", listOfAll[i++], "types",
-        listOfAll[i++], "users", listOfAll[i++], "photos", listOfAll[i++], "photosFurnitures",
-        listOfAll[i++]);
-  }
-
-  /**
    * create a response with a ObjectNode with 1 putPOJO.
    * 
    * @param <E> the type of the object.
@@ -415,13 +501,23 @@ public class FurnitureResource {
   }
 
   /**
-   * create a response with a ObjectNode with 3 putPOJO.
+   * create a response with a ObjectNode with 5 putPOJO.
    * 
    * @param <E> the type of the first object.
    * @param <F> the type of the second object.
    * @param <G> the type of the third object.
-   * @param namePOJO1 the name of the POJO put.
-   * @param object1 object to put.
+   * @param <H> the type of the four object.
+   * @param <I> the type of the five object.
+   * @param namePOJO1 the name of the first POJO put.
+   * @param object1 first object to put.
+   * @param namePOJO2 the name of the second POJO put.
+   * @param object2 second object to put.
+   * @param namePOJO3 the name of the third POJO put.
+   * @param object3 third object to put.
+   * @param namePOJO4 the name of the four POJO put.
+   * @param object4 four object to put.
+   * @param namePOJO5 the name of the five POJO put.
+   * @param object5 five object to put.
    * @return a response.ok build with all the ObjectNode inside.
    */
   private <E, F, G, H, I> Response createResponseWithObjectNodeWith5PutPOJO(String namePOJO1,
@@ -431,74 +527,6 @@ public class FurnitureResource {
         jsonMapper.createObjectNode().putPOJO(namePOJO1, object1).putPOJO(namePOJO2, object2)
             .putPOJO(namePOJO3, object3).putPOJO(namePOJO4, object4).putPOJO(namePOJO5, object5);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
-  }
-
-
-  @POST
-  @Path("/test1")
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response upload1Photo(@FormDataParam("photo0") InputStream file,
-      @FormDataParam("photo0") FormDataContentDisposition fileDisposition) {
-    System.out.println("Coucou1");
-    System.out.println("InputStream: " + file + "\nFormDataContentDisposition: " + fileDisposition);
-
-    String uploadedFileLocation = "C:\\Ecole Vinci\\projet-ae-groupe-05/"
-        + "src/main/resources/photos/" + fileDisposition.getFileName();
-    System.out.println(uploadedFileLocation);
-
-    // save it
-    writeToFile(file, uploadedFileLocation);
-
-
-    // Test for return
-    File f = new File(uploadedFileLocation);
-    String encodstring = "data:image/png;base64," + encodeFileToBase64Binary(f);
-    // System.out.println(encodstring.substring(0, 200));
-
-    return createResponseWithObjectNodeWith1PutPOJO("furniture", encodstring);
-
-    /*
-     * File test = new File("C:\\Ecole Vinci\\projet-ae-groupe-05/src/main/resources/photos/Bahut_2.png"); System.out.println(test); return
-     * createResponseWithObjectNodeWith1PutPOJO("furniture", test);
-     */
-  }
-
-  @POST
-  @Path("/uploadPhotos")
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
-  // @Authorize
-  public Response uploadMultiplePhotos(final FormDataMultiPart multiPart) {
-    Map<String, List<FormDataBodyPart>> fields = multiPart.getFields();
-
-    List<String> paths = new ArrayList<>();
-    for (String keyField : fields.keySet()) {
-      List<FormDataBodyPart> values = fields.get(keyField);
-      for (FormDataBodyPart formDataBodyPart : values) {
-        // System.out.println(keyField + " == " + formDataBodyPart.getName());
-        // System.out.println(formDataBodyPart.getHeaders());
-        // for (String formDataBodyPart2 : formDataBodyPart.getHeaders().keySet()) {
-        // System.out.println(formDataBodyPart2);
-        // System.out.println(formDataBodyPart.getHeaders().get(formDataBodyPart2));
-        // }
-        // System.out.println(formDataBodyPart.getHeaders().get("Content-Disposition"));
-        String fileName =
-            formDataBodyPart.getHeaders().get("Content-Disposition").get(0).split(";")[2].substring(
-                11, formDataBodyPart.getHeaders().get("Content-Disposition").get(0).split(";")[2]
-                    .length() - 1);
-        // System.out.println("Name : " + fileName);
-        String uploadedFileLocation =
-            Config.getProperty("ServerPath") + Config.getProperty("PhotosPath") + fileName;
-        // System.out.println(uploadedFileLocation);
-
-        // save it
-        writeToFile(formDataBodyPart.getValueAs(InputStream.class), uploadedFileLocation);
-
-        // Test for return
-        paths.add(encodeFileToBase64Binary(uploadedFileLocation));
-      }
-    }
-
-    return createResponseWithObjectNodeWith1PutPOJO("photos", paths);
   }
 
   /**
@@ -523,7 +551,7 @@ public class FurnitureResource {
   }
 
   /**
-   * Return a Image into a Base64 at the location gived.
+   * Return a Image into a Base64 at the location given.
    * 
    * @param uploadedFileLocation the path to locate the file.
    * @return a Base64 Image.

@@ -14,11 +14,10 @@ const ModificationFurniturePage = () => {
 
     const user = getUserSessionData();
     if (!user || !user.isBoss || !user_me.furnitureId) {
-        // re-render the navbar for the authenticated user.
         Navbar();
         RedirectUrl("/");
     } else {
-        // Fetch pour recup
+        // Fetch for get all informations of a specifique Furniture.
         fetch(API_URL + "furnitures/infosUpdate/" + user_me.furnitureId, {
             method: "GET", 
             headers: {
@@ -150,9 +149,19 @@ const onPageCreate = (data) => {
                     </select>
                 </div>
                 <br>
-                <input type="file" id="files" name="files[]" multiple>
-                <span id="showImg"></span>
+                <input type="file" id="files" name="files" multiple>
                 <p class="text-muted">* Veuillez selectionner toutes les photos en une seule fois.</p>
+                <div id="showImg"></div>
+                <input type="submit" value="Upload photo(s)" class="btn btn-primary ml-auto">
+                <div>`;
+                for (let index = 0; index < photos.length; index++) {
+                    console.log(photos[index]);
+                }
+                photos.forEach(photo => {
+                    console.log(photo);
+                    modifPage += `<img src="` + photo.picture + `" style="width: 100px" alt="your image" />`;
+                });
+                modifPage += `</div>
             </div>
             <div class="col-sm-6 bg-warning">
                 <label for="furnitureDateCollection">Date emporter: </label>
@@ -420,7 +429,8 @@ const onFurnitureUpdate = (furnitureData) => {
   
 const onError = (err) => {
     let messageBoard = document.querySelector("#messageBoard");
-    ALERT_BOX(messageBoard, err.message);
+    if(err.message) ALERT_BOX(messageBoard, err.message);
+    else ALERT_BOX(messageBoard, err);
 };
  
 export default ModificationFurniturePage;

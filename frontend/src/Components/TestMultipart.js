@@ -51,10 +51,10 @@ const onSubmit = (e) => {
     /**************************************/
     const formData = new FormData();
     for(let i = 0; i < input.files.length; i++){
-        console.log(input.files[i]);
+        //console.log(input.files[i]);
         formData.append("photo"+i, input.files[i]);
     }
-    console.log("Formdata: ", formData, "get('photo0'): ", formData.get("photo0"));
+    //console.log("Formdata: ", formData, "get('photo0'): ", formData.get("photo0"));
     /**************************************/
 
     let id = getTokenSessionDate();
@@ -75,7 +75,7 @@ const onSubmit = (e) => {
 }
 
 const onFurnitureUpdate = (furnitureData) => {
-    console.log(furnitureData, furnitureData.photos);
+    //console.log(furnitureData, furnitureData.photos);
     document.querySelector("#afterFetch").innerHTML = ``;
 
     furnitureData.photos.forEach(photo => {
