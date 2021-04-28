@@ -41,7 +41,7 @@ const onPageCreate = (data) => {
     let photos = data.photos;
     let photosFurnitures = data.photosFurnitures;
 
-    console.log(photos, photosFurnitures);
+    //console.log(photos, photosFurnitures);
 
     // Modification of all Timestamp into Date.
     let Timestamp = null;
@@ -155,7 +155,7 @@ const onPageCreate = (data) => {
                 <button type="submit" name="submitPhoto" class="btn btn-primary mb-2"><i class="fas fa-save"></i></button>
                 <div class="card-columns">`;
                 for (let i = 0; i < photos.length; i++) {
-                    console.log(photos[i]);
+                    //console.log(photos[i]);
                     modifPage += `<div class="card" style="width: 90px">
                         <input id="photoId" value="${photos[i].id}" hidden>
                         <img class="card-img-top" src="` + photos[i].picture + `" style="width: 100%" alt="` + photos[i].name +`" />`;
@@ -306,7 +306,7 @@ const onDelettePhoto = (photoId) => {
 }
 
 const onFavoritePhoto = (photoId, e) => {
-    console.log("Favorite Photo",photoId);
+    //console.log("Favorite Photo",photoId);
     let furnitureId = document.getElementById("furnitureId").value;
 
     // Change in is favourite or in is not favourite.
@@ -316,11 +316,11 @@ const onFavoritePhoto = (photoId, e) => {
     if (favoriteButton.className == "fas fa-heart") {
         favoriteButton.className = "far fa-heart";
         isFavorite = false;
-        console.log("not anymore favorite");
+        //console.log("not anymore favorite");
     } else if (favoriteButton.className == "far fa-heart") {
         favoriteButton.className = "fas fa-heart";
         isFavorite = true;
-        console.log("now is favorite");
+        //console.log("now is favorite");
     }
 
     let photo = {
@@ -328,7 +328,7 @@ const onFavoritePhoto = (photoId, e) => {
         "furnitureId": furnitureId,
         "isFavorite": isFavorite,
     };
-    console.log(photo);
+    //console.log(photo);
 
     let id = getTokenSessionDate();
     fetch(API_URL + "photos/favorite", {
@@ -340,7 +340,7 @@ const onFavoritePhoto = (photoId, e) => {
         },
     })
     .then((response) => {
-        console.log(response);
+        //console.log(response);
         if (!response.ok) {
           return response.text().then((err) => onError(err));
         }
@@ -350,7 +350,7 @@ const onFavoritePhoto = (photoId, e) => {
 }
 
 const onVisiblePhoto = (photoId, e) => {
-    console.log("Visible Photo",photoId);
+    //console.log("Visible Photo",photoId);
     let furnitureId = document.getElementById("furnitureId").value;
 
     // Change in is visible or in is not visible.
@@ -360,11 +360,11 @@ const onVisiblePhoto = (photoId, e) => {
     if (visibilityButton.className == "fas fa-eye") {
         visibilityButton.className = "fas fa-eye-slash";
         isVisible = false;
-        console.log("not anymore visible");
+        //console.log("not anymore visible");
     } else if (visibilityButton.className == "fas fa-eye-slash") {
         visibilityButton.className = "fas fa-eye";
         isVisible = true;
-        console.log("now is visible");
+        //console.log("now is visible");
     }
 
     let photo = {
@@ -372,7 +372,7 @@ const onVisiblePhoto = (photoId, e) => {
         "furnitureId": furnitureId,
         "isVisible": isVisible,
     };
-    console.log(photo);
+    //console.log(photo);
 
     let id = getTokenSessionDate();
     fetch(API_URL + "photos/visible", {
