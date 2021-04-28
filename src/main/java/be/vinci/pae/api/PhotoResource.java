@@ -296,7 +296,7 @@ public class PhotoResource {
 
 
 
-  /******************** Private's Methods ********************/
+  // ******************** Private's Methods ********************
 
   private PhotoDTO createFullFillPhoto(String picture, String name) {
     PhotoDTO photo = domaineFactory.getPhotoDTO();

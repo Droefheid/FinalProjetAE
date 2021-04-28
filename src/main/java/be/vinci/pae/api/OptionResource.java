@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.utils.PresentationException;
 import be.vinci.pae.api.utils.ResponseMaker;
@@ -31,8 +30,6 @@ import jakarta.ws.rs.core.Response.Status;
 @Singleton
 @Path("/options")
 public class OptionResource {
-
-  private final ObjectMapper jsonMapper = new ObjectMapper();
 
   @Inject
   DomaineFactory domaineFactory;

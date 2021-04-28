@@ -140,7 +140,7 @@ public class FurnitureResource {
     Object[] listOfAll = furnitureUCC.getAllInfosForUpdate(id);
 
     // Transform all URL into Base64 Image.
-    for (PhotoDTO photo : ((List<PhotoDTO>) listOfAll[3])) {
+    for (PhotoDTO photo : (List<PhotoDTO>) listOfAll[3]) {
       String encodstring = PhotoResource.encodeFileToBase64Binary(photo.getPicture());
       photo.setPicture(encodstring);
     }
