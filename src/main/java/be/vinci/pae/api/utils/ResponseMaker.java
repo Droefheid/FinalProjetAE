@@ -1,11 +1,31 @@
 package be.vinci.pae.api.utils;
 
+import java.sql.Date;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import be.vinci.pae.domaine.user.UserDTO;
+import be.vinci.pae.utils.Config;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 public class ResponseMaker {
+  // 86400s = 1 jour (86.400.000 ms).
+  private static final long EXPIRATION_TIME = 86400 * 1000;
+  private static final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
+  private static final ObjectMapper jsonMapper = new ObjectMapper();
+
+  /**
+   * create a response with a token.
+   * 
+   * @param user the user to put in the token.
+   * @return a response.ok build with a token and the user inside.
+   */
+  public static Response createResponseWithToken(UserDTO user) {
+    ObjectNode node = createToken(user);
+    return createResponseWith(node);
+  }
 
   /**
    * create a response with a ObjectNode with 1 putPOJO.
@@ -17,6 +37,24 @@ public class ResponseMaker {
    */
   public static <E> Response createResponseWithObjectNodeWith1PutPOJO(String namePOJO, E object) {
     ObjectNode node = createObjectNodeWithObjectNodeWith1PutPOJO(namePOJO, object);
+    return createResponseWith(node);
+  }
+
+  /**
+   * create a response with a ObjectNode with 2 putPOJO.
+   * 
+   * @param <E> the type of the object.
+   * @param <F> the type of the second object.
+   * @param namePOJO1 the name of the first POJO put.
+   * @param object1 first object to put.
+   * @param namePOJO2 the name of the second POJO put.
+   * @param object2 second object to put.
+   * @return a response.ok build with all the ObjectNode inside.
+   */
+  public static <E, F> Response createResponseWithObjectNodeWith2PutPOJO(String namePOJO1,
+      E object1, String namePOJO2, F object2) {
+    ObjectNode node =
+        createObjectNodeWithObjectNodeWith2PutPOJO(namePOJO1, object1, namePOJO2, object2);
     return createResponseWith(node);
   }
 
@@ -53,6 +91,29 @@ public class ResponseMaker {
   /******************** Private's Methods ********************/
 
   /**
+   * Create a token and a ObjectNode with an user.
+   * 
+   * @param user : the user to put in the token.
+   * @return ObjectNode contains the token and the user filter.
+   */
+  private static ObjectNode createToken(UserDTO user) {
+    // Create token
+    String token;
+    try {
+      token = JWT.create().withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+          .withIssuer("auth0").withClaim("user", user.getID()).sign(jwtAlgorithm);
+    } catch (Exception e) {
+      throw new FatalException("Unable to create token", e);
+    }
+
+    // Build response
+    // load the user data from a public JSON view to filter out the private info not
+    // to be returned by the API (such as password)
+    UserDTO publicUser = Json.filterBossJsonView(user, UserDTO.class);
+    return jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
+  }
+
+  /**
    * create a ObjectNode with 1 PutPOJO.
    * 
    * @param <E> the type of the object.
@@ -62,7 +123,6 @@ public class ResponseMaker {
    */
   private static <E> ObjectNode createObjectNodeWithObjectNodeWith1PutPOJO(String namePOJO,
       E object) {
-    ObjectMapper jsonMapper = new ObjectMapper();
     return jsonMapper.createObjectNode().putPOJO(namePOJO, object);
   }
 

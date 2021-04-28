@@ -6,9 +6,9 @@ import java.time.LocalDateTime;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.utils.PresentationException;
+import be.vinci.pae.api.utils.ResponseMaker;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.domaine.furniture.FurnitureUCC;
@@ -149,7 +149,6 @@ public class OptionResource {
     }
 
     OptionDTO option = optionUCC.findOption(furniture.getFurnitureId(), currentUser.getID());
-    ObjectNode node = jsonMapper.createObjectNode().putPOJO("option", option);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("option", option);
   }
 }
