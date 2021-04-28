@@ -5,9 +5,11 @@ import Navbar from "./Navbar.js";
 import { API_URL, ALERT_BOX } from "../utils/server.js";
 
 let formPage = `<form id="photo" class="form-inline" enctype="multipart/form-data">
+    <input 
     <input type="file" id="files" name="file" multiple>
     <div id="showImg"></div>
-    <input type="submit" value="update" class="btn btn-lg btn-primary btn-block">
+    <input type="submit" name="submitPhoto" value="photo" class="btn btn-lg btn-primary btn-block">
+    <input type="submit" name="submitUpdate" value="update" class="btn btn-lg btn-primary btn-block">
 </form>
 <div id="afterFetch"></div>`;
 
@@ -44,9 +46,14 @@ const onUpload = (e) => {
 
 const onSubmit = (e) => {
     e.preventDefault();
-    
+
+    let activeElement = document.activeElement;
+    if(activeElement.name == "submitPhoto") onSubmitPhoto();
+    if(activeElement.name == "submitUpdate") onSubmitUpdate();
+}
+
+const onSubmitPhoto = () => {
     const input = document.getElementById('files');
-    //console.log(input);
 
     /**************************************/
     const formData = new FormData();
@@ -57,12 +64,14 @@ const onSubmit = (e) => {
     //console.log("Formdata: ", formData, "get('photo0'): ", formData.get("photo0"));
     /**************************************/
 
+    let furniture = 2;
     let id = getTokenSessionDate();
     fetch(API_URL + "furnitures/uploadPhotos", {
         method: "POST", 
         body: formData, 
         headers: {
             "Authorization": id,
+            "furnitureId": furniture,
         },
     })
     .then((response) => {
@@ -72,6 +81,10 @@ const onSubmit = (e) => {
         else
           return response.json().then((data) => onFurnitureUpdate(data));
     });
+}
+
+const onSubmitUpdate = () => {
+    console.log("Fait l'update");
 }
 
 const onFurnitureUpdate = (furnitureData) => {

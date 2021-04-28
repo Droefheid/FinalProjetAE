@@ -43,7 +43,7 @@ const onPageCreate = (data) => {
 
     console.log(photos, photosFurnitures);
 
-    // Modification of Timestamp into Date.
+    // Modification of all Timestamp into Date.
     let Timestamp = null;
     let timeSplit = null;
     // Furniture date collection.
@@ -152,15 +152,35 @@ const onPageCreate = (data) => {
                 <input type="file" id="files" name="files" multiple>
                 <p class="text-muted">* Veuillez selectionner toutes les photos en une seule fois.</p>
                 <div id="showImg"></div>
-                <input type="submit" value="Upload photo(s)" class="btn btn-primary ml-auto">
-                <div>`;
-                for (let index = 0; index < photos.length; index++) {
-                    console.log(photos[index]);
-                }
-                photos.forEach(photo => {
-                    console.log(photo);
-                    modifPage += `<img src="` + photo.picture + `" style="width: 100px" alt="your image" />`;
-                });
+                <button type="submit" name="submitPhoto" class="btn btn-primary mb-2"><i class="fas fa-save"></i></button>
+                <div class="card-columns">`;
+                //for (let index = 0; index < photos.length; index++) {
+                    //console.log(photos[index]);
+                    //console.log(photosFurnitures[index]);
+                //}
+                for (let i = 0; i < photos.length; i++) {
+                    console.log(photos[i]);
+                    modifPage += `<div class="card" style="width: 90px">
+                        <input id="photoId" value="${photos[i].id}" hidden>
+                        <img class="card-img-top" src="` + photos[i].picture + `" style="width: 100%" alt="` + photos[i].name +`" />`;
+                    modifPage += `<div class="card-body">
+                            <button id="${photos[i].id}" type="submit" name="delettePhoto" class="btn btn-danger">
+                                <i class="material-icons">delete</i>
+                            </button>
+                            <button id="${photos[i].id}" type="submit" name="favoritePhoto" class="btn btn-light">
+                                <i class="`;
+                                if(photosFurnitures[i].isFavourite) modifPage += `fas fa-heart`;
+                                else modifPage += `far fa-heart`;
+                            modifPage += `" style="color:red"></i>
+                            </button>
+                            <button id="${photos[i].id}" type="submit" name="visiblePhoto" class="btn btn-light">
+                                <i class="fas fa-eye`;
+                                if(!photosFurnitures[i].isVisible) modifPage += `-slash`;
+                            modifPage += `"></i>
+                            </button>
+                        </div>
+                    </div>`;
+                };
                 modifPage += `</div>
             </div>
             <div class="col-sm-6 bg-warning">
@@ -200,7 +220,7 @@ const onPageCreate = (data) => {
                 <input type="text" class="form-control" id="pickUpDate"`;
                 if(furniture.pickUpDate) modifPage += ` value="${furniture.pickUpDate}"`;
                 modifPage += ` placeholder="Enter pickUpDate" name="pickUpDate" required>
-                <input type="submit" value="update" class="btn btn-lg btn-primary btn-block">
+                <input type="submit" name="submitUpdate" value="update" class="btn btn-lg btn-primary btn-block">
             </div>
         </div>
     </form><div>`;
@@ -212,27 +232,18 @@ const onPageCreate = (data) => {
     uploadImage.addEventListener("change", onUpload);
 }
 
-let filesBase64 = [];
-let filesName = [];
-
 const onUpload = (e) => {
     let files = e.target.files;
     
     // Reset visuel
     document.getElementById('showImg').innerHTML = "";
-    filesBase64 = [];
-    filesName = [];
 
     // Add visuel and 
     for(let i = 0; i < files.length; i++){
         let reader = new FileReader();
         reader.onloadend = function() {
             document.getElementById('showImg').innerHTML += `<img id="blah" src="` 
-            + reader.result + `" style="width: 100px" alt="your image" />`;
-            //console.log(reader.result);
-            filesBase64.push(reader.result);
-            filesName.push(files[i].name.substr(0, files[i].name.length - 4));
-            //console.log(files[i].name.substr(0, files[i].name.length - 4));
+            + reader.result + `" style="width: 100px" alt="` + files[i].name.substr(0, files[i].name.length - 4) + `" />`;
         }
         reader.readAsDataURL(files[i]);
     }
@@ -240,19 +251,77 @@ const onUpload = (e) => {
 
 const onSubmit = (e) => {
     e.preventDefault();
-    //console.log("FilesBase64:",filesBase64);
 
-    /*let files = document.getElementById("files").files;
-    console.log("Avant base64", files);
+    let activeElement = document.activeElement;
+    if(activeElement.name == "submitPhoto") onSubmitPhoto();
+    else if(activeElement.name == "delettePhoto") onDelettePhoto(activeElement.id);
+    else if(activeElement.name == "favoritePhoto") onFavoritePhoto(activeElement.id);
+    else if(activeElement.name == "visiblePhoto") onVisiblePhoto(activeElement.id);
+    else if(activeElement.name == "submitUpdate") onSubmitUpdate();
+}
+
+const onSubmitPhoto = () => {
+    const input = document.getElementById('files');
 
     const formData = new FormData();
-    formData.append("furnitureId", document.getElementById("furnitureId").value);
-    for(let i = 0; i < files.length; i++){
-        console.log(files[i]);
-        formData.append("photo"+i, files[i]);
+    for(let i = 0; i < input.files.length; i++){
+        //console.log(input.files[i]);
+        formData.append("photo"+i, input.files[i]);
     }
-    console.log(formData, formData.get("photo0"));*/
+    //console.log("Formdata: ", formData, "get('photo0'): ", formData.get("photo0"));
 
+    let furnitureId = document.getElementById("furnitureId").value;
+    let id = getTokenSessionDate();
+    fetch(API_URL + "furnitures/uploadPhotos", {
+        method: "POST", 
+        body: formData, 
+        headers: {
+            "Authorization": id,
+            "furnitureId": furnitureId,
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+          return response.text().then((err) => onError(err));
+        }
+        else
+          return response.json().then((data) => RedirectUrl("/updateFurniture"));
+    });
+}
+
+const onDelettePhoto = (photoId) => {
+    console.log("Delette Photo",photoId);
+    let furnitureId = document.getElementById("furnitureId").value;
+    let id = getTokenSessionDate();
+    fetch(API_URL + "furnitures/deletePhoto/" + photoId, {
+        method: "PUT",
+        headers: {
+            "Authorization": id,
+            "furnitureId": furnitureId,
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+          return response.text().then((err) => onError(err));
+        }
+        else
+          return response.json().then((data) => RedirectUrl("/updateFurniture"));
+    });
+}
+
+const onFavoritePhoto = (photoId) => {
+    console.log("Favorite Photo",photoId);
+    let furnitureId = document.getElementById("furnitureId").value;
+    let id = getTokenSessionDate();
+}
+
+const onVisiblePhoto = (photoId) => {
+    console.log("Visible Photo",photoId);
+    let furnitureId = document.getElementById("furnitureId").value;
+    let id = getTokenSessionDate();
+}
+
+const onSubmitUpdate = () => {
     let furnitureId = document.getElementById("furnitureId").value;
     let title = document.getElementById("title").value;
     let type = document.getElementById("type").value;
@@ -272,9 +341,8 @@ const onSubmit = (e) => {
     // Required field.
     if(!furnitureId || !title || !state || !purchasePrice || !seller 
         || !pickUpDate || !type) {
-        let messageBoard = document.querySelector("#messageBoardForm");
-        messageBoard.innerHTML = '<div class="alert alert-danger">Something required is missing.</div>';
-        return;
+        let err = { message: '<div class="alert alert-danger">Something required is missing.</div>' };
+        return onError(err);
     }
 
     // Check if state is correct.
@@ -367,11 +435,6 @@ const onSubmit = (e) => {
         let err = { message: "The state need to be withdraw if a sale withdrawal date is specify." };
         return onError(err);
     }
-  
-    /*let photo = {
-        "filesBase64": filesBase64,
-        "filesName": filesName,
-    };*/
 
     let furniture = {
       "furnitureId": furnitureId,
@@ -389,19 +452,8 @@ const onSubmit = (e) => {
       "saleWithdrawalDate": saleWithdrawalDate,
       "seller": seller,
       "pickUpDate": pickUpDate,
-
-      /*"files": files,
-      "formData": formData,*/
-      "filesBase64": filesBase64,
-      "filesName": filesName,
     };
-    console.log(furniture);
-    console.log("La taille de la String (Base64) de la photo '" + furniture.filesName[0] + "' est de " + furniture.filesBase64[0].length);
-    /*let allInfosForUpdate = {
-        "furniture": furniture,
-        "photo": photo,
-    };
-    console.log(allInfosForUpdate);*/
+    //console.log(furniture);
   
     let id = getTokenSessionDate();
     fetch(API_URL + "furnitures", {
@@ -422,8 +474,6 @@ const onSubmit = (e) => {
 };
   
 const onFurnitureUpdate = (furnitureData) => {
-    // re-render the navbar for the authenticated user
-    Navbar();
     RedirectUrl("/");
 };
   

@@ -21,6 +21,28 @@ public class PhotoDAOImpl implements PhotoDAO {
 
 
   @Override
+  public PhotoDTO findByName(String name) {
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
+        "SELECT photo_id," + " pictures, name" + " FROM projet.photos WHERE name = ?");
+    PhotoDTO photo = domaineFactory.getPhotoDTO();
+    try {
+      ps.setString(1, name);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          photo = fullFillPhoto(rs);
+        }
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("Error findById", e);
+    }
+    if (photo.getName() == null) {
+      return null;
+    }
+    return photo;
+  }
+
+  @Override
   public PhotoDTO findById(int id) {
     PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
         "SELECT photo_id," + " pictures, name" + " FROM projet.photos WHERE photo_id = ?");
@@ -33,6 +55,7 @@ public class PhotoDAOImpl implements PhotoDAO {
         }
       }
     } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException("Error findById", e);
     }
     return photo;
@@ -41,7 +64,7 @@ public class PhotoDAOImpl implements PhotoDAO {
   @Override
   public List<PhotoDTO> getAll() {
     // TODO Auto-generated method stub
-    return null;
+    throw new UnsupportedOperationException("Not implemented yet!");
   }
 
   @Override
@@ -61,9 +84,11 @@ public class PhotoDAOImpl implements PhotoDAO {
           list.add(photoFurniture);
         }
       } catch (SQLException e) {
+        ((DalServices) dalBackendServices).rollbackTransaction();
         throw new FatalException("Error getAllForFurniture", e);
       }
     } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException("Error setInt in getAllForFurniture", e);
     }
     return list;
@@ -79,21 +104,32 @@ public class PhotoDAOImpl implements PhotoDAO {
 
       ps.executeUpdate();
     } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException("Error add photo", e);
     }
-    return findById(photo.getId());
+    return findByName(photo.getName());
   }
 
   @Override
   public PhotoDTO update(PhotoDTO furniture) {
     // TODO Auto-generated method stub
-    return null;
+    throw new UnsupportedOperationException("Not implemented yet!");
   }
 
   @Override
   public PhotoDTO delete(int id) {
-    // TODO Auto-generated method stub
-    return null;
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("DELETE FROM projet.photos" + " WHERE photo_id = ?");
+
+    try {
+      ps.setInt(1, id);
+
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("Error delete photo", e);
+    }
+    return findById(id);
   }
 
   private PhotoDTO fullFillPhoto(ResultSet rs) {
@@ -105,6 +141,7 @@ public class PhotoDAOImpl implements PhotoDAO {
       photo.setName(rs.getString(3));
 
     } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException("Error fullFillPhoto", e);
     }
 

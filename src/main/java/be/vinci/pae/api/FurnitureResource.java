@@ -30,6 +30,8 @@ import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.domaine.furniture.FurnitureUCC;
 import be.vinci.pae.domaine.photo.PhotoDTO;
 import be.vinci.pae.domaine.photo.PhotoFurnitureDTO;
+import be.vinci.pae.domaine.photo.PhotoFurnitureUCC;
+import be.vinci.pae.domaine.photo.PhotoUCC;
 import be.vinci.pae.domaine.user.UserDTO;
 import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
@@ -53,6 +55,12 @@ public class FurnitureResource {
 
   @Inject
   private FurnitureUCC furnitureUCC;
+
+  @Inject
+  private PhotoUCC photoUCC;
+
+  @Inject
+  private PhotoFurnitureUCC photoFurnitureUCC;
 
   @Inject
   private DomaineFactory domaineFactory;
@@ -115,7 +123,7 @@ public class FurnitureResource {
     checkAllCredentialFurniture(json); // pourrais renvoyer le type si besoin en dessous.
     FurnitureDTO furniture = createFullFillFurniture(json);
     List<PhotoDTO> photos = createAllPhotosFullFilled(json);
-    PhotoFurnitureDTO photoFurniture = createFullFillPhotoFurniture();
+    PhotoFurnitureDTO photoFurniture = createFullFillPhotoFurniture(-1);
 
     furniture = furnitureUCC.update(furniture, photos, photoFurniture);
 
@@ -155,11 +163,11 @@ public class FurnitureResource {
 
     Object[] listOfAll = furnitureUCC.getAllInfosForUpdate(id);
 
-    // Transform all Url into Base64 Image.
-    // for (PhotoDTO photo : ((List<PhotoDTO>) listOfAll[3])) {
-    // String encodstring = encodeFileToBase64Binary(photo.getPicture());
-    // photo.setPicture(encodstring);
-    // }
+    // Transform all URL into Base64 Image.
+    for (PhotoDTO photo : ((List<PhotoDTO>) listOfAll[3])) {
+      String encodstring = encodeFileToBase64Binary(photo.getPicture());
+      photo.setPicture(encodstring);
+    }
 
     int i = 0;
     return createResponseWithObjectNodeWith5PutPOJO("furniture", listOfAll[i++], "types",
@@ -208,10 +216,23 @@ public class FurnitureResource {
   @Path("/uploadPhotos")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Authorize
-  public Response uploadMultiplePhotos(final FormDataMultiPart multiPart) {
-    Map<String, List<FormDataBodyPart>> fields = multiPart.getFields();
+  public Response uploadMultiplePhotos(@Context ContainerRequest request,
+      final FormDataMultiPart multiPart) {
+    // Check about the furniture to link.
+    int furnitureId = Integer.valueOf(request.getHeaderString("furnitureId"));
+    if (furnitureId < 1) {
+      throw new PresentationException("Furntirure id cannot be under 1", Status.BAD_REQUEST);
+    }
+    FurnitureDTO furniture = this.furnitureUCC.findById(furnitureId);
+    if (furniture == null) {
+      throw new PresentationException("Furniture doesn't exist", Status.BAD_REQUEST);
+    }
 
+    // Save all photo include.
+    Map<String, List<FormDataBodyPart>> fields = multiPart.getFields();
     List<String> paths = new ArrayList<>();
+    List<PhotoDTO> photos = new ArrayList<>();
+    List<PhotoFurnitureDTO> photosFurniture = new ArrayList<>();
     for (String keyField : fields.keySet()) {
       List<FormDataBodyPart> values = fields.get(keyField);
       for (FormDataBodyPart formDataBodyPart : values) {
@@ -222,24 +243,60 @@ public class FurnitureResource {
         // System.out.println(formDataBodyPart.getHeaders().get(formDataBodyPart2));
         // }
         // System.out.println(formDataBodyPart.getHeaders().get("Content-Disposition"));
-        String fileName =
-            formDataBodyPart.getHeaders().get("Content-Disposition").get(0).split(";")[2].substring(
-                11, formDataBodyPart.getHeaders().get("Content-Disposition").get(0).split(";")[2]
-                    .length() - 1);
+        String fileName = getFilenameOfImageFrom(formDataBodyPart);
         // System.out.println("Name : " + fileName);
         String uploadedFileLocation =
             Config.getProperty("ServerPath") + Config.getProperty("PhotosPath") + fileName;
-        // System.out.println(uploadedFileLocation);
+        // System.out.println("URL : " + uploadedFileLocation);
 
-        // save it
+        // Save it.
         writeToFile(formDataBodyPart.getValueAs(InputStream.class), uploadedFileLocation);
+        photos.add(createFullFillPhoto(uploadedFileLocation, fileName));
+        photosFurniture.add(createFullFillPhotoFurniture(furniture.getFurnitureId()));
 
-        // Test for return
-        paths.add(encodeFileToBase64Binary(uploadedFileLocation));
+        // Test for return.
+        // paths.add(encodeFileToBase64Binary(uploadedFileLocation));
       }
     }
 
+    List<PhotoDTO> allPhotos = this.photoUCC.addMultiple(photos, photosFurniture);
+    for (PhotoDTO photoDTO : allPhotos) {
+      paths.add(encodeFileToBase64Binary(photoDTO.getPicture()));
+    }
+
     return createResponseWithObjectNodeWith1PutPOJO("photos", paths);
+  }
+
+  @PUT
+  @Path("/deletePhoto/{id}")
+  @AuthorizeBoss
+  public Response deletePhoto(@Context ContainerRequest request, @PathParam("id") int id) {
+    // Check about the furniture linked.
+    int furnitureId = Integer.valueOf(request.getHeaderString("furnitureId"));
+    if (furnitureId < 1) {
+      throw new PresentationException("Furntirure id cannot be under 1", Status.BAD_REQUEST);
+    }
+    FurnitureDTO furniture = this.furnitureUCC.findById(furnitureId);
+    if (furniture == null) {
+      throw new PresentationException("Furniture doesn't exist", Status.BAD_REQUEST);
+    }
+
+    // Check about the photoId.
+    if (id < 1) {
+      throw new PresentationException("Photo id cannot be under 1", Status.BAD_REQUEST);
+    }
+    PhotoDTO photoDTO = this.photoUCC.findById(id);
+    if (photoDTO == null) {
+      throw new PresentationException("Photo doesn't exist", Status.BAD_REQUEST);
+    }
+    PhotoFurnitureDTO photoFurnitureDTO = this.photoFurnitureUCC.findById(id);
+    if (photoFurnitureDTO == null) {
+      throw new PresentationException("Photo Furniture doesn't exist", Status.BAD_REQUEST);
+    }
+
+    this.photoUCC.delete(id);
+
+    return createResponseWithObjectNodeWith1PutPOJO("photo", photoDTO);
   }
 
 
@@ -478,11 +535,21 @@ public class FurnitureResource {
     return photos;
   }
 
-  private PhotoFurnitureDTO createFullFillPhotoFurniture() {
+  private PhotoDTO createFullFillPhoto(String picture, String name) {
+    PhotoDTO photo = domaineFactory.getPhotoDTO();
+
+    photo.setPicture(picture);
+    photo.setName(name);
+
+    return photo;
+  }
+
+  private PhotoFurnitureDTO createFullFillPhotoFurniture(int furnitureId) {
     PhotoFurnitureDTO photoFurniture = domaineFactory.getPhotoFurnitureDTO();
 
     photoFurniture.setVisible(false);
     photoFurniture.setFavourite(false);
+    photoFurniture.setFurnitureId(furnitureId);
 
     return photoFurniture;
   }
@@ -527,6 +594,17 @@ public class FurnitureResource {
         jsonMapper.createObjectNode().putPOJO(namePOJO1, object1).putPOJO(namePOJO2, object2)
             .putPOJO(namePOJO3, object3).putPOJO(namePOJO4, object4).putPOJO(namePOJO5, object5);
     return Response.ok(node, MediaType.APPLICATION_JSON).build();
+  }
+
+  /**
+   * return the filename of a image from a FormDataBodyPart.
+   * 
+   * @param formDataBodyPart contains the image.
+   * @return the filename.
+   */
+  private String getFilenameOfImageFrom(FormDataBodyPart formDataBodyPart) {
+    String filename = formDataBodyPart.getHeaders().get("Content-Disposition").get(0).split(";")[2];
+    return filename.substring(11, filename.length() - 1);
   }
 
   /**

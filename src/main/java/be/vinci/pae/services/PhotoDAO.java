@@ -5,6 +5,8 @@ import be.vinci.pae.domaine.photo.PhotoDTO;
 
 public interface PhotoDAO {
 
+  PhotoDTO findByName(String name);
+
   PhotoDTO findById(int id);
 
   List<PhotoDTO> getAll();

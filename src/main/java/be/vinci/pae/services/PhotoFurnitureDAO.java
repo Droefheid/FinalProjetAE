@@ -5,7 +5,7 @@ import be.vinci.pae.domaine.photo.PhotoFurnitureDTO;
 
 public interface PhotoFurnitureDAO {
 
-  PhotoFurnitureDTO findById(int id);
+  PhotoFurnitureDTO findById(int idPhoto);
 
   List<PhotoFurnitureDTO> getAllForFurniture(int id);
 

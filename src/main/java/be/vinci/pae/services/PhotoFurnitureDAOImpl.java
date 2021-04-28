@@ -20,14 +20,14 @@ public class PhotoFurnitureDAOImpl implements PhotoFurnitureDAO {
 
 
   @Override
-  public PhotoFurnitureDTO findById(int id) {
+  public PhotoFurnitureDTO findById(int idPhoto) {
     PreparedStatement ps = this.dalBackendServices
         .getPreparedStatement("SELECT photo_id," + " is_visible, is_favourite_photo, furniture"
             + " FROM projet.photos_furniture " + " WHERE photo_id = ?");
 
     PhotoFurnitureDTO photo = null;
     try {
-      ps.setInt(1, id);
+      ps.setInt(1, idPhoto);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           photo = fullFillPhotoFurniture(rs);
@@ -81,13 +81,23 @@ public class PhotoFurnitureDAOImpl implements PhotoFurnitureDAO {
   @Override
   public PhotoFurnitureDTO update(PhotoFurnitureDTO photoFurniture) {
     // TODO Auto-generated method stub
-    return null;
+    throw new UnsupportedOperationException("Not implemented yet!");
   }
 
   @Override
   public PhotoFurnitureDTO delete(int id) {
-    // TODO Auto-generated method stub
-    return null;
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("DELETE FROM projet.photos_furniture" + " WHERE photo_id = ?");
+
+    try {
+      ps.setInt(1, id);
+
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("Error delete photo_furniture", e);
+    }
+    return findById(id);
   }
 
   private PhotoFurnitureDTO fullFillPhotoFurniture(ResultSet rs) {
