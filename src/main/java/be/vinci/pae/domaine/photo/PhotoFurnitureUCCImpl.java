@@ -26,4 +26,35 @@ public class PhotoFurnitureUCCImpl implements PhotoFurnitureUCC {
     return photoFurnitureDTO;
   }
 
+  @Override
+  public PhotoFurnitureDTO updateFavorite(PhotoFurnitureDTO photoFurniture) {
+    dalservices.startTransaction();
+    PhotoFurnitureDTO photoFurnitureDTO = photoFurnitureDAO.updateFavorite(photoFurniture);
+    if (photoFurnitureDTO == null) {
+      dalservices.rollbackTransaction();
+      throw new BusinessException("Photo_furniture doesn't exist", Status.BAD_REQUEST); // TODO bon msg?
+    }
+    dalservices.commitTransaction();
+    return photoFurnitureDTO;
+  }
+
+  @Override
+  public PhotoFurnitureDTO updateVisibility(PhotoFurnitureDTO photoFurniture) {
+    dalservices.startTransaction();
+    PhotoFurnitureDTO photoFurnitureDTO = photoFurnitureDAO.updateVisibility(photoFurniture);
+    if (photoFurnitureDTO == null) {
+      dalservices.rollbackTransaction();
+      throw new BusinessException("Photo_furniture doesn't exist", Status.BAD_REQUEST); // TODO bon msg?
+    }
+    dalservices.commitTransaction();
+    return photoFurnitureDTO;
+  }
+
+  @Override
+  public void removeFavouriteFormFurniture(int id) {
+    dalservices.startTransaction();
+    photoFurnitureDAO.removeFavouriteFormFurniture(id);
+    dalservices.commitTransaction();
+  }
+
 }

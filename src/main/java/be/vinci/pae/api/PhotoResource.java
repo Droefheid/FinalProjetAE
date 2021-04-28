@@ -16,6 +16,7 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.ContainerRequest;
+import com.fasterxml.jackson.databind.JsonNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeBoss;
 import be.vinci.pae.api.utils.PresentationException;
@@ -33,6 +34,7 @@ import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Context;
@@ -135,7 +137,8 @@ public class PhotoResource {
         // Save it.
         writeToFile(formDataBodyPart.getValueAs(InputStream.class), uploadedFileLocation);
         photos.add(createFullFillPhoto(uploadedFileLocation, fileName));
-        photosFurniture.add(createFullFillPhotoFurniture(furniture.getFurnitureId()));
+        photosFurniture
+            .add(createFullFillPhotoFurniture(-1, furniture.getFurnitureId(), false, false));
 
         // Test for return.
         // paths.add(encodeFileToBase64Binary(uploadedFileLocation));
@@ -160,11 +163,11 @@ public class PhotoResource {
   @DELETE
   @Path("/{id}")
   @AuthorizeBoss
-  public Response deletePhoto(@Context ContainerRequest request, @PathParam("id") int id) {
+  public Response delete(@Context ContainerRequest request, @PathParam("id") int id) {
     // Check about the furniture linked.
     int furnitureId = Integer.valueOf(request.getHeaderString("furnitureId"));
     if (furnitureId < 1) {
-      throw new PresentationException("Furntirure id cannot be under 1", Status.BAD_REQUEST);
+      throw new PresentationException("Furniture id cannot be under 1", Status.BAD_REQUEST);
     }
     FurnitureDTO furniture = this.furnitureUCC.findById(furnitureId);
     if (furniture == null) {
@@ -187,6 +190,69 @@ public class PhotoResource {
     this.photoUCC.delete(id);
 
     return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("photo", photoDTO);
+  }
+
+  @PUT
+  @Path("favorite")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeBoss
+  public Response updateFavorite(JsonNode json) {
+    if (json.get("photoId") == null || json.get("photoId").asText().equals("")) {
+      throw new PresentationException("Photo id needed", Status.BAD_REQUEST);
+    }
+    if (json.get("furnitureId") == null || json.get("furnitureId").asText().equals("")) {
+      throw new PresentationException("Furniture id needed", Status.BAD_REQUEST);
+    }
+    if (json.get("isFavorite") == null || json.get("isFavorite").asText().equals("")) {
+      throw new PresentationException("Is favourite needed", Status.BAD_REQUEST);
+    }
+
+    // Loop for unFavourite all photo of this furniture if new favorite.
+    int furnitureId = json.get("furnitureId").asInt();
+    boolean isFavorite = json.get("isFavorite").asBoolean();
+    if (isFavorite) {
+      this.photoFurnitureUCC.removeFavouriteFormFurniture(furnitureId);
+    }
+
+
+    int photoId = json.get("photoId").asInt();
+    PhotoFurnitureDTO photoFurniture =
+        createFullFillPhotoFurniture(photoId, furnitureId, false, isFavorite);
+    photoFurniture = photoFurnitureUCC.updateFavorite(photoFurniture);
+    if (photoFurniture == null) {
+      throw new PresentationException("Photo_furniture doesn't update", Status.BAD_REQUEST);
+    }
+
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("photoFurniture", photoFurniture);
+  }
+
+  @PUT
+  @Path("visible")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeBoss
+  public Response updateVisibility(JsonNode json) {
+    if (json.get("photoId") == null || json.get("photoId").asText().equals("")) {
+      throw new PresentationException("Photo id needed", Status.BAD_REQUEST);
+    }
+    if (json.get("furnitureId") == null || json.get("furnitureId").asText().equals("")) {
+      throw new PresentationException("Furniture id needed", Status.BAD_REQUEST);
+    }
+
+    if (json.get("isVisible") == null || json.get("isVisible").asText().equals("")) {
+      throw new PresentationException("Is visible needed", Status.BAD_REQUEST);
+    }
+
+    int photoId = json.get("photoId").asInt();
+    int furnitureId = json.get("furnitureId").asInt();
+    boolean isVisible = json.get("isVisible").asBoolean();
+    PhotoFurnitureDTO photoFurniture =
+        createFullFillPhotoFurniture(photoId, furnitureId, isVisible, false);
+    photoFurniture = photoFurnitureUCC.updateVisibility(photoFurniture);
+    if (photoFurniture == null) {
+      throw new PresentationException("Photo_furniture doesn't update", Status.BAD_REQUEST);
+    }
+
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("photoFurniture", photoFurniture);
   }
 
 
@@ -216,16 +282,6 @@ public class PhotoResource {
     return "data:image/png;base64," + encodedfile;
   }
 
-  private PhotoFurnitureDTO createFullFillPhotoFurniture(int furnitureId) {
-    PhotoFurnitureDTO photoFurniture = domaineFactory.getPhotoFurnitureDTO();
-
-    photoFurniture.setVisible(false);
-    photoFurniture.setFavourite(false);
-    photoFurniture.setFurnitureId(furnitureId);
-
-    return photoFurniture;
-  }
-
 
 
   /******************** Private's Methods ********************/
@@ -237,6 +293,18 @@ public class PhotoResource {
     photo.setName(name);
 
     return photo;
+  }
+
+  private PhotoFurnitureDTO createFullFillPhotoFurniture(int photoId, int furnitureId,
+      boolean isVisible, boolean isFavourite) {
+    PhotoFurnitureDTO photoFurniture = domaineFactory.getPhotoFurnitureDTO();
+
+    photoFurniture.setPhotoId(photoId);
+    photoFurniture.setFurnitureId(furnitureId);
+    photoFurniture.setVisible(isVisible);
+    photoFurniture.setFavourite(isFavourite);
+
+    return photoFurniture;
   }
 
   /**

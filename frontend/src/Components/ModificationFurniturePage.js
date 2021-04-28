@@ -154,10 +154,6 @@ const onPageCreate = (data) => {
                 <div id="showImg"></div>
                 <button type="submit" name="submitPhoto" class="btn btn-primary mb-2"><i class="fas fa-save"></i></button>
                 <div class="card-columns">`;
-                //for (let index = 0; index < photos.length; index++) {
-                    //console.log(photos[index]);
-                    //console.log(photosFurnitures[index]);
-                //}
                 for (let i = 0; i < photos.length; i++) {
                     console.log(photos[i]);
                     modifPage += `<div class="card" style="width: 90px">
@@ -169,13 +165,13 @@ const onPageCreate = (data) => {
                             </button>
                             <button id="${photos[i].id}" type="submit" name="favoritePhoto" class="btn btn-light">
                                 <i class="`;
-                                if(photosFurnitures[i].isFavourite) modifPage += `fas fa-heart`;
+                                if(photosFurnitures[i].favourite) modifPage += `fas fa-heart`;
                                 else modifPage += `far fa-heart`;
                             modifPage += `" style="color:red"></i>
                             </button>
                             <button id="${photos[i].id}" type="submit" name="visiblePhoto" class="btn btn-light">
                                 <i class="fas fa-eye`;
-                                if(!photosFurnitures[i].isVisible) modifPage += `-slash`;
+                                if(!photosFurnitures[i].visible) modifPage += `-slash`;
                             modifPage += `"></i>
                             </button>
                         </div>
@@ -255,8 +251,8 @@ const onSubmit = (e) => {
     let activeElement = document.activeElement;
     if(activeElement.name == "submitPhoto") onSubmitPhoto();
     else if(activeElement.name == "delettePhoto") onDelettePhoto(activeElement.id);
-    else if(activeElement.name == "favoritePhoto") onFavoritePhoto(activeElement.id);
-    else if(activeElement.name == "visiblePhoto") onVisiblePhoto(activeElement.id);
+    else if(activeElement.name == "favoritePhoto") onFavoritePhoto(activeElement.id, activeElement);
+    else if(activeElement.name == "visiblePhoto") onVisiblePhoto(activeElement.id, activeElement);
     else if(activeElement.name == "submitUpdate") onSubmitUpdate();
 }
 
@@ -309,16 +305,91 @@ const onDelettePhoto = (photoId) => {
     });
 }
 
-const onFavoritePhoto = (photoId) => {
+const onFavoritePhoto = (photoId, e) => {
     console.log("Favorite Photo",photoId);
     let furnitureId = document.getElementById("furnitureId").value;
+
+    // Change in is favourite or in is not favourite.
+    let favoriteButton = e.querySelector("i");
+    //console.log(favoriteButton);
+    let isFavorite = false;
+    if (favoriteButton.className == "fas fa-heart") {
+        favoriteButton.className = "far fa-heart";
+        isFavorite = false;
+        console.log("not anymore favorite");
+    } else if (favoriteButton.className == "far fa-heart") {
+        favoriteButton.className = "fas fa-heart";
+        isFavorite = true;
+        console.log("now is favorite");
+    }
+
+    let photo = {
+        "photoId": photoId,
+        "furnitureId": furnitureId,
+        "isFavorite": isFavorite,
+    };
+    console.log(photo);
+
     let id = getTokenSessionDate();
+    fetch(API_URL + "photos/favorite", {
+        method: "PUT",
+        body: JSON.stringify(photo),
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": id,
+        },
+    })
+    .then((response) => {
+        console.log(response);
+        if (!response.ok) {
+          return response.text().then((err) => onError(err));
+        }
+        else
+          return response.json().then((data) => RedirectUrl("/updateFurniture"));
+    });
 }
 
-const onVisiblePhoto = (photoId) => {
+const onVisiblePhoto = (photoId, e) => {
     console.log("Visible Photo",photoId);
     let furnitureId = document.getElementById("furnitureId").value;
+
+    // Change in is visible or in is not visible.
+    let visibilityButton = e.querySelector("i");
+    //console.log(visibilityButton);
+    let isVisible = false;
+    if (visibilityButton.className == "fas fa-eye") {
+        visibilityButton.className = "fas fa-eye-slash";
+        isVisible = false;
+        console.log("not anymore visible");
+    } else if (visibilityButton.className == "fas fa-eye-slash") {
+        visibilityButton.className = "fas fa-eye";
+        isVisible = true;
+        console.log("now is visible");
+    }
+
+    let photo = {
+        "photoId": photoId,
+        "furnitureId": furnitureId,
+        "isVisible": isVisible,
+    };
+    console.log(photo);
+
     let id = getTokenSessionDate();
+    fetch(API_URL + "photos/visible", {
+        method: "PUT",
+        body: JSON.stringify(photo),
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": id,
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+          return response.text().then((err) => onError(err));
+        }
+        else
+          return response.json().then((data) => RedirectUrl("/updateFurniture"));
+    });
 }
 
 const onSubmitUpdate = () => {

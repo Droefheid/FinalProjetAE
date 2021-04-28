@@ -7,12 +7,18 @@ public interface PhotoFurnitureDAO {
 
   PhotoFurnitureDTO findById(int idPhoto);
 
-  List<PhotoFurnitureDTO> getAllForFurniture(int id);
+  PhotoFurnitureDTO getFavoritePhoto(int furniture);
+
+  List<PhotoFurnitureDTO> getAllForFurniture(int photoId);
 
   PhotoFurnitureDTO add(PhotoFurnitureDTO photoFurniture);
 
-  PhotoFurnitureDTO update(PhotoFurnitureDTO photoFurniture);
+  PhotoFurnitureDTO updateFavorite(PhotoFurnitureDTO photoFurniture);
 
-  PhotoFurnitureDTO delete(int id);
+  PhotoFurnitureDTO updateVisibility(PhotoFurnitureDTO photoFurniture);
+
+  PhotoFurnitureDTO delete(int photoId);
+
+  void removeFavouriteFormFurniture(int furnitureId);
 
 }

@@ -40,7 +40,28 @@ public class PhotoFurnitureDAOImpl implements PhotoFurnitureDAO {
   }
 
   @Override
-  public List<PhotoFurnitureDTO> getAllForFurniture(int id) {
+  public PhotoFurnitureDTO getFavoritePhoto(int furnitureId) {
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("SELECT photo_id," + " is_visible, is_favourite_photo, furniture"
+            + " FROM projet.photos_furniture " + " WHERE furniture = ? AND is_favourite_photo = ?");
+
+    PhotoFurnitureDTO photo = null;
+    try {
+      ps.setInt(1, furnitureId);
+      ps.setBoolean(2, true);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          photo = fullFillPhotoFurniture(rs);
+        }
+      }
+    } catch (SQLException e) {
+      throw new FatalException("Error getFavoritePhoto", e);
+    }
+    return photo;
+  }
+
+  @Override
+  public List<PhotoFurnitureDTO> getAllForFurniture(int photoId) {
     PreparedStatement ps = this.dalBackendServices
         .getPreparedStatement("SELECT photo_id," + " is_visible, is_favourite_photo, furniture"
             + " FROM projet.photos_furniture WHERE furniture = ?" + " ORDER BY photo_id");
@@ -48,7 +69,7 @@ public class PhotoFurnitureDAOImpl implements PhotoFurnitureDAO {
     List<PhotoFurnitureDTO> list = new ArrayList<PhotoFurnitureDTO>();
 
     try {
-      ps.setInt(1, id);
+      ps.setInt(1, photoId);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           PhotoFurnitureDTO photoFurniture = fullFillPhotoFurniture(rs);
@@ -79,26 +100,75 @@ public class PhotoFurnitureDAOImpl implements PhotoFurnitureDAO {
   }
 
   @Override
-  public PhotoFurnitureDTO update(PhotoFurnitureDTO photoFurniture) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Not implemented yet!");
+  public PhotoFurnitureDTO updateFavorite(PhotoFurnitureDTO photoFurniture) {
+    PreparedStatement ps =
+        this.dalBackendServices.getPreparedStatement("UPDATE projet.photos_furniture "
+            + "SET is_favourite_photo = ?" + " WHERE photo_id = ? AND furniture = ?");
+    try {
+      ps.setBoolean(1, photoFurniture.isFavourite());
+      ps.setInt(2, photoFurniture.getPhotoId());
+      ps.setInt(3, photoFurniture.getFurnitureId());
+
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("Error update photo furniture.", e);
+    }
+    return findById(photoFurniture.getPhotoId());
   }
 
   @Override
-  public PhotoFurnitureDTO delete(int id) {
+  public PhotoFurnitureDTO updateVisibility(PhotoFurnitureDTO photoFurniture) {
+    PreparedStatement ps =
+        this.dalBackendServices.getPreparedStatement("UPDATE projet.photos_furniture "
+            + "SET is_visible = ?" + " WHERE photo_id = ? AND furniture = ?");
+    try {
+      ps.setBoolean(1, photoFurniture.isVisible());
+      ps.setInt(2, photoFurniture.getPhotoId());
+      ps.setInt(3, photoFurniture.getFurnitureId());
+
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("Error update photo furniture.", e);
+    }
+    return findById(photoFurniture.getPhotoId());
+  }
+
+  @Override
+  public PhotoFurnitureDTO delete(int photoId) {
     PreparedStatement ps = this.dalBackendServices
         .getPreparedStatement("DELETE FROM projet.photos_furniture" + " WHERE photo_id = ?");
 
     try {
-      ps.setInt(1, id);
+      ps.setInt(1, photoId);
 
       ps.executeUpdate();
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException("Error delete photo_furniture", e);
     }
-    return findById(id);
+    return findById(photoId);
   }
+
+  @Override
+  public void removeFavouriteFormFurniture(int furnitureId) {
+    PhotoFurnitureDTO photoFurniture = getFavoritePhoto(furnitureId);
+    if (photoFurniture != null) {
+      photoFurniture.setFavourite(false);
+      photoFurniture = updateFavorite(photoFurniture);
+      if (photoFurniture == null) {
+        ((DalServices) dalBackendServices).rollbackTransaction();
+        throw new FatalException("Error remove favorite photo_furniture");
+      }
+    }
+  }
+
+
+
+  /******************** Private's Methods ********************/
 
   private PhotoFurnitureDTO fullFillPhotoFurniture(ResultSet rs) {
     PhotoFurnitureDTO photoFurniture = domaineFactory.getPhotoFurnitureDTO();
