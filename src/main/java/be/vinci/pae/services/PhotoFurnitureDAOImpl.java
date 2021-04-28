@@ -168,7 +168,7 @@ public class PhotoFurnitureDAOImpl implements PhotoFurnitureDAO {
 
 
 
-  /******************** Private's Methods ********************/
+  // ******************** Private's Methods ********************
 
   private PhotoFurnitureDTO fullFillPhotoFurniture(ResultSet rs) {
     PhotoFurnitureDTO photoFurniture = domaineFactory.getPhotoFurnitureDTO();

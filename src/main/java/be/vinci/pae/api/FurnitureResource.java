@@ -79,6 +79,8 @@ public class FurnitureResource {
   /**
    * update a furniture.
    * 
+   * @param request contains headers.
+   * @param json object containing all necessary information about the furniture.
    * @return the furniture updated.
    */
   @PUT
@@ -151,7 +153,7 @@ public class FurnitureResource {
 
 
 
-  /******************** Private's Methods ********************/
+  // ******************** Private's Methods ********************
 
   private void checkAllCredentialFurniture(JsonNode json) {
     // Required Field.

@@ -32,7 +32,7 @@ public class PhotoFurnitureUCCImpl implements PhotoFurnitureUCC {
     PhotoFurnitureDTO photoFurnitureDTO = photoFurnitureDAO.updateFavorite(photoFurniture);
     if (photoFurnitureDTO == null) {
       dalservices.rollbackTransaction();
-      throw new BusinessException("Photo_furniture doesn't exist", Status.BAD_REQUEST); // TODO bon msg?
+      throw new BusinessException("Photo_furniture doesn't exist", Status.BAD_REQUEST);
     }
     dalservices.commitTransaction();
     return photoFurnitureDTO;
@@ -44,7 +44,7 @@ public class PhotoFurnitureUCCImpl implements PhotoFurnitureUCC {
     PhotoFurnitureDTO photoFurnitureDTO = photoFurnitureDAO.updateVisibility(photoFurniture);
     if (photoFurnitureDTO == null) {
       dalservices.rollbackTransaction();
-      throw new BusinessException("Photo_furniture doesn't exist", Status.BAD_REQUEST); // TODO bon msg?
+      throw new BusinessException("Photo_furniture doesn't exist", Status.BAD_REQUEST);
     }
     dalservices.commitTransaction();
     return photoFurnitureDTO;

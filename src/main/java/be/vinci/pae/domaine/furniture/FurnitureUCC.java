@@ -12,7 +12,8 @@ public interface FurnitureUCC {
 
   List<FurnitureDTO> getAll();
 
-  FurnitureDTO update(FurnitureDTO furniture, List<PhotoDTO> photos, PhotoFurnitureDTO photoFurniture);
+  FurnitureDTO update(FurnitureDTO furniture, List<PhotoDTO> photos,
+      PhotoFurnitureDTO photoFurniture);
 
   List<FurnitureDTO> getMyFurniture(int userID);
 

@@ -192,6 +192,12 @@ public class PhotoResource {
     return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("photo", photoDTO);
   }
 
+  /**
+   * update the photo_furniture with the value of favorite.
+   * 
+   * @param json object containing all necessary information about the photo_furniture.
+   * @return a response.ok with the updated photo_furniture.
+   */
   @PUT
   @Path("favorite")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -226,6 +232,12 @@ public class PhotoResource {
     return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("photoFurniture", photoFurniture);
   }
 
+  /**
+   * update the photo_furniture with the value of visibility.
+   * 
+   * @param json object containing all necessary information about the photo_furniture.
+   * @return a response.ok with the updated photo_furniture.
+   */
   @PUT
   @Path("visible")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -257,7 +269,7 @@ public class PhotoResource {
 
 
 
-  /******************** Public static's Methods ********************/
+  // ******************** Public static's Methods ********************
 
   /**
    * Return a Image into a Base64 at the location given.

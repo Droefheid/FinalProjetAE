@@ -88,6 +88,7 @@ public class PhotoUCCImpl implements PhotoUCC {
     return addedPhotos;
   }
 
+  @Override
   public void delete(int id) {
     dalservices.startTransaction();
 

@@ -88,7 +88,7 @@ public class ResponseMaker {
 
 
 
-  /******************** Private's Methods ********************/
+  // ******************** Private's Methods ********************
 
   /**
    * Create a token and a ObjectNode with an user.
