@@ -272,7 +272,7 @@ const onSubmitPhoto = () => {
 
     let furnitureId = document.getElementById("furnitureId").value;
     let id = getTokenSessionDate();
-    fetch(API_URL + "furnitures/uploadPhotos", {
+    fetch(API_URL + "photos/uploadPhotos", {
         method: "POST", 
         body: formData, 
         headers: {
@@ -290,11 +290,11 @@ const onSubmitPhoto = () => {
 }
 
 const onDelettePhoto = (photoId) => {
-    console.log("Delette Photo",photoId);
+    //console.log("Delette Photo",photoId);
     let furnitureId = document.getElementById("furnitureId").value;
     let id = getTokenSessionDate();
-    fetch(API_URL + "furnitures/deletePhoto/" + photoId, {
-        method: "PUT",
+    fetch(API_URL + "photos/" + photoId, {
+        method: "DELETE",
         headers: {
             "Authorization": id,
             "furnitureId": furnitureId,

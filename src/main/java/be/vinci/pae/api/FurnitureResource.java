@@ -1,44 +1,26 @@
 package be.vinci.pae.api;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.codec.binary.Base64;
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataMultiPart;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeBoss;
 import be.vinci.pae.api.utils.PresentationException;
+import be.vinci.pae.api.utils.ResponseMaker;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.domaine.furniture.FurnitureUCC;
 import be.vinci.pae.domaine.photo.PhotoDTO;
 import be.vinci.pae.domaine.photo.PhotoFurnitureDTO;
-import be.vinci.pae.domaine.photo.PhotoFurnitureUCC;
-import be.vinci.pae.domaine.photo.PhotoUCC;
 import be.vinci.pae.domaine.user.UserDTO;
-import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -51,16 +33,8 @@ import jakarta.ws.rs.core.Response.Status;
 @Path("/furnitures")
 public class FurnitureResource {
 
-  private final ObjectMapper jsonMapper = new ObjectMapper();
-
   @Inject
   private FurnitureUCC furnitureUCC;
-
-  @Inject
-  private PhotoUCC photoUCC;
-
-  @Inject
-  private PhotoFurnitureUCC photoFurnitureUCC;
 
   @Inject
   private DomaineFactory domaineFactory;
@@ -80,7 +54,7 @@ public class FurnitureResource {
     List<FurnitureDTO> listFurnitures = new ArrayList<FurnitureDTO>();
     listFurnitures = furnitureUCC.getAll();
 
-    return createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
   }
 
   /**
@@ -99,7 +73,7 @@ public class FurnitureResource {
     List<FurnitureDTO> listFurnitures = new ArrayList<FurnitureDTO>();
     listFurnitures = furnitureUCC.getMyFurniture(currentUser.getID());
 
-    return createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
   }
 
   /**
@@ -123,11 +97,11 @@ public class FurnitureResource {
     checkAllCredentialFurniture(json); // pourrais renvoyer le type si besoin en dessous.
     FurnitureDTO furniture = createFullFillFurniture(json);
     List<PhotoDTO> photos = createAllPhotosFullFilled(json);
-    PhotoFurnitureDTO photoFurniture = createFullFillPhotoFurniture(-1);
+    PhotoFurnitureDTO photoFurniture = createFullFillPhotoFurniture();
 
     furniture = furnitureUCC.update(furniture, photos, photoFurniture);
 
-    return createResponseWithObjectNodeWith1PutPOJO("furniture", furniture);
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("furniture", furniture);
   }
 
   /**
@@ -145,7 +119,7 @@ public class FurnitureResource {
     }
     FurnitureDTO furniture = this.furnitureUCC.findById(id);
 
-    return createResponseWithObjectNodeWith1PutPOJO("furniture", furniture);
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("furniture", furniture);
   }
 
   /**
@@ -165,139 +139,16 @@ public class FurnitureResource {
 
     // Transform all URL into Base64 Image.
     for (PhotoDTO photo : ((List<PhotoDTO>) listOfAll[3])) {
-      String encodstring = encodeFileToBase64Binary(photo.getPicture());
+      String encodstring = PhotoResource.encodeFileToBase64Binary(photo.getPicture());
       photo.setPicture(encodstring);
     }
 
     int i = 0;
-    return createResponseWithObjectNodeWith5PutPOJO("furniture", listOfAll[i++], "types",
-        listOfAll[i++], "users", listOfAll[i++], "photos", listOfAll[i++], "photosFurnitures",
-        listOfAll[i++]);
+    return ResponseMaker.createResponseWithObjectNodeWith5PutPOJO("furniture", listOfAll[i++],
+        "types", listOfAll[i++], "users", listOfAll[i++], "photos", listOfAll[i++],
+        "photosFurnitures", listOfAll[i++]);
   }
 
-  /**
-   * save in a folder the photo given. Must be Authorize.
-   * 
-   * @param file the photo to save.
-   * @param fileDisposition information about the photo.
-   * @return Response.ok if everything is going fine.
-   */
-  @POST
-  @Path("/uploadPhoto")
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
-  @Authorize
-  public Response uploadOnePhoto(@FormDataParam("photo0") InputStream file,
-      @FormDataParam("photo0") FormDataContentDisposition fileDisposition) {
-    System.out.println("Coucou1");
-    System.out.println("InputStream: " + file + "\nFormDataContentDisposition: " + fileDisposition);
-
-    String uploadedFileLocation = "C:\\Ecole Vinci\\projet-ae-groupe-05/"
-        + "src/main/resources/photos/" + fileDisposition.getFileName();
-    System.out.println(uploadedFileLocation);
-
-    // save it
-    writeToFile(file, uploadedFileLocation);
-
-
-    // Test for return
-    String encodstring = encodeFileToBase64Binary(uploadedFileLocation);
-    // System.out.println(encodstring.substring(0, 200));
-
-    return createResponseWithObjectNodeWith1PutPOJO("furniture", encodstring);
-  }
-
-  /**
-   * save in a folder all the photo in the FormDataMultipart given. Must be Authorize.
-   * 
-   * @param multiPart the FormDataMultipart with photo inside.
-   * @return Response.ok if everything is going fine.
-   */
-  @POST
-  @Path("/uploadPhotos")
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
-  @Authorize
-  public Response uploadMultiplePhotos(@Context ContainerRequest request,
-      final FormDataMultiPart multiPart) {
-    // Check about the furniture to link.
-    int furnitureId = Integer.valueOf(request.getHeaderString("furnitureId"));
-    if (furnitureId < 1) {
-      throw new PresentationException("Furntirure id cannot be under 1", Status.BAD_REQUEST);
-    }
-    FurnitureDTO furniture = this.furnitureUCC.findById(furnitureId);
-    if (furniture == null) {
-      throw new PresentationException("Furniture doesn't exist", Status.BAD_REQUEST);
-    }
-
-    // Save all photo include.
-    Map<String, List<FormDataBodyPart>> fields = multiPart.getFields();
-    List<String> paths = new ArrayList<>();
-    List<PhotoDTO> photos = new ArrayList<>();
-    List<PhotoFurnitureDTO> photosFurniture = new ArrayList<>();
-    for (String keyField : fields.keySet()) {
-      List<FormDataBodyPart> values = fields.get(keyField);
-      for (FormDataBodyPart formDataBodyPart : values) {
-        // System.out.println(keyField + " == " + formDataBodyPart.getName());
-        // System.out.println(formDataBodyPart.getHeaders());
-        // for (String formDataBodyPart2 : formDataBodyPart.getHeaders().keySet()) {
-        // System.out.println(formDataBodyPart2);
-        // System.out.println(formDataBodyPart.getHeaders().get(formDataBodyPart2));
-        // }
-        // System.out.println(formDataBodyPart.getHeaders().get("Content-Disposition"));
-        String fileName = getFilenameOfImageFrom(formDataBodyPart);
-        // System.out.println("Name : " + fileName);
-        String uploadedFileLocation =
-            Config.getProperty("ServerPath") + Config.getProperty("PhotosPath") + fileName;
-        // System.out.println("URL : " + uploadedFileLocation);
-
-        // Save it.
-        writeToFile(formDataBodyPart.getValueAs(InputStream.class), uploadedFileLocation);
-        photos.add(createFullFillPhoto(uploadedFileLocation, fileName));
-        photosFurniture.add(createFullFillPhotoFurniture(furniture.getFurnitureId()));
-
-        // Test for return.
-        // paths.add(encodeFileToBase64Binary(uploadedFileLocation));
-      }
-    }
-
-    List<PhotoDTO> allPhotos = this.photoUCC.addMultiple(photos, photosFurniture);
-    for (PhotoDTO photoDTO : allPhotos) {
-      paths.add(encodeFileToBase64Binary(photoDTO.getPicture()));
-    }
-
-    return createResponseWithObjectNodeWith1PutPOJO("photos", paths);
-  }
-
-  @PUT
-  @Path("/deletePhoto/{id}")
-  @AuthorizeBoss
-  public Response deletePhoto(@Context ContainerRequest request, @PathParam("id") int id) {
-    // Check about the furniture linked.
-    int furnitureId = Integer.valueOf(request.getHeaderString("furnitureId"));
-    if (furnitureId < 1) {
-      throw new PresentationException("Furntirure id cannot be under 1", Status.BAD_REQUEST);
-    }
-    FurnitureDTO furniture = this.furnitureUCC.findById(furnitureId);
-    if (furniture == null) {
-      throw new PresentationException("Furniture doesn't exist", Status.BAD_REQUEST);
-    }
-
-    // Check about the photoId.
-    if (id < 1) {
-      throw new PresentationException("Photo id cannot be under 1", Status.BAD_REQUEST);
-    }
-    PhotoDTO photoDTO = this.photoUCC.findById(id);
-    if (photoDTO == null) {
-      throw new PresentationException("Photo doesn't exist", Status.BAD_REQUEST);
-    }
-    PhotoFurnitureDTO photoFurnitureDTO = this.photoFurnitureUCC.findById(id);
-    if (photoFurnitureDTO == null) {
-      throw new PresentationException("Photo Furniture doesn't exist", Status.BAD_REQUEST);
-    }
-
-    this.photoUCC.delete(id);
-
-    return createResponseWithObjectNodeWith1PutPOJO("photo", photoDTO);
-  }
 
 
   /******************** Private's Methods ********************/
@@ -535,120 +386,13 @@ public class FurnitureResource {
     return photos;
   }
 
-  private PhotoDTO createFullFillPhoto(String picture, String name) {
-    PhotoDTO photo = domaineFactory.getPhotoDTO();
-
-    photo.setPicture(picture);
-    photo.setName(name);
-
-    return photo;
-  }
-
-  private PhotoFurnitureDTO createFullFillPhotoFurniture(int furnitureId) {
+  private PhotoFurnitureDTO createFullFillPhotoFurniture() {
     PhotoFurnitureDTO photoFurniture = domaineFactory.getPhotoFurnitureDTO();
 
     photoFurniture.setVisible(false);
     photoFurniture.setFavourite(false);
-    photoFurniture.setFurnitureId(furnitureId);
 
     return photoFurniture;
-  }
-
-  /**
-   * create a response with a ObjectNode with 1 putPOJO.
-   * 
-   * @param <E> the type of the object.
-   * @param namePOJO the name of the POJO put.
-   * @param object object to put.
-   * @return a response.ok build with the ObjectNode inside.
-   */
-  private <E> Response createResponseWithObjectNodeWith1PutPOJO(String namePOJO, E object) {
-    ObjectNode node = jsonMapper.createObjectNode().putPOJO(namePOJO, object);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
-  }
-
-  /**
-   * create a response with a ObjectNode with 5 putPOJO.
-   * 
-   * @param <E> the type of the first object.
-   * @param <F> the type of the second object.
-   * @param <G> the type of the third object.
-   * @param <H> the type of the four object.
-   * @param <I> the type of the five object.
-   * @param namePOJO1 the name of the first POJO put.
-   * @param object1 first object to put.
-   * @param namePOJO2 the name of the second POJO put.
-   * @param object2 second object to put.
-   * @param namePOJO3 the name of the third POJO put.
-   * @param object3 third object to put.
-   * @param namePOJO4 the name of the four POJO put.
-   * @param object4 four object to put.
-   * @param namePOJO5 the name of the five POJO put.
-   * @param object5 five object to put.
-   * @return a response.ok build with all the ObjectNode inside.
-   */
-  private <E, F, G, H, I> Response createResponseWithObjectNodeWith5PutPOJO(String namePOJO1,
-      E object1, String namePOJO2, F object2, String namePOJO3, G object3, String namePOJO4,
-      H object4, String namePOJO5, I object5) {
-    ObjectNode node =
-        jsonMapper.createObjectNode().putPOJO(namePOJO1, object1).putPOJO(namePOJO2, object2)
-            .putPOJO(namePOJO3, object3).putPOJO(namePOJO4, object4).putPOJO(namePOJO5, object5);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
-  }
-
-  /**
-   * return the filename of a image from a FormDataBodyPart.
-   * 
-   * @param formDataBodyPart contains the image.
-   * @return the filename.
-   */
-  private String getFilenameOfImageFrom(FormDataBodyPart formDataBodyPart) {
-    String filename = formDataBodyPart.getHeaders().get("Content-Disposition").get(0).split(";")[2];
-    return filename.substring(11, filename.length() - 1);
-  }
-
-  /**
-   * Save uploaded file to the new location.
-   * 
-   * @param uploadedInputStream the uploaded file.
-   * @param uploadedFileLocation the new location.
-   */
-  private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
-    try (OutputStream out = new FileOutputStream(new File(uploadedFileLocation))) {
-      int read = 0;
-      byte[] bytes = new byte[1024];
-
-      while ((read = uploadedInputStream.read(bytes)) != -1) {
-        out.write(bytes, 0, read);
-      }
-      out.flush();
-      out.close(); // Puisque dans try-with-ressource, est ce encore nessesaire?
-    } catch (IOException e) {
-      throw new PresentationException("IO Exception.", e, Status.BAD_REQUEST);
-    }
-  }
-
-  /**
-   * Return a Image into a Base64 at the location given.
-   * 
-   * @param uploadedFileLocation the path to locate the file.
-   * @return a Base64 Image.
-   */
-  private static String encodeFileToBase64Binary(String uploadedFileLocation) {
-    File file = new File(uploadedFileLocation);
-
-    String encodedfile = null;
-    try (FileInputStream fileInputStreamReader = new FileInputStream(file)) {
-      byte[] bytes = new byte[(int) file.length()];
-      fileInputStreamReader.read(bytes);
-      encodedfile = new String(Base64.encodeBase64(bytes), "UTF-8");
-    } catch (FileNotFoundException e) {
-      throw new PresentationException("File Not Found.", e, Status.BAD_REQUEST);
-    } catch (IOException e) {
-      throw new PresentationException("IO Exception.", e, Status.BAD_REQUEST);
-    }
-
-    return "data:image/png;base64," + encodedfile;
   }
 
 }
