@@ -91,17 +91,11 @@ public class FurnitureResource {
     if (currentUser == null || !currentUser.isBoss()) {
       throw new PresentationException("You dont have the permission.", Status.BAD_REQUEST);
     }
-    // System.out.println(json);
-    // System.out.println(json.get("files").get(0));
-    // System.out.println(json.get("formData").get("photo0"));
-    // System.out.println(json.get("filesBase64").get(0));
 
     checkAllCredentialFurniture(json); // pourrais renvoyer le type si besoin en dessous.
     FurnitureDTO furniture = createFullFillFurniture(json);
-    List<PhotoDTO> photos = createAllPhotosFullFilled(json);
-    PhotoFurnitureDTO photoFurniture = createFullFillPhotoFurniture();
 
-    furniture = furnitureUCC.update(furniture, photos, photoFurniture);
+    furniture = furnitureUCC.update(furniture);
 
     return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("furniture", furniture);
   }
