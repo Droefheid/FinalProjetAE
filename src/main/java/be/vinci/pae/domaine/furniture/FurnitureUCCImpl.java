@@ -65,7 +65,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
   @Override
   public FurnitureDTO update(FurnitureDTO furniture) {
-
+    dalservices.startTransaction();
     // Update the furniture.
     FurnitureDTO furnitureDTO = furnitureDAO.update(furniture);
     if (furnitureDTO == null) {
