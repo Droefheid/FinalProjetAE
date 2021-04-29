@@ -2,6 +2,7 @@ import { setLayout } from "./utils/render.js";
 import { checkTokenOnLoad } from "./utils/session.js";
 import { Router } from "./Components/Router.js";
 import Navbar from "./Components/Navbar.js";
+import Sidebar from "./Components/SideBar.js";
 
 /* use webpack style & css loader*/
 import "./stylesheets/style.css";
@@ -12,12 +13,13 @@ import 'bootstrap';
 
 
 const HEADER_TITLE = "LiVi Satcho Antiquaire";
-const FOOTER_TEXT = "Contact : livisatcho@hotmail.com";
+const FOOTER_TEXT = `Contact : livisatcho@hotmail.com`;
 
 let user_me = { itself: null, furnitureId: null };
 
 checkTokenOnLoad();
 
+Sidebar(true);
 Navbar();
 Router();
 

@@ -38,7 +38,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
       }
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException("error findById", e);
+      throw new FatalException("Error findById", e);
     }
     return furniture;
   }
@@ -53,7 +53,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
       ps.executeUpdate();
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException("error add", e);
+      throw new FatalException("Error add", e);
     }
     return findById(furniture.getFurnitureId());
   }
@@ -77,7 +77,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
       }
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException("error getAll", e);
+      throw new FatalException("Error getAll", e);
     }
     return list;
   }
@@ -97,7 +97,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     } catch (SQLException e) {
       e.printStackTrace();
       ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException("ERROR update furniture.", e);
+      throw new FatalException("Error update furniture.", e);
     }
     return findById(furniture.getFurnitureId());
   }
@@ -122,7 +122,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
 
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException("error fullFillFurnitures", e);
+      throw new FatalException("Error fullFillFurnitures", e);
     }
 
     return furniture;
@@ -154,5 +154,31 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     ps.setInt(13, furniture.getSeller());
     ps.setTimestamp(14, furniture.getPickUpDate());
     return ps;
+  }
+
+  @Override
+  public List<FurnitureDTO> getMyFurniture(int userID) {
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("SELECT furniture_id," + " type, buyer, furniture_title,"
+            + " purchase_price, furniture_date_collection ,selling_price,"
+            + " special_sale_price,delivery,state_furniture,deposit_date,"
+            + " date_of_sale, sale_withdrawal_date, seller, pick_up_date"
+            + " FROM projet.furnitures WHERE seller=? ORDER BY furniture_id");
+
+    List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
+    try {
+      ps.setInt(1, userID);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
+          furniture = fullFillFurnitures(rs, furniture);
+          list.add(furniture);
+        }
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("Error getAll", e);
+    }
+    return list;
   }
 }

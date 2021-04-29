@@ -6,5 +6,7 @@ public interface OptionUCC {
 
   OptionDTO getOption(int optionID);
 
+  OptionDTO findOption(int furnitureID, int customerID);
+
   void stopOption(OptionDTO option);
 }

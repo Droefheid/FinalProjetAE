@@ -17,7 +17,7 @@ public interface VisitDTO {
 
   String getTimeSlot();
 
-  void setTimeSLot(String timeSlot);
+  void setTimeSlot(String timeSlot);
 
   Timestamp getDateAndHoursVisit();
 

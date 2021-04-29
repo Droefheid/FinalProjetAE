@@ -64,7 +64,7 @@ public class VisitImpl implements Visit {
   }
 
   @Override
-  public void setTimeSLot(String timeSlot) {
+  public void setTimeSlot(String timeSlot) {
 
     this.timeSlot = timeSlot;
 
@@ -166,6 +166,14 @@ public class VisitImpl implements Visit {
   @Override
   public void setAddressId(int adresseId) {
     this.addressId = adresseId;
+  }
+
+  @Override
+  public String toString() {
+    return "VisitImpl [id=" + id + ", requestDate=" + requestDate + ", timeSlot=" + timeSlot
+        + ", dateAndHoursVisit=" + dateAndHoursVisit + ", explanatoryNote=" + explanatoryNote
+        + ", labelFurniture=" + labelFurniture + ", isConfirmed=" + isConfirmed + ", userId="
+        + userId + ", addressId=" + addressId + "]";
   }
 
 

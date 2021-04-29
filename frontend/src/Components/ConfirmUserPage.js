@@ -5,7 +5,7 @@ import Sidebar from "./SideBar.js";
 
 let page = document.querySelector("#page");
 
-const ConfirmUserPage = () => {
+const ConfirmUserPage = async () => {
   Sidebar(true);
 
   let list = `
@@ -152,7 +152,7 @@ const onConfirmUser = (e) => {
 };
 
 const onConfirmedUser = () => {
-  RedirectUrl("/confirmUser");
+  RedirectUrl(`/confirmUser`);
 };
 
 const onError = (err) => {

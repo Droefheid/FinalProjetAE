@@ -14,11 +14,10 @@ const ModificationFurniturePage = () => {
 
     const user = getUserSessionData();
     if (!user || !user.isBoss || !user_me.furnitureId) {
-        // re-render the navbar for the authenticated user.
         Navbar();
         RedirectUrl("/");
     } else {
-        // Fetch pour recup
+        // Fetch for get all informations of a specifique Furniture.
         fetch(API_URL + "furnitures/infosUpdate/" + user_me.furnitureId, {
             method: "GET", 
             headers: {
@@ -39,8 +38,12 @@ const onPageCreate = (data) => {
     let furniture = data.furniture;
     let types = data.types;
     let users = data.users;
+    let photos = data.photos;
+    let photosFurnitures = data.photosFurnitures;
 
-    // Modification of Timestamp into Date.
+    //console.log(photos, photosFurnitures);
+
+    // Modification of all Timestamp into Date.
     let Timestamp = null;
     let timeSplit = null;
     // Furniture date collection.
@@ -75,7 +78,7 @@ const onPageCreate = (data) => {
     }
     
     let modifPage = `
-    <form id="update" class="form-inline">
+    <form id="update" class="form-inline" enctype="multipart/form-data">
         <input id="furnitureId" value="${furniture.furnitureId}" hidden>
         <div class="row">
             <div class="col-sm-6 bg-info">
@@ -145,6 +148,36 @@ const onPageCreate = (data) => {
                         modifPage += `
                     </select>
                 </div>
+                <br>
+                <input type="file" id="files" name="files" multiple>
+                <p class="text-muted">* Veuillez selectionner toutes les photos en une seule fois.</p>
+                <div id="showImg"></div>
+                <button type="submit" name="submitPhoto" class="btn btn-primary mb-2"><i class="fas fa-save"></i></button>
+                <div class="card-columns">`;
+                for (let i = 0; i < photos.length; i++) {
+                    //console.log(photos[i]);
+                    modifPage += `<div class="card" style="width: 90px">
+                        <input id="photoId" value="${photos[i].id}" hidden>
+                        <img class="card-img-top" src="` + photos[i].picture + `" style="width: 100%" alt="` + photos[i].name +`" />`;
+                    modifPage += `<div class="card-body">
+                            <button id="${photos[i].id}" type="submit" name="delettePhoto" class="btn btn-danger">
+                                <i class="material-icons">delete</i>
+                            </button>
+                            <button id="${photos[i].id}" type="submit" name="favoritePhoto" class="btn btn-light">
+                                <i class="`;
+                                if(photosFurnitures[i].favourite) modifPage += `fas fa-heart`;
+                                else modifPage += `far fa-heart`;
+                            modifPage += `" style="color:red"></i>
+                            </button>
+                            <button id="${photos[i].id}" type="submit" name="visiblePhoto" class="btn btn-light">
+                                <i class="fas fa-eye`;
+                                if(!photosFurnitures[i].visible) modifPage += `-slash`;
+                            modifPage += `"></i>
+                            </button>
+                        </div>
+                    </div>`;
+                };
+                modifPage += `</div>
             </div>
             <div class="col-sm-6 bg-warning">
                 <label for="furnitureDateCollection">Date emporter: </label>
@@ -183,7 +216,7 @@ const onPageCreate = (data) => {
                 <input type="text" class="form-control" id="pickUpDate"`;
                 if(furniture.pickUpDate) modifPage += ` value="${furniture.pickUpDate}"`;
                 modifPage += ` placeholder="Enter pickUpDate" name="pickUpDate" required>
-                <input type="submit" value="update" class="btn btn-lg btn-primary btn-block">
+                <input type="submit" name="submitUpdate" value="update" class="btn btn-lg btn-primary btn-block">
             </div>
         </div>
     </form><div>`;
@@ -191,11 +224,175 @@ const onPageCreate = (data) => {
     page.innerHTML = modifPage;
     let form = document.querySelector("#update");
     form.addEventListener("submit", onSubmit);
+    let uploadImage = document.querySelector("#files");
+    uploadImage.addEventListener("change", onUpload);
+}
+
+const onUpload = (e) => {
+    let files = e.target.files;
+    
+    // Reset visuel
+    document.getElementById('showImg').innerHTML = "";
+
+    // Add visuel and 
+    for(let i = 0; i < files.length; i++){
+        let reader = new FileReader();
+        reader.onloadend = function() {
+            document.getElementById('showImg').innerHTML += `<img id="blah" src="` 
+            + reader.result + `" style="width: 100px" alt="` + files[i].name.substr(0, files[i].name.length - 4) + `" />`;
+        }
+        reader.readAsDataURL(files[i]);
+    }
 }
 
 const onSubmit = (e) => {
     e.preventDefault();
 
+    let activeElement = document.activeElement;
+    if(activeElement.name == "submitPhoto") onSubmitPhoto();
+    else if(activeElement.name == "delettePhoto") onDelettePhoto(activeElement.id);
+    else if(activeElement.name == "favoritePhoto") onFavoritePhoto(activeElement.id, activeElement);
+    else if(activeElement.name == "visiblePhoto") onVisiblePhoto(activeElement.id, activeElement);
+    else if(activeElement.name == "submitUpdate") onSubmitUpdate();
+}
+
+const onSubmitPhoto = () => {
+    const input = document.getElementById('files');
+
+    const formData = new FormData();
+    for(let i = 0; i < input.files.length; i++){
+        //console.log(input.files[i]);
+        formData.append("photo"+i, input.files[i]);
+    }
+    //console.log("Formdata: ", formData, "get('photo0'): ", formData.get("photo0"));
+
+    let furnitureId = document.getElementById("furnitureId").value;
+    let id = getTokenSessionDate();
+    fetch(API_URL + "photos/uploadPhotos", {
+        method: "POST", 
+        body: formData, 
+        headers: {
+            "Authorization": id,
+            "furnitureId": furnitureId,
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+          return response.text().then((err) => onError(err));
+        }
+        else
+          return response.json().then((data) => RedirectUrl("/updateFurniture"));
+    });
+}
+
+const onDelettePhoto = (photoId) => {
+    //console.log("Delette Photo",photoId);
+    let furnitureId = document.getElementById("furnitureId").value;
+    let id = getTokenSessionDate();
+    fetch(API_URL + "photos/" + photoId, {
+        method: "DELETE",
+        headers: {
+            "Authorization": id,
+            "furnitureId": furnitureId,
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+          return response.text().then((err) => onError(err));
+        }
+        else
+          return response.json().then((data) => RedirectUrl("/updateFurniture"));
+    });
+}
+
+const onFavoritePhoto = (photoId, e) => {
+    //console.log("Favorite Photo",photoId);
+    let furnitureId = document.getElementById("furnitureId").value;
+
+    // Change in is favourite or in is not favourite.
+    let favoriteButton = e.querySelector("i");
+    //console.log(favoriteButton);
+    let isFavorite = false;
+    if (favoriteButton.className == "fas fa-heart") {
+        favoriteButton.className = "far fa-heart";
+        isFavorite = false;
+        //console.log("not anymore favorite");
+    } else if (favoriteButton.className == "far fa-heart") {
+        favoriteButton.className = "fas fa-heart";
+        isFavorite = true;
+        //console.log("now is favorite");
+    }
+
+    let photo = {
+        "photoId": photoId,
+        "furnitureId": furnitureId,
+        "isFavorite": isFavorite,
+    };
+    //console.log(photo);
+
+    let id = getTokenSessionDate();
+    fetch(API_URL + "photos/favorite", {
+        method: "PUT",
+        body: JSON.stringify(photo),
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": id,
+        },
+    })
+    .then((response) => {
+        //console.log(response);
+        if (!response.ok) {
+          return response.text().then((err) => onError(err));
+        }
+        else
+          return response.json().then((data) => RedirectUrl("/updateFurniture"));
+    });
+}
+
+const onVisiblePhoto = (photoId, e) => {
+    //console.log("Visible Photo",photoId);
+    let furnitureId = document.getElementById("furnitureId").value;
+
+    // Change in is visible or in is not visible.
+    let visibilityButton = e.querySelector("i");
+    //console.log(visibilityButton);
+    let isVisible = false;
+    if (visibilityButton.className == "fas fa-eye") {
+        visibilityButton.className = "fas fa-eye-slash";
+        isVisible = false;
+        //console.log("not anymore visible");
+    } else if (visibilityButton.className == "fas fa-eye-slash") {
+        visibilityButton.className = "fas fa-eye";
+        isVisible = true;
+        //console.log("now is visible");
+    }
+
+    let photo = {
+        "photoId": photoId,
+        "furnitureId": furnitureId,
+        "isVisible": isVisible,
+    };
+    //console.log(photo);
+
+    let id = getTokenSessionDate();
+    fetch(API_URL + "photos/visible", {
+        method: "PUT",
+        body: JSON.stringify(photo),
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": id,
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+          return response.text().then((err) => onError(err));
+        }
+        else
+          return response.json().then((data) => RedirectUrl("/updateFurniture"));
+    });
+}
+
+const onSubmitUpdate = () => {
     let furnitureId = document.getElementById("furnitureId").value;
     let title = document.getElementById("title").value;
     let type = document.getElementById("type").value;
@@ -215,9 +412,8 @@ const onSubmit = (e) => {
     // Required field.
     if(!furnitureId || !title || !state || !purchasePrice || !seller 
         || !pickUpDate || !type) {
-        let messageBoard = document.querySelector("#messageBoardForm");
-        messageBoard.innerHTML = '<div class="alert alert-danger">Something required is missing.</div>';
-        return;
+        let err = { message: '<div class="alert alert-danger">Something required is missing.</div>' };
+        return onError(err);
     }
 
     // Check if state is correct.
@@ -310,7 +506,7 @@ const onSubmit = (e) => {
         let err = { message: "The state need to be withdraw if a sale withdrawal date is specify." };
         return onError(err);
     }
-  
+
     let furniture = {
       "furnitureId": furnitureId,
       "title": title,
@@ -328,6 +524,7 @@ const onSubmit = (e) => {
       "seller": seller,
       "pickUpDate": pickUpDate,
     };
+    //console.log(furniture);
   
     let id = getTokenSessionDate();
     fetch(API_URL + "furnitures", {
@@ -348,14 +545,13 @@ const onSubmit = (e) => {
 };
   
 const onFurnitureUpdate = (furnitureData) => {
-    // re-render the navbar for the authenticated user
-    Navbar();
     RedirectUrl("/");
 };
   
 const onError = (err) => {
-    let messageBoard = document.querySelector("#messageBoardForm");
-    messageBoard.innerHTML=err;
+    let messageBoard = document.querySelector("#messageBoard");
+    if(err.message) ALERT_BOX(messageBoard, err.message);
+    else ALERT_BOX(messageBoard, err);
 };
  
 export default ModificationFurniturePage;
