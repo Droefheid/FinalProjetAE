@@ -32,7 +32,7 @@ let introduceVisits = `
             <span class="input-group-text"><i class="fa fa-calendar" aria-hidden="true"></i></span>
           </div>
         
-          <input placeholder="Date of visit" class="textbox-n" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" id="request_date" />
+          <input placeholder="Date of visit" class="textbox-n" type="text" onfocus="(this.type='datetime-local')" onblur="(this.type='datetime-local')" id="request_date" />
           
         </div>
       
