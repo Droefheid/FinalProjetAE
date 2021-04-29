@@ -75,8 +75,8 @@ public class PhotoResource {
     System.out.println("Coucou1");
     System.out.println("InputStream: " + file + "\nFormDataContentDisposition: " + fileDisposition);
 
-    String uploadedFileLocation = "C:\\Ecole Vinci\\projet-ae-groupe-05/"
-        + "src/main/resources/photos/" + fileDisposition.getFileName();
+    String uploadedFileLocation = System.getProperty("user.dir") + Config.getProperty("PhotosPath")
+        + fileDisposition.getFileName();
     System.out.println(uploadedFileLocation);
 
     // save it
@@ -131,7 +131,7 @@ public class PhotoResource {
         String fileName = getFilenameOfImageFrom(formDataBodyPart);
         // System.out.println("Name : " + fileName);
         String uploadedFileLocation =
-            Config.getProperty("ServerPath") + Config.getProperty("PhotosPath") + fileName;
+            System.getProperty("user.dir") + Config.getProperty("PhotosPath") + fileName;
         // System.out.println("URL : " + uploadedFileLocation);
 
         // Save it.
