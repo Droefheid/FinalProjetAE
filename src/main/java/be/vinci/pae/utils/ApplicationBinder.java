@@ -9,6 +9,8 @@ import be.vinci.pae.domaine.option.OptionUCC;
 import be.vinci.pae.domaine.option.OptionUCCImpl;
 import be.vinci.pae.domaine.user.UserUCC;
 import be.vinci.pae.domaine.user.UserUCCImpl;
+import be.vinci.pae.domaine.visit.VisitUCC;
+import be.vinci.pae.domaine.visit.VisitUCCImpl;
 import be.vinci.pae.services.DalBackendServices;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.DalServicesImpl;
@@ -20,6 +22,8 @@ import be.vinci.pae.services.TypeDAO;
 import be.vinci.pae.services.TypeDAOImpl;
 import be.vinci.pae.services.UserDAO;
 import be.vinci.pae.services.UserDAOImpl;
+import be.vinci.pae.services.VisitDAO;
+import be.vinci.pae.services.VisitDAOImpl;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.ext.Provider;
 
@@ -38,6 +42,8 @@ public class ApplicationBinder extends AbstractBinder {
     bind(FurnitureUCCImpl.class).to(FurnitureUCC.class).in(Singleton.class);
     bind(FurnitureDAOImpl.class).to(FurnitureDAO.class).in(Singleton.class);
     bind(TypeDAOImpl.class).to(TypeDAO.class).in(Singleton.class);
+    bind(VisitUCCImpl.class).to(VisitUCC.class).in(Singleton.class);
+    bind(VisitDAOImpl.class).to(VisitDAO.class).in(Singleton.class);
   }
 
 }
