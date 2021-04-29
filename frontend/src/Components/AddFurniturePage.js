@@ -89,6 +89,8 @@ const onCreateAddPage = (data) => {
               addFurniturePage += `
           </select>
       </div>
+      <input type="file" accept="image/png, image/jpeg">
+
       <button type="button" id="addForm" class="btn btn-primary" style="width:100%;">Add</button>
       <div id="messageBoardForm" style="margin-top:30px;"></div>
 

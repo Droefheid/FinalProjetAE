@@ -55,6 +55,7 @@ public class FurnitureResource {
     List<FurnitureDTO> listFurnitures = new ArrayList<FurnitureDTO>();
     listFurnitures = furnitureUCC.getAll();
 
+
     return createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
   }
 
