@@ -8,14 +8,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeBoss;
 import be.vinci.pae.api.utils.PresentationException;
+import be.vinci.pae.api.utils.ResponseMaker;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.domaine.furniture.FurnitureUCC;
+import be.vinci.pae.domaine.photo.PhotoDTO;
+import be.vinci.pae.domaine.photo.PhotoFurnitureDTO;
 import be.vinci.pae.domaine.user.UserDTO;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -34,8 +35,6 @@ import jakarta.ws.rs.core.Response.Status;
 @Path("/furnitures")
 public class FurnitureResource {
 
-  private final ObjectMapper jsonMapper = new ObjectMapper();
-
   @Inject
   private FurnitureUCC furnitureUCC;
 
@@ -44,6 +43,8 @@ public class FurnitureResource {
 
   @Inject
   private UserResource userRessource;
+
+
 
   /**
    * get all furnitures.
@@ -55,8 +56,7 @@ public class FurnitureResource {
     List<FurnitureDTO> listFurnitures = new ArrayList<FurnitureDTO>();
     listFurnitures = furnitureUCC.getAll();
 
-
-    return createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
   }
 
 
@@ -76,7 +76,7 @@ public class FurnitureResource {
     List<FurnitureDTO> listFurnitures = new ArrayList<FurnitureDTO>();
     listFurnitures = furnitureUCC.getMyFurniture(currentUser.getID());
 
-    return createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
   }
 
   /*
@@ -135,6 +135,8 @@ public class FurnitureResource {
   /**
    * update a furniture.
    * 
+   * @param request contains headers.
+   * @param json object containing all necessary information about the furniture.
    * @return the furniture updated.
    */
   @PUT
@@ -145,14 +147,69 @@ public class FurnitureResource {
     if (currentUser == null || !currentUser.isBoss()) {
       throw new PresentationException("You dont have the permission.", Status.BAD_REQUEST);
     }
+    // System.out.println(json);
+    // System.out.println(json.get("files").get(0));
+    // System.out.println(json.get("formData").get("photo0"));
+    // System.out.println(json.get("filesBase64").get(0));
 
     checkAllCredentialFurniture(json); // pourrais renvoyer le type si besoin en dessous.
     FurnitureDTO furniture = createFullFillFurniture(json);
+    List<PhotoDTO> photos = createAllPhotosFullFilled(json);
+    PhotoFurnitureDTO photoFurniture = createFullFillPhotoFurniture();
 
-    furniture = furnitureUCC.update(furniture);
+    furniture = furnitureUCC.update(furniture, photos, photoFurniture);
 
-    return createResponseWithObjectNodeWith1PutPOJO("furniture", furniture);
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("furniture", furniture);
   }
+
+  /**
+   * Get the furniture with an ID if exists or send error message.
+   * 
+   * @param id id of the furniture.
+   * @return a furniture if furniture exists in database and matches the id.
+   */
+  @GET
+  @Path("/{id}")
+  public Response getFurnitureById(@PathParam("id") int id) {
+    // Check credentials.
+    if (id < 1) {
+      throw new PresentationException("Id cannot be under 1", Status.BAD_REQUEST);
+    }
+    FurnitureDTO furniture = this.furnitureUCC.findById(id);
+
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("furniture", furniture);
+  }
+
+  /**
+   * get the furniture by is id and all types and users.
+   * 
+   * @param id id of the furniture.
+   * @return list of all types, users and the furniture where the id is the same.
+   */
+  @GET
+  @Path("/infosUpdate/{id}")
+  public Response allInfosForUpdateFurniture(@PathParam("id") int id) {
+    if (id < 1) {
+      throw new PresentationException("Id cannot be under 1", Status.BAD_REQUEST);
+    }
+
+    Object[] listOfAll = furnitureUCC.getAllInfosForUpdate(id);
+
+    // Transform all URL into Base64 Image.
+    for (PhotoDTO photo : (List<PhotoDTO>) listOfAll[3]) {
+      String encodstring = PhotoResource.encodeFileToBase64Binary(photo.getPicture());
+      photo.setPicture(encodstring);
+    }
+
+    int i = 0;
+    return ResponseMaker.createResponseWithObjectNodeWith5PutPOJO("furniture", listOfAll[i++],
+        "types", listOfAll[i++], "users", listOfAll[i++], "photos", listOfAll[i++],
+        "photosFurnitures", listOfAll[i++]);
+  }
+
+
+
+  // ******************** Private's Methods ********************
 
   private void checkAllCredentialFurniture(JsonNode json) {
     // Required Field.
@@ -355,24 +412,13 @@ public class FurnitureResource {
     return furniture;
   }
 
-
-  /**
-   * Get the furniture with an ID if exists or send error message.
-   * 
-   * @param id id of the furniture.
-   * @return a furniture if furniture exists in database and matches the id.
-   */
-  @GET
-  @Path("/{id}")
-  public Response getFurnitureById(@PathParam("id") int id) {
-    // Check credentials.
-    if (id < 1) {
-      throw new PresentationException("Id cannot be under 1", Status.BAD_REQUEST);
+  private List<PhotoDTO> createAllPhotosFullFilled(JsonNode json) {
+    if (json.get("filesBase64").size() != json.get("filesName").size()) {
+      throw new PresentationException(
+          "The number of files is not the same then the number of names.", Status.BAD_REQUEST);
     }
-    FurnitureDTO furniture = this.furnitureUCC.findById(id);
 
-    return createResponseWithObjectNodeWith1PutPOJO("furniture", furniture);
-  }
+    List<PhotoDTO> photos = new ArrayList<PhotoDTO>();
 
   /**
    * get all types and users from DB.
@@ -402,59 +448,37 @@ public class FurnitureResource {
     if (id < 1) {
       throw new PresentationException("Id cannot be under 1", Status.BAD_REQUEST);
     }
-
-    Object[] listOfAll = furnitureUCC.getAllInfosForUpdate(id);
-
     int i = 0;
-    return createResponseWithObjectNodeWith3PutPOJO("furniture", listOfAll[i++], "types",
-        listOfAll[i++], "users", listOfAll[i++]);
+    while (json.get("filesBase64").get(i) != null) {
+      if (json.get("filesBase64").get(i).asText().equals("")) {
+        throw new PresentationException("A file base64 cannot be empty.", Status.BAD_REQUEST);
+      }
+      if (json.get("filesName").get(i).asText().equals("")) {
+        throw new PresentationException("A name cannot be empty.", Status.BAD_REQUEST);
+      }
+
+      String picture = json.get("filesBase64").get(i).asText();
+      String name = json.get("filesName").get(i).asText();
+      PhotoDTO photo = domaineFactory.getPhotoDTO();
+
+      photo.setPicture(picture);
+      photo.setName(name);
+
+      photos.add(photo);
+
+      i++;
+    }
+
+    return photos;
   }
 
-  /**
-   * create a response with a ObjectNode with 1 putPOJO.
-   * 
-   * @param <E> the type of the object.
-   * @param namePOJO the name of the POJO put.
-   * @param object object to put.
-   * @return a response.ok build with the ObjectNode inside.
-   */
-  private <E> Response createResponseWithObjectNodeWith1PutPOJO(String namePOJO, E object) {
-    ObjectNode node = jsonMapper.createObjectNode().putPOJO(namePOJO, object);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
-  }
+  private PhotoFurnitureDTO createFullFillPhotoFurniture() {
+    PhotoFurnitureDTO photoFurniture = domaineFactory.getPhotoFurnitureDTO();
 
-  /**
-   * create a response with a ObjectNode with 3 putPOJO.
-   * 
-   * @param <E> the type of the first object.
-   * @param <F> the type of the second object.
-   * @param namePOJO1 the name of the POJO put.
-   * @param object1 object to put.
-   * @return a response.ok build with all the ObjectNode inside.
-   */
-  private <E, F> Response createResponseWithObjectNodeWith2PutPOJO(String namePOJO1, E object1,
-      String namePOJO2, F object2) {
-    ObjectNode node =
-        jsonMapper.createObjectNode().putPOJO(namePOJO1, object1).putPOJO(namePOJO2, object2);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
-  }
+    photoFurniture.setVisible(false);
+    photoFurniture.setFavourite(false);
 
-  /**
-   * create a response with a ObjectNode with 3 putPOJO.
-   * 
-   * @param <E> the type of the first object.
-   * @param <F> the type of the second object.
-   * @param <G> the type of the third object.
-   * @param namePOJO1 the name of the POJO put.
-   * @param object1 object to put.
-   * @return a response.ok build with all the ObjectNode inside.
-   */
-  private <E, F, G> Response createResponseWithObjectNodeWith3PutPOJO(String namePOJO1, E object1,
-      String namePOJO2, F object2, String namePOJO3, G object3) {
-    ObjectNode node = jsonMapper.createObjectNode().putPOJO(namePOJO1, object1)
-        .putPOJO(namePOJO2, object2).putPOJO(namePOJO3, object3);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+    return photoFurniture;
   }
-
 
 }
