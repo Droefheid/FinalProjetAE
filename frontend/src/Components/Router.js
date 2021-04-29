@@ -7,7 +7,6 @@ import ErrorPage from "./ErrorPage.js";
 import ModificationFurniturePage from "./ModificationFurniturePage.js"
 import FurniturePage from "./FurniturePage.js";
 import ConfirmUserPage from "./ConfirmUserPage.js";
-import TestMultipartPage from "./TestMultipart.js";
 import UserListPage from "./UserListPage.js";
 import MyFurniturePage from "./MyFurniturePage.js";
 
