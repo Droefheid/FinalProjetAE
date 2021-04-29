@@ -38,7 +38,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
       }
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException("error findById", e);
+      throw new FatalException("Error findById", e);
     }
     return furniture;
   }
@@ -53,7 +53,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
       ps.executeUpdate();
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException("error add", e);
+      throw new FatalException("Error add", e);
     }
     return findById(furniture.getFurnitureId());
   }
@@ -77,7 +77,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
       }
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException("error getAll", e);
+      throw new FatalException("Error getAll", e);
     }
     return list;
   }
@@ -97,7 +97,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     } catch (SQLException e) {
       e.printStackTrace();
       ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException("ERROR update furniture.", e);
+      throw new FatalException("Error update furniture.", e);
     }
     return findById(furniture.getFurnitureId());
   }
@@ -122,7 +122,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
 
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException("error fullFillFurnitures", e);
+      throw new FatalException("Error fullFillFurnitures", e);
     }
 
     return furniture;
@@ -177,7 +177,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
       }
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException("error getAll", e);
+      throw new FatalException("Error getAll", e);
     }
     return list;
   }

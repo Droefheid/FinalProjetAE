@@ -150,8 +150,6 @@ let registerPage = `
  </div>
 </div>`;
 
-
-
 const RegisterPage = () => {
   Sidebar();
   let page = document.querySelector("#page");
@@ -164,50 +162,47 @@ const onRegister = (e) => {
   e.preventDefault();
   let confirmPassword = document.getElementById("confirm_password").value;
   let password = document.getElementById("password").value;
-  if(confirmPassword !==password){
+  if (confirmPassword !== password) {
     onError("Passwords aren't identical");
-  }
- else {
-  let user = {
-    email: document.getElementById("email").value,
-    password: document.getElementById("password").value,
-    lastname: document.getElementById("lastname").value,
-    firstname: document.getElementById("firstname").value,
-    street: document.getElementById("street").value,
-    building_number: document.getElementById("building_number").value,
-    postcode: document.getElementById("postcode").value,
-    commune: document.getElementById("commune").value,
-    country: document.getElementById("country").value,
-    unit_number: document.getElementById("unit_number").value,
-    username: document.getElementById("username").value
-  };
+  } else {
+    let user = {
+      email: document.getElementById("email").value,
+      password: document.getElementById("password").value,
+      lastname: document.getElementById("lastname").value,
+      firstname: document.getElementById("firstname").value,
+      street: document.getElementById("street").value,
+      building_number: document.getElementById("building_number").value,
+      postcode: document.getElementById("postcode").value,
+      commune: document.getElementById("commune").value,
+      country: document.getElementById("country").value,
+      unit_number: document.getElementById("unit_number").value,
+      username: document.getElementById("username").value,
+    };
 
-  fetch(API_URL + "users/register", {
-    method: "POST", // *GET, POST, PUT, DELETE, etc.
-    body: JSON.stringify(user), // body data type must match "Content-Type" header
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => {
+    fetch(API_URL + "users/register", {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      body: JSON.stringify(user), // body data type must match "Content-Type" header
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((response) => {
       if (!response.ok) {
         return response.text().then((err) => onError(err));
-      }
-      else
-        return onUserRegistration();
-    })
+      } else return onUserRegistration();
+    });
   }
 };
 
 const onUserRegistration = () => {
-  alert("You have been registered. An admin must now validate your inscription.");
+  alert(
+    "You have been registered. An admin must now validate your inscription."
+  );
   RedirectUrl("/");
 };
 
 const onError = (err) => {
   let messageBoard = document.querySelector("#messageBoardForm");
-   messageBoard.innerHTML = err;
-  
+  messageBoard.innerHTML = err;
 };
 
 export default RegisterPage;

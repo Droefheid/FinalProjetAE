@@ -5,7 +5,7 @@ import Sidebar from "./SideBar.js";
 
 let page = document.querySelector("#page");
 
-const ConfirmUserPage = async () => {
+const ConfirmVisits = () => {
   Sidebar(true);
 
   let list = `
@@ -32,17 +32,17 @@ const ConfirmUserPage = async () => {
   }).then((response) => {
     if (!response.ok) {
       return response.text().then((err) => onError(err));
-    } else return response.json().then((data) => onUserList(data));
+    } else return response.json().then((data) => onVisitList(data));
   });
 };
 
-const onUserList = (data) => {
-  let userList = document.querySelector("#list");
+const onVisitList = (data) => {
+  let visitList = document.querySelector("#list");
 
   if (!data) return;
 
   let table = `
-          <nav id="nav_user">
+          <nav id="nav_visit">
             <ul class="list-group">`;
   data.list.forEach((element) => {
     table += `
@@ -64,7 +64,7 @@ const onUserList = (data) => {
         </ul>
       </nav>
 `;
-  userList.innerHTML = table;
+  visitList.innerHTML = table;
 
   const viewUsers = document.querySelectorAll("li");
   viewUsers.forEach((elem) => {
@@ -123,14 +123,14 @@ const onConfirmUserDescription = (data) => {
   btn.addEventListener("click", onConfirmUser);
 };
 
-const onConfirmUser = (e) => {
+const onConfirmVisit = (e) => {
   e.preventDefault();
   let userId = document.getElementById("id").value;
   let confirmed = document.getElementById("is_confirmed").checked;
   let antique_dealer = document.getElementById("is_antique_dealer").checked;
   let is_boss = document.getElementById("is_boss").checked;
 
-  let user = {
+  let visit = {
     isConfirmed: confirmed,
     isAntiqueDealer: antique_dealer,
     userId: userId,
@@ -147,12 +147,12 @@ const onConfirmUser = (e) => {
   }).then((response) => {
     if (!response.ok) {
       return response.text().then((err) => onError(err));
-    } else return onConfirmedUser();
+    } else return onConfirmedVisit();
   });
 };
 
-const onConfirmedUser = () => {
-  RedirectUrl(`/confirmUser`);
+const onConfirmedVisit = () => {
+  RedirectUrl("/confirmVisit");
 };
 
 const onError = (err) => {
@@ -160,4 +160,4 @@ const onError = (err) => {
   messageBoard.innerHTML = err;
 };
 
-export default ConfirmUserPage;
+export default ConfirmVisits;

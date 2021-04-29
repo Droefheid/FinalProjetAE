@@ -124,7 +124,7 @@ const onFurnitureDescription = (data) => {
   if(user.isBoss){
     let updateFurniture = document.querySelector("#updateForm");
     updateFurniture.innerHTML += `<form class="btn" id="updateB">
-    <input id="id" value="${data.furniture.furnitureId}" hidden>
+    <input id="idUpdate" value="${data.furniture.furnitureId}" hidden>
     <input class="btn-primary" type="submit" value="Update">
    </form>`;
    let updateButton = document.querySelector("#updateB");
@@ -134,7 +134,7 @@ const onFurnitureDescription = (data) => {
   if(data.furniture.state !== "O" && data.furniture.state !== "V" ) {
     let divOption = document.querySelector("#optionform");
     divOption.innerHTML+= `<form class="btn" id="option">
-    <input id="id" value="${data.furniture.furnitureId}" hidden>
+    <input id="idOption" value="${data.furniture.furnitureId}" hidden>
     <input class="btn-primary" type="submit" value="Introduce option">
     </form>`;
     let optionButton = document.querySelector("#option");
@@ -160,17 +160,18 @@ const onFurnitureDescription = (data) => {
 
 const onUpdate = (e) => {
   e.preventDefault();
-  let furnitureId = document.getElementById("id").value;
+  let furnitureId = document.getElementById("idUpdate").value;
   user_me.furnitureId = furnitureId;
   RedirectUrl(`/updateFurniture`);
 }
 
 const onOption = (e) => {
   e.preventDefault();
-  let furnitureId = document.getElementById("id").value;
+  let furnitureId = document.getElementById("idOption").value;
   user_me.furnitureId = furnitureId;
   RedirectUrl(`/introduceOption`);
 }
+
 
 
 const showStopOptionButton = (data) => {
