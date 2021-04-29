@@ -208,6 +208,22 @@ public class FurnitureResource {
   }
 
 
+  /**
+   * get all types and users from DB.
+   * 
+   * 
+   * @return list of all types, users to display them in add form.
+   */
+  @GET
+  @Path("/infosAdd")
+  public Response allInfosForAddFurniture() {
+    Object[] listOfAll = furnitureUCC.getAllInfosForAdd();
+    int i = 0;
+    return ResponseMaker.createResponseWithObjectNodeWith2PutPOJO("types", listOfAll[i++], "users",
+        listOfAll[i++]);
+  }
+
+
 
   // ******************** Private's Methods ********************
 
@@ -420,34 +436,6 @@ public class FurnitureResource {
 
     List<PhotoDTO> photos = new ArrayList<PhotoDTO>();
 
-  /**
-   * get all types and users from DB.
-   * 
-   * 
-   * @return list of all types, users to display them in add form.
-   */
-  @GET
-  @Path("/infosAdd")
-  public Response allInfosForAddFurniture() {
-    Object[] listOfAll = furnitureUCC.getAllInfosForAdd();
-    int i = 0;
-    return createResponseWithObjectNodeWith2PutPOJO("types", listOfAll[i++], "users",
-        listOfAll[i++]);
-  }
-
-
-  /**
-   * get the furniture by is id and all types and users.
-   * 
-   * @param id id of the furniture.
-   * @return list of all types, users and the furniture where the id is the same.
-   */
-  @GET
-  @Path("/infosUpdate/{id}")
-  public Response allInfosForUpdateFurniture(@PathParam("id") int id) {
-    if (id < 1) {
-      throw new PresentationException("Id cannot be under 1", Status.BAD_REQUEST);
-    }
     int i = 0;
     while (json.get("filesBase64").get(i) != null) {
       if (json.get("filesBase64").get(i).asText().equals("")) {
