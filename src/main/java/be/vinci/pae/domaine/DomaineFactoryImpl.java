@@ -6,6 +6,10 @@ import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.domaine.furniture.FurnitureImpl;
 import be.vinci.pae.domaine.option.OptionDTO;
 import be.vinci.pae.domaine.option.OptionImpl;
+import be.vinci.pae.domaine.photo.PhotoDTO;
+import be.vinci.pae.domaine.photo.PhotoFurnitureDTO;
+import be.vinci.pae.domaine.photo.PhotoFurnitureImpl;
+import be.vinci.pae.domaine.photo.PhotoImpl;
 import be.vinci.pae.domaine.type.TypeDTO;
 import be.vinci.pae.domaine.type.TypeImpl;
 import be.vinci.pae.domaine.user.UserDTO;
@@ -37,6 +41,16 @@ public class DomaineFactoryImpl implements DomaineFactory {
   @Override
   public TypeDTO getTypeDTO() {
     return new TypeImpl();
+  }
+
+  @Override
+  public PhotoDTO getPhotoDTO() {
+    return new PhotoImpl();
+  }
+
+  @Override
+  public PhotoFurnitureDTO getPhotoFurnitureDTO() {
+    return new PhotoFurnitureImpl();
   }
 
 }

@@ -16,6 +16,7 @@ prod2.properties
 .loadpath
 .recommenders
 frontend/node_modules
+src/main/resources/photos
 
 # External tool builders
 .externalToolBuilders/
