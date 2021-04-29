@@ -89,14 +89,12 @@ const onCreateAddPage = (data) => {
               addFurniturePage += `
           </select>
       </div>
-      <input type="file" accept="image/png, image/jpeg">
+      <input type="file" id="files" name="files" multiple>
 
       <button type="button" id="addForm" class="btn btn-primary" style="width:100%;">Add</button>
       <div id="messageBoardForm" style="margin-top:30px;"></div>
-
     </form>
 `;
-
    page.innerHTML = addFurniturePage;
 
    const addFurnitures = document.getElementById("addForm")
@@ -105,6 +103,7 @@ const onCreateAddPage = (data) => {
 
 const onAddFurniture = () => {
 
+  
   let id = getTokenSessionDate();
 
   let title = document.getElementById("titleFurniture").value;
@@ -134,7 +133,6 @@ const onAddFurniture = () => {
     return;
   }
 
-
   let furniture = {
     "title": title,
     "purchasePrice": purchasePrice,
@@ -143,7 +141,6 @@ const onAddFurniture = () => {
     "seller": seller,
     "pickUpDate": pickUpDate,
   }
-
 
   fetch(API_URL + "furnitures/", {
     method: "POST",
@@ -163,6 +160,15 @@ const onAddFurniture = () => {
 }
 
 const onFurnitureAdded = () => {
+
+  //const input = document.getElementById('files');
+  const formData = new FormData();
+  for(let i = 0; i < input.files.length; i++){
+      //console.log(input.files[i]);
+      formData.append("photo"+i, input.files[i]);
+  }
+  //console.log("Formdata: ", formData, "get('photo0'): ", formData.get("photo"));
+
   alert("Furniture has been added");
   RedirectUrl(`/furniture`);
 };
