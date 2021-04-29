@@ -19,7 +19,7 @@ public class OptionDAOImpl implements OptionDAO {
   private DomaineFactory domaineFactory;
 
   @Override
-  public void introduceOption(OptionDTO option) {
+  public int introduceOption(OptionDTO option) {
     PreparedStatement ps = this.dalBackendServices
         .getPreparedStatement("INSERT INTO projet.options VALUES(DEFAULT,?,?,true,?,?)");
     try {
@@ -32,6 +32,7 @@ public class OptionDAOImpl implements OptionDAO {
       ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException(e.getMessage(), e);
     }
+    return findOptionIdByInfo(option);
   }
 
   /**

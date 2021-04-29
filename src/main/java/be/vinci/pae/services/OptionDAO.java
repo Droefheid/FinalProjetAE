@@ -5,7 +5,7 @@ import be.vinci.pae.domaine.option.OptionDTO;
 
 public interface OptionDAO {
 
-  void introduceOption(OptionDTO option);
+  int introduceOption(OptionDTO option);
 
   int findOptionIdByInfo(OptionDTO option);
 
