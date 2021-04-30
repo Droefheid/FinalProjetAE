@@ -135,7 +135,11 @@ public class VisitResource {
     return Response.ok().build();
   }
 
-
+  /**
+   * Verify json to check address variables.
+   * 
+   * @param json node with required objects.
+   */
   public static void checkJsonAddress(JsonNode json) {
     if (json.get("street").asText().equals("")) {
       throw new PresentationException("street is needed ", Status.BAD_REQUEST);
