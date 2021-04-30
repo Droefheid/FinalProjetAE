@@ -1,8 +1,6 @@
 package be.vinci.pae.domaine.furniture;
 
 import java.util.List;
-import be.vinci.pae.domaine.photo.PhotoDTO;
-import be.vinci.pae.domaine.photo.PhotoFurnitureDTO;
 
 public interface FurnitureUCC {
 
@@ -12,8 +10,7 @@ public interface FurnitureUCC {
 
   List<FurnitureDTO> getAll();
 
-  FurnitureDTO update(FurnitureDTO furniture, List<PhotoDTO> photos,
-      PhotoFurnitureDTO photoFurniture);
+  FurnitureDTO update(FurnitureDTO furniture);
 
   List<FurnitureDTO> getMyFurniture(int userID);
 
