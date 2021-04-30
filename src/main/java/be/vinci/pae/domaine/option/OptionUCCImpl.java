@@ -8,6 +8,7 @@ import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.FurnitureDAO;
 import be.vinci.pae.services.OptionDAO;
+import be.vinci.pae.utils.SchedulerJob;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response.Status;
 
@@ -22,6 +23,7 @@ public class OptionUCCImpl implements OptionUCC {
 
   @Inject
   private DalServices dalservices;
+
 
   @Override
   public void introduceOption(OptionDTO option) {
@@ -55,8 +57,11 @@ public class OptionUCCImpl implements OptionUCC {
           "You have already reserved this" + " furniture for more than 5 days");
     }
 
-    optionDao.introduceOption(option);
+    int id = optionDao.introduceOption(option);
     optionDao.changeFurnitureState("O", option.getFurniture());
+    option.setId(id);
+    SchedulerJob scheduler = new SchedulerJob();
+    scheduler.schedulerOption(option.getOptionTerm().toLocalDateTime(), option);
     dalservices.commitTransaction();
   }
 

@@ -22,22 +22,17 @@ const Navbar = () => {
       </div>`;
 
   // Choose how to finish the Navbar.
-  let user = getUserSessionData();    
+  let user = getUserSessionData();
   if (user) {
     navbar += `
       <div class="navbar navbar-nav ml-auto pt-2">
         <a class="nav-item nav-link" href="#">${user.username}</a>
         <a class="nav-item nav-link" href="#" data-uri="/logout">Logout</a>
         <a class="btn btn-info" href="#" data-uri="/seeMyFurniture" style="margin:15px;">See my furniture</a>
-      <a class="btn btn-info" href="#" data-uri="" style="margin:15px;">Introduce a visit</a>
-  
-    <a class="btn btn-info" href="#" data-uri="/confirmUser" style="margin:15px;">Confirm a user</a>
+      <a class="btn btn-info" href="#" data-uri="/introduceVisits" style="margin:15px;">Introduce a visit</a>
       </div>
     </div>
   </nav>`;
-
-
- 
   } else {
     navbar += `
       <div class="navbar navbar-nav ml-auto pt-2">
@@ -62,4 +57,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

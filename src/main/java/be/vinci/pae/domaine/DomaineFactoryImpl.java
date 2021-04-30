@@ -14,9 +14,10 @@ import be.vinci.pae.domaine.type.TypeDTO;
 import be.vinci.pae.domaine.type.TypeImpl;
 import be.vinci.pae.domaine.user.UserDTO;
 import be.vinci.pae.domaine.user.UserImpl;
+import be.vinci.pae.domaine.visit.VisitDTO;
+import be.vinci.pae.domaine.visit.VisitImpl;
 
 public class DomaineFactoryImpl implements DomaineFactory {
-
 
   @Override
   public FurnitureDTO getFurnitureDTO() {
@@ -43,7 +44,6 @@ public class DomaineFactoryImpl implements DomaineFactory {
     return new TypeImpl();
   }
 
-  @Override
   public PhotoDTO getPhotoDTO() {
     return new PhotoImpl();
   }
@@ -51,6 +51,11 @@ public class DomaineFactoryImpl implements DomaineFactory {
   @Override
   public PhotoFurnitureDTO getPhotoFurnitureDTO() {
     return new PhotoFurnitureImpl();
+  }
+
+  @Override
+  public VisitDTO getVisitDTO() {
+    return new VisitImpl();
   }
 
 }

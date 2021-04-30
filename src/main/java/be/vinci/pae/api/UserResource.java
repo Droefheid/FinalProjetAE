@@ -133,24 +133,8 @@ public class UserResource {
     if (json.get("firstname").asText().equals("")) {
       throw new PresentationException("Firstname is needed ", Status.BAD_REQUEST);
     }
-    if (json.get("street").asText().equals("")) {
-      throw new PresentationException("street is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("building_number").asText().equals("")) {
-      throw new PresentationException("building number is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("postcode").asText().equals("")) {
-      throw new PresentationException("postcode is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("commune").asText().equals("")) {
-      throw new PresentationException("commune is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("country").asText().equals("")) {
-      throw new PresentationException("country is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("unit_number").asText().equals("")) {
-      throw new PresentationException("unit number is needed ", Status.BAD_REQUEST);
-    }
+
+    VisitResource.checkJsonAddress(json);
 
     UserDTO user = domaineFactory.getUserDTO();
 
@@ -193,9 +177,9 @@ public class UserResource {
   }
 
   /**
-   * get all users.
+   * get all users not confirmed.
    * 
-   * @return list of all users.
+   * @return list of all users not confirmed.
    */
   @GET
   @Path("/notConfirmed")
@@ -216,15 +200,19 @@ public class UserResource {
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeBoss
-  public Response updateConfirmed(JsonNode json) {
-    int userId = json.get("userId").asInt();
-    boolean isBoss = json.get("isBoss").asBoolean();
-    boolean antiqueDealer = json.get("isAntiqueDealer").asBoolean();
-    boolean confirmed = json.get("isConfirmed").asBoolean();
+  public Response updateConfirmed(@Context ContainerRequest request, JsonNode json) {
     UserDTO user = domaineFactory.getUserDTO();
-    user.setID(userId);
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+
+    if (currentUser == null) {
+      throw new PresentationException("User not found", Status.BAD_REQUEST);
+    }
+    user.setID(currentUser.getID());
+    boolean isBoss = json.get("isBoss").asBoolean();
     user.setBoss(isBoss);
+    boolean confirmed = json.get("isConfirmed").asBoolean();
     user.setConfirmed(confirmed);
+    boolean antiqueDealer = json.get("isAntiqueDealer").asBoolean();
     user.setAntiqueDealer(antiqueDealer);
     this.userUcc.updateConfirmed(user);
     return Response.ok(MediaType.APPLICATION_JSON).build();
