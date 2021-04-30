@@ -23,6 +23,12 @@ public class SchedulerJob implements Job {
 
   private SchedulerFactory sf = new StdSchedulerFactory();
 
+  /**
+   * Schedule a job for an option.
+   * 
+   * @param date trigger to start the job.
+   * @param option the option that needs the job.
+   */
   public void schedulerOption(LocalDateTime date, OptionDTO option) {
 
     JobDetail job =
@@ -36,6 +42,13 @@ public class SchedulerJob implements Job {
     scheduler(job, trigger, option);
   }
 
+  /**
+   * put the job and trigger in the schedule.
+   * 
+   * @param job to execute.
+   * @param trigger date to trigger job.
+   * @param option with required info.
+   */
   public void scheduler(JobDetail job, Trigger trigger, OptionDTO option) {
     Scheduler scheduler;
     try {
@@ -48,7 +61,10 @@ public class SchedulerJob implements Job {
     }
   }
 
-  public void StartScheduler() {
+  /**
+   * Gets a scheduler and starts the list.
+   */
+  public void startScheduler() {
     Scheduler scheduler;
     try {
       scheduler = sf.getScheduler();

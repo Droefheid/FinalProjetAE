@@ -5,22 +5,14 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * LogToFile class This class is intended to be use with the default logging class of java It save the log in an XML file and display a friendly
- * message to the user
- * 
- * @author Ibrabel <ibrabel@gmail.com>
- */
 public class LogToFile {
 
   protected static final Logger logger = Logger.getLogger("MyLOG");
 
   /**
-   * log Method enable to log all exceptions to a file and display user message on demand
+   * log Method enable to log all exceptions to a file and display user message on demand.
    * 
-   * @param ex
-   * @param level
-   * @param msg
+   * @param exception to log
    */
   public static void log(Exception exception) {
 
@@ -34,8 +26,9 @@ public class LogToFile {
     } catch (IOException | SecurityException ex1) {
       logger.log(Level.ALL, null, ex1);
     } finally {
-      if (fh != null)
+      if (fh != null) {
         fh.close();
+      }
     }
   }
 

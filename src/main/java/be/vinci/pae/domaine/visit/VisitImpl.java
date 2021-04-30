@@ -95,6 +95,9 @@ public class VisitImpl implements VisitDTO {
     this.userId = userId;
   }
 
+  /**
+   * auto generated hashcode.
+   */
   public int hashCode() {
     final int prime = 31;
     int result = 1;
@@ -128,6 +131,9 @@ public class VisitImpl implements VisitDTO {
     this.addressId = adresseId;
   }
 
+  /**
+   * auto generated toString.
+   */
   public String toString() {
     return "VisitImpl [id=" + id + ", requestDate=" + requestDate + ", timeSlot=" + timeSlot
         + ", dateAndHoursVisit=" + dateAndHoursVisit + ", explanatoryNote=" + explanatoryNote

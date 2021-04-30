@@ -219,14 +219,13 @@ public class VisitResource {
       throw new PresentationException("Visit id is needed ", Status.BAD_REQUEST);
     }
 
-    int id = json.get("visit_id").asInt();
     UserDTO currentUser = (UserDTO) request.getProperty("user");
 
     if (currentUser == null) {
       throw new PresentationException("User not found", Status.BAD_REQUEST);
     }
     VisitDTO visit = domaineFactory.getVisitDTO();
-    visit = visitUcc.getVisit(id);
+    visit = visitUcc.getVisit(json.get("visit_id").asInt());
     visit.setIsConfirmed(true);
     this.visitUcc.updateConfirmed(visit);
     return Response.ok(MediaType.APPLICATION_JSON).build();

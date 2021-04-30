@@ -22,13 +22,14 @@ public class VisitDAOImpl implements VisitDAO {
 
 
   @Override
-  public VisitDTO findByDate(Timestamp request_date) {
-    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
-        "SELECT visit_id, request_date, time_slot, date_and_hours_visit, explanatory_note, label_furniture, is_confirmed,"
+  public VisitDTO findByDate(Timestamp requestDate) {
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("SELECT visit_id, " + "request_date, time_slot, "
+            + "date_and_hours_visit, " + "explanatory_note, label_furniture, is_confirmed,"
             + " users, address" + " FROM projet.visits WHERE request_date = ?");
     VisitDTO visit = domaineFactory.getVisitDTO();
     try {
-      ps.setTimestamp(1, request_date);
+      ps.setTimestamp(1, requestDate);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           visit = fullFillVisitFromResulSet(visit, rs);
@@ -47,8 +48,9 @@ public class VisitDAOImpl implements VisitDAO {
 
   @Override
   public VisitDTO findById(int id) {
-    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
-        "SELECT visit_id, request_date, time_slot, date_and_hours_visit, explanatory_note, label_furniture, is_confirmed,"
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("SELECT visit_id, " + "request_date, time_slot,"
+            + " date_and_hours_visit, explanatory_note, label_furniture, is_confirmed,"
             + " users, address" + " FROM projet.visits WHERE visit_id = ?");
     VisitDTO visit = domaineFactory.getVisitDTO();
     try {
@@ -87,8 +89,9 @@ public class VisitDAOImpl implements VisitDAO {
       throw new BusinessException("There is already a visite planned for that date!");
     }
 
-    PreparedStatement ps = this.dalBackendServices
-        .getPreparedStatement("INSERT INTO projet.visits VALUES(DEFAULT,?,?,NULL,?,?,DEFAULT,?,?)"); // label furniture a mettre par defaut , mais pas a null
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
+        "INSERT INTO " + "projet.visits VALUES(DEFAULT,?,?,NULL,?,?,DEFAULT,?,?)");
+    // label furniture a mettre par defaut , mais pas a null
     try {
       ps.setTimestamp(1, visit.getRequestDate());
       ps.setString(2, visit.getTimeSlot());

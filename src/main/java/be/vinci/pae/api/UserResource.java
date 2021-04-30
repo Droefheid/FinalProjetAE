@@ -217,9 +217,6 @@ public class UserResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeBoss
   public Response updateConfirmed(@Context ContainerRequest request, JsonNode json) {
-    boolean isBoss = json.get("isBoss").asBoolean();
-    boolean antiqueDealer = json.get("isAntiqueDealer").asBoolean();
-    boolean confirmed = json.get("isConfirmed").asBoolean();
     UserDTO user = domaineFactory.getUserDTO();
     UserDTO currentUser = (UserDTO) request.getProperty("user");
 
@@ -227,8 +224,11 @@ public class UserResource {
       throw new PresentationException("User not found", Status.BAD_REQUEST);
     }
     user.setID(currentUser.getID());
+    boolean isBoss = json.get("isBoss").asBoolean();
     user.setBoss(isBoss);
+    boolean confirmed = json.get("isConfirmed").asBoolean();
     user.setConfirmed(confirmed);
+    boolean antiqueDealer = json.get("isAntiqueDealer").asBoolean();
     user.setAntiqueDealer(antiqueDealer);
     this.userUcc.updateConfirmed(user);
     return Response.ok(MediaType.APPLICATION_JSON).build();
