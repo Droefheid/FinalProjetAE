@@ -99,24 +99,7 @@ public class VisitResource {
     if (json.get("explanatory_note").asText().equals("")) {
       throw new PresentationException("explanatory note is needed", Status.BAD_REQUEST);
     }
-    if (json.get("street").asText().equals("")) {
-      throw new PresentationException("street is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("building_number").asText().equals("")) {
-      throw new PresentationException("building number is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("postcode").asText().equals("")) {
-      throw new PresentationException("postcode is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("commune").asText().equals("")) {
-      throw new PresentationException("commune is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("country").asText().equals("")) {
-      throw new PresentationException("country is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("unit_number").asText().equals("")) {
-      throw new PresentationException("unit number is needed ", Status.BAD_REQUEST);
-    }
+    checkJsonAddress(json);
 
     if (json.get("time_slot").asText().equals("")) {
       throw new PresentationException("time slot is needed ", Status.BAD_REQUEST);
@@ -150,6 +133,28 @@ public class VisitResource {
     visitUcc.introduceVisit(visit, addressDTO, currentUser);
 
     return Response.ok().build();
+  }
+
+
+  public static void checkJsonAddress(JsonNode json) {
+    if (json.get("street").asText().equals("")) {
+      throw new PresentationException("street is needed ", Status.BAD_REQUEST);
+    }
+    if (json.get("building_number").asText().equals("")) {
+      throw new PresentationException("building number is needed ", Status.BAD_REQUEST);
+    }
+    if (json.get("postcode").asText().equals("")) {
+      throw new PresentationException("postcode is needed ", Status.BAD_REQUEST);
+    }
+    if (json.get("commune").asText().equals("")) {
+      throw new PresentationException("commune is needed ", Status.BAD_REQUEST);
+    }
+    if (json.get("country").asText().equals("")) {
+      throw new PresentationException("country is needed ", Status.BAD_REQUEST);
+    }
+    if (json.get("unit_number").asText().equals("")) {
+      throw new PresentationException("unit number is needed ", Status.BAD_REQUEST);
+    }
   }
 
 

@@ -133,24 +133,8 @@ public class UserResource {
     if (json.get("firstname").asText().equals("")) {
       throw new PresentationException("Firstname is needed ", Status.BAD_REQUEST);
     }
-    if (json.get("street").asText().equals("")) {
-      throw new PresentationException("street is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("building_number").asText().equals("")) {
-      throw new PresentationException("building number is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("postcode").asText().equals("")) {
-      throw new PresentationException("postcode is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("commune").asText().equals("")) {
-      throw new PresentationException("commune is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("country").asText().equals("")) {
-      throw new PresentationException("country is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("unit_number").asText().equals("")) {
-      throw new PresentationException("unit number is needed ", Status.BAD_REQUEST);
-    }
+
+    VisitResource.checkJsonAddress(json);
 
     UserDTO user = domaineFactory.getUserDTO();
 
