@@ -125,7 +125,6 @@ const onConfirmUserDescription = (data) => {
 
 const onConfirmUser = (e) => {
   e.preventDefault();
-  let userId = document.getElementById("id").value;
   let confirmed = document.getElementById("is_confirmed").checked;
   let antique_dealer = document.getElementById("is_antique_dealer").checked;
   let is_boss = document.getElementById("is_boss").checked;
@@ -133,7 +132,6 @@ const onConfirmUser = (e) => {
   let user = {
     isConfirmed: confirmed,
     isAntiqueDealer: antique_dealer,
-    userId: userId,
     isBoss: is_boss,
   };
   let id = getTokenSessionDate();

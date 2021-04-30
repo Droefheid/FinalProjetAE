@@ -2,6 +2,7 @@ import { RedirectUrl } from "./Router.js";
 import { API_URL } from "../utils/server.js";
 import { getUserSessionData, getTokenSessionDate } from "../utils/session";
 import Sidebar from "./SideBar.js";
+import Navbar from "./Navbar.js";
 
 let introduceVisits = `
 <div class="containerForm">
@@ -155,11 +156,18 @@ let introduceVisits = `
 																</div>`;
 
 const IntroduceVisits = () => {
+	const user = getUserSessionData();
+	if (!user || !user.isBoss ) {
+		// re-render the navbar for the authenticated user.
+		Navbar();
+		RedirectUrl(`/`);
+	}else{
   Sidebar();
   let page = document.querySelector("#page");
   page.innerHTML = introduceVisits;
   let introduceVisitsForm = document.querySelector("form");
   introduceVisitsForm.addEventListener("submit", onIntroduceVisits);
+ }
 };
 
 const onIntroduceVisits = (e) => {

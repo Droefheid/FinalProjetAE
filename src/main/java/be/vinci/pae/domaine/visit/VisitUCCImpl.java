@@ -33,7 +33,7 @@ public class VisitUCCImpl implements VisitUCC {
   @Override
   public List<VisitDTO> getAllNotConfirmed() {
     dalservices.startTransaction();
-    List<VisitDTO> list = visitDao.getAllConfirmed();
+    List<VisitDTO> list = visitDao.getAllNotConfirmed();
     dalservices.commitTransaction();
     return list;
   }
@@ -42,20 +42,19 @@ public class VisitUCCImpl implements VisitUCC {
 
   @Override
   public VisitDTO introduceVisit(VisitDTO visitDTO, AddressDTO addressDTO, UserDTO userDTO) {
-    // TODO Auto-generated method stub
     dalservices.startTransaction();
     int addressId = userDao.getAddressByInfo(addressDTO.getStreet(), addressDTO.getBuildingNumber(),
         addressDTO.getCommune(), addressDTO.getCountry());
     if (addressId == -1) {
       addressId = userDao.registerAddress(addressDTO);
     }
-    Visit visit = (Visit) visitDTO;
+    VisitDTO visit = visitDTO;
     visit.setAddressId(addressId);
 
     visit.setUserId(userDTO.getID());
 
 
-    visit = (Visit) visitDao.introduceVisit(visit);
+    visit = visitDao.introduceVisit(visit);
     if (visit == null) {
       dalservices.rollbackTransaction();
       throw new BusinessException("Visit already exists", Status.BAD_REQUEST);
@@ -67,7 +66,7 @@ public class VisitUCCImpl implements VisitUCC {
   @Override
   public VisitDTO getVisit(int id) {
     dalservices.startTransaction();
-    Visit visit = (Visit) this.visitDao.findById(id);
+    VisitDTO visit = visitDao.findById(id);
     if (visit == null) {
       dalservices.rollbackTransaction();
       throw new BusinessException("Visit doesn't exist", Status.BAD_REQUEST);
@@ -82,6 +81,14 @@ public class VisitUCCImpl implements VisitUCC {
     this.visitDao.updateConfirmed(visit);
     dalservices.commitTransaction();
 
+  }
+
+  @Override
+  public List<VisitDTO> getAllConfirmed() {
+    dalservices.startTransaction();
+    List<VisitDTO> list = visitDao.getAllConfirmed();
+    dalservices.commitTransaction();
+    return list;
   }
 
 

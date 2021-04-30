@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.api.utils.FatalException;
@@ -28,7 +29,11 @@ public class VisitDAOImpl implements VisitDAO {
     VisitDTO visit = domaineFactory.getVisitDTO();
     try {
       ps.setTimestamp(1, request_date);
-      visit = fullFillVisitFromResulSet(visit, ps);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          visit = fullFillVisitFromResulSet(visit, rs);
+        }
+      }
     } catch (SQLException e) {
       e.printStackTrace();
       ((DalServices) dalBackendServices).rollbackTransaction();
@@ -48,7 +53,11 @@ public class VisitDAOImpl implements VisitDAO {
     VisitDTO visit = domaineFactory.getVisitDTO();
     try {
       ps.setInt(1, id);
-      visit = fullFillVisitFromResulSet(visit, ps);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          visit = fullFillVisitFromResulSet(visit, rs);
+        }
+      }
     } catch (SQLException e) {
       e.printStackTrace();
       ((DalServices) dalBackendServices).rollbackTransaction();
@@ -57,21 +66,16 @@ public class VisitDAOImpl implements VisitDAO {
     return visit;
   }
 
-  private VisitDTO fullFillVisitFromResulSet(VisitDTO visit, PreparedStatement ps)
-      throws SQLException {
-    try (ResultSet rs = ps.executeQuery()) {
-      while (rs.next()) {
-        visit.setId(rs.getInt(1));
-        visit.setRequestDate(rs.getTimestamp(2));
-        visit.setTimeSlot(rs.getString(3));
-        visit.setDateAndHoursVisit(rs.getTimestamp(4));
-        visit.setExplanatoryNote(rs.getString(5));
-        visit.setLabelFurniture(rs.getString(6));
-        visit.setIsConfirmed(rs.getBoolean(7));
-        visit.setUserId(rs.getInt(8));
-        visit.setAddressId(rs.getInt(9));
-      }
-    }
+  private VisitDTO fullFillVisitFromResulSet(VisitDTO visit, ResultSet rs) throws SQLException {
+    visit.setId(rs.getInt(1));
+    visit.setRequestDate(rs.getTimestamp(2));
+    visit.setTimeSlot(rs.getString(3));
+    visit.setDateAndHoursVisit(rs.getTimestamp(4));
+    visit.setExplanatoryNote(rs.getString(5));
+    visit.setLabelFurniture(rs.getString(6));
+    visit.setIsConfirmed(rs.getBoolean(7));
+    visit.setUserId(rs.getInt(8));
+    visit.setAddressId(rs.getInt(9));
     return visit;
   }
 
@@ -104,20 +108,96 @@ public class VisitDAOImpl implements VisitDAO {
 
   @Override
   public List<VisitDTO> getAll() {
-    // TODO Auto-generated method stub
-    return null;
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("SELECT visit_id, request_date, time_slot, date_and_hours_visit,"
+            + " explanatory_note, label_furniture, is_confirmed," + " users, address"
+            + " FROM projet.visits");
+
+
+    List<VisitDTO> list = new ArrayList<VisitDTO>();
+    VisitDTO visit = domaineFactory.getVisitDTO();
+
+    try {
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        fullFillVisitFromResulSet(visit, rs);
+        list.add(visit);
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("error fullFillUsers", e);
+    }
+
+    return list;
   }
 
   @Override
   public void updateConfirmed(VisitDTO visit) {
-    // TODO Auto-generated method stub
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("UPDATE projet.visits SET is_confirmed = ? WHERE visit_id = ?");
+
+    try {
+      ps.setBoolean(1, visit.getIsConfirmed());
+      ps.setInt(2, visit.getId());
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      e.printStackTrace();
+      throw new FatalException(e.getMessage(), e);
+    }
 
   }
 
   @Override
-  public List<VisitDTO> getAllConfirmed() {
-    // TODO Auto-generated method stub
-    return null;
+  public List<VisitDTO> getAllNotConfirmed() {
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("SELECT visit_id, request_date, time_slot, date_and_hours_visit,"
+            + " explanatory_note, label_furniture, is_confirmed," + " users, address"
+            + " FROM projet.visits WHERE is_confirmed = ?");
+
+
+    List<VisitDTO> list = new ArrayList<VisitDTO>();
+    VisitDTO visit = domaineFactory.getVisitDTO();
+
+    try {
+      ps.setBoolean(1, false);
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        fullFillVisitFromResulSet(visit, rs);
+        list.add(visit);
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("error fullFillUsers", e);
+    }
+
+    return list;
   }
 
+  @Override
+  public List<VisitDTO> getAllConfirmed() {
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("SELECT visit_id, request_date, time_slot, date_and_hours_visit,"
+            + " explanatory_note, label_furniture, is_confirmed," + " users, address"
+            + " FROM projet.visits WHERE is_confirmed = ?");
+
+
+    List<VisitDTO> list = new ArrayList<VisitDTO>();
+    VisitDTO visit = domaineFactory.getVisitDTO();
+
+    try {
+      ps.setBoolean(1, true);
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        fullFillVisitFromResulSet(visit, rs);
+        list.add(visit);
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("error fullFillUsers", e);
+    }
+
+    return list;
+  }
 }
+

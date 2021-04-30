@@ -17,8 +17,11 @@ public interface VisitDAO {
 
   void updateConfirmed(VisitDTO visit);
 
-  List<VisitDTO> getAllConfirmed();
+  List<VisitDTO> getAllNotConfirmed();
 
 
   VisitDTO findByDate(Timestamp date);
+
+
+  List<VisitDTO> getAllConfirmed();
 }

@@ -17,4 +17,6 @@ public interface VisitUCC {
 
   List<VisitDTO> getAllNotConfirmed();
 
+  List<VisitDTO> getAllConfirmed();
+
 }

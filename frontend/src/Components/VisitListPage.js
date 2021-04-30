@@ -5,7 +5,7 @@ import Sidebar from "./SideBar.js";
 
 let page = document.querySelector("#page");
 
-const ConfirmVisits = () => {
+const VisitListPage = () => {
   Sidebar(true);
 
   let list = `
@@ -23,7 +23,7 @@ const ConfirmVisits = () => {
   `;
   let id = getTokenSessionDate();
   page.innerHTML = list;
-  fetch(API_URL + "visits/notConfirmed", {
+  fetch(API_URL + "visits/confirmed", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -39,7 +39,6 @@ const ConfirmVisits = () => {
 
 const onVisitList = (data) => {
   if (!data) return;
-
  showVisitList(data.users,data.visits);
 };
 
@@ -110,7 +109,6 @@ const onClick = (e) => {
 const onConfirmVisitDescription = (data) => {
 
   let id = getTokenSessionDate();
- 
     fetch(API_URL + "users/" + data.visit.userId, {
       method: "GET",
       headers: {
@@ -138,43 +136,10 @@ const visitDescription = (user,data) => {
   <p> Request Date: ${data.visit.requestDate }</p>
   <p> Time slot: ${data.visit.timeSlot }</p>
   <p> Explanatory note: ${data.visit.explanatoryNote }</p>
-    <input type="hidden" id="id" value="${data.visit.id}">
-  <input class="btn btn-primary" type="button" id="button_confirmed" value="Confirm">
   </div>`;
 
   info.innerHTML = description;
-
-  let btn = document.getElementById("button_confirmed");
-  btn.addEventListener("click", onConfirmVisit);
 }; 
-
-const onConfirmVisit = (e) => {
-  e.preventDefault();
-  let visitID = document.getElementById("id").value;
-
-  let visit = {
-    visit_id: visitID,
-  };
-
-  let id = getTokenSessionDate();
-  fetch(API_URL + "visits/", {
-    method: "PUT",
-    body: JSON.stringify(visit),
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: id,
-    },
-  }).then((response) => {
-    if (!response.ok) {
-      return response.text().then((err) => onError(err));
-    } else return onConfirmedVisit();
-  });
-};
-
-const onConfirmedVisit = () => {
-  alert("Visit has been confirmed")
-  RedirectUrl("/confirmVisits");
-};
 
 const onError = (err) => {
   let messageBoard = document.querySelector("#messageBoardForm");
@@ -187,4 +152,4 @@ const createTimeStamp = (dateString) => {
   return timeSplit[2].substr(0, 4) + "-" + timeSplit[1] + "-" + timeSplit[0] + " " + Timestamp.toLocaleTimeString();
 }
 
-export default ConfirmVisits;
+export default VisitListPage;

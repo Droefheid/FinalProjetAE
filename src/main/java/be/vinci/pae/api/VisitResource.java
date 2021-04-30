@@ -11,9 +11,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeBoss;
 import be.vinci.pae.api.utils.PresentationException;
+import be.vinci.pae.api.utils.ResponseMaker;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.address.AddressDTO;
 import be.vinci.pae.domaine.user.UserDTO;
+import be.vinci.pae.domaine.user.UserUCC;
 import be.vinci.pae.domaine.visit.VisitDTO;
 import be.vinci.pae.domaine.visit.VisitUCC;
 import jakarta.inject.Inject;
@@ -21,6 +23,7 @@ import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Context;
@@ -37,6 +40,9 @@ public class VisitResource {
 
   @Inject
   private VisitUCC visitUcc;
+
+  @Inject
+  private UserUCC userUcc;
 
   @Inject
   private DomaineFactory domaineFactory;
@@ -163,18 +169,66 @@ public class VisitResource {
   }
 
   /**
+   * get all visits not confirmed.
+   * 
+   * @return list of all visits not confirmed with list of users.
+   */
+  @GET
+  @Path("/notConfirmed")
+  @AuthorizeBoss
+  public Response allVisitsNotConfirmed() {
+    List<VisitDTO> listVisits = new ArrayList<VisitDTO>();
+    listVisits = visitUcc.getAllNotConfirmed();
+    List<UserDTO> listUser = new ArrayList<UserDTO>();
+    for (VisitDTO visit : listVisits) {
+      listUser.add(userUcc.getUser(visit.getUserId()));
+    }
+    return ResponseMaker.createResponseWithObjectNodeWith2PutPOJO("visits", listVisits, "users",
+        listUser);
+  }
+
+  /**
    * get all visits.
    * 
    * @return list of all visits.
    */
   @GET
-  @Path("/notConfirmed")
+  @Path("/confirmed")
   @AuthorizeBoss
   public Response allVisitsConfirmed() {
     List<VisitDTO> listVisits = new ArrayList<VisitDTO>();
-    listVisits = visitUcc.getAllNotConfirmed();
+    listVisits = visitUcc.getAllConfirmed();
+    List<UserDTO> listUser = new ArrayList<UserDTO>();
+    for (VisitDTO visit : listVisits) {
+      listUser.add(userUcc.getUser(visit.getUserId()));
+    }
+    return ResponseMaker.createResponseWithObjectNodeWith2PutPOJO("visits", listVisits, "users",
+        listUser);
+  }
 
-    ObjectNode node = jsonMapper.createObjectNode().putPOJO("list", listVisits);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+  /**
+   * update confirmation.
+   * 
+   * @return list of all users.
+   */
+  @PUT
+  @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeBoss
+  public Response updateConfirmed(@Context ContainerRequest request, JsonNode json) {
+    if (json.get("visit_id").asText().equals("")) {
+      throw new PresentationException("Visit id is needed ", Status.BAD_REQUEST);
+    }
+
+    int id = json.get("visit_id").asInt();
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+
+    if (currentUser == null) {
+      throw new PresentationException("User not found", Status.BAD_REQUEST);
+    }
+    VisitDTO visit = domaineFactory.getVisitDTO();
+    visit = visitUcc.getVisit(id);
+    visit.setIsConfirmed(true);
+    this.visitUcc.updateConfirmed(visit);
+    return Response.ok(MediaType.APPLICATION_JSON).build();
   }
 }

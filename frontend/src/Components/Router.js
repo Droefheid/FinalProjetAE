@@ -12,6 +12,7 @@ import ConfirmVisits from "./ConfirmVisits.js";
 import TestMultipartPage from "./TestMultipart.js";
 import UserListPage from "./UserListPage.js";
 import MyFurniturePage from "./MyFurniturePage.js";
+import VisitListPage from "./VisitListPage.js";
 
 const routes = {
   "/": HomePage,
@@ -26,6 +27,7 @@ const routes = {
   "/error": ErrorPage,
   "/updateFurniture": ModificationFurniturePage,
   "/introduceVisits": IntroduceVisits,
+  "/visitListPage": VisitListPage ,
   "/confirmVisits": ConfirmVisits,
 };
 
