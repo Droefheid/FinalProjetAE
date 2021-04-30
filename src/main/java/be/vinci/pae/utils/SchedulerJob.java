@@ -8,7 +8,6 @@ import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
@@ -77,8 +76,7 @@ public class SchedulerJob implements Job {
 
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
-    JobKey jobKey = context.getJobDetail().getKey();
-
+    // JobKey jobKey = context.getJobDetail().getKey();
     // Execute method
 
   }

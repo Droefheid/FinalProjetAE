@@ -24,7 +24,7 @@ public class LogFormatter extends Formatter {
         pw.close();
         sb.append(sw.toString());
       } catch (Exception ex) {
-        // ignore
+        throw new FatalException("Log formatter error");
       }
     }
 
