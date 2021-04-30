@@ -78,11 +78,11 @@ public class FurnitureResource {
     return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
   }
 
-  /*
+  /**
    * Add a furniture. with attribute title, purchase_price, state, seller, type, pick_up_date).
    * 
-   * return the furniture added.
-   * 
+   * @param json
+   * @return the furniture added.
    */
   @POST
   @AuthorizeBoss
