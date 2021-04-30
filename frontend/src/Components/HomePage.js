@@ -39,7 +39,7 @@ let homePage = `
 `;
 
 const HomePage = () => {   
-   Sidebar(true);
+   Sidebar(true, true);
    return page.innerHTML = homePage;
 };
 

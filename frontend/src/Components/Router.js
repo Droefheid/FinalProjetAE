@@ -9,7 +9,6 @@ import FurniturePage from "./FurniturePage.js";
 import ConfirmUserPage from "./ConfirmUserPage.js";
 import IntroduceVisits from "./IntroduceVisits.js";
 import ConfirmVisits from "./ConfirmVisits.js";
-import TestMultipartPage from "./TestMultipart.js";
 import UserListPage from "./UserListPage.js";
 import MyFurniturePage from "./MyFurniturePage.js";
 import VisitListPage from "./VisitListPage.js";

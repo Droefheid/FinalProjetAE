@@ -6,7 +6,7 @@ import Sidebar from "./SideBar.js";
 let page = document.querySelector("#page");
 
 const ConfirmUserPage = async () => {
-  Sidebar(true);
+  Sidebar(true, true);
 
   let list = `
   <div class="containerForm">

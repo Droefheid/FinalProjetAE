@@ -94,6 +94,7 @@ public class OptionUCCImpl implements OptionUCC {
       dalservices.rollbackTransaction();
       throw new BusinessException("There is no option currently on this furniture");
     }
+    dalservices.commitTransaction();
     return option;
   }
 

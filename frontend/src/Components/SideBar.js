@@ -3,7 +3,7 @@ import { getUserSessionData } from "../utils/session.js";
 let sideBar = document.querySelector("#sideBar");
 let movingRow = document.querySelector("#movingRow");
 
-const Sidebar = (needed) => {
+const Sidebar = (needed, secondNeeded) => {
     if(!needed) {
         // Remove padding.
         movingRow.className = "row justify-content-center mt-5";
@@ -32,7 +32,8 @@ const Sidebar = (needed) => {
       </div>`;
     }
 
-    // SideBar Content.
+    if(secondNeeded){
+      // SideBar Content.
     sidebar += `<!-- SideBar -->
     <div id="mySidenav" class="sidenav">
       <form class="mb-5 pb-4">
@@ -85,11 +86,12 @@ const Sidebar = (needed) => {
         }
     '>&#9776;</a>
     </div><div class="pb-4"></div>`;
+    }
 
     sideBar.innerHTML = sidebar;
 
     // Change position of sidebar if is boss
-    if(user && user.isBoss){
+    if(secondNeeded && user && user.isBoss){
       let mySidenav = document.querySelector("#mySidenav");
       let mySidenavButton = document.querySelector("#mySidenavButton");
 

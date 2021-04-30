@@ -7,4 +7,6 @@ public interface TypeDAO {
 
   List<TypeDTO> getAll();
 
+  TypeDTO findById(int id);
+
 }

@@ -59,6 +59,52 @@ public class ResponseMaker {
   }
 
   /**
+   * create a response with a ObjectNode with 3 putPOJO.
+   * 
+   * @param <E> the type of the object.
+   * @param <F> the type of the second object.
+   * @param <G> the type of the third object.
+   * @param namePOJO1 the name of the first POJO put.
+   * @param object1 first object to put.
+   * @param namePOJO2 the name of the second POJO put.
+   * @param object2 second object to put.
+   * @param namePOJO3 the name of the third POJO put.
+   * @param object3 third object to put.
+   * @return a response.ok build with all the ObjectNode inside.
+   */
+  public static <E, F, G> Response createResponseWithObjectNodeWith3PutPOJO(String namePOJO1,
+      E object1, String namePOJO2, F object2, String namePOJO3, G object3) {
+    ObjectNode node = createObjectNodeWithObjectNodeWith3PutPOJO(namePOJO1, object1, namePOJO2,
+        object2, namePOJO3, object3);
+    return createResponseWith(node);
+  }
+
+  /**
+   * create a response with a ObjectNode with 4 putPOJO.
+   * 
+   * @param <E> the type of the first object.
+   * @param <F> the type of the second object.
+   * @param <G> the type of the third object.
+   * @param <H> the type of the four object.
+   * @param namePOJO1 the name of the first POJO put.
+   * @param object1 first object to put.
+   * @param namePOJO2 the name of the second POJO put.
+   * @param object2 second object to put.
+   * @param namePOJO3 the name of the third POJO put.
+   * @param object3 third object to put.
+   * @param namePOJO4 the name of the four POJO put.
+   * @param object4 four object to put.
+   * @return a response.ok build with all the ObjectNode inside.
+   */
+  public static <E, F, G, H> Response createResponseWithObjectNodeWith4PutPOJO(String namePOJO1,
+      E object1, String namePOJO2, F object2, String namePOJO3, G object3, String namePOJO4,
+      H object4) {
+    ObjectNode node = createObjectNodeWithObjectNodeWith4PutPOJO(namePOJO1, object1, namePOJO2,
+        object2, namePOJO3, object3, namePOJO4, object4);
+    return createResponseWith(node);
+  }
+
+  /**
    * create a response with a ObjectNode with 5 putPOJO.
    * 
    * @param <E> the type of the first object.
@@ -83,6 +129,37 @@ public class ResponseMaker {
       H object4, String namePOJO5, I object5) {
     ObjectNode node = createObjectNodeWithObjectNodeWith5PutPOJO(namePOJO1, object1, namePOJO2,
         object2, namePOJO3, object3, namePOJO4, object4, namePOJO5, object5);
+    return createResponseWith(node);
+  }
+
+  /**
+   * create a response with a ObjectNode with 6 putPOJO.
+   * 
+   * @param <E> the type of the first object.
+   * @param <F> the type of the second object.
+   * @param <G> the type of the third object.
+   * @param <H> the type of the four object.
+   * @param <I> the type of the five object.
+   * @param <J> the type of the six object.
+   * @param namePOJO1 the name of the first POJO put.
+   * @param object1 first object to put.
+   * @param namePOJO2 the name of the second POJO put.
+   * @param object2 second object to put.
+   * @param namePOJO3 the name of the third POJO put.
+   * @param object3 third object to put.
+   * @param namePOJO4 the name of the four POJO put.
+   * @param object4 four object to put.
+   * @param namePOJO5 the name of the five POJO put.
+   * @param object5 five object to put.
+   * @param namePOJO6 the name of the six POJO put.
+   * @param object6 six object to put.
+   * @return a response.ok build with all the ObjectNode inside.
+   */
+  public static <E, F, G, H, I, J> Response createResponseWithObjectNodeWith6PutPOJO(
+      String namePOJO1, E object1, String namePOJO2, F object2, String namePOJO3, G object3,
+      String namePOJO4, H object4, String namePOJO5, I object5, String namePOJO6, J object6) {
+    ObjectNode node = createObjectNodeWithObjectNodeWith6PutPOJO(namePOJO1, object1, namePOJO2,
+        object2, namePOJO3, object3, namePOJO4, object4, namePOJO5, object5, namePOJO6, object6);
     return createResponseWith(node);
   }
 
@@ -158,7 +235,7 @@ public class ResponseMaker {
    * @return a ObjectNode with 3 PutPOJO inside.
    */
   private static <E, F, G> ObjectNode createObjectNodeWithObjectNodeWith3PutPOJO(String namePOJO1,
-      E object1, String namePOJO2, F object2, String namePOJO3, F object3) {
+      E object1, String namePOJO2, F object2, String namePOJO3, G object3) {
     return createObjectNodeWithObjectNodeWith2PutPOJO(namePOJO1, object1, namePOJO2, object2)
         .putPOJO(namePOJO3, object3);
   }
@@ -181,8 +258,8 @@ public class ResponseMaker {
    * @return a ObjectNode with 4 PutPOJO inside.
    */
   private static <E, F, G, H> ObjectNode createObjectNodeWithObjectNodeWith4PutPOJO(
-      String namePOJO1, E object1, String namePOJO2, F object2, String namePOJO3, F object3,
-      String namePOJO4, F object4) {
+      String namePOJO1, E object1, String namePOJO2, F object2, String namePOJO3, G object3,
+      String namePOJO4, H object4) {
     return createObjectNodeWithObjectNodeWith3PutPOJO(namePOJO1, object1, namePOJO2, object2,
         namePOJO3, object3).putPOJO(namePOJO4, object4);
   }
@@ -205,13 +282,43 @@ public class ResponseMaker {
    * @param object4 four object to put.
    * @param namePOJO5 the name of the five POJO put.
    * @param object5 five object to put.
-   * @return a ObjectNode with 4 PutPOJO inside.
+   * @return a ObjectNode with 5 PutPOJO inside.
    */
   private static <E, F, G, H, I> ObjectNode createObjectNodeWithObjectNodeWith5PutPOJO(
-      String namePOJO1, E object1, String namePOJO2, F object2, String namePOJO3, F object3,
-      String namePOJO4, F object4, String namePOJO5, F object5) {
+      String namePOJO1, E object1, String namePOJO2, F object2, String namePOJO3, G object3,
+      String namePOJO4, H object4, String namePOJO5, I object5) {
     return createObjectNodeWithObjectNodeWith4PutPOJO(namePOJO1, object1, namePOJO2, object2,
         namePOJO3, object3, namePOJO4, object4).putPOJO(namePOJO5, object5);
+  }
+
+  /**
+   * create a ObjectNode with 6 PutPOJO.
+   * 
+   * @param <E> the type of the first object.
+   * @param <F> the type of the second object.
+   * @param <G> the type of the third object.
+   * @param <H> the type of the four object.
+   * @param <I> the type of the five object.
+   * @param <J> the type of the six object.
+   * @param namePOJO1 the name of the first POJO put.
+   * @param object1 first object to put.
+   * @param namePOJO2 the name of the second POJO put.
+   * @param object2 second object to put.
+   * @param namePOJO3 the name of the third POJO put.
+   * @param object3 third object to put.
+   * @param namePOJO4 the name of the four POJO put.
+   * @param object4 four object to put.
+   * @param namePOJO5 the name of the five POJO put.
+   * @param object5 five object to put.
+   * @param namePOJO6 the name of the six POJO put.
+   * @param object6 six object to put.
+   * @return a ObjectNode with 6 PutPOJO inside.
+   */
+  private static <E, F, G, H, I, J> ObjectNode createObjectNodeWithObjectNodeWith6PutPOJO(
+      String namePOJO1, E object1, String namePOJO2, F object2, String namePOJO3, G object3,
+      String namePOJO4, H object4, String namePOJO5, I object5, String namePOJO6, J object6) {
+    return createObjectNodeWithObjectNodeWith5PutPOJO(namePOJO1, object1, namePOJO2, object2,
+        namePOJO3, object3, namePOJO4, object4, namePOJO5, object5).putPOJO(namePOJO6, object6);
   }
 
   /**

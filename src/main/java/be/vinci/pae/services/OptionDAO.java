@@ -11,6 +11,8 @@ public interface OptionDAO {
 
   OptionDTO findOptionByID(int optionID);
 
+  OptionDTO findOptionByFurniture(int furnitureId);
+
   OptionDTO findOptionByFurnitureIdANDCustomerId(int furnitureID, int customerID);
 
   void stopOption(OptionDTO option);

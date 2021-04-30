@@ -34,6 +34,7 @@ public class PhotoFurnitureDAOImpl implements PhotoFurnitureDAO {
         }
       }
     } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException("Error findById", e);
     }
     return photo;
@@ -55,6 +56,7 @@ public class PhotoFurnitureDAOImpl implements PhotoFurnitureDAO {
         }
       }
     } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException("Error getFavoritePhoto", e);
     }
     return photo;
@@ -76,9 +78,11 @@ public class PhotoFurnitureDAOImpl implements PhotoFurnitureDAO {
           list.add(photoFurniture);
         }
       } catch (SQLException e) {
+        ((DalServices) dalBackendServices).rollbackTransaction();
         throw new FatalException("Error getAllForFurniture", e);
       }
     } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException("Error setInt in getAllForFurniture", e);
     }
     return list;
@@ -94,6 +98,7 @@ public class PhotoFurnitureDAOImpl implements PhotoFurnitureDAO {
 
       ps.executeUpdate();
     } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException("Error add photo_furniture", e);
     }
     return findById(photoFurniture.getPhotoId());
@@ -130,7 +135,6 @@ public class PhotoFurnitureDAOImpl implements PhotoFurnitureDAO {
 
       ps.executeUpdate();
     } catch (SQLException e) {
-      e.printStackTrace();
       ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException("Error update photo furniture.", e);
     }
@@ -180,6 +184,7 @@ public class PhotoFurnitureDAOImpl implements PhotoFurnitureDAO {
       photoFurniture.setFurnitureId(rs.getInt(4));
 
     } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException("Error fullFillPhoto", e);
     }
 
