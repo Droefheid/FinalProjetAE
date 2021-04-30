@@ -82,7 +82,7 @@ public class FurnitureResource {
   /*
    * Add a furniture (title, purchase_price, state, seller, type, pick_up_date).
    * 
-   * return Reponse.ok().build();
+   * return the furniture added.
    * 
    */
   @POST
@@ -156,8 +156,8 @@ public class FurnitureResource {
 
     checkAllCredentialFurniture(json); // pourrais renvoyer le type si besoin en dessous.
     FurnitureDTO furniture = createFullFillFurniture(json);
-    List<PhotoDTO> photos = createAllPhotosFullFilled(json);
-    PhotoFurnitureDTO photoFurniture = createFullFillPhotoFurniture();
+    // List<PhotoDTO> photos = createAllPhotosFullFilled(json);
+    // PhotoFurnitureDTO photoFurniture = createFullFillPhotoFurniture();
 
     furniture = furnitureUCC.update(furniture);
 

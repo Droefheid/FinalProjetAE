@@ -43,6 +43,8 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     return furniture;
   }
 
+
+  @Override
   public FurnitureDTO findByFurnitureInfo(FurnitureDTO furnitureDTO) {
     PreparedStatement ps = this.dalBackendServices
         .getPreparedStatement("SELECT furniture_id, type, buyer, furniture_title,"

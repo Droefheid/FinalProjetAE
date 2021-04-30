@@ -19,7 +19,7 @@ import be.vinci.pae.services.TypeDAO;
 import be.vinci.pae.services.UserDAO;
 import be.vinci.pae.utils.Config;
 
-class testFurniture {
+class TestFurniture {
 
   private FurnitureUCC furnitureUCC;
   private FurnitureDTO furnitureDTO;

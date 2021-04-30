@@ -77,6 +77,7 @@ public class FurnitureUCCImpl implements FurnitureUCC {
     return furnitureDTO;
   }
 
+  @Override
   public Object[] getAllInfosForAdd() {
     dalservices.startTransaction();
     Object[] allLists = new Object[2];
