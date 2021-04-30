@@ -127,9 +127,11 @@ public class FurnitureResource {
     LocalDateTime optionTerm = LocalDateTime.parse(term);
     furnitureDTO.setPickUpDate(Timestamp.valueOf(optionTerm));
 
-    furnitureUCC.add(furnitureDTO);
+    furnitureDTO = furnitureUCC.add(furnitureDTO);
 
-    return Response.ok().build();
+    System.out.println(furnitureDTO);
+
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("furniture", furnitureDTO);
   }
 
   /**

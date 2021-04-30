@@ -3,6 +3,7 @@ import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
 import { getUserSessionData, getTokenSessionDate } from "../utils/session";
 import Navbar from "./Navbar.js";
+import { post } from "jquery";
 
 let page = document.querySelector("#page");
 
@@ -89,7 +90,9 @@ const onCreateAddPage = (data) => {
               addFurniturePage += `
           </select>
       </div>
+
       <input type="file" id="files" name="files" multiple>
+      <p class="text-muted">* Veuillez selectionner toutes les photos en une seule fois.</p>
 
       <button type="button" id="addForm" class="btn btn-primary" style="width:100%;">Add</button>
       <div id="messageBoardForm" style="margin-top:30px;"></div>
@@ -155,13 +158,16 @@ const onAddFurniture = () => {
         return response.text().then((err) => onError(err));
       }
       else
-        return onFurnitureAdded();
+        return response.json().then((data) => onFurnitureAdded(data));
     })
 }
 
-const onFurnitureAdded = () => {
-
-  //const input = document.getElementById('files');
+const onFurnitureAdded = (data) => {
+  
+  let furnitureId = data.furniture.furnitureId;
+  console.log(data,furnitureId);
+  
+  const input = document.getElementById('files');
   const formData = new FormData();
   for(let i = 0; i < input.files.length; i++){
       //console.log(input.files[i]);
@@ -169,9 +175,30 @@ const onFurnitureAdded = () => {
   }
   //console.log("Formdata: ", formData, "get('photo0'): ", formData.get("photo"));
 
+  let id = getTokenSessionDate();
+
+  fetch(API_URL + "photos/uploadPhotos", {
+    method: "POST",
+    body: formData,
+    headers:{
+      "Authorization": id,
+      "furnitureId": furnitureId,
+    }
+  })
+  .then((response) => {
+      if (!response.ok) {
+        return response.text().then((err) => onError(err));
+      }
+      else
+        return response.json().then((data) => onFurnitureAndPhotoAdded(data));
+    })
+};
+
+const onFurnitureAndPhotoAdded = (data) => {
+
   alert("Furniture has been added");
   RedirectUrl(`/furniture`);
-};
+}
 
 const onError = (err) => {
   let messageBoard = document.querySelector("#messageBoard");
