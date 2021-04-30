@@ -39,6 +39,25 @@ public class TypeDAOImpl implements TypeDAO {
     return list;
   }
 
+  @Override
+  public TypeDTO findById(int id) {
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("SELECT type_id," + " name" + " FROM projet.types WHERE type_id = ?");
+    TypeDTO type = null;
+    try {
+      ps.setInt(1, id);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          type = createFullFillType(rs);
+        }
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("Error findById", e);
+    }
+    return type;
+  }
+
   private TypeDTO createFullFillType(ResultSet rs) {
     TypeDTO type = domaineFactory.getTypeDTO();
     try {

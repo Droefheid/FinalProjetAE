@@ -6,7 +6,7 @@ import Sidebar from "./SideBar.js";
 let page = document.querySelector("#page");
 
 const UserListPage = async () => {
-    Sidebar(true);
+    Sidebar(true, true);
   let list = `
   <div class="containerForm">
 <div class="d-flex justify-content-center h-100 mt-4">
