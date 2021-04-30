@@ -16,7 +16,6 @@ import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.domaine.furniture.FurnitureUCC;
 import be.vinci.pae.domaine.photo.PhotoDTO;
-import be.vinci.pae.domaine.photo.PhotoFurnitureDTO;
 import be.vinci.pae.domaine.user.UserDTO;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -80,7 +79,7 @@ public class FurnitureResource {
   }
 
   /*
-   * Add a furniture (title, purchase_price, state, seller, type, pick_up_date).
+   * Add a furniture. with attribute title, purchase_price, state, seller, type, pick_up_date).
    * 
    * return the furniture added.
    * 
@@ -430,45 +429,5 @@ public class FurnitureResource {
     return furniture;
   }
 
-  private List<PhotoDTO> createAllPhotosFullFilled(JsonNode json) {
-    if (json.get("filesBase64").size() != json.get("filesName").size()) {
-      throw new PresentationException(
-          "The number of files is not the same then the number of names.", Status.BAD_REQUEST);
-    }
-
-    List<PhotoDTO> photos = new ArrayList<PhotoDTO>();
-
-    int i = 0;
-    while (json.get("filesBase64").get(i) != null) {
-      if (json.get("filesBase64").get(i).asText().equals("")) {
-        throw new PresentationException("A file base64 cannot be empty.", Status.BAD_REQUEST);
-      }
-      if (json.get("filesName").get(i).asText().equals("")) {
-        throw new PresentationException("A name cannot be empty.", Status.BAD_REQUEST);
-      }
-
-      String picture = json.get("filesBase64").get(i).asText();
-      String name = json.get("filesName").get(i).asText();
-      PhotoDTO photo = domaineFactory.getPhotoDTO();
-
-      photo.setPicture(picture);
-      photo.setName(name);
-
-      photos.add(photo);
-
-      i++;
-    }
-
-    return photos;
-  }
-
-  private PhotoFurnitureDTO createFullFillPhotoFurniture() {
-    PhotoFurnitureDTO photoFurniture = domaineFactory.getPhotoFurnitureDTO();
-
-    photoFurniture.setVisible(false);
-    photoFurniture.setFavourite(false);
-
-    return photoFurniture;
-  }
 
 }
