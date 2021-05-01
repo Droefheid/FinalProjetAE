@@ -83,16 +83,10 @@ public class FurnitureResource {
   }
 
   /**
-<<<<<<< HEAD
-   * Add a furniture (title, purchase_price, state, seller, type, pick_up_date).
-   * 
-   * @return return Reponse.ok().build();
-=======
    * Add a furniture. with attribute title, purchase_price, state, seller, type, pick_up_date).
    * 
    * @param json object containing all necessary information to add the furniture.
    * @return the furniture added.
->>>>>>> 5d9b166c6279a5ad9589fd0ba7f378eae37123d2
    */
   @POST
   @AuthorizeBoss

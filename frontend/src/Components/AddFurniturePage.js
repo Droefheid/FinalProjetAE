@@ -164,10 +164,6 @@ const onAddFurniture = () => {
     })
 }
 
-<<<<<<< HEAD
-const onFurnitureAdded = () => {
-  alert("Fsurniture has been added");
-=======
 const onFurnitureAdded = (data) => {
   
   let furnitureId = data.furniture.furnitureId;
@@ -203,7 +199,6 @@ const onFurnitureAdded = (data) => {
 const onFurnitureAndPhotoAdded = (data) => {
 
   alert("Furniture has been added");
->>>>>>> 5d9b166c6279a5ad9589fd0ba7f378eae37123d2
   RedirectUrl(`/furniture`);
 }
 
