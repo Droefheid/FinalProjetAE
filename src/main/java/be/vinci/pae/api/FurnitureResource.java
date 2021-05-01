@@ -132,7 +132,7 @@ public class FurnitureResource {
     furnitureDTO.setPickUpDate(Timestamp.valueOf(optionTerm));
 
     // Si le meuble rentre en magasin, il doit avoir une date de dépot.
-    if (furnitureDTO.getState().equals("M")) {
+    if (furnitureDTO.getState().equals(FurnitureDTO.STATES.IN_SHOP.getValue())) {
       LocalDateTime dateNow = LocalDateTime.now();
       furnitureDTO.setDepositDate(Timestamp.valueOf(dateNow));
     }

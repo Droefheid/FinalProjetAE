@@ -194,7 +194,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     ps.setString(1, furniture.getFurnitureTitle());
     ps.setDouble(2, furniture.getPurchasePrice());
     ps.setString(3, furniture.getState());
-    if (furniture.getState().equals("M")) {
+    if (furniture.getState().equals(FurnitureDTO.STATES.IN_SHOP.getValue())) {
       ps.setTimestamp(4, furniture.getDepositDate());
     } else {
       ps.setTimestamp(4, null);
