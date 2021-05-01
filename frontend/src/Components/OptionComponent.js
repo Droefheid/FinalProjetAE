@@ -6,7 +6,7 @@ import Navbar from "./Navbar.js";
 
 const OptionPage = () => {
   const user = getUserSessionData();
-  if (!user || !user.isBoss || !user_me.furnitureId) {
+  if (!user || !user_me.furnitureId) {
       // re-render the navbar for the authenticated user.
       Navbar();
       RedirectUrl("/");

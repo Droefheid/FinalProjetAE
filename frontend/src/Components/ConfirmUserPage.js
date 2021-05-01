@@ -125,15 +125,18 @@ const onConfirmUserDescription = (data) => {
 
 const onConfirmUser = (e) => {
   e.preventDefault();
+  let userID = document.getElementById("id").value;
   let confirmed = document.getElementById("is_confirmed").checked;
   let antique_dealer = document.getElementById("is_antique_dealer").checked;
   let is_boss = document.getElementById("is_boss").checked;
 
   let user = {
+    userId: userID,
     isConfirmed: confirmed,
     isAntiqueDealer: antique_dealer,
     isBoss: is_boss,
   };
+
   let id = getTokenSessionDate();
   fetch(API_URL + "users/", {
     method: "PUT",
