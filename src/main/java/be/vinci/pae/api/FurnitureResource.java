@@ -85,7 +85,7 @@ public class FurnitureResource {
   /**
    * Add a furniture. with attribute title, purchase_price, state, seller, type, pick_up_date).
    * 
-   * @param json
+   * @param json object containing all necessary information to add the furniture.
    * @return the furniture added.
    */
   @POST
