@@ -66,6 +66,19 @@ public class SchedulerJob implements Job {
   }
 
   /**
+   * Gets a scheduler and stops the list.
+   */
+  public void stopScheduler() {
+    Scheduler scheduler;
+    try {
+      scheduler = sf.getScheduler();
+      scheduler.shutdown(true);
+    } catch (SchedulerException e) {
+      throw new FatalException("Stop Scheduler error", e);
+    }
+  }
+
+  /**
    * Gets a scheduler and starts the list.
    */
   public void startScheduler() {

@@ -52,6 +52,7 @@ public class Main {
     SchedulerJob scheduler = new SchedulerJob();
     scheduler.startScheduler();
     System.in.read();
+    scheduler.stopScheduler();
     server.shutdownNow();
   }
 
