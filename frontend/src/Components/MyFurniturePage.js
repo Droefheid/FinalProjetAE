@@ -7,7 +7,7 @@ import { getTokenSessionDate, getUserSessionData } from "../utils/session.js";
 let page = document.querySelector("#page");
 
 const MyFurniturePage = async () => {
-    Sidebar(true, true);
+    Sidebar(true);
 
     page.innerHTML = `
       <div id="messageBoardForm"></div>
@@ -113,7 +113,6 @@ const onClick = (e) => {
       <p>Type : ${data.furniture.type} </br>
          State : ${data.furniture.state}
            </p>
-           <span id="optionform"> </span>
            <span id="updateForm"></span>
        
     </div>`;
@@ -130,32 +129,6 @@ const onClick = (e) => {
      let updateButton = document.querySelector("#updateB");
      updateButton.addEventListener("submit", onUpdate);
     }
-  
-    if(data.furniture.state !== "O" && data.furniture.state !== "V" ) {
-      let divOption = document.querySelector("#optionform");
-      divOption.innerHTML+= `<form class="btn" id="option">
-      <input id="id" value="${data.furniture.furnitureId}" hidden>
-      <input class="btn-primary" type="submit" value="Introduce option">
-      </form>`;
-      let optionButton = document.querySelector("#option");
-      optionButton.addEventListener("submit", onOption);
-    }else if(data.furniture.state === "O"){
-      let id = getTokenSessionDate();
-      fetch(API_URL + "options/"+ data.furniture.furnitureId, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization":id
-        },
-      })
-        .then((response) => {
-          if (!response.ok) {
-             return;
-          }
-          else
-             return response.json().then((data) => showStopOptionButton(data));
-        })
-    }
   };
   
   const onUpdate = (e) => {
@@ -164,54 +137,6 @@ const onClick = (e) => {
     user_me.furnitureId = furnitureId;
     RedirectUrl(`/updateFurniture`);
   }
-  
-  const onOption = (e) => {
-    e.preventDefault();
-    let furnitureId = document.getElementById("id").value;
-    user_me.furnitureId = furnitureId;
-    RedirectUrl(`/introduceOption`);
-  }
-  
-  
-  const showStopOptionButton = (data) => {
-    let divOption = document.querySelector("#optionform");
-    divOption.innerHTML +=`<form class="btn" id="option">
-    <input id="furnitureID" value="${data.option.furniture}" hidden>
-    <input id="optionID" value="${data.option.id}" hidden>
-    <input class="btn-primary" type="submit" value="Stop option">
-    </form>`;
-    let optionButton = document.querySelector("#option");
-    optionButton.addEventListener("submit", stopOption);
-  }
-  
-  const stopOption = (e) => {
-    e.preventDefault();
-    let id =getTokenSessionDate();
-    let furnitureID = document.getElementById("furnitureID").value;
-    let optionID = document.getElementById("optionID").value;
-    let option ={
-      "furnitureID":furnitureID,
-      "optionID":optionID,
-    }
-    fetch(API_URL + "options/", {
-      method: "PUT",
-      body: JSON.stringify(option),
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization":id
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.text().then((err) => onError(err));
-        }
-        else{
-          alert("The option on this furniture has been stopped.");
-          RedirectUrl(`/furniture`);
-        }
-      })
-  }
-  
   
   const onError = (err) => {
     let messageBoard = document.querySelector("#messageBoardForm");
