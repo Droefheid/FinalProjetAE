@@ -55,6 +55,13 @@ public class OptionImpl implements OptionDTO {
   }
 
   @Override
+  public String toString() {
+    return "OptionImpl [id=" + id + ", optionTerm=" + optionTerm + ", beginningOptionDate="
+        + beginningOptionDate + ", customer=" + customer + ", furniture=" + furniture
+        + ", isCurrentlyReserved=" + isCurrentlyReserved + "]";
+  }
+
+  @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;

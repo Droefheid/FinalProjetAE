@@ -2,7 +2,7 @@ package be.vinci.pae.utils;
 
 
 import java.time.LocalDateTime;
-import org.quartz.DateBuilder;
+import java.util.Date;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -35,11 +35,11 @@ public class SchedulerJob implements Job {
    */
   public void schedulerOption(LocalDateTime date, OptionDTO option) {
 
-    JobDetail job =
-        JobBuilder.newJob(SchedulerJob.class).withIdentity("optionJob", "group1").build();
+    JobDetail job = JobBuilder.newJob(SchedulerJob.class)
+        .withIdentity("" + option.getId(), "" + option.getId()).build();
     Trigger trigger = TriggerBuilder.newTrigger().withIdentity("OptionTrigger", "group1")
-        .startAt(DateBuilder.dateOf(date.getSecond(), date.getMinute(), date.getHour(),
-            date.getYear(), date.getMonth().getValue(), date.getDayOfMonth()))
+        .startAt(new Date(date.getYear(), date.getMonth().getValue(), date.getDayOfMonth(),
+            date.getHour(), date.getMinute(), date.getSecond()))
         .withSchedule(
             SimpleScheduleBuilder.simpleSchedule().withMisfireHandlingInstructionFireNow())
         .build();
@@ -57,7 +57,6 @@ public class SchedulerJob implements Job {
     Scheduler scheduler;
     try {
       scheduler = sf.getScheduler();
-      scheduler.scheduleJob(job, trigger);
       job.getJobDataMap().put("option", option);
       scheduler.scheduleJob(job, trigger);
     } catch (SchedulerException e) {
