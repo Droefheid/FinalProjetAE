@@ -17,10 +17,15 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import be.vinci.pae.api.utils.FatalException;
 import be.vinci.pae.domaine.option.OptionDTO;
+import be.vinci.pae.domaine.option.OptionUCC;
+import jakarta.inject.Inject;
 
 public class SchedulerJob implements Job {
 
   private SchedulerFactory sf = new StdSchedulerFactory();
+
+  @Inject
+  private OptionUCC optionUcc;
 
   /**
    * Schedule a job for an option.
@@ -61,6 +66,19 @@ public class SchedulerJob implements Job {
   }
 
   /**
+   * Gets a scheduler and stops the list.
+   */
+  public void stopScheduler() {
+    Scheduler scheduler;
+    try {
+      scheduler = sf.getScheduler();
+      scheduler.shutdown(true);
+    } catch (SchedulerException e) {
+      throw new FatalException("Stop Scheduler error", e);
+    }
+  }
+
+  /**
    * Gets a scheduler and starts the list.
    */
   public void startScheduler() {
@@ -76,9 +94,8 @@ public class SchedulerJob implements Job {
 
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
-    // JobKey jobKey = context.getJobDetail().getKey();
-    // Execute method
-
+    OptionDTO option = (OptionDTO) context.getMergedJobDataMap().get("option");
+    optionUcc.changeOptionState(option);
   }
 
 }
