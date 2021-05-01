@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import be.vinci.pae.api.utils.BusinessException;
+import be.vinci.pae.api.utils.FatalException;
 import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.FurnitureDAO;
@@ -96,6 +97,24 @@ public class OptionUCCImpl implements OptionUCC {
     }
     dalservices.commitTransaction();
     return option;
+  }
+
+  @Override
+  public void changeOptionState(OptionDTO option) {
+    dalservices.startTransaction();
+    OptionDTO verif = optionDao.findOptionByID(option.getId());
+    if (verif == null) {
+      dalservices.rollbackTransaction();
+      throw new FatalException("Job has an option which doesn't exist");
+    }
+    optionDao.stopOption(option);
+    FurnitureDTO furniture = furnitureDao.findById(option.getFurniture());
+    if (furniture.getState().equals(FurnitureDTO.STATES.SOLD.getValue())) {
+      dalservices.rollbackTransaction();
+      return;
+    }
+    optionDao.changeFurnitureState(FurnitureDTO.STATES.ON_SALE.getValue(), option.getFurniture());
+    dalservices.commitTransaction();
   }
 
 }

@@ -9,4 +9,6 @@ public interface OptionUCC {
   OptionDTO findOption(int furnitureID, int customerID);
 
   void stopOption(OptionDTO option);
+
+  void changeOptionState(OptionDTO option);
 }
