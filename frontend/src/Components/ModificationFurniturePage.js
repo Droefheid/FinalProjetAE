@@ -10,7 +10,7 @@ const STATES = [ "ER", "M", "EV", "O", "V", "EL", "L", "AE", "E", "R", "RE" ];
 let page = document.querySelector("#page");
 
 const ModificationFurniturePage = () => {    
-    Sidebar(true);
+    Sidebar(true, false);
 
     const user = getUserSessionData();
     if (!user || !user.isBoss || !user_me.furnitureId) {
@@ -40,95 +40,122 @@ const onPageCreate = (data) => {
     let users = data.users;
     let photos = data.photos;
     let photosFurnitures = data.photosFurnitures;
+    let option = data.option;
 
     //console.log(photos, photosFurnitures);
 
     // Modification of all Timestamp into Date.
-    let Timestamp = null;
-    let timeSplit = null;
     // Furniture date collection.
     if(furniture.furnitureDateCollection){
-        Timestamp = new Date(furniture.furnitureDateCollection);
-        timeSplit = Timestamp.toLocaleString().split("/");
-        furniture.furnitureDateCollection = timeSplit[2].substr(0, 4)+"-"+timeSplit[1]+"-"+timeSplit[0]+" "+Timestamp.toLocaleTimeString();
+        furniture.furnitureDateCollection = createTimeStamp(furniture.furnitureDateCollection);
     }
     // Deposit date.
     if(furniture.depositDate){
-        Timestamp = new Date(furniture.depositDate);
-        timeSplit = Timestamp.toLocaleString().split("/");
-        furniture.depositDate = timeSplit[2].substr(0, 4)+"-"+timeSplit[1]+"-"+timeSplit[0]+" "+Timestamp.toLocaleTimeString();
+        furniture.depositDate = createTimeStamp(furniture.depositDate);
     }
     // Date of sale.
     if(furniture.dateOfSale){
-        Timestamp = new Date(furniture.dateOfSale);
-        timeSplit = Timestamp.toLocaleString().split("/");
-        furniture.dateOfSale = timeSplit[2].substr(0, 4)+"-"+timeSplit[1]+"-"+timeSplit[0]+" "+Timestamp.toLocaleTimeString();
+        furniture.dateOfSale = createTimeStamp(furniture.dateOfSale);
     }
     // Sale withdrawal date.
     if(furniture.saleWithdrawalDate){
-        Timestamp = new Date(furniture.saleWithdrawalDate);
-        timeSplit = Timestamp.toLocaleString().split("/");
-        furniture.saleWithdrawalDate = timeSplit[2].substr(0, 4)+"-"+timeSplit[1]+"-"+timeSplit[0]+" "+Timestamp.toLocaleTimeString();
+        furniture.saleWithdrawalDate = createTimeStamp(furniture.saleWithdrawalDate);
     }
     // Pick-up date.
     if(furniture.pickUpDate){
-        Timestamp = new Date(furniture.pickUpDate);
-        timeSplit = Timestamp.toLocaleString().split("/");
-        furniture.pickUpDate = timeSplit[2].substr(0, 4)+"-"+timeSplit[1]+"-"+timeSplit[0]+" "+Timestamp.toLocaleTimeString();
+        furniture.pickUpDate = createTimeStamp(furniture.pickUpDate);
     }
     
     let modifPage = `
-    <form id="update" class="form-inline" enctype="multipart/form-data">
+    <form id="update" class="form-inline pb-5" enctype="multipart/form-data">
         <input id="furnitureId" value="${furniture.furnitureId}" hidden>
         <div class="row">
             <div class="col-sm-6 bg-info">
                 <label for="title">Titre: </label>
-                <input type="text" class="form-control" id="title" value="${furniture.furnitureTitle}" placeholder="Enter title" name="title" required>
+                <input type="text" class="form-control" id="title" value="${furniture.furnitureTitle}" placeholder="Enter title" name="title" required`;
+                if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
+                modifPage += `>
                 <label for="state">Etat: </label>
                 <div class="form-group">
-                    <select class="form-control" id="state" name="state">
-                        <option value="ER"`;
+                    <select class="form-control" id="state" name="state"`;
+                    if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
+                    modifPage += `>`;
+                    if(furniture.state == "ER"){
+                        modifPage += `<option value="ER"`;
                         if(furniture.state == "ER") modifPage += ` selected`;
-                        modifPage += `>En restauration</option>
-                        <option value="M"`;
+                        modifPage += `>En restauration</option>`;
+                    }
+                    if(furniture.state == "ER" || furniture.state == "M"){
+                        modifPage += `<option value="M"`;
                         if(furniture.state == "M") modifPage += ` selected`;
-                        modifPage += `>En magasin</option>
-                        <option value="EV"`;
+                        modifPage += `>En magasin</option>`;
+                    }
+                    if(furniture.state == "M" || furniture.state == "EV" || furniture.state == "O"){
+                        modifPage += `<option value="EV"`;
                         if(furniture.state == "EV") modifPage += ` selected`;
-                        modifPage += `>En vente</option>
-                        <option value="O"`;
+                        modifPage += `>En vente</option>`;
+                    }
+                    if(/*furniture.state == "EV" || */furniture.state == "O"){
+                        modifPage += `<option value="O"`;
                         if(furniture.state == "O") modifPage += ` selected`;
-                        modifPage += `>Sous option</option>
-                        <option value="V"`;
+                        modifPage += `>Sous option</option>`;
+                    }
+                    if(furniture.state == "ER" || furniture.state == "M" || furniture.state == "EV" 
+                    || furniture.state == "O" || furniture.state == "V"){
+                        modifPage += `<option value="V"`;
                         if(furniture.state == "V") modifPage += ` selected`;
-                        modifPage += `>Vendu</option>
-                        <option value="EL"`;
+                        modifPage += `>Vendu</option>`;
+                    }
+                    /*if(furniture.state == "EL"){
+                        modifPage += `<option value="EL"`;
                         if(furniture.state == "EL") modifPage += ` selected`;
-                        modifPage += `>En livraison</option>
-                        <option value="L"`;
+                        modifPage += `>En livraison</option>`;
+                    }*/
+                    /*if(furniture.state == "L"){
+                        modifPage += `<option value="L"`;
                         if(furniture.state == "L") modifPage += ` selected`;
-                        modifPage += `>Livré</option>
-                        <option value="AE"`;
+                        modifPage += `>Livré</option>`;
+                    }*/
+                    /*if(furniture.state == "AE"){
+                        modifPage += `<option value="AE"`;
                         if(furniture.state == "AE") modifPage += ` selected`;
-                        modifPage += `>a emporté</option>
-                        <option value="E"`;
+                        modifPage += `>a emporté</option>`;
+                    }*/
+                    /*if(furniture.state == "E"){
+                        modifPage += `<option value="E"`;
                         if(furniture.state == "E") modifPage += ` selected`;
-                        modifPage += `>Emporté</option>
-                        <option value="R"`;
+                        modifPage += `>Emporté</option>`;
+                    }*/
+                    /*if(furniture.state == "R"){
+                        modifPage += `<option value="R"`;
                         if(furniture.state == "R") modifPage += ` selected`;
-                        modifPage += `>Reservé</option>
-                        <option value="RE"`;
+                        modifPage += `>Reservé</option>`;
+                    }*/
+                    if(furniture.state == "EV" || furniture.state == "RE"){
+                        modifPage += `<option value="RE"`;
                         if(furniture.state == "RE") modifPage += ` selected`;
-                        modifPage += `>Retiré</option>
-                    </select>
-                </div>
-                <label for="depositDate">Date de dépot: </label>
-                <input type="text" class="form-control" id="depositDate" `;
-                if(furniture.depositDate) modifPage += ` value="${furniture.depositDate}"`;
-                modifPage += `" placeholder="Enter date of deposit" name="depositDate">
+                        modifPage += `>Retiré</option>`;
+                    }
+                    modifPage += `</select>
+                </div>`;
+                if(furniture.state == "O" && option){
+                    modifPage += `<p><u>Option from:</u> `;
+                    users.forEach(user => { 
+                        if(user.id == option.customer) modifPage += `<strong>${user.username}</strong>`; 
+                    });
+                    modifPage += `</p>`;
+                }
+                modifPage += `<label for="pickUpDate">Pick-up date: </label>`;
+                modifPage += `<input type="datetime-local" class="form-control" id="pickUpDate"`;
+                if(furniture.pickUpDate) modifPage += ` value="${furniture.pickUpDate}"`;
+                modifPage += ` name="pickUpDate" step="1" required`;
+                if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
+                modifPage += `>
                 <label for="seller">Vendeur: </label>
                 <div class="form-group">
-                    <select class="form-control" id="seller" name="seller">`;
+                    <select class="form-control" id="seller" name="seller"`;
+                    if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
+                    modifPage += `>`;
                     users.forEach(user => {
                         modifPage += `<option value="${user.id}"`;
                         if(furniture.seller == user.id) modifPage += ` selected`;
@@ -139,7 +166,9 @@ const onPageCreate = (data) => {
                 </div>
                 <label for="type">Type: </label>
                 <div class="form-group">
-                    <select class="form-control" id="type" name="type">`;
+                    <select class="form-control" id="type" name="type"`;
+                    if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
+                    modifPage += `>`;
                         types.forEach(type => {
                             modifPage += `<option value="${type.typeId}"`;
                             if(furniture.type == type.typeId) modifPage += ` selected`;
@@ -149,58 +178,89 @@ const onPageCreate = (data) => {
                     </select>
                 </div>
                 <br>
-                <input type="file" id="files" name="files" multiple>
+                <input type="file" id="files" name="files" multiple`;
+                if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
+                modifPage += `>
                 <p class="text-muted">* Veuillez selectionner toutes les photos en une seule fois.</p>
-                <div id="showImg"></div>
-                <button type="submit" name="submitPhoto" class="btn btn-primary mb-2"><i class="fas fa-save"></i></button>
-                <div class="card-columns">`;
+                <div id="showImg"></div>`;
+                if(furniture.state != "V" && furniture.state != "RE") 
+                    modifPage += `<button type="submit" name="submitPhoto" class="btn btn-primary mb-2"><i class="fas fa-save"></i></button>`;
+                modifPage += `<div class="card-columns">`;
                 for (let i = 0; i < photos.length; i++) {
                     //console.log(photos[i]);
                     modifPage += `<div class="card" style="width: 90px">
                         <input id="photoId" value="${photos[i].id}" hidden>
                         <img class="card-img-top" src="` + photos[i].picture + `" style="width: 100%" alt="` + photos[i].name +`" />`;
-                    modifPage += `<div class="card-body">
-                            <button id="${photos[i].id}" type="submit" name="delettePhoto" class="btn btn-danger">
-                                <i class="material-icons">delete</i>
-                            </button>
-                            <button id="${photos[i].id}" type="submit" name="favoritePhoto" class="btn btn-light">
-                                <i class="`;
-                                if(photosFurnitures[i].favourite) modifPage += `fas fa-heart`;
-                                else modifPage += `far fa-heart`;
-                            modifPage += `" style="color:red"></i>
-                            </button>
-                            <button id="${photos[i].id}" type="submit" name="visiblePhoto" class="btn btn-light">
-                                <i class="fas fa-eye`;
-                                if(!photosFurnitures[i].visible) modifPage += `-slash`;
-                            modifPage += `"></i>
-                            </button>
-                        </div>
-                    </div>`;
+                    if(furniture.state != "V" && furniture.state != "RE"){
+                        modifPage += `<div class="card-body">
+                                <button id="${photos[i].id}" type="submit" name="delettePhoto" class="btn btn-danger">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                                <button id="${photos[i].id}" type="submit" name="favoritePhoto" class="btn btn-light">
+                                    <i class="`;
+                                    if(photosFurnitures[i].favourite) modifPage += `fas fa-heart`;
+                                    else modifPage += `far fa-heart`;
+                                modifPage += `" style="color:red"></i>
+                                </button>
+                                <button id="${photos[i].id}" type="submit" name="visiblePhoto" class="btn btn-light">
+                                    <i class="fas fa-eye`;
+                                    if(!photosFurnitures[i].visible) modifPage += `-slash`;
+                                modifPage += `"></i>
+                                </button>
+                            </div>`;
+                    }
+                    modifPage += `</div>`;
                 };
                 modifPage += `</div>
             </div>
-            <div class="col-sm-6 bg-warning">
-                <label for="furnitureDateCollection">Date emporter: </label>
-                <input type="text" class="form-control" id="furnitureDateCollection"`;
+            <div class="col-sm-6 bg-warning">`;
+                modifPage += `<label for="depositDate">Date de dépot: </label>
+                <div class="input-group"><input type="datetime-local" class="form-control" id="depositDate" `;
+                if(furniture.depositDate) modifPage += ` value="${furniture.depositDate}"`;
+                modifPage += `" name="depositDate" step="1"`;
+                if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
+                modifPage += `><button id="depositDateButton"><i class="material-icons">delete</i></button>
+                </div>
+                <!--<label for="furnitureDateCollection">Date emporter: </label>-->
+                <input type="datetime-local" class="form-control" id="furnitureDateCollection"`;
                 if(furniture.furnitureDateCollection) modifPage += ` value="${furniture.furnitureDateCollection}"`;
-                modifPage += ` placeholder="Enter furnitureDateCollection" name="furnitureDateCollection">
+                modifPage += ` name="furnitureDateCollection" step="1" hidden`;
+                if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
+                modifPage += `>
                 <label for="dateOfSale">Date de vente: </label>
-                <input type="text" class="form-control" id="dateOfSale"`;
+                <div class="input-group"><input type="datetime-local" class="form-control" id="dateOfSale"`;
                 if(furniture.dateOfSale) modifPage += ` value="${furniture.dateOfSale}"`;
-                modifPage += ` placeholder="Enter date Of Sale" name="dateOfSale">
-                <label for="saleWithdrawalDate">Date de retrait: </label>
-                <input type="text" class="form-control" id="saleWithdrawalDate"`;
+                modifPage += ` name="dateOfSale" step="1"`;
+                if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
+                modifPage += `><button id="dateOfSaleButton"><i class="material-icons">delete</i></button>
+                </div>`;
+                if(furniture.state == "EV" || furniture.state == "RE") modifPage += `<label for="saleWithdrawalDate">Date de retrait: </label>
+                <div class="input-group">`;
+                modifPage += `<input type="datetime-local" class="form-control" id="saleWithdrawalDate"`;
                 if(furniture.saleWithdrawalDate) modifPage += ` value="${furniture.saleWithdrawalDate}"`;
-                modifPage += ` placeholder="Enter sale With drawal Date" name="saleWithdrawalDate">
-                <label for="purchasePrice">Prix d'achat: </label>
-                <input type="text" class="form-control" id="purchasePrice" value="${furniture.purchasePrice}" placeholder="Enter purchase Price" name="purchasePrice" required>
+                modifPage += ` name="saleWithdrawalDate" step="1"`;
+                if(furniture.state != "EV" && furniture.state != "RE") modifPage += ` hidden`;
+                if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
+                modifPage += `>`;
+                if(furniture.state == "EV") modifPage += `<button id="saleWithdrawalDateButton"><i class="material-icons">delete</i></button>
+                </div>`;
+                modifPage += `<label for="purchasePrice">Prix d'achat: </label>
+                <input type="number" class="form-control" id="purchasePrice" value="${furniture.purchasePrice}" placeholder="Enter purchase Price" name="purchasePrice" required`;
+                if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
+                modifPage += `>
                 <label for="sellingPrice">Prix de vente: </label>
-                <input type="text" class="form-control" id="sellingPrice" value="${furniture.sellingPrice}" placeholder="Enter selling Price" name="sellingPrice">
+                <input type="number" class="form-control" id="sellingPrice" value="${furniture.sellingPrice}" placeholder="Enter selling Price" name="sellingPrice"`;
+                if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
+                modifPage += `>
                 <label for="specialSalePrice">Prix antiquaire: </label>
-                <input type="text" class="form-control" id="specialSalePrice" value="${furniture.specialSalePrice}" placeholder="Enter special Sale Price" name="specialSalePrice">
+                <input type="number" class="form-control" id="specialSalePrice" value="${furniture.specialSalePrice}" placeholder="Enter special Sale Price" name="specialSalePrice"`;
+                if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
+                modifPage += `>
                 <label for="buyer">Acheteur: </label>
                 <div class="form-group">
-                    <select class="form-control" id="buyer" name="buyer">
+                    <select class="form-control" id="buyer" name="buyer"`;
+                    if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
+                    modifPage += `>
                         <option value="0">Nobody</option>`;
                         users.forEach(user => {
                             modifPage += `<option value="${user.id}"`;
@@ -210,13 +270,11 @@ const onPageCreate = (data) => {
                         modifPage += `
                     </select>
                 </div>
-                <label for="delivery">Livraison: </label>
-                <input type="text" class="form-control" id="delivery" value="${furniture.delivery}" placeholder="Enter delivery" name="delivery">
-                <label for="pickUpDate">Pick-up date: </label>
-                <input type="text" class="form-control" id="pickUpDate"`;
-                if(furniture.pickUpDate) modifPage += ` value="${furniture.pickUpDate}"`;
-                modifPage += ` placeholder="Enter pickUpDate" name="pickUpDate" required>
-                <input type="submit" name="submitUpdate" value="update" class="btn btn-lg btn-primary btn-block">
+                <!--<label for="delivery">Livraison: </label>-->
+                <input type="number" class="form-control" id="delivery" value="${furniture.delivery}" placeholder="Enter delivery" name="delivery" hidden`;
+                if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
+                modifPage += `>`;
+                if(furniture.state != "V" && furniture.state != "RE") modifPage += `<input type="submit" name="submitUpdate" value="update" class="btn btn-lg btn-primary btn-block">
             </div>
         </div>
     </form><div>`;
@@ -226,6 +284,16 @@ const onPageCreate = (data) => {
     form.addEventListener("submit", onSubmit);
     let uploadImage = document.querySelector("#files");
     uploadImage.addEventListener("change", onUpload);
+
+    // Set remove buttons.
+    let depositDateButton = document.querySelector("#depositDateButton");
+    depositDateButton.addEventListener("click", onRemoveDepositDate);
+    let dateOfSaleButton = document.querySelector("#dateOfSaleButton");
+    dateOfSaleButton.addEventListener("click", onRemoveDateOfSale);
+    if(furniture.state == "EV") {
+        let saleWithdrawalDateButton = document.querySelector("#saleWithdrawalDateButton");
+        saleWithdrawalDateButton.addEventListener("click", onRemoveSaleWithdrawalDate);
+    }
 }
 
 const onUpload = (e) => {
@@ -243,6 +311,18 @@ const onUpload = (e) => {
         }
         reader.readAsDataURL(files[i]);
     }
+}
+
+const onRemoveDepositDate = () => {
+    document.querySelector("#depositDate").value = "";
+}
+
+const onRemoveDateOfSale = () => {
+    document.querySelector("#dateOfSale").value = "";
+}
+
+const onRemoveSaleWithdrawalDate = () => {
+    document.querySelector("#saleWithdrawalDate").value = "";
 }
 
 const onSubmit = (e) => {
@@ -409,10 +489,14 @@ const onSubmitUpdate = () => {
     let seller = document.getElementById("seller").value;
     let pickUpDate = document.getElementById("pickUpDate").value;
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    // Verifier qu'il ne peux pas revenir en arriere genre de en vente vers en restauration.
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+
     // Required field.
     if(!furnitureId || !title || !state || !purchasePrice || !seller 
         || !pickUpDate || !type) {
-        let err = { message: '<div class="alert alert-danger">Something required is missing.</div>' };
+        let err = { message: 'Something required is missing.' };
         return onError(err);
     }
 
@@ -553,5 +637,11 @@ const onError = (err) => {
     if(err.message) ALERT_BOX(messageBoard, err.message);
     else ALERT_BOX(messageBoard, err);
 };
+
+const createTimeStamp = (dateString) => {
+    let Timestamp = new Date(dateString);
+    let timeSplit = Timestamp.toLocaleString().split("/");
+    return timeSplit[2].substr(0, 4) + "-" + timeSplit[1] + "-" + timeSplit[0] + "T" + Timestamp.toLocaleTimeString();
+}
  
 export default ModificationFurniturePage;

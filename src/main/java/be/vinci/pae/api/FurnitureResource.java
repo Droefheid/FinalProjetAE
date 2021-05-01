@@ -16,6 +16,7 @@ import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.domaine.furniture.FurnitureUCC;
 import be.vinci.pae.domaine.photo.PhotoDTO;
+import be.vinci.pae.domaine.type.TypeUCC;
 import be.vinci.pae.domaine.user.UserDTO;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -33,6 +34,9 @@ import jakarta.ws.rs.core.Response.Status;
 @Singleton
 @Path("/furnitures")
 public class FurnitureResource {
+
+  @Inject
+  private TypeUCC typeUCC;
 
   @Inject
   private FurnitureUCC furnitureUCC;
@@ -153,10 +157,10 @@ public class FurnitureResource {
     // System.out.println(json.get("formData").get("photo0"));
     // System.out.println(json.get("filesBase64").get(0));
 
+    // TODO Verifier son etat.
     checkAllCredentialFurniture(json); // pourrais renvoyer le type si besoin en dessous.
     FurnitureDTO furniture = createFullFillFurniture(json);
-    // List<PhotoDTO> photos = createAllPhotosFullFilled(json);
-    // PhotoFurnitureDTO photoFurniture = createFullFillPhotoFurniture();
+    checkIfRespectStateDiagram(furniture);
 
     furniture = furnitureUCC.update(furniture);
 
@@ -203,9 +207,9 @@ public class FurnitureResource {
     }
 
     int i = 0;
-    return ResponseMaker.createResponseWithObjectNodeWith5PutPOJO("furniture", listOfAll[i++],
+    return ResponseMaker.createResponseWithObjectNodeWith6PutPOJO("furniture", listOfAll[i++],
         "types", listOfAll[i++], "users", listOfAll[i++], "photos", listOfAll[i++],
-        "photosFurnitures", listOfAll[i++]);
+        "photosFurnitures", listOfAll[i++], "option", listOfAll[i++]);
   }
 
 
@@ -240,7 +244,7 @@ public class FurnitureResource {
       throw new PresentationException("State is needed.", Status.BAD_REQUEST);
     }
     if (json.get("purchasePrice").asText().equals("") || json.get("purchasePrice").asInt() <= 0) {
-      throw new PresentationException("Purchase Price is needed or inccorect.", Status.BAD_REQUEST);
+      throw new PresentationException("Purchase Price is needed or incorrect.", Status.BAD_REQUEST);
     }
     if (json.get("seller").asText().equals("")) {
       throw new PresentationException("Seller is needed.", Status.BAD_REQUEST);
@@ -252,21 +256,11 @@ public class FurnitureResource {
     if (json.get("pickUpDate").asText().equals("")) {
       throw new PresentationException("Pick-up date is needed.", Status.BAD_REQUEST);
     }
-    String timestampPattern = "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$";
-    Pattern pattern = Pattern.compile(timestampPattern, Pattern.CASE_INSENSITIVE);
-    Matcher matcher = pattern.matcher(json.get("pickUpDate").asText());
-    if (!matcher.find()) {
-      throw new PresentationException("Pick-up date is not matching a Timestamp pattern.",
-          Status.BAD_REQUEST);
-    }
+    checkTimestampPattern("Pick-up date", json.get("pickUpDate").asText());
     if (json.get("type").asText().equals("") || json.get("type").asInt() < 1) {
       throw new PresentationException("Type is needed ", Status.BAD_REQUEST);
     }
-    // TODO
-    // int typeId = json.get("type").asInt();
-    // if (typeId < 1 || getTypeById(typeId) == null) {
-    // throw new BusinessException("Type does not exist ", HttpStatus.BAD_REQUEST_400);
-    // }
+    this.typeUCC.findById(json.get("type").asInt());
 
 
     // Check when the furniture is in restoration.
@@ -282,7 +276,9 @@ public class FurnitureResource {
       throw new PresentationException("A deposit date is needed if is not anymore in restoration.",
           Status.BAD_REQUEST);
     }
-    // TODO Verifier que depositDate est bien un timestamp.
+    if (json.get("depositDate").asText() != null && !json.get("depositDate").asText().equals("")) {
+      checkTimestampPattern("Deposite date", json.get("depositDate").asText());
+    }
 
 
     // Check when the furniture is put up for sale.
@@ -329,7 +325,14 @@ public class FurnitureResource {
       throw new PresentationException("A date of sale is needed if a buyer is specify.",
           Status.BAD_REQUEST);
     }
-    // TODO Verifier que dateOfSale est bien un timestamp.
+    if (json.get("dateOfSale").asText() != null && !json.get("dateOfSale").asText().equals("")) {
+      checkTimestampPattern("Date of sale", json.get("dateOfSale").asText());
+    }
+    if ((json.get("buyer").asText().equals("") || json.get("buyer").asText().equals("0"))
+        && json.get("dateOfSale").asText() != null && !json.get("dateOfSale").asText().equals("")) {
+      throw new PresentationException("You can't have a date of sale if a buyer is not specify.",
+          Status.BAD_REQUEST);
+    }
     // TODO Verifier que si il y a un buyer, il y a soit delivery/saleWithdrawalDate.
 
     // Case if delivery.
@@ -338,7 +341,6 @@ public class FurnitureResource {
       throw new PresentationException(
           "Delivery is needed if the state is on delivery or delivered.", Status.BAD_REQUEST);
     }
-    // TODO Verifier que delivery est bien un timestamp.
 
     // Case if takeaway.
     if ((state.equals("AE") || state.equals("E"))
@@ -347,7 +349,11 @@ public class FurnitureResource {
           "Furniture date collection is needed if the state is to go or take away.",
           Status.BAD_REQUEST);
     }
-    // TODO Verifier que furnitureDateCollection est bien un timestamp.
+    if (json.get("furnitureDateCollection").asText() != null
+        && !json.get("furnitureDateCollection").asText().equals("")) {
+      checkTimestampPattern("Furniture date collection",
+          json.get("furnitureDateCollection").asText());
+    }
 
     // Case if antique dealer.
     if (!json.get("specialSalePrice").asText().equals("")
@@ -383,7 +389,11 @@ public class FurnitureResource {
           "The state need to be withdraw if a sale withdrawal date is specify.",
           Status.BAD_REQUEST);
     }
-    // TODO Verifier que saleWithdrawalDate est bien un timestamp.
+    if (json.get("saleWithdrawalDate").asText() != null
+        && !json.get("saleWithdrawalDate").asText().equals("")) {
+      checkTimestampPattern("Sale withdrawal date", json.get("saleWithdrawalDate").asText());
+    }
+
   }
 
   private FurnitureDTO createFullFillFurniture(JsonNode json) {
@@ -397,7 +407,8 @@ public class FurnitureResource {
 
     Timestamp timestamp;
     if (!json.get("furnitureDateCollection").asText().equals("")) {
-      timestamp = Timestamp.valueOf(json.get("furnitureDateCollection").asText());
+      timestamp =
+          Timestamp.valueOf(json.get("furnitureDateCollection").asText().replaceFirst("T", " "));
       furniture.setFurnitureDateCollection(timestamp);
     }
     furniture.setSellingPrice(json.get("sellingPrice").asLong());
@@ -406,28 +417,99 @@ public class FurnitureResource {
     furniture.setState(json.get("state").asText());
 
     if (!json.get("depositDate").asText().equals("")) {
-      timestamp = Timestamp.valueOf(json.get("depositDate").asText());
+      timestamp = Timestamp.valueOf(json.get("depositDate").asText().replaceFirst("T", " "));
       furniture.setDepositDate(timestamp);
     }
 
     if (!json.get("dateOfSale").asText().equals("")) {
-      timestamp = Timestamp.valueOf(json.get("dateOfSale").asText());
+      timestamp = Timestamp.valueOf(json.get("dateOfSale").asText().replaceFirst("T", " "));
       furniture.setDateOfSale(timestamp);
     }
 
     if (!json.get("saleWithdrawalDate").asText().equals("")) {
-      timestamp = Timestamp.valueOf(json.get("saleWithdrawalDate").asText());
+      timestamp = Timestamp.valueOf(json.get("saleWithdrawalDate").asText().replaceFirst("T", " "));
       furniture.setSaleWithdrawalDate(timestamp);
     }
     furniture.setSeller(json.get("seller").asInt());
 
     if (!json.get("pickUpDate").asText().equals("")) {
-      timestamp = Timestamp.valueOf(json.get("pickUpDate").asText());
+      timestamp = Timestamp.valueOf(json.get("pickUpDate").asText().replaceFirst("T", " "));
       furniture.setPickUpDate(timestamp);
     }
 
     return furniture;
   }
 
+  private void checkTimestampPattern(String name, String toVerify) {
+    toVerify = toVerify.replaceFirst("T", " ");
+    String timestampPattern = "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$";
+    Pattern pattern = Pattern.compile(timestampPattern, Pattern.CASE_INSENSITIVE);
+    Matcher matcher = pattern.matcher(toVerify);
+    if (!matcher.find()) {
+      throw new PresentationException(name + " is not matching a Timestamp pattern.",
+          Status.BAD_REQUEST);
+    }
+  }
+
+  private void checkIfRespectStateDiagram(FurnitureDTO furniture) {
+    FurnitureDTO oldFurniture = this.furnitureUCC.findById(furniture.getFurnitureId());
+
+    if (oldFurniture.getState().equals(furniture.getState())) {
+      return;
+    }
+
+    String errorMsg = "You can't by pass the state diagram";
+
+    // From on restoration.
+    if (oldFurniture.getState().equals(FurnitureDTO.STATES.ON_RESTORATION.getValue())
+        && !furniture.getState().equals(FurnitureDTO.STATES.IN_SHOP.getValue())
+        && !furniture.getState().equals(FurnitureDTO.STATES.SOLD.getValue())) {
+      throw new PresentationException(errorMsg, Status.BAD_REQUEST);
+    }
+
+    // From in shop.
+    if (oldFurniture.getState().equals(FurnitureDTO.STATES.IN_SHOP.getValue())
+        && !furniture.getState().equals(FurnitureDTO.STATES.ON_SALE.getValue())
+        && !furniture.getState().equals(FurnitureDTO.STATES.SOLD.getValue())) {
+      throw new PresentationException(errorMsg, Status.BAD_REQUEST);
+    }
+
+    // Check about antique dealer early buy.
+    if ((oldFurniture.getState().equals(FurnitureDTO.STATES.ON_RESTORATION.getValue())
+        || oldFurniture.getState().equals(FurnitureDTO.STATES.IN_SHOP.getValue()))
+        && furniture.getState().equals(FurnitureDTO.STATES.SOLD.getValue())
+        && furniture.getSpecialSalePrice() == 0) {
+      throw new PresentationException(
+          "You can only sold the furniture in restauration or in shop to a antique dealer.",
+          Status.BAD_REQUEST);
+    }
+
+    // From on sale.
+    if (oldFurniture.getState().equals(FurnitureDTO.STATES.ON_SALE.getValue())
+        /* && !furniture.getState().equals(FurnitureDTO.STATES.UNDER_OPTION.getValue()) */
+        && !furniture.getState().equals(FurnitureDTO.STATES.SOLD.getValue())
+        && !furniture.getState().equals(FurnitureDTO.STATES.WITHDRAW.getValue())) {
+      throw new PresentationException(errorMsg, Status.BAD_REQUEST);
+    }
+
+    // From under option.
+    if (oldFurniture.getState().equals(FurnitureDTO.STATES.UNDER_OPTION.getValue())
+        && !furniture.getState().equals(FurnitureDTO.STATES.ON_SALE.getValue())
+        && !furniture.getState().equals(FurnitureDTO.STATES.SOLD.getValue())) {
+      throw new PresentationException(errorMsg, Status.BAD_REQUEST);
+    }
+
+    // From sold.
+    // If we are here (With the state sold) without be stop by the first if(), it's not normal.
+    if (oldFurniture.getState().equals(FurnitureDTO.STATES.SOLD.getValue())) {
+      throw new PresentationException(errorMsg, Status.BAD_REQUEST);
+    }
+
+    // From withdraw.
+    // If we are here (With the state withdraw) without be stop by the first if(), it's not normal.
+    if (oldFurniture.getState().equals(FurnitureDTO.STATES.WITHDRAW.getValue())) {
+      throw new PresentationException(errorMsg, Status.BAD_REQUEST);
+    }
+  }
 
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.FurnitureDAO;
+import be.vinci.pae.services.OptionDAO;
 import be.vinci.pae.services.PhotoDAO;
 import be.vinci.pae.services.PhotoFurnitureDAO;
 import be.vinci.pae.services.TypeDAO;
@@ -24,6 +25,9 @@ public class FurnitureUCCImpl implements FurnitureUCC {
 
   @Inject
   private PhotoDAO photoDAO;
+
+  @Inject
+  private OptionDAO optionDAO;
 
   @Inject
   private PhotoFurnitureDAO photoFurnitureDAO;
@@ -91,13 +95,14 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   @Override
   public Object[] getAllInfosForUpdate(int id) {
     dalservices.startTransaction();
-    Object[] allLists = new Object[5];
+    Object[] allLists = new Object[6];
     int i = 0;
     allLists[i++] = furnitureDAO.findById(id);
     allLists[i++] = typeDAO.getAll();
     allLists[i++] = userDAO.getAll();
     allLists[i++] = photoDAO.getAllForFurniture(id);
     allLists[i++] = photoFurnitureDAO.getAllForFurniture(id);
+    allLists[i++] = optionDAO.findOptionByFurniture(id);
     dalservices.commitTransaction();
     return allLists;
   }

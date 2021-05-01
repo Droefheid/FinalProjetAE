@@ -19,7 +19,7 @@ public class OptionDAOImpl implements OptionDAO {
   private DomaineFactory domaineFactory;
 
   @Override
-  public void introduceOption(OptionDTO option) {
+  public int introduceOption(OptionDTO option) {
     PreparedStatement ps = this.dalBackendServices
         .getPreparedStatement("INSERT INTO projet.options VALUES(DEFAULT,?,?,true,?,?)");
     try {
@@ -32,6 +32,7 @@ public class OptionDAOImpl implements OptionDAO {
       ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException(e.getMessage(), e);
     }
+    return findOptionIdByInfo(option);
   }
 
   /**
@@ -123,19 +124,23 @@ public class OptionDAOImpl implements OptionDAO {
   }
 
   @Override
-  public void stopOption(OptionDTO option) {
-    PreparedStatement ps = this.dalBackendServices
-        .getPreparedStatement("UPDATE projet.options SET option_term =?, is_currently_reserved=? "
-            + "WHERE option_id = ? ");
+  public OptionDTO findOptionByFurniture(int furnitureId) {
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
+        "SELECT option_id,option_term," + "beginning_option_date,customer,furniture "
+            + "FROM projet.options WHERE furniture = ?");
+    OptionDTO optionDTO = domaineFactory.getOptionDTO();
     try {
-      ps.setTimestamp(1, option.getOptionTerm());
-      ps.setBoolean(2, false);
-      ps.setInt(3, option.getId());
-      ps.executeUpdate();
+      ps.setInt(1, furnitureId);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          fullFillOption(rs, optionDTO);
+        }
+      }
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException(e.getMessage(), e);
     }
+    return optionDTO;
   }
 
   @Override
@@ -160,6 +165,23 @@ public class OptionDAOImpl implements OptionDAO {
     }
     return optionDTO;
   }
+
+  @Override
+  public void stopOption(OptionDTO option) {
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("UPDATE projet.options SET option_term =?, is_currently_reserved=? "
+            + "WHERE option_id = ? ");
+    try {
+      ps.setTimestamp(1, option.getOptionTerm());
+      ps.setBoolean(2, false);
+      ps.setInt(3, option.getId());
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
+
 
   private OptionDTO fullFillOption(ResultSet rs, OptionDTO optionDTO) {
     try {

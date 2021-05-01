@@ -7,7 +7,7 @@ import { getTokenSessionDate, getUserSessionData } from "../utils/session.js";
 let page = document.querySelector("#page");
 
 const MyFurniturePage = async () => {
-    Sidebar(true);
+    Sidebar(true, true);
 
     page.innerHTML = `
       <div id="messageBoardForm"></div>
