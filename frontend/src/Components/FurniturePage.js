@@ -35,7 +35,6 @@ const onFurnitureList = (data) => {
   let furnitureList = document.querySelector("#list");
 
   if (!data) return;
-
   let table = `
           <div class="input-group rounded" id="search_furniture_list">
             <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
@@ -171,8 +170,6 @@ const onOption = (e) => {
   user_me.furnitureId = furnitureId;
   RedirectUrl(`/introduceOption`);
 }
-
-
 
 const showStopOptionButton = (data) => {
   let divOption = document.querySelector("#optionform");

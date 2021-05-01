@@ -2,6 +2,7 @@ import { RedirectUrl } from "./Router.js";
 import { user_me } from "../index.js";
 import { API_URL } from "../utils/server.js";
 import { getUserSessionData, getTokenSessionDate } from "../utils/session";
+import Navbar from "./Navbar.js";
 
 const OptionPage = () => {
   const user = getUserSessionData();
@@ -45,7 +46,6 @@ const onFurnitureDescription = (data) => {
        <input type="submit" value="Introduce option" class="btn btn-info"></input>
        </form>
       </div>
-
   </div>
   `;
 

@@ -43,19 +43,51 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     return furniture;
   }
 
+
+  @Override
+  public FurnitureDTO findByFurnitureInfo(FurnitureDTO furnitureDTO) {
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("SELECT furniture_id, type, buyer, furniture_title,"
+            + " purchase_price, furniture_date_collection ,selling_price,"
+            + " special_sale_price,delivery,state_furniture,deposit_date,"
+            + " date_of_sale, sale_withdrawal_date, seller, pick_up_date"
+            + " FROM projet.furnitures WHERE furniture_title = ? AND purchase_price = ? AND "
+            + "state_furniture = ? AND type = ? AND seller = ? AND pick_up_date = ?");
+
+    FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
+    try {
+      ps.setString(1, furnitureDTO.getFurnitureTitle());
+      ps.setInt(2, (int) furnitureDTO.getPurchasePrice());
+      ps.setString(3, furnitureDTO.getState());
+      ps.setInt(4, furnitureDTO.getType());
+      ps.setInt(5, furnitureDTO.getSeller());
+      ps.setTimestamp(6, furnitureDTO.getPickUpDate());
+
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          furniture = fullFillFurnitures(rs, furniture);
+        }
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("error findByFurnitureInfo", e);
+    }
+    return furniture;
+  }
+
   @Override
   public FurnitureDTO add(FurnitureDTO furniture) {
-    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
-        "INSERT INTO projet.furnitures " + "VALUES(DEFAULT,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+    PreparedStatement ps =
+        this.dalBackendServices.getPreparedStatement("INSERT INTO projet.furnitures "
+            + "VALUES(DEFAULT,?,?,NULL,0,0,?,?,NULL,NULL,NULL,?,NULL,?,?)");
     try {
-      setAllPsAttributNotNull(ps, furniture);
-
+      ps = setAllPsAttributForAdded(ps, furniture);
       ps.executeUpdate();
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
       throw new FatalException("Error add", e);
     }
-    return findById(furniture.getFurnitureId());
+    return findByFurnitureInfo(furniture);
   }
 
   @Override
@@ -153,6 +185,23 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     ps.setTimestamp(12, furniture.getSaleWithdrawalDate());
     ps.setInt(13, furniture.getSeller());
     ps.setTimestamp(14, furniture.getPickUpDate());
+    return ps;
+  }
+
+  private PreparedStatement setAllPsAttributForAdded(PreparedStatement ps, FurnitureDTO furniture)
+      throws SQLException {
+
+    ps.setString(1, furniture.getFurnitureTitle());
+    ps.setDouble(2, furniture.getPurchasePrice());
+    ps.setString(3, furniture.getState());
+    if (furniture.getState().equals(FurnitureDTO.STATES.IN_SHOP.getValue())) {
+      ps.setTimestamp(4, furniture.getDepositDate());
+    } else {
+      ps.setTimestamp(4, null);
+    }
+    ps.setInt(5, furniture.getType());
+    ps.setInt(6, furniture.getSeller());
+    ps.setTimestamp(7, furniture.getPickUpDate());
     return ps;
   }
 
