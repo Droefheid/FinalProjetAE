@@ -45,7 +45,7 @@ public class TestOption {
   }
 
   /**
-   * Success test :
+   * Success test : get the option by id.
    */
   @Test
   public void testGetOptionV1() {
@@ -55,7 +55,7 @@ public class TestOption {
   }
 
   /**
-   * Failed test :
+   * Failed test : don't get the option by id.
    */
   @Test
   public void testGetOptionV2() {
@@ -64,7 +64,7 @@ public class TestOption {
   }
 
   /**
-   * Success test :
+   * Success test : find the option with it's id.
    */
   @Test
   public void testFindOptionV1() {
@@ -78,7 +78,7 @@ public class TestOption {
   }
 
   /**
-   * Failed test : beginning_option_date is null
+   * Failed test : beginning_option_date is null.
    */
   @Test
   public void testFindOptionV2() {

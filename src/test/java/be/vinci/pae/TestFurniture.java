@@ -72,7 +72,6 @@ class TestFurniture {
   }
 
   /**
-   * 
    * Failed test : if the furniture is not added, return null.
    */
   @Test
@@ -122,7 +121,6 @@ class TestFurniture {
 
   @Test
   public void testGetAllInfosForUpdateV1() {
-    Object[] allLists = new Object[3];
     List<TypeDTO> listType = null;
     List<UserDTO> listUser = null;
 
@@ -130,6 +128,7 @@ class TestFurniture {
     Mockito.when(typeDAO.getAll()).thenReturn(listType);
     Mockito.when(userDAO.getAll()).thenReturn(listUser);
 
+    Object[] allLists = new Object[3];
     allLists[0] = furnitureDTO;
     allLists[1] = listType;
     allLists[2] = listUser;
@@ -141,6 +140,7 @@ class TestFurniture {
     assertAll(() -> assertEquals(allLists[0], test[0]), () -> assertEquals(allLists[1], test[1]),
         () -> assertEquals(allLists[2], test[2]));
   }
+
 
   @Test
   public void testGetAllInfosForAddV1() {
