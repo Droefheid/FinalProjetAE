@@ -91,7 +91,7 @@ public class OptionDAOImpl implements OptionDAO {
           OptionDTO optionDTO = domaineFactory.getOptionDTO();
           optionDTO.setId(rs.getInt(1));
           optionDTO.setOptionTerm(rs.getTimestamp(2));
-          optionDTO.setOptionTerm(rs.getTimestamp(3));
+          optionDTO.setBeginningOptionDate(rs.getTimestamp(3));
           list.add(optionDTO);
         }
       }
