@@ -18,7 +18,6 @@ import be.vinci.pae.domaine.user.UserDTO;
 import be.vinci.pae.services.FurnitureDAO;
 import be.vinci.pae.services.TypeDAO;
 import be.vinci.pae.services.UserDAO;
-import be.vinci.pae.utils.Config;
 
 class TestFurniture {
 
@@ -27,13 +26,12 @@ class TestFurniture {
   private FurnitureDAO furnitureDAO;
   private DomaineFactory domaineFactory;
   private TypeDAO typeDAO;
-  private TypeDTO typeDTO;
   private UserDAO userDAO;
   private UserDTO userDTO;
 
+
   @BeforeEach
   void initAll() {
-    Config.load("test.properties");
     ServiceLocator locator = ServiceLocatorUtilities.bind(new MockApplicationBinder());
     this.domaineFactory = locator.getService(DomaineFactory.class);
     this.furnitureUCC = locator.getService(FurnitureUCC.class);
@@ -42,7 +40,6 @@ class TestFurniture {
     this.userDAO = locator.getService(UserDAO.class);
 
     furnitureDTO = domaineFactory.getFurnitureDTO();
-    typeDTO = domaineFactory.getTypeDTO();
     userDTO = domaineFactory.getUserDTO();
   }
 

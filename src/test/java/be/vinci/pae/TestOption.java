@@ -18,7 +18,6 @@ import be.vinci.pae.domaine.user.UserDTO;
 import be.vinci.pae.services.FurnitureDAO;
 import be.vinci.pae.services.OptionDAO;
 import be.vinci.pae.services.UserDAO;
-import be.vinci.pae.utils.Config;
 
 public class TestOption {
 
@@ -33,7 +32,6 @@ public class TestOption {
 
   @BeforeEach
   void initAll() {
-    Config.load("test.properties");
     ServiceLocator locator = ServiceLocatorUtilities.bind(new MockApplicationBinder());
     this.domaineFactory = locator.getService(DomaineFactory.class);
     this.optionUCC = locator.getService(OptionUCC.class);
