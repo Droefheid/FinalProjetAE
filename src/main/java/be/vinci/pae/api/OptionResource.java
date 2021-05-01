@@ -62,12 +62,18 @@ public class OptionResource {
       throw new PresentationException("User not found.", Status.BAD_REQUEST);
     }
 
+    FurnitureDTO furnitureDTO = furnitureUCC.findById(json.get("furnitureID").asInt());
+    if (furnitureDTO == null
+        || !furnitureDTO.getState().equals(FurnitureDTO.STATES.ON_SALE.getValue())) {
+      throw new PresentationException("An option cannot be introduced on this furniture.");
+    }
+
     OptionDTO option = domaineFactory.getOptionDTO();
     LocalDateTime now = LocalDateTime.now();
 
     option.setBeginningOptionDate(Timestamp.valueOf(now));
     option.setCustomer(currentUser.getID());
-    option.setFurniture(json.get("furnitureID").asInt());
+    option.setFurniture(furnitureDTO.getFurnitureId());
     String term = json.get("optionTerm").asText();
     LocalDateTime optionTerm = LocalDateTime.parse(term);
 
@@ -78,6 +84,7 @@ public class OptionResource {
     if (d >= 5) {
       throw new PresentationException("Furniture can't be reserved for more than 5 days");
     }
+
     option.setOptionTerm(Timestamp.valueOf(optionTerm));
     optionUCC.introduceOption(option);
 
