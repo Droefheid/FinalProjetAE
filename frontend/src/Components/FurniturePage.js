@@ -171,8 +171,6 @@ const onOption = (e) => {
   RedirectUrl(`/introduceOption`);
 }
 
-
-
 const showStopOptionButton = (data) => {
   let divOption = document.querySelector("#optionform");
   divOption.innerHTML +=`<form class="btn" id="option">

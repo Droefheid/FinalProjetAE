@@ -64,6 +64,8 @@ const onCreateAddPage = (data) => {
 
       <input class="form-control mb-3 " type="datetime-local"
       value="2021-01-01T13:00:00" id="datetime-local">
+      <p class="text-muted">*Pick-up date</p>
+
 
       <div class="input-group mb-3">
         <div class="input-group-prepend">
@@ -92,7 +94,7 @@ const onCreateAddPage = (data) => {
       </div>
 
       <input type="file" id="files" name="files" multiple>
-      <p class="text-muted">* Veuillez selectionner toutes les photos en une seule fois.</p>
+      <p class="text-muted">*Please select all photos at once.</p>
 
       <button type="button" id="addForm" class="btn btn-primary" style="width:100%;">Add</button>
       <div id="messageBoardForm" style="margin-top:30px;"></div>
