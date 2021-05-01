@@ -22,11 +22,11 @@ const Sidebar = (needed, secondNeeded) => {
       sidebar += `
       <div class="onLeft">
         <div class="navbar navbar-nav ml-auto mr-auto pt-3">
-          <a class="btn btn-info mb-1 samebutton" href="/confirmUser">Liste d'inscriptions</a>
-              <a class="btn btn-info mb-1 samebutton" href="/userList">Liste des clients</a>
-              <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/furniture">Ajouter un meuble</a>
+          <a class="btn btn-info mb-1 samebutton" href="/confirmUser">List of inscriptions</a>
+              <a class="btn btn-info mb-1 samebutton" href="/userList">List of clients</a>
+              <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/furniture">Add furniture</a>
               <a class="btn btn-info mb-1 samebutton" href="/confirmVisits">Confirm visits</a>
-              <a class="btn btn-info mb-1 samebutton" href="/visitListPage">Liste des visites</a>
+              <a class="btn btn-info mb-1 samebutton" href="/visitListPage">List of visits</a>
               <a class="btn btn-info mb-1 samebutton" href="/confirmUser">Confirm a user</a>
         </div>
       </div>`;
@@ -35,7 +35,11 @@ const Sidebar = (needed, secondNeeded) => {
     if(secondNeeded){
       // SideBar Content.
     sidebar += `<!-- SideBar -->
-    <div id="mySidenav" class="sidenav">
+    <div id="mySidenav" class="`;
+    //if(user && user.isBoss) sidebar += `sidenav`;
+    //else sidebar += `sidenavBoss`;
+    sidebar += `sidenav`;
+    sidebar += `">
       <form class="mb-5 pb-4">
           <div class="form-group form-check">
             <label class="form-check-label">

@@ -70,7 +70,7 @@ public class FurnitureResource {
   @Path("myFurnitures")
   public Response myFurnitures(@Context ContainerRequest request) {
     UserDTO currentUser = (UserDTO) request.getProperty("user");
-    if (currentUser == null || !currentUser.isBoss()) {
+    if (currentUser == null) {
       throw new PresentationException("You dont have the permission.", Status.BAD_REQUEST);
     }
     List<FurnitureDTO> listFurnitures = new ArrayList<FurnitureDTO>();

@@ -195,16 +195,17 @@ public class UserResource {
   /**
    * update confirmation.
    * 
+   * @param json object containing user information and address.
    * @return list of all users.
    */
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeBoss
-  public Response updateConfirmed(@Context ContainerRequest request, JsonNode json) {
+  public Response updateConfirmed(JsonNode json) {
     UserDTO user = domaineFactory.getUserDTO();
-    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    UserDTO currentUser = this.userUcc.getUser(json.get("userId").asInt());
 
-    if (currentUser == null) {
+    if (currentUser == null || currentUser.getUserName() == null) {
       throw new PresentationException("User not found", Status.BAD_REQUEST);
     }
     user.setID(currentUser.getID());

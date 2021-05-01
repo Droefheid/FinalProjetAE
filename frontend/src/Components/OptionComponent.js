@@ -5,7 +5,7 @@ import { getUserSessionData, getTokenSessionDate } from "../utils/session";
 
 const OptionPage = () => {
   const user = getUserSessionData();
-  if (!user || !user.isBoss || !user_me.furnitureId) {
+  if (!user || !user_me.furnitureId) {
       // re-render the navbar for the authenticated user.
       Navbar();
       RedirectUrl("/");
