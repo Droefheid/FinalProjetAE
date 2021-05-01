@@ -79,7 +79,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
   public FurnitureDTO add(FurnitureDTO furniture) {
     PreparedStatement ps =
         this.dalBackendServices.getPreparedStatement("INSERT INTO projet.furnitures "
-            + "VALUES(DEFAULT,?,?,NULL,0,0,?,NULL,NULL,NULL,NULL,?,NULL,?,?)");
+            + "VALUES(DEFAULT,?,?,NULL,0,0,?,?,NULL,NULL,NULL,?,NULL,?,?)");
     try {
       ps = setAllPsAttributForAdded(ps, furniture);
       ps.executeUpdate();
@@ -194,9 +194,14 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     ps.setString(1, furniture.getFurnitureTitle());
     ps.setDouble(2, furniture.getPurchasePrice());
     ps.setString(3, furniture.getState());
-    ps.setInt(4, furniture.getType());
-    ps.setInt(5, furniture.getSeller());
-    ps.setTimestamp(6, furniture.getPickUpDate());
+    if (furniture.getState().equals("M")) {
+      ps.setTimestamp(4, furniture.getDepositDate());
+    } else {
+      ps.setTimestamp(4, null);
+    }
+    ps.setInt(5, furniture.getType());
+    ps.setInt(6, furniture.getSeller());
+    ps.setTimestamp(7, furniture.getPickUpDate());
     return ps;
   }
 

@@ -126,13 +126,17 @@ public class FurnitureResource {
     furnitureDTO.setType(json.get("type").asInt());
     furnitureDTO.setSeller(json.get("seller").asInt());
 
+    // Transformation de la pick-up date en timestamp.
     String term = json.get("pickUpDate").asText();
     LocalDateTime optionTerm = LocalDateTime.parse(term);
     furnitureDTO.setPickUpDate(Timestamp.valueOf(optionTerm));
 
+    // Si le meuble rentre en magasin, il doit avoir une date de dépot.
+    if (furnitureDTO.getState().equals("M")) {
+      LocalDateTime dateNow = LocalDateTime.now();
+      furnitureDTO.setDepositDate(Timestamp.valueOf(dateNow));
+    }
     furnitureDTO = furnitureUCC.add(furnitureDTO);
-
-    System.out.println(furnitureDTO);
 
     return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("furniture", furnitureDTO);
   }
