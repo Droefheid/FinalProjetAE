@@ -141,6 +141,8 @@ public class FurnitureResource {
     return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("furniture", furnitureDTO);
   }
 
+
+
   /**
    * update a furniture.
    * 

@@ -17,7 +17,7 @@ import be.vinci.pae.domaine.user.UserDTO;
 import be.vinci.pae.domaine.user.UserUCC;
 import be.vinci.pae.services.UserDAO;
 
-public class DemoTest {
+public class TestUser {
 
   private UserUCC userUCC;
   private DomaineFactory domaineFactory;
