@@ -4,10 +4,12 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import be.vinci.pae.api.utils.BusinessException;
+import be.vinci.pae.api.utils.FatalException;
 import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.FurnitureDAO;
 import be.vinci.pae.services.OptionDAO;
+import be.vinci.pae.utils.SchedulerJob;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response.Status;
 
@@ -22,6 +24,7 @@ public class OptionUCCImpl implements OptionUCC {
 
   @Inject
   private DalServices dalservices;
+
 
   @Override
   public void introduceOption(OptionDTO option) {
@@ -55,8 +58,11 @@ public class OptionUCCImpl implements OptionUCC {
           "You have already reserved this" + " furniture for more than 5 days");
     }
 
-    optionDao.introduceOption(option);
+    int id = optionDao.introduceOption(option);
     optionDao.changeFurnitureState("O", option.getFurniture());
+    option.setId(id);
+    SchedulerJob scheduler = new SchedulerJob();
+    scheduler.schedulerOption(option.getOptionTerm().toLocalDateTime(), option);
     dalservices.commitTransaction();
   }
 
@@ -75,6 +81,10 @@ public class OptionUCCImpl implements OptionUCC {
   @Override
   public void stopOption(OptionDTO option) {
     dalservices.startTransaction();
+    if (optionDao.findOptionByID(option.getId()) == null) {
+      dalservices.rollbackTransaction();
+      throw new BusinessException("There is no option currently on this furniture");
+    }
     option.setOptionTerm(Timestamp.valueOf(LocalDateTime.now()));
     optionDao.stopOption(option);
     optionDao.changeFurnitureState(FurnitureDTO.STATES.ON_SALE.getValue(), option.getFurniture());
@@ -89,7 +99,26 @@ public class OptionUCCImpl implements OptionUCC {
       dalservices.rollbackTransaction();
       throw new BusinessException("There is no option currently on this furniture");
     }
+    dalservices.commitTransaction();
     return option;
+  }
+
+  @Override
+  public void changeOptionState(OptionDTO option) {
+    dalservices.startTransaction();
+    OptionDTO verif = optionDao.findOptionByID(option.getId());
+    if (verif == null) {
+      dalservices.rollbackTransaction();
+      throw new FatalException("Job has an option which doesn't exist");
+    }
+    optionDao.stopOption(option);
+    FurnitureDTO furniture = furnitureDao.findById(option.getFurniture());
+    if (furniture.getState().equals(FurnitureDTO.STATES.SOLD.getValue())) {
+      dalservices.rollbackTransaction();
+      return;
+    }
+    optionDao.changeFurnitureState(FurnitureDTO.STATES.ON_SALE.getValue(), option.getFurniture());
+    dalservices.commitTransaction();
   }
 
 }

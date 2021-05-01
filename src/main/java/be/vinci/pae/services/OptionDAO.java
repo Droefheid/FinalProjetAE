@@ -5,11 +5,13 @@ import be.vinci.pae.domaine.option.OptionDTO;
 
 public interface OptionDAO {
 
-  void introduceOption(OptionDTO option);
+  int introduceOption(OptionDTO option);
 
   int findOptionIdByInfo(OptionDTO option);
 
   OptionDTO findOptionByID(int optionID);
+
+  OptionDTO findOptionByFurniture(int furnitureId);
 
   OptionDTO findOptionByFurnitureIdANDCustomerId(int furnitureID, int customerID);
 

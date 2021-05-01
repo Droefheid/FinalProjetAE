@@ -3,6 +3,7 @@ import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
 import { getUserSessionData, getTokenSessionDate } from "../utils/session";
 import Navbar from "./Navbar.js";
+import { post } from "jquery";
 
 let page = document.querySelector("#page");
 
@@ -63,6 +64,8 @@ const onCreateAddPage = (data) => {
 
       <input class="form-control mb-3 " type="datetime-local"
       value="2021-01-01T13:00:00" id="datetime-local">
+      <p class="text-muted">*Pick-up date</p>
+
 
       <div class="input-group mb-3">
         <div class="input-group-prepend">
@@ -89,12 +92,14 @@ const onCreateAddPage = (data) => {
               addFurniturePage += `
           </select>
       </div>
+
+      <input type="file" id="files" name="files" multiple>
+      <p class="text-muted">*Please select all photos at once.</p>
+
       <button type="button" id="addForm" class="btn btn-primary" style="width:100%;">Add</button>
       <div id="messageBoardForm" style="margin-top:30px;"></div>
-
     </form>
 `;
-
    page.innerHTML = addFurniturePage;
 
    const addFurnitures = document.getElementById("addForm")
@@ -103,6 +108,7 @@ const onCreateAddPage = (data) => {
 
 const onAddFurniture = () => {
 
+  
   let id = getTokenSessionDate();
 
   let title = document.getElementById("titleFurniture").value;
@@ -118,12 +124,19 @@ const onAddFurniture = () => {
     messageBoard.innerHTML = '<div class="alert alert-danger">Title is missing.</div>';
     return;
   }
+  //Check if the purchase price is <= 0 
   if(purchasePrice <= 0) {
     let messageBoard = document.getElementById("messageBoardForm");
     messageBoard.innerHTML = '<div class="alert alert-danger">Purchase price is negative or equals zero.</div>';
     return;
-}
-
+  }
+  //Check id the date is well before now. TODO
+  var now = new Date();
+  if(pickUpDate < now){
+    let messageBoard = document.getElementById("messageBoardForm");
+    messageBoard.innerHTML = '<div class="alert alert-danger">Pick-up date is in the future</div>';
+    return;
+  }
 
   let furniture = {
     "title": title,
@@ -133,7 +146,6 @@ const onAddFurniture = () => {
     "seller": seller,
     "pickUpDate": pickUpDate,
   }
-
 
   fetch(API_URL + "furnitures/", {
     method: "POST",
@@ -148,14 +160,52 @@ const onAddFurniture = () => {
         return response.text().then((err) => onError(err));
       }
       else
-        return onFurnitureAdded();
+        return response.json().then((data) => onFurnitureAdded(data));
     })
 }
 
+<<<<<<< HEAD
 const onFurnitureAdded = () => {
   alert("Fsurniture has been added");
-  RedirectUrl(`/furniture`);
+=======
+const onFurnitureAdded = (data) => {
+  
+  let furnitureId = data.furniture.furnitureId;
+  console.log(data,furnitureId);
+  
+  const input = document.getElementById('files');
+  const formData = new FormData();
+  for(let i = 0; i < input.files.length; i++){
+      //console.log(input.files[i]);
+      formData.append("photo"+i, input.files[i]);
+  }
+  //console.log("Formdata: ", formData, "get('photo0'): ", formData.get("photo"));
+
+  let id = getTokenSessionDate();
+
+  fetch(API_URL + "photos/uploadPhotos", {
+    method: "POST",
+    body: formData,
+    headers:{
+      "Authorization": id,
+      "furnitureId": furnitureId,
+    }
+  })
+  .then((response) => {
+      if (!response.ok) {
+        return response.text().then((err) => onError(err));
+      }
+      else
+        return response.json().then((data) => onFurnitureAndPhotoAdded(data));
+    })
 };
+
+const onFurnitureAndPhotoAdded = (data) => {
+
+  alert("Furniture has been added");
+>>>>>>> 5d9b166c6279a5ad9589fd0ba7f378eae37123d2
+  RedirectUrl(`/furniture`);
+}
 
 const onError = (err) => {
   let messageBoard = document.querySelector("#messageBoard");

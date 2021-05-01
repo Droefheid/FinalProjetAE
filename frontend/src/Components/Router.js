@@ -4,12 +4,15 @@ import RegisterPage from "./RegisterPage.js";
 import LogoutComponent from "./LogoutComponent.js";
 import OptionComponent from "./OptionComponent.js";
 import ErrorPage from "./ErrorPage.js";
-import ModificationFurniturePage from "./ModificationFurniturePage.js"
+import ModificationFurniturePage from "./ModificationFurniturePage.js";
 import FurniturePage from "./FurniturePage.js";
 import ConfirmUserPage from "./ConfirmUserPage.js";
 import AddFurniturePage from "./AddFurniturePage.js";
+import IntroduceVisits from "./IntroduceVisits.js";
+import ConfirmVisits from "./ConfirmVisits.js";
 import UserListPage from "./UserListPage.js";
 import MyFurniturePage from "./MyFurniturePage.js";
+import VisitListPage from "./VisitListPage.js";
 
 const routes = {
   "/": HomePage,
@@ -24,6 +27,9 @@ const routes = {
   "/error": ErrorPage,
   "/updateFurniture": ModificationFurniturePage,
   "/addFurniture": AddFurniturePage,
+  "/introduceVisits": IntroduceVisits,
+  "/visitListPage": VisitListPage ,
+  "/confirmVisits": ConfirmVisits,
 };
 
 let page = document.querySelector("#page");
@@ -37,7 +43,9 @@ const Router = () => {
     componentToRender = routes[window.location.pathname];
     if (!componentToRender)
       return ErrorPage(
-        new Error("The " + window.location.pathname + " ressource does not exist.")
+        new Error(
+          "The " + window.location.pathname + " ressource does not exist."
+        )
       );
     componentToRender();
   });
@@ -50,7 +58,7 @@ const Router = () => {
       // To get a data attribute through the dataset object, get the property by the part of the attribute name after data- (note that dashes are converted to camelCase).
       uri = e.target.dataset.uri;
     }
-    if (uri) {     
+    if (uri) {
       // use Web History API to add current page URL to the user's navigation history & set right URL in the browser (instead of "#")
       window.history.pushState({}, uri, window.location.origin + uri);
       // render the requested component
@@ -66,8 +74,6 @@ const Router = () => {
   };
 
   navBar.addEventListener("click", onNavigate);
- 
-
 
   // Display the right component when the user use the browsing history
   window.addEventListener("popstate", () => {
@@ -84,11 +90,8 @@ const RedirectUrl = (uri, data) => {
   // therefore, those components have to be either a function or a class
   componentToRender = routes[uri];
   if (routes[uri]) {
-    if(!data)
-      componentToRender();
-    else
-      componentToRender(data);
-    
+    if (!data) componentToRender();
+    else componentToRender(data);
   } else {
     ErrorPage(new Error("The " + uri + " ressource does not exist"));
   }

@@ -5,10 +5,9 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.utils.PresentationException;
+import be.vinci.pae.api.utils.ResponseMaker;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.domaine.furniture.FurnitureUCC;
@@ -31,8 +30,6 @@ import jakarta.ws.rs.core.Response.Status;
 @Singleton
 @Path("/options")
 public class OptionResource {
-
-  private final ObjectMapper jsonMapper = new ObjectMapper();
 
   @Inject
   DomaineFactory domaineFactory;
@@ -65,12 +62,18 @@ public class OptionResource {
       throw new PresentationException("User not found.", Status.BAD_REQUEST);
     }
 
+    FurnitureDTO furnitureDTO = furnitureUCC.findById(json.get("furnitureID").asInt());
+    if (furnitureDTO == null
+        || !furnitureDTO.getState().equals(FurnitureDTO.STATES.ON_SALE.getValue())) {
+      throw new PresentationException("An option cannot be introduced on this furniture.");
+    }
+
     OptionDTO option = domaineFactory.getOptionDTO();
     LocalDateTime now = LocalDateTime.now();
 
     option.setBeginningOptionDate(Timestamp.valueOf(now));
     option.setCustomer(currentUser.getID());
-    option.setFurniture(json.get("furnitureID").asInt());
+    option.setFurniture(furnitureDTO.getFurnitureId());
     String term = json.get("optionTerm").asText();
     LocalDateTime optionTerm = LocalDateTime.parse(term);
 
@@ -81,6 +84,7 @@ public class OptionResource {
     if (d >= 5) {
       throw new PresentationException("Furniture can't be reserved for more than 5 days");
     }
+
     option.setOptionTerm(Timestamp.valueOf(optionTerm));
     optionUCC.introduceOption(option);
 
@@ -149,7 +153,6 @@ public class OptionResource {
     }
 
     OptionDTO option = optionUCC.findOption(furniture.getFurnitureId(), currentUser.getID());
-    ObjectNode node = jsonMapper.createObjectNode().putPOJO("option", option);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("option", option);
   }
 }

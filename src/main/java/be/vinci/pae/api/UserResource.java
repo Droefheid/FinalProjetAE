@@ -1,26 +1,19 @@
 package be.vinci.pae.api;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.glassfish.jersey.server.ContainerRequest;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeBoss;
-import be.vinci.pae.api.utils.FatalException;
-import be.vinci.pae.api.utils.Json;
 import be.vinci.pae.api.utils.PresentationException;
+import be.vinci.pae.api.utils.ResponseMaker;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.address.AddressDTO;
 import be.vinci.pae.domaine.user.UserDTO;
 import be.vinci.pae.domaine.user.UserUCC;
-import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -37,11 +30,6 @@ import jakarta.ws.rs.core.Response.Status;
 @Singleton
 @Path("/users")
 public class UserResource {
-  // 86400s = 1 jour (86.400.000 ms).
-  private static final long EXPIRATION_TIME = 86400 * 1000;
-
-  private final Algorithm jwtAlgorithm = Algorithm.HMAC256(Config.getProperty("JWTSecret"));
-  private final ObjectMapper jsonMapper = new ObjectMapper();
 
   @Inject
   private UserUCC userUcc;
@@ -77,8 +65,7 @@ public class UserResource {
       throw new PresentationException("This account hasn't been confirmed by an admin yet",
           Status.BAD_REQUEST);
     }
-    ObjectNode node = createToken(user);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+    return ResponseMaker.createResponseWithToken(user);
   }
 
   /**
@@ -98,8 +85,7 @@ public class UserResource {
 
     UserDTO user = this.userUcc.getUser(id);
 
-    ObjectNode node = createToken(user);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+    return ResponseMaker.createResponseWithToken(user);
   }
 
   /**
@@ -117,33 +103,10 @@ public class UserResource {
     if (currentUser == null) {
       throw new PresentationException("User not found", Status.BAD_REQUEST);
     }
-    ObjectNode node = createToken(currentUser);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+    return ResponseMaker.createResponseWithToken(currentUser);
   }
 
 
-  /**
-   * Create a token and a ObjectNode with an user.
-   * 
-   * @param user : the user to put in the token.
-   * @return ObjectNode contains the token and the user filter.
-   */
-  private ObjectNode createToken(UserDTO user) {
-    // Create token
-    String token;
-    try {
-      token = JWT.create().withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-          .withIssuer("auth0").withClaim("user", user.getID()).sign(this.jwtAlgorithm);
-    } catch (Exception e) {
-      throw new FatalException("Unable to create token", e);
-    }
-
-    // Build response
-    // load the user data from a public JSON view to filter out the private info not
-    // to be returned by the API (such as password)
-    UserDTO publicUser = Json.filterBossJsonView(user, UserDTO.class);
-    return jsonMapper.createObjectNode().put("token", token).putPOJO("user", publicUser);
-  }
 
   /**
    * register a user if correct parameters are sent.
@@ -170,24 +133,8 @@ public class UserResource {
     if (json.get("firstname").asText().equals("")) {
       throw new PresentationException("Firstname is needed ", Status.BAD_REQUEST);
     }
-    if (json.get("street").asText().equals("")) {
-      throw new PresentationException("street is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("building_number").asText().equals("")) {
-      throw new PresentationException("building number is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("postcode").asText().equals("")) {
-      throw new PresentationException("postcode is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("commune").asText().equals("")) {
-      throw new PresentationException("commune is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("country").asText().equals("")) {
-      throw new PresentationException("country is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("unit_number").asText().equals("")) {
-      throw new PresentationException("unit number is needed ", Status.BAD_REQUEST);
-    }
+
+    VisitResource.checkJsonAddress(json);
 
     UserDTO user = domaineFactory.getUserDTO();
 
@@ -226,14 +173,13 @@ public class UserResource {
     List<UserDTO> listUsers = new ArrayList<UserDTO>();
     listUsers = userUcc.getAll();
 
-    ObjectNode node = jsonMapper.createObjectNode().putPOJO("list", listUsers);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listUsers);
   }
 
   /**
-   * get all users.
+   * get all users not confirmed.
    * 
-   * @return list of all users.
+   * @return list of all users not confirmed.
    */
   @GET
   @Path("/notConfirmed")
@@ -242,8 +188,7 @@ public class UserResource {
     List<UserDTO> listUsers = new ArrayList<UserDTO>();
     listUsers = userUcc.getAllNotConfirmed();
 
-    ObjectNode node = jsonMapper.createObjectNode().putPOJO("list", listUsers);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listUsers);
   }
 
 
@@ -255,15 +200,19 @@ public class UserResource {
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeBoss
-  public Response updateConfirmed(JsonNode json) {
-    int userId = json.get("userId").asInt();
-    boolean isBoss = json.get("isBoss").asBoolean();
-    boolean antiqueDealer = json.get("isAntiqueDealer").asBoolean();
-    boolean confirmed = json.get("isConfirmed").asBoolean();
+  public Response updateConfirmed(@Context ContainerRequest request, JsonNode json) {
     UserDTO user = domaineFactory.getUserDTO();
-    user.setID(userId);
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+
+    if (currentUser == null) {
+      throw new PresentationException("User not found", Status.BAD_REQUEST);
+    }
+    user.setID(currentUser.getID());
+    boolean isBoss = json.get("isBoss").asBoolean();
     user.setBoss(isBoss);
+    boolean confirmed = json.get("isConfirmed").asBoolean();
     user.setConfirmed(confirmed);
+    boolean antiqueDealer = json.get("isAntiqueDealer").asBoolean();
     user.setAntiqueDealer(antiqueDealer);
     this.userUcc.updateConfirmed(user);
     return Response.ok(MediaType.APPLICATION_JSON).build();

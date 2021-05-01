@@ -16,7 +16,6 @@ import be.vinci.pae.domaine.user.User;
 import be.vinci.pae.domaine.user.UserDTO;
 import be.vinci.pae.domaine.user.UserUCC;
 import be.vinci.pae.services.UserDAO;
-import be.vinci.pae.utils.Config;
 
 public class TestUser {
 
@@ -30,7 +29,7 @@ public class TestUser {
   @BeforeEach
   void initAll() {
     // BeforeEach doit devenir BeforeAll.
-    Config.load("test.properties");
+    // Config.load("test.properties");
     ServiceLocator locator = ServiceLocatorUtilities.bind(new MockApplicationBinder());
     this.domaineFactory = locator.getService(DomaineFactory.class);
     this.userUCC = locator.getService(UserUCC.class);

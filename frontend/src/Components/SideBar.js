@@ -3,7 +3,7 @@ import { getUserSessionData } from "../utils/session.js";
 let sideBar = document.querySelector("#sideBar");
 let movingRow = document.querySelector("#movingRow");
 
-const Sidebar = (needed) => {
+const Sidebar = (needed, secondNeeded) => {
     if(!needed) {
         // Remove padding.
         movingRow.className = "row justify-content-center mt-5";
@@ -24,14 +24,16 @@ const Sidebar = (needed) => {
         <div class="navbar navbar-nav ml-auto mr-auto pt-3">
           <a class="btn btn-info mb-1 samebutton" href="/confirmUser">Liste d'inscriptions</a>
               <a class="btn btn-info mb-1 samebutton" href="/userList">Liste des clients</a>
-              <a class="btn btn-info mb-1 samebutton" href="/addFurniture" data-uri="/addFurniture">Validation des visites</a>
-              <a class="btn btn-info mb-1 samebutton" href="/addFurniture">Ajouter un meuble</a>
-              <a class="btn btn-info mb-1 samebutton" href="/addFurniture">Liste des visites</a>
+              <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/furniture">Ajouter un meuble</a>
+              <a class="btn btn-info mb-1 samebutton" href="/confirmVisits">Confirm visits</a>
+              <a class="btn btn-info mb-1 samebutton" href="/visitListPage">Liste des visites</a>
+              <a class="btn btn-info mb-1 samebutton" href="/confirmUser">Confirm a user</a>
         </div>
       </div>`;
     }
 
-    // SideBar Content.
+    if(secondNeeded){
+      // SideBar Content.
     sidebar += `<!-- SideBar -->
     <div id="mySidenav" class="sidenav">
       <form class="mb-5 pb-4">
@@ -84,11 +86,12 @@ const Sidebar = (needed) => {
         }
     '>&#9776;</a>
     </div><div class="pb-4"></div>`;
+    }
 
     sideBar.innerHTML = sidebar;
 
     // Change position of sidebar if is boss
-    if(user && user.isBoss){
+    if(secondNeeded && user && user.isBoss){
       let mySidenav = document.querySelector("#mySidenav");
       let mySidenavButton = document.querySelector("#mySidenavButton");
 

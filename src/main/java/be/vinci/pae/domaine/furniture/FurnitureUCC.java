@@ -10,9 +10,9 @@ public interface FurnitureUCC {
 
   List<FurnitureDTO> getAll();
 
-  List<FurnitureDTO> getMyFurniture(int userID);
-
   FurnitureDTO update(FurnitureDTO furniture);
+
+  List<FurnitureDTO> getMyFurniture(int userID);
 
   Object[] getAllInfosForUpdate(int id);
 
