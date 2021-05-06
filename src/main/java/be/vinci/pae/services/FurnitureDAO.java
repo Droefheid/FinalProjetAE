@@ -17,4 +17,7 @@ public interface FurnitureDAO {
 
   FurnitureDTO findByFurnitureInfo(FurnitureDTO furnitureDTO);
 
+  List<FurnitureDTO> getBoughtFurniture(int id);
+
+
 }

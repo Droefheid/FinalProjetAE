@@ -18,6 +18,6 @@ public interface FurnitureUCC {
 
   Object[] getAllInfosForAdd();
 
-
+  Object[] getClientFurnitures(int id);
 
 }
