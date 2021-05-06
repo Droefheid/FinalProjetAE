@@ -177,9 +177,50 @@ const onConfirmVisit = (e) => {
 };
 
 const onDenyVisit = (e) => {
+  e.preventDefault();
+  let visitID = document.getElementById("id").value;
+  let userID = document.getElementById("id_user").value;
   let info = document.querySelector("#confirmVisitDesc");
+  let description = `
+  <div id="description_user">
+  <input type="hidden" id="id" value="${visitID}">
+  <input type="hidden" id="id_user" value="${userID}">
+  <input class="form-check-input" type="textarea" id="explanatory_note" >
+  <input class="btn btn-primary" type="button" id="button_deny" value="Submit">
+  </div>
+  `;
 
   info.innerHTML = description;
+
+  let btn = document.getElementById("button_deny");
+  btn.addEventListener("click", onConfirmVisitDeny);
+};
+
+const onConfirmVisitDeny = (e) => {
+  e.preventDefault();
+  let visitID = document.getElementById("id").value;
+  let userID = document.getElementById("id_user").value;
+  let explanatory_note = document.getElementById("explanatory_note").value;
+
+  let visit = {
+    visitId: visitID,
+    user: userID,
+    explanatoryNote: explanatory_note,
+  };
+
+  let id = getTokenSessionDate();
+  fetch(API_URL + "visits/", {
+    method: "PUT",
+    body: JSON.stringify(visit),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: id,
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((err) => onError(err));
+    } else return onConfirmedVisit();
+  });
 };
 
 const onConfirmedVisit = () => {
