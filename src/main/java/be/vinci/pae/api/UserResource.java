@@ -219,6 +219,12 @@ public class UserResource {
     return Response.ok(MediaType.APPLICATION_JSON).build();
   }
 
+  /**
+   * returns an address corresponding to an id.
+   * 
+   * @param id of the address
+   * @return the address if it exists throws an exception otherwise.
+   */
   @GET
   @Path("/getAddress/{id}")
   @AuthorizeBoss
