@@ -85,6 +85,14 @@ public class UserUCCImpl implements UserUCC {
     dalservices.commitTransaction();
   }
 
+  @Override
+  public AddressDTO getAddressById(int id) {
+    dalservices.startTransaction();
+    AddressDTO address = userDao.getAddressById(id);
+    dalservices.commitTransaction();
+    return address;
+  }
+
 
 
 }

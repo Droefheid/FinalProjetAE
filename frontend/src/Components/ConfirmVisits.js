@@ -141,11 +141,7 @@ const visitDescription = (user,data) => {
     <input type="hidden" id="id" value="${data.visit.id}">
   <input class="btn btn-primary" type="button" id="button_confirmed" value="Confirm">
   </div>`;
-
-  info.innerHTML = description;
-
-  let btn = document.getElementById("button_confirmed");
-  btn.addEventListener("click", onConfirmVisit);
+  getAdresse(data.visit.addressId,description);
 }; 
 
 const onConfirmVisit = (e) => {
@@ -169,6 +165,38 @@ const onConfirmVisit = (e) => {
       return response.text().then((err) => onError(err));
     } else return onConfirmedVisit();
   });
+};
+
+const getAdresse = (address_id, description) => {
+  let id = getTokenSessionDate();
+
+  fetch(API_URL + "users/" + "getAddress/"+ address_id, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": id,
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.text().then((err) => onError(err));
+      }
+      else
+        return response.json().then((obj) => afficherListAvecAddress(obj,description));
+    });
+};
+const afficherListAvecAddress = (address, description) =>{
+  let info = document.querySelector("#confirmVisitDesc");
+
+  let descriptionFinal = description;
+  descriptionFinal +=`
+  <p>Street : ${address.address.street} </p>
+  </div>`;
+
+  info.innerHTML = descriptionFinal;
+
+  let btn = document.getElementById("button_confirmed");
+  btn.addEventListener("click", onConfirmVisit);
 };
 
 const onConfirmedVisit = () => {

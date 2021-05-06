@@ -218,4 +218,19 @@ public class UserResource {
     return Response.ok(MediaType.APPLICATION_JSON).build();
   }
 
+  @GET
+  @Path("/getAddress/{id}")
+  @AuthorizeBoss
+  public Response getAddress(@PathParam("id") int id) {
+    AddressDTO address = domaineFactory.getAdressDTO();
+
+    if (id <= 0) {
+      throw new PresentationException("id of address is incorrect");
+    }
+
+    address = userUcc.getAddressById(id);
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("address", address);
+  }
+
+
 }

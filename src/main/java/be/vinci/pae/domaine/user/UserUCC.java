@@ -17,6 +17,8 @@ public interface UserUCC {
 
   List<UserDTO> getAllNotConfirmed();
 
+  AddressDTO getAddressById(int id);
+
 
 
 }
