@@ -219,4 +219,25 @@ public class UserResource {
     return Response.ok(MediaType.APPLICATION_JSON).build();
   }
 
+  /**
+   * returns an address corresponding to an id.
+   * 
+   * @param id of the address
+   * @return the address if it exists throws an exception otherwise.
+   */
+  @GET
+  @Path("/getAddress/{id}")
+  @AuthorizeBoss
+  public Response getAddress(@PathParam("id") int id) {
+    AddressDTO address = domaineFactory.getAdressDTO();
+
+    if (id <= 0) {
+      throw new PresentationException("id of address is incorrect");
+    }
+
+    address = userUcc.getAddressById(id);
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("address", address);
+  }
+
+
 }

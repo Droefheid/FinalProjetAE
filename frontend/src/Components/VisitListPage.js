@@ -16,7 +16,7 @@ const VisitListPage = () => {
   <div class="col-sm-3" id="list"> </div>
   </div>
   </div>
-  <div class="col-sm-3"  id="confirmVisitDesc"></div>
+  <div class="col-sm-3 pb-5"  id="confirmVisitDesc"></div>
   <div id="messageBoardForm"></div>
   </div>
   </div>
@@ -136,10 +136,39 @@ const visitDescription = (user,data) => {
   <p> Request Date: ${data.visit.requestDate }</p>
   <p> Time slot: ${data.visit.timeSlot }</p>
   <p> Explanatory note: ${data.visit.explanatoryNote }</p>
+    `;
+
+  getAdresse(data.visit.addressId,description);
+}; 
+
+const getAdresse = (address_id, description) => {
+  let id = getTokenSessionDate();
+
+  fetch(API_URL + "users/" + "getAddress/"+ address_id, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": id,
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.text().then((err) => onError(err));
+      }
+      else
+        return response.json().then((obj) => afficherListAvecAddress(obj,description));
+    });
+};
+const afficherListAvecAddress = (address, description) =>{
+  let info = document.querySelector("#confirmVisitDesc");
+
+  let descriptionFinal = description;
+  descriptionFinal +=`
+  <p>Street : ${address.address.street} </p>
   </div>`;
 
-  info.innerHTML = description;
-}; 
+  info.innerHTML = descriptionFinal;
+};
 
 const onError = (err) => {
   let messageBoard = document.querySelector("#messageBoardForm");
