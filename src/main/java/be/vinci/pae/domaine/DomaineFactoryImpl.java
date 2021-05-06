@@ -10,6 +10,8 @@ import be.vinci.pae.domaine.photo.PhotoDTO;
 import be.vinci.pae.domaine.photo.PhotoFurnitureDTO;
 import be.vinci.pae.domaine.photo.PhotoFurnitureImpl;
 import be.vinci.pae.domaine.photo.PhotoImpl;
+import be.vinci.pae.domaine.photo.PhotoVisitDTO;
+import be.vinci.pae.domaine.photo.PhotoVisitImpl;
 import be.vinci.pae.domaine.type.TypeDTO;
 import be.vinci.pae.domaine.type.TypeImpl;
 import be.vinci.pae.domaine.user.UserDTO;
@@ -56,6 +58,11 @@ public class DomaineFactoryImpl implements DomaineFactory {
   @Override
   public VisitDTO getVisitDTO() {
     return new VisitImpl();
+  }
+
+  @Override
+  public PhotoVisitDTO getPhotoVisitDTO() {
+    return new PhotoVisitImpl();
   }
 
 }

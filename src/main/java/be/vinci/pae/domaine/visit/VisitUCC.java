@@ -11,6 +11,8 @@ public interface VisitUCC {
 
   VisitDTO getVisit(int id);
 
+  Object[] getAllInfosOfVisit(int id);
+
   List<VisitDTO> getAll();
 
   void updateConfirmed(VisitDTO visitDTO);

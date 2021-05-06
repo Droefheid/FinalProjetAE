@@ -13,6 +13,8 @@ public interface PhotoDAO {
 
   List<PhotoDTO> getAllForFurniture(int id);
 
+  List<PhotoDTO> getAllForVisit(int id);
+
   PhotoDTO add(PhotoDTO photo);
 
   PhotoDTO update(PhotoDTO furniture);

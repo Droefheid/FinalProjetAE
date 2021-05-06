@@ -14,6 +14,7 @@ import be.vinci.pae.api.utils.PresentationException;
 import be.vinci.pae.api.utils.ResponseMaker;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.address.AddressDTO;
+import be.vinci.pae.domaine.photo.PhotoDTO;
 import be.vinci.pae.domaine.user.UserDTO;
 import be.vinci.pae.domaine.user.UserUCC;
 import be.vinci.pae.domaine.visit.VisitDTO;
@@ -63,24 +64,12 @@ public class VisitResource {
       throw new PresentationException("Id cannot be under 1", Status.BAD_REQUEST);
     }
 
-    VisitDTO visit = this.visitUcc.getVisit(id);
-    return createResponseWithObjectNodeWith1PutPOJO("visit", visit);
+    Object[] listOfAll = this.visitUcc.getAllInfosOfVisit(id);
+    PhotoResource.transformAllURLOfThePhotosIntoBase64Image((List<PhotoDTO>) listOfAll[1]);
+
+    int i = 0;
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("visit", listOfAll[i++]);
   }
-
-
-  /**
-   * create a response with a ObjectNode with 1 putPOJO.
-   * 
-   * @param <E> the type of the object.
-   * @param namePOJO the name of the POJO put.
-   * @param object object to put.
-   * @return a response.ok build with the ObjectNode inside.
-   */
-  private <E> Response createResponseWithObjectNodeWith1PutPOJO(String namePOJO, E object) {
-    ObjectNode node = jsonMapper.createObjectNode().putPOJO(namePOJO, object);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
-  }
-
 
   /**
    * introduce visit if correct parameters are sent.
@@ -134,33 +123,6 @@ public class VisitResource {
 
     return Response.ok().build();
   }
-
-  /**
-   * Verify json to check address variables.
-   * 
-   * @param json node with required objects.
-   */
-  public static void checkJsonAddress(JsonNode json) {
-    if (json.get("street").asText().equals("")) {
-      throw new PresentationException("street is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("building_number").asText().equals("")) {
-      throw new PresentationException("building number is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("postcode").asText().equals("")) {
-      throw new PresentationException("postcode is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("commune").asText().equals("")) {
-      throw new PresentationException("commune is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("country").asText().equals("")) {
-      throw new PresentationException("country is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("unit_number").asText().equals("")) {
-      throw new PresentationException("unit number is needed ", Status.BAD_REQUEST);
-    }
-  }
-
 
   /**
    * get all visits.
@@ -239,4 +201,35 @@ public class VisitResource {
     this.visitUcc.updateConfirmed(visit);
     return Response.ok(MediaType.APPLICATION_JSON).build();
   }
+
+
+
+  // ******************** Public static's Methods ********************
+
+  /**
+   * Verify json to check address variables.
+   * 
+   * @param json node with required objects.
+   */
+  public static void checkJsonAddress(JsonNode json) {
+    if (json.get("street").asText().equals("")) {
+      throw new PresentationException("street is needed ", Status.BAD_REQUEST);
+    }
+    if (json.get("building_number").asText().equals("")) {
+      throw new PresentationException("building number is needed ", Status.BAD_REQUEST);
+    }
+    if (json.get("postcode").asText().equals("")) {
+      throw new PresentationException("postcode is needed ", Status.BAD_REQUEST);
+    }
+    if (json.get("commune").asText().equals("")) {
+      throw new PresentationException("commune is needed ", Status.BAD_REQUEST);
+    }
+    if (json.get("country").asText().equals("")) {
+      throw new PresentationException("country is needed ", Status.BAD_REQUEST);
+    }
+    if (json.get("unit_number").asText().equals("")) {
+      throw new PresentationException("unit number is needed ", Status.BAD_REQUEST);
+    }
+  }
+
 }
