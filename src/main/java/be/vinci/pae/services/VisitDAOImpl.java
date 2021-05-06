@@ -136,12 +136,13 @@ public class VisitDAOImpl implements VisitDAO {
 
   @Override
   public void updateConfirmed(VisitDTO visit) {
-    PreparedStatement ps = this.dalBackendServices
-        .getPreparedStatement("UPDATE projet.visits SET is_confirmed = ? WHERE visit_id = ?");
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
+        "UPDATE projet.visits SET is_confirmed = ? , " + "explanatory_note=? WHERE visit_id = ?");
 
     try {
       ps.setBoolean(1, visit.getIsConfirmed());
-      ps.setInt(2, visit.getId());
+      ps.setString(2, visit.getExplanatoryNote());
+      ps.setInt(3, visit.getId());
       ps.executeUpdate();
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();

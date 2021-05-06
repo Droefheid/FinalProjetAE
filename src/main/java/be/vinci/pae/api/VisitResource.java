@@ -229,8 +229,17 @@ public class VisitResource {
     }
     VisitDTO visit = domaineFactory.getVisitDTO();
     visit = visitUcc.getVisit(json.get("visitId").asInt());
-    boolean confirmed = json.get("isConfirmed").asBoolean();
-    visit.setIsConfirmed(confirmed);
+
+    if (json.hasNonNull("isConfirmed")) {
+      boolean confirmed = json.get("isConfirmed").asBoolean();
+      visit.setIsConfirmed(confirmed);
+    }
+
+
+    if (json.get("explanatoryNote").asText() != "" && json.hasNonNull("explanatoryNote")) {
+      visit.setExplanatoryNote(json.get("explanatoryNote").asText());
+    }
+
     this.visitUcc.updateConfirmed(visit);
     return Response.ok(MediaType.APPLICATION_JSON).build();
   }
