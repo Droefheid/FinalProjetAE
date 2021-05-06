@@ -39,6 +39,7 @@ const UserListPage = async () => {
 };
 
 const onUserList = (data) => {
+  Sidebar(true);
   let userList = document.querySelector("#list");
 
   if (!data) return;

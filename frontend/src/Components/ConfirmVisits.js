@@ -2,6 +2,7 @@ import { RedirectUrl } from "./Router.js";
 import { getTokenSessionDate } from "../utils/session";
 import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
+import { getCoordinates } from "../utils/map.js";
 
 let page = document.querySelector("#page");
 
@@ -44,7 +45,7 @@ const onVisitList = (data) => {
 };
 
 const showVisitList = (users,visits) =>{
-  
+  Sidebar(true);
   let visitList = document.querySelector("#list");
   let table = `
   <nav id="nav_visit">
@@ -194,7 +195,7 @@ const afficherListAvecAddress = (address, description) =>{
   </div>`;
 
   info.innerHTML = descriptionFinal;
-
+  getCoordinates(address);
   let btn = document.getElementById("button_confirmed");
   btn.addEventListener("click", onConfirmVisit);
 };

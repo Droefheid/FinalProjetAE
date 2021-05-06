@@ -24,7 +24,7 @@ const Sidebar = (needed, secondNeeded) => {
         <div class="navbar navbar-nav ml-auto mr-auto pt-3">
           <a class="btn btn-info mb-1 samebutton" href="/confirmUser">List of inscriptions</a>
               <a class="btn btn-info mb-1 samebutton" href="/userList">List of clients</a>
-              <a class="btn btn-info mb-1 samebutton" href="#" data-uri="/furniture">Add furniture</a>
+              <a class="btn btn-info mb-1 samebutton" href="/addFurniture">Add furniture</a>
               <a class="btn btn-info mb-1 samebutton" href="/confirmVisits">Confirm visits</a>
               <a class="btn btn-info mb-1 samebutton" href="/visitListPage">List of visits</a>
               <a class="btn btn-info mb-1 samebutton" href="/confirmUser">Confirm a user</a>
