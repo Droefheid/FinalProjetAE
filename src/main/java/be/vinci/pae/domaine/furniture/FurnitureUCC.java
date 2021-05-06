@@ -16,4 +16,8 @@ public interface FurnitureUCC {
 
   Object[] getAllInfosForUpdate(int id);
 
+  Object[] getAllInfosForAdd();
+
+
+
 }

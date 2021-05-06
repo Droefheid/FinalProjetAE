@@ -35,7 +35,6 @@ const onFurnitureList = (data) => {
   let furnitureList = document.querySelector("#list");
 
   if (!data) return;
-
   let table = `
           <div class="input-group rounded" id="search_furniture_list">
             <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
@@ -46,8 +45,10 @@ const onFurnitureList = (data) => {
           </div>
           <nav id="nav_furniture">
             <ul class="list-group">`;
+  const user = getUserSessionData();
   data.list.forEach(element => {
-    table += `
+    if(element.state && (element.state != "ER" || user.isBoss)){
+      table += `
         <li id="${element.furnitureId}" class="list-group-item" data-toggle="collapse"
         href="#collapse${element.furnitureId}" role="button"
         aria-expanded="false" aria-controls="collapse${element.furnitureId}">
@@ -63,6 +64,7 @@ const onFurnitureList = (data) => {
             </div>
           </div>
         </li>`;
+    }
   });
 
   table += `  
@@ -131,7 +133,7 @@ const onFurnitureDescription = (data) => {
    updateButton.addEventListener("submit", onUpdate);
   }
 
-  if(data.furniture.state !== "O" && data.furniture.state !== "V" ) {
+  if(data.furniture.state === "EV") {
     let divOption = document.querySelector("#optionform");
     divOption.innerHTML+= `<form class="btn" id="option">
     <input id="idOption" value="${data.furniture.furnitureId}" hidden>
@@ -171,8 +173,6 @@ const onOption = (e) => {
   user_me.furnitureId = furnitureId;
   RedirectUrl(`/introduceOption`);
 }
-
-
 
 const showStopOptionButton = (data) => {
   let divOption = document.querySelector("#optionform");

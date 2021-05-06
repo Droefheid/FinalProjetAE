@@ -7,6 +7,7 @@ import ErrorPage from "./ErrorPage.js";
 import ModificationFurniturePage from "./ModificationFurniturePage.js";
 import FurniturePage from "./FurniturePage.js";
 import ConfirmUserPage from "./ConfirmUserPage.js";
+import AddFurniturePage from "./AddFurniturePage.js";
 import IntroduceVisits from "./IntroduceVisits.js";
 import ConfirmVisits from "./ConfirmVisits.js";
 import UserListPage from "./UserListPage.js";
@@ -25,6 +26,7 @@ const routes = {
   "/seeMyFurniture": MyFurniturePage,
   "/error": ErrorPage,
   "/updateFurniture": ModificationFurniturePage,
+  "/addFurniture": AddFurniturePage,
   "/introduceVisits": IntroduceVisits,
   "/visitListPage": VisitListPage ,
   "/confirmVisits": ConfirmVisits,

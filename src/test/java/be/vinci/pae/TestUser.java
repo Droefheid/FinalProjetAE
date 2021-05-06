@@ -17,7 +17,7 @@ import be.vinci.pae.domaine.user.UserDTO;
 import be.vinci.pae.domaine.user.UserUCC;
 import be.vinci.pae.services.UserDAO;
 
-public class DemoTest {
+public class TestUser {
 
   private UserUCC userUCC;
   private DomaineFactory domaineFactory;
@@ -51,17 +51,32 @@ public class DemoTest {
    * Tests login method of UserUcc using UserDAOImp. Correct username=Jo123, password=123 .
    * 
    */
+
   @Test
-  public void testLogin() {
+  public void testLoginV1() {
     userDTO.setUserName("Jo123");
     user = (User) userDTO;
     user.setPassword(user.hashPassword("123"));
     Mockito.when(userDAO.findByUserName("root")).thenReturn(null);
+    assertThrows(BusinessException.class, () -> userUCC.login("root", "123"));
+  }
+
+  @Test
+  public void testLoginV2() {
+    userDTO.setUserName("Jo123");
+    user = (User) userDTO;
+    user.setPassword(user.hashPassword("123"));
     Mockito.when(userDAO.findByUserName("Jo123")).thenReturn(userDTO);
-    // TODO Verifier que les methodes qui ne renvoit rien sont malgre tout bien appelee.
-    assertAll(() -> assertThrows(BusinessException.class, () -> userUCC.login("root", "123")),
-        () -> assertEquals(userDTO, userUCC.login("Jo123", "123")),
-        () -> assertThrows(BusinessException.class, () -> userUCC.login("Jo123", "1234")));
+    assertEquals(userDTO, userUCC.login("Jo123", "123"));
+  }
+
+  @Test
+  public void testLoginV3() {
+    userDTO.setUserName("Jo123");
+    user = (User) userDTO;
+    user.setPassword(user.hashPassword("123"));
+    Mockito.when(userDAO.findByUserName("Jo123")).thenReturn(null);
+    assertThrows(BusinessException.class, () -> userUCC.login("Jo123", "1234"));
   }
 
   /**

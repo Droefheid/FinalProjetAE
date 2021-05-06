@@ -85,8 +85,8 @@ CREATE TABLE projet.photos_furniture (
 	is_visible BOOLEAN DEFAULT FALSE,
 	is_favourite_photo BOOLEAN DEFAULT FALSE,
 	photo_id INTEGER REFERENCES projet.photos(photo_id) NOT NULL,
-	furniture INTEGER REFERENCES projet.furnitures(furniture_id) NOT NULL,
-	PRIMARY KEY(photo_id)
+	furniture INTEGER REFERENCES projet.furnitures(furniture_id)NOT NULL,
+	PRIMARY KEY (photo_id)
 );
 
 CREATE TABLE projet.photos_visits (
