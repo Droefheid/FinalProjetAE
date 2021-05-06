@@ -94,6 +94,7 @@ const onClick = (e) => {
   });
 };
 
+
 const onConfirmUserDescription = (data) => {
   let info = document.querySelector("#confirmUserDesc");
   let description = `
@@ -115,13 +116,45 @@ const onConfirmUserDescription = (data) => {
     <label class="form-check-label" for="is_boss">Is Boss </label>
   <br>
   <input class="btn btn-primary" type="button" id="button_confirmed" value="Submit">
-  </div>`;
+  `;
+  getAdresse(data.user.adressID,description);
+};
 
-  info.innerHTML = description;
 
+const getAdresse = (address_id, description) => {
+  let id = getTokenSessionDate();
+
+  fetch(API_URL + "users/" + "getAddress/"+ address_id, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": id,
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.text().then((err) => onError(err));
+      }
+      else
+        return response.json().then((obj) => afficherListAvecAddress(obj,description));
+    });
+};
+const afficherListAvecAddress = (address, description) =>{
+  let info = document.querySelector("#confirmUserDesc");
+
+  let descriptionFinal = description;
+  descriptionFinal +=`
+  <div id="map"></div>
+  <div id="popup" class="ol-popup">
+     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+     <div id="popup-content"></div>
+ </div>`;
+  getCoordinates(address);
+  info.innerHTML = descriptionFinal;
   let btn = document.getElementById("button_confirmed");
   btn.addEventListener("click", onConfirmUser);
 };
+
 
 const onConfirmUser = (e) => {
   e.preventDefault();
@@ -150,6 +183,7 @@ const onConfirmUser = (e) => {
       return response.text().then((err) => onError(err));
     } else return onConfirmedUser();
   });
+
 };
 
 const onConfirmedUser = () => {
@@ -160,5 +194,59 @@ const onError = (err) => {
   let messageBoard = document.querySelector("#messageBoardForm");
   messageBoard.innerHTML = err;
 };
+
+const getCoordinates = (obj) => {
+  let address = obj.address;
+  let addressFinal= address.street+" " + address.buildingNumber+" " + address.country+" " + address.commune+" " + address.postCode;
+  let test = "Rue du duc 29 bruxelles";
+  const Http = new XMLHttpRequest();
+  const url=`http://api.positionstack.com/v1/forward?access_key=c9f2d2aaa769991d9e4d60e371687223&query=${test}`;
+  Http.open("GET", url);
+  Http.send();
+
+  Http.onreadystatechange=function(){
+    if(this.readyState==4 && this.status==200){
+      let obj = JSON.parse(Http.response);
+      createMap(obj.data[0].latitude,obj.data[0].longitude);
+    }
+  }
+};
+
+const createMap = (latitude, longitude) => {
+  var attribution = new ol.control.Attribution({
+    collapsible: false
+  });
+
+  var map = new ol.Map({
+      controls: ol.control.defaults({attribution: false}).extend([attribution]),
+      layers: [
+          new ol.layer.Tile({
+              source: new ol.source.OSM({
+                  url: 'https://tile.openstreetmap.be/osmbe/{z}/{x}/{y}.png',
+                  attributions: [ ol.source.OSM.ATTRIBUTION, 'Tiles courtesy of <a href="https://geo6.be/">GEO-6</a>' ],
+                  maxZoom: 18
+              })
+          })
+      ],
+      target: 'map',
+      view: new ol.View({
+          center: ol.proj.fromLonLat([4.35247, 50.84673]),
+          maxZoom: 18,
+          zoom: 8
+      })
+  });
+
+  var layer = new ol.layer.Vector({
+    source: new ol.source.Vector({
+        features: [
+            new ol.Feature({
+                geometry: new ol.geom.Point(ol.proj.fromLonLat([longitude, latitude]))
+            })
+        ]
+    })
+});
+map.addLayer(layer);
+}
+
 
 export default ConfirmUserPage;

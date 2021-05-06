@@ -190,7 +190,7 @@ const afficherListAvecAddress = (address, description) =>{
 
   let descriptionFinal = description;
   descriptionFinal +=`
-  <p>Street : ${address.address.street} </p>
+  <div id="map"></div>
   </div>`;
 
   info.innerHTML = descriptionFinal;
@@ -198,6 +198,7 @@ const afficherListAvecAddress = (address, description) =>{
   let btn = document.getElementById("button_confirmed");
   btn.addEventListener("click", onConfirmVisit);
 };
+
 
 const onConfirmedVisit = () => {
   alert("Visit has been confirmed")
