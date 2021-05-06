@@ -5,18 +5,18 @@ import Sidebar from "./SideBar.js";
 
 let page = document.querySelector("#page");
 
-const ConfirmVisitPage = () => {
+const ConfirmVisits = () => {
   Sidebar(true);
 
   let list = `
-  <div class="containerForm">
+  <div class="containerForm" id="confirmVisitDesc">
 <div class="d-flex justify-content-center h-100 mt-4">
   <div class="card">
-    <div class="card-header">
+    <div class="card-header" >
   <div class="col-sm-3" id="list"> </div>
   </div>
   </div>
-  <div class="col-sm-3"  id="confirmVisitDesc"></div>
+  <div class="col-sm-3"  ></div>
   <div id="messageBoardForm"></div>
   </div>
   </div>
@@ -38,6 +38,7 @@ const ConfirmVisitPage = () => {
 
 const onVisitList = (data) => {
   if (!data) return;
+
   showVisitList(data.users, data.visits);
 };
 
@@ -83,13 +84,13 @@ const showVisitList = (users, visits) => {
 
 const onClick = (e) => {
   e.preventDefault();
-  const visitId = e.target.parentElement.parentElement.id;
-  if (visitId == "nav_visit") return;
+  const visit = e.target.parentElement.parentElement.id;
+  if (visit == "nav_user") return;
 
-  if (visitId == null) return;
+  if (visit == null) return;
 
   let id = getTokenSessionDate();
-  fetch(API_URL + "visits/" + visitId, {
+  fetch(API_URL + "visits/" + visit, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -105,6 +106,7 @@ const onClick = (e) => {
 
 const onConfirmVisitDescription = (data) => {
   let id = getTokenSessionDate();
+
   fetch(API_URL + "users/" + data.visit.userId, {
     method: "GET",
     headers: {
@@ -118,47 +120,63 @@ const onConfirmVisitDescription = (data) => {
       return response.json().then((obj) => visitDescription(obj.user, data));
   });
 };
-
 const visitDescription = (user, data) => {
   data.visit.requestDate = createTimeStamp(data.visit.requestDate);
   let info = document.querySelector("#confirmVisitDesc");
   let description = `
-  <div id="description_user">
-  <p> Username: ${user.username}</p>
-  <p> Lastname: ${user.lastName}</p>
-  <p> Firstname: ${user.firstName}</p>
-  <p> Email: ${user.email}</p>
-  <p> Request Date: ${data.visit.requestDate}</p>
-  <p> Time slot: ${data.visit.timeSlot}</p>
-  <p> Explanatory note: ${data.visit.explanatoryNote}</p>
+  <a href="#" class="previous">&laquo; Previous</a>
+  <div id="messageBoardForm"></div>
+  <table id="description_user" class="table table-striped table-bordered" style="width:100%" >
+  <thead>
   <input type="hidden" id="id" value="${data.visit.id}">
   <input type="hidden" id="id_user" value="${user.id}">
-  </div>
-  <div id="id_confrmdiv">
-    <button id="id_truebtn" class="btn btn-success" >Yes</button>
-    <button id="id_falsebtn" class="btn btn-danger">No</button>
-  </div>
+            <tr>
+                <th>Username</th>
+                <th>Lastname</th>
+                <th>Firstname</th>
+                <th>Email</th>  
+                <th>Request date</th>
+                <th>Time slot</th>
+                <th>Explanatory note</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>${user.username}</td>
+                <td>${user.lastName}</td>
+                <td>${user.firstName}</td>
+                <td>${user.email}</td>
+                <td> ${data.visit.requestDate}</td>
+                <td>${data.visit.timeSlot}</td>
+                <td>${data.visit.explanatoryNote}</td>
+            </tr>
+            <tr>
+
+           <td> 
+    <button id="id_truebtn" class="btn btn-success" >Yes</button> </td>
+    <td><button id="id_falsebtn" class="btn btn-danger">No</button>
+  </td>
+            </tr>
+       </tbody>
+  </table>
   `;
 
   info.innerHTML = description;
-
   let btn = document.getElementById("id_truebtn");
   let btn2 = document.getElementById("id_falsebtn");
   btn.addEventListener("click", onConfirmVisit);
-
   btn2.addEventListener("click", onDenyVisit);
 };
 
 const onConfirmVisit = (e) => {
   e.preventDefault();
-  let visitID = document.getElementById("id").value;
-  let userID = document.getElementById("id_user").value;
-  let confirmed = true;
-
+  let visit_id = document.getElementById("id").value;
+  let user_id = document.getElementById("id_user").value;
+  let confirm = true;
   let visit = {
-    visitId: visitID,
-    user: userID,
-    isConfirmed: confirmed,
+    visitId: visit_id,
+    userId: user_id,
+    isConfirmed: confirm,
   };
 
   let id = getTokenSessionDate();
@@ -178,33 +196,32 @@ const onConfirmVisit = (e) => {
 
 const onDenyVisit = (e) => {
   e.preventDefault();
+  let info = document.querySelector("#confirmVisitDesc");
+
   let visitID = document.getElementById("id").value;
   let userID = document.getElementById("id_user").value;
-  let info = document.querySelector("#confirmVisitDesc");
+
   let description = `
-  <div id="description_user">
+  <a href="#" class="previous">&laquo; Previous</a>
+  <div id="messageBoardForm"></div>
+  <input type="textarea" id="explanatory_note" >
   <input type="hidden" id="id" value="${visitID}">
   <input type="hidden" id="id_user" value="${userID}">
-  <input class="form-check-input" type="textarea" id="explanatory_note" >
-  <input class="btn btn-primary" type="button" id="button_deny" value="Submit">
-  </div>
+  <button id="button_confirmedDeny" class="btn btn-success" >Yes</button>
   `;
-
   info.innerHTML = description;
-
-  let btn = document.getElementById("button_deny");
-  btn.addEventListener("click", onConfirmVisitDeny);
+  let confirmDeny = document.getElementById("button_confirmedDeny");
+  confirmDeny.addEventListener("click", onConfirmDeny);
 };
 
-const onConfirmVisitDeny = (e) => {
-  e.preventDefault();
-  let visitID = document.getElementById("id").value;
-  let userID = document.getElementById("id_user").value;
+const onConfirmDeny = () => {
+  let visit_id = document.getElementById("id").value;
+  let user_id = document.getElementById("id_user").value;
   let explanatory_note = document.getElementById("explanatory_note").value;
 
   let visit = {
-    visitId: visitID,
-    user: userID,
+    visitId: visit_id,
+    userId: user_id,
     explanatoryNote: explanatory_note,
   };
 
@@ -219,12 +236,18 @@ const onConfirmVisitDeny = (e) => {
   }).then((response) => {
     if (!response.ok) {
       return response.text().then((err) => onError(err));
-    } else return onConfirmedVisit();
+    } else return onConfirmedDenyVisit();
   });
 };
 
+const onConfirmedDenyVisit = () => {
+  alert("Visit has not been confirmed");
+  RedirectUrl("/confirmVisits");
+};
+
 const onConfirmedVisit = () => {
-  RedirectUrl(`/confirmVisits`);
+  alert("Visit has been confirmed");
+  RedirectUrl("/confirmVisits");
 };
 
 const onError = (err) => {
@@ -246,4 +269,4 @@ const createTimeStamp = (dateString) => {
   );
 };
 
-export default ConfirmVisitPage;
+export default ConfirmVisits;
