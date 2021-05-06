@@ -93,12 +93,7 @@ public class VisitResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Authorize
   public Response introduceVisit(@Context ContainerRequest request, JsonNode json) {
-    if (json.get("request_date").asText().equals("")) {
-      throw new PresentationException("Request date is needed ", Status.BAD_REQUEST);
-    }
-    if (json.get("explanatory_note").asText().equals("")) {
-      throw new PresentationException("explanatory note is needed", Status.BAD_REQUEST);
-    }
+
     checkJsonAddress(json);
 
     if (json.get("time_slot").asText().equals("")) {
@@ -106,11 +101,10 @@ public class VisitResource {
     }
     VisitDTO visit = domaineFactory.getVisitDTO();
 
-    String term = json.get("request_date").asText();
-    LocalDateTime parsed = LocalDateTime.parse(term);
-    visit.setRequestDate(Timestamp.valueOf(parsed));
+    LocalDateTime dateNow = LocalDateTime.now();
+    visit.setRequestDate(Timestamp.valueOf(dateNow));
 
-    visit.setExplanatoryNote(json.get("explanatory_note").asText());
+
     visit.setTimeSlot(json.get("time_slot").asText());
     visit.setLabelFurniture(json.get("label_furniture").asText());
 
@@ -224,7 +218,7 @@ public class VisitResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeBoss
   public Response updateConfirmed(@Context ContainerRequest request, JsonNode json) {
-    if (json.get("visit_id").asText().equals("")) {
+    if (json.get("visitId").asText().equals("")) {
       throw new PresentationException("Visit id is needed ", Status.BAD_REQUEST);
     }
 
@@ -234,8 +228,9 @@ public class VisitResource {
       throw new PresentationException("User not found", Status.BAD_REQUEST);
     }
     VisitDTO visit = domaineFactory.getVisitDTO();
-    visit = visitUcc.getVisit(json.get("visit_id").asInt());
-    visit.setIsConfirmed(true);
+    visit = visitUcc.getVisit(json.get("visitId").asInt());
+    boolean confirmed = json.get("isConfirmed").asBoolean();
+    visit.setIsConfirmed(confirmed);
     this.visitUcc.updateConfirmed(visit);
     return Response.ok(MediaType.APPLICATION_JSON).build();
   }
