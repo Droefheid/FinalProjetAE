@@ -5,7 +5,7 @@ import Sidebar from "./SideBar.js";
 
 let page = document.querySelector("#page");
 
-const ConfirmVisits = () => {
+const ConfirmVisitPage = () => {
   Sidebar(true);
 
   let list = `
@@ -32,19 +32,16 @@ const ConfirmVisits = () => {
   }).then((response) => {
     if (!response.ok) {
       return response.text().then((err) => onError(err));
-    }
-     else return response.json().then((data) => onVisitList(data));
+    } else return response.json().then((data) => onVisitList(data));
   });
 };
 
 const onVisitList = (data) => {
   if (!data) return;
-
- showVisitList(data.users,data.visits);
+  showVisitList(data.users, data.visits);
 };
 
-const showVisitList = (users,visits) =>{
-  
+const showVisitList = (users, visits) => {
   let visitList = document.querySelector("#list");
   let table = `
   <nav id="nav_visit">
@@ -52,14 +49,13 @@ const showVisitList = (users,visits) =>{
 
   let name;
   visits.forEach((element) => {
-
     users.forEach((user) => {
-      if(user.id == element.userId) {
-        name=user.username;
+      if (user.id == element.userId) {
+        name = user.username;
       }
     });
 
-    table +=`
+    table += `
     <li id="${element.id}" class="list-group-item" data-toggle="collapse"
     href="#collapse${element.id}" role="button"
     aria-expanded="false" aria-controls="collapse${element.id}">
@@ -87,13 +83,13 @@ const showVisitList = (users,visits) =>{
 
 const onClick = (e) => {
   e.preventDefault();
-  const visit = e.target.parentElement.parentElement.id;
-  if (visit == "nav_user") return;
+  const visitId = e.target.parentElement.parentElement.id;
+  if (visitId == "nav_visit") return;
 
-  if (visit == null) return;
+  if (visitId == null) return;
 
   let id = getTokenSessionDate();
-  fetch(API_URL + "visits/" + visit, {
+  fetch(API_URL + "visits/" + visitId, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -108,25 +104,22 @@ const onClick = (e) => {
 };
 
 const onConfirmVisitDescription = (data) => {
-
   let id = getTokenSessionDate();
- 
-    fetch(API_URL + "users/" + data.visit.userId, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": id,
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.text().then((err) => onError(err));
-        }
-        else
-          return response.json().then((obj) => visitDescription(obj.user,data));
-      });
+  fetch(API_URL + "users/" + data.visit.userId, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: id,
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((err) => onError(err));
+    } else
+      return response.json().then((obj) => visitDescription(obj.user, data));
+  });
 };
-const visitDescription = (user,data) => {
+
+const visitDescription = (user, data) => {
   data.visit.requestDate = createTimeStamp(data.visit.requestDate);
   let info = document.querySelector("#confirmVisitDesc");
   let description = `
@@ -135,25 +128,37 @@ const visitDescription = (user,data) => {
   <p> Lastname: ${user.lastName}</p>
   <p> Firstname: ${user.firstName}</p>
   <p> Email: ${user.email}</p>
-  <p> Request Date: ${data.visit.requestDate }</p>
-  <p> Time slot: ${data.visit.timeSlot }</p>
-  <p> Explanatory note: ${data.visit.explanatoryNote }</p>
-    <input type="hidden" id="id" value="${data.visit.id}">
-  <input class="btn btn-primary" type="button" id="button_confirmed" value="Confirm">
-  </div>`;
+  <p> Request Date: ${data.visit.requestDate}</p>
+  <p> Time slot: ${data.visit.timeSlot}</p>
+  <p> Explanatory note: ${data.visit.explanatoryNote}</p>
+  <input type="hidden" id="id" value="${data.visit.id}">
+  <input type="hidden" id="id_user" value="${user.id}">
+  </div>
+  <div id="id_confrmdiv">
+    <button id="id_truebtn" class="btn btn-success" >Yes</button>
+    <button id="id_falsebtn" class="btn btn-danger">No</button>
+  </div>
+  `;
 
   info.innerHTML = description;
 
-  let btn = document.getElementById("button_confirmed");
+  let btn = document.getElementById("id_truebtn");
+  let btn2 = document.getElementById("id_falsebtn");
   btn.addEventListener("click", onConfirmVisit);
-}; 
+
+  btn2.addEventListener("click", onDenyVisit);
+};
 
 const onConfirmVisit = (e) => {
   e.preventDefault();
   let visitID = document.getElementById("id").value;
+  let userID = document.getElementById("id_user").value;
+  let confirmed = true;
 
   let visit = {
-    visit_id: visitID,
+    visitId: visitID,
+    user: userID,
+    isConfirmed: confirmed,
   };
 
   let id = getTokenSessionDate();
@@ -171,9 +176,14 @@ const onConfirmVisit = (e) => {
   });
 };
 
+const onDenyVisit = (e) => {
+  let info = document.querySelector("#confirmVisitDesc");
+
+  info.innerHTML = description;
+};
+
 const onConfirmedVisit = () => {
-  alert("Visit has been confirmed")
-  RedirectUrl("/confirmVisits");
+  RedirectUrl(`/confirmVisits`);
 };
 
 const onError = (err) => {
@@ -184,7 +194,15 @@ const onError = (err) => {
 const createTimeStamp = (dateString) => {
   let Timestamp = new Date(dateString);
   let timeSplit = Timestamp.toLocaleString().split("/");
-  return timeSplit[2].substr(0, 4) + "-" + timeSplit[1] + "-" + timeSplit[0] + " " + Timestamp.toLocaleTimeString();
-}
+  return (
+    timeSplit[2].substr(0, 4) +
+    "-" +
+    timeSplit[1] +
+    "-" +
+    timeSplit[0] +
+    " " +
+    Timestamp.toLocaleTimeString()
+  );
+};
 
-export default ConfirmVisits;
+export default ConfirmVisitPage;

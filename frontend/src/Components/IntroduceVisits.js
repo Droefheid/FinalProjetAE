@@ -35,15 +35,6 @@ let introduceVisits = `
 												</h5>
 												<hr>
 													<form>
-														<div class="input-group form-group">
-															<div class="input-group-prepend">
-																<span class="input-group-text">
-																	<i class="fa fa-calendar" aria-hidden="true"></i>
-																</span>
-															</div>
-															<input placeholder="Date of visit" class="textbox-n" type="text" onfocus="(this.type='datetime-local')" onblur="(this.type='datetime-local')" id="datetime-local" />
-															<!--   <input class = "form-control mb-3 " type="datetime-local" value = "2021-01-01T13:00:00" id="datetime-local" >   -->
-														</div>
 														<div class="row">
 															<div class="col-sm">
 																<div class="input-group form-group">
@@ -129,18 +120,6 @@ let introduceVisits = `
 																							</div>
 																						</div>
 																					</div>
-																					<div class="row">
-																						<div class="col-sm">
-																							<div class="input-group form-group">
-																								<div class="input-group-prepend">
-																									<span class="input-group-text">
-																										<i class="fas fa-info"></i>
-																									</span>
-																								</div>
-																								<textarea class="form-control" placeholder="Explanatory note"  id="explanatory_note" ></textarea>
-																							</div>
-																						</div>
-																					</div>
 																					<div class="form-group">
 																						<input type="submit" value="Send request" class="btn btn-lg btn-outline-primary btn-block">
 																						</div>
@@ -156,26 +135,24 @@ let introduceVisits = `
 																</div>`;
 
 const IntroduceVisits = () => {
-	const user = getUserSessionData();
-	if (!user || !user.isBoss ) {
-		// re-render the navbar for the authenticated user.
-		Navbar();
-		RedirectUrl(`/`);
-	}else{
-  Sidebar();
-  let page = document.querySelector("#page");
-  page.innerHTML = introduceVisits;
-  let introduceVisitsForm = document.querySelector("form");
-  introduceVisitsForm.addEventListener("submit", onIntroduceVisits);
- }
+  const user = getUserSessionData();
+  if (!user || !user.isBoss) {
+    // re-render the navbar for the authenticated user.
+    Navbar();
+    RedirectUrl(`/`);
+  } else {
+    Sidebar();
+    let page = document.querySelector("#page");
+    page.innerHTML = introduceVisits;
+    let introduceVisitsForm = document.querySelector("form");
+    introduceVisitsForm.addEventListener("submit", onIntroduceVisits);
+  }
 };
 
 const onIntroduceVisits = (e) => {
   e.preventDefault();
 
   let visit = {
-    request_date: document.getElementById("datetime-local").value,
-    explanatory_note: document.getElementById("explanatory_note").value,
     street: document.getElementById("street").value,
     building_number: document.getElementById("building_number").value,
     postcode: document.getElementById("postcode").value,
