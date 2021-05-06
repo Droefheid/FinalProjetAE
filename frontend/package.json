@@ -11,6 +11,7 @@
     "bootstrap": "^4.5.2",
     "copy-webpack-plugin": "^6.0.3",
     "jquery": "^3.5.1",
+    "ol": "^6.5.0",
     "popper.js": "^1.16.1",
     "popular-movie-quotes": "^1.2.4"
   },

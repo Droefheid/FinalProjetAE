@@ -27,7 +27,6 @@ const Sidebar = (needed, secondNeeded) => {
               <a class="btn btn-info mb-1 samebutton" href="/addFurniture">Add furniture</a>
               <a class="btn btn-info mb-1 samebutton" href="/confirmVisits">Confirm visits</a>
               <a class="btn btn-info mb-1 samebutton" href="/visitListPage">List of visits</a>
-              <a class="btn btn-info mb-1 samebutton" href="/confirmUser">Confirm a user</a>
         </div>
       </div>`;
     }
