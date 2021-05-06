@@ -10,13 +10,13 @@ const VisitListPage = () => {
 
   let list = `
   <div class="containerForm">
+  <h4>List of visits</h4>
 <div class="d-flex justify-content-center h-100 mt-4">
   <div class="card">
-    <div class="card-header">
+    <div class="card-header" id="confirmVisitDesc">
   <div class="col-sm-3" id="list"> </div>
   </div>
   </div>
-  <div class="col-sm-3"  id="confirmVisitDesc"></div>
   <div id="messageBoardForm"></div>
   </div>
   </div>
@@ -43,38 +43,54 @@ const onVisitList = (data) => {
 
 const showVisitList = (users, visits) => {
   let visitList = document.querySelector("#list");
-  let table = `
-    <div class="input-group rounded" id="search_visit_list">
+
+  if (!visits) return;
+  if (visits == 0) {
+    page.innerHTML = "<h3> There aren't any visits to confirm </h3>";
+    return;
+  }
+
+  let table = ` <div class="input-group rounded" id="search_user_list">
   <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
     aria-describedby="search-addon" />
   <span class="input-group-text border-0" id="search-addon">
     <i class="fas fa-search"></i>
   </span>
-  </div>
-  <nav id="nav_user">
+</div>
+<nav id="nav_user">
   <ul class="list-group">`;
-  data.list.forEach((element) => {
+
+  console.log(visits);
+  console.log(users);
+
+  let name;
+  visits.forEach((element) => {
+    users.forEach((user) => {
+      if (user.id == element.userId) {
+        name = user.username;
+      }
+    });
+
     table += `
     <li id="${element.id}" class="list-group-item" data-toggle="collapse"
     href="#collapse${element.id}" role="button"
     aria-expanded="false" aria-controls="collapse${element.id}">
       <div class="row" id="${element.id}" >
+      
         <div class="col-sm-">
-          <p>
-            <h5>${element.username}</h5>
-           
+          <p> 
+          <h5>${name}</h5>               
           </p>
         </div>
       </div>
-    </li>`;
+      </li>`;
   });
 
   table += `  
-        </ul>
-      </nav>
+</ul>
+</nav>
 `;
-  userList.innerHTML = table;
-
+  visitList.innerHTML = table;
   const viewUsers = document.querySelectorAll("li");
   viewUsers.forEach((elem) => {
     elem.addEventListener("click", onClick);
@@ -137,10 +153,10 @@ const visitDescription = (user, data) => {
         </thead>
         <tbody>
             <tr>
-                <td>${data.user.username}</td>
-                <td>${data.user.lastName}</td>
-                <td>${data.user.firstName}</td>
-                <td>${data.user.email}</td>
+                <td>${user.username}</td>
+                <td>${user.lastName}</td>
+                <td>${user.firstName}</td>
+                <td>${user.email}</td>
                 <td>${data.visit.requestDate}</td>
                 <td>${data.visit.timeSlot}</td>
                 <td>${data.visit.explanatoryNote}</td>

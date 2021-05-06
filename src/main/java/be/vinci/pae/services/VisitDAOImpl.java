@@ -161,12 +161,12 @@ public class VisitDAOImpl implements VisitDAO {
 
 
     List<VisitDTO> list = new ArrayList<VisitDTO>();
-    VisitDTO visit = domaineFactory.getVisitDTO();
 
     try {
       ps.setBoolean(1, false);
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
+        VisitDTO visit = domaineFactory.getVisitDTO();
         fullFillVisitFromResulSet(visit, rs);
         list.add(visit);
       }
@@ -187,12 +187,13 @@ public class VisitDAOImpl implements VisitDAO {
 
 
     List<VisitDTO> list = new ArrayList<VisitDTO>();
-    VisitDTO visit = domaineFactory.getVisitDTO();
+
 
     try {
       ps.setBoolean(1, true);
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
+        VisitDTO visit = domaineFactory.getVisitDTO();
         fullFillVisitFromResulSet(visit, rs);
         list.add(visit);
       }
