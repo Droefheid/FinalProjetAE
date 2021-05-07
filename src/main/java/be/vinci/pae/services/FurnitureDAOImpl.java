@@ -214,6 +214,23 @@ public class FurnitureDAOImpl implements FurnitureDAO {
             + " date_of_sale, sale_withdrawal_date, seller, pick_up_date"
             + " FROM projet.furnitures WHERE seller=? ORDER BY furniture_id");
 
+    return getFurniture(ps, userID);
+  }
+
+  @Override
+  public List<FurnitureDTO> getBoughtFurniture(int userID) {
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("SELECT furniture_id," + " type, buyer, furniture_title,"
+            + " purchase_price, furniture_date_collection ,selling_price,"
+            + " special_sale_price,delivery,state_furniture,deposit_date,"
+            + " date_of_sale, sale_withdrawal_date, seller, pick_up_date"
+            + " FROM projet.furnitures WHERE buyer=? ORDER BY furniture_id");
+
+    return getFurniture(ps, userID);
+  }
+
+  private List<FurnitureDTO> getFurniture(PreparedStatement ps, int userID) {
+
     List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
     try {
       ps.setInt(1, userID);
@@ -232,27 +249,50 @@ public class FurnitureDAOImpl implements FurnitureDAO {
   }
 
   @Override
-  public List<FurnitureDTO> getBoughtFurniture(int userID) {
-    PreparedStatement ps = this.dalBackendServices
-        .getPreparedStatement("SELECT furniture_id," + " type, buyer, furniture_title,"
-            + " purchase_price, furniture_date_collection ,selling_price,"
-            + " special_sale_price,delivery,state_furniture,deposit_date,"
-            + " date_of_sale, sale_withdrawal_date, seller, pick_up_date"
-            + " FROM projet.furnitures WHERE buyer=? ORDER BY furniture_id");
+  public List<FurnitureDTO> searchFurniture(String search, int typeID, int minPrice, int maxPrice) {
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
+        "SELECT * FROM projet.furnitures" + " WHERE lower(furniture_title) LIKE lower(?) "
+            + "AND type=? AND selling_price >=? AND selling_price <=? ");
 
     List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
     try {
-      ps.setInt(1, userID);
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-          FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
-          furniture = fullFillFurnitures(rs, furniture);
-          list.add(furniture);
-        }
+      ps.setString(1, '%' + search + '%');
+      ps.setInt(2, typeID);
+      ps.setInt(3, minPrice);
+      ps.setInt(4, maxPrice);
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
+        fullFillFurnitures(rs, furniture);
+        list.add(furniture);
       }
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException("Error getAll", e);
+      throw new FatalException("error searchFurniture", e);
+    }
+    return list;
+  }
+
+  @Override
+  public List<FurnitureDTO> searchFurnitureWithoutType(String search, int minPrice, int maxPrice) {
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
+        "SELECT * FROM projet.furnitures" + " WHERE lower(furniture_title) LIKE lower(?) "
+            + " AND selling_price >=? AND selling_price <=? ");
+
+    List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
+    try {
+      ps.setString(1, '%' + search + '%');
+      ps.setInt(2, minPrice);
+      ps.setInt(3, maxPrice);
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
+        fullFillFurnitures(rs, furniture);
+        list.add(furniture);
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("error searchFurniture", e);
     }
     return list;
   }

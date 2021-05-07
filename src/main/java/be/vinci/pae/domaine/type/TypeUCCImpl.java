@@ -1,5 +1,6 @@
 package be.vinci.pae.domaine.type;
 
+import java.util.List;
 import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.TypeDAO;
@@ -24,6 +25,14 @@ public class TypeUCCImpl implements TypeUCC {
     }
     dalservices.commitTransaction();
     return typeDTO;
+  }
+
+  @Override
+  public List<TypeDTO> getAll() {
+    dalservices.startTransaction();
+    List<TypeDTO> list = typeDAO.getAll();
+    dalservices.commitTransaction();
+    return list;
   }
 
 }
