@@ -9,7 +9,7 @@ public interface PhotoFurnitureDAO {
 
   PhotoFurnitureDTO getFavoritePhoto(int furniture);
 
-  List<PhotoFurnitureDTO> getAllForFurniture(int photoId);
+  List<PhotoFurnitureDTO> getAllForFurniture(int furnitureId);
 
   PhotoFurnitureDTO add(PhotoFurnitureDTO photoFurniture);
 

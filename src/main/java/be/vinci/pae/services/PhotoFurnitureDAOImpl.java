@@ -63,7 +63,7 @@ public class PhotoFurnitureDAOImpl implements PhotoFurnitureDAO {
   }
 
   @Override
-  public List<PhotoFurnitureDTO> getAllForFurniture(int photoId) {
+  public List<PhotoFurnitureDTO> getAllForFurniture(int furnitureId) {
     PreparedStatement ps = this.dalBackendServices
         .getPreparedStatement("SELECT photo_id," + " is_visible, is_favourite_photo, furniture"
             + " FROM projet.photos_furniture WHERE furniture = ?" + " ORDER BY photo_id");
@@ -71,7 +71,7 @@ public class PhotoFurnitureDAOImpl implements PhotoFurnitureDAO {
     List<PhotoFurnitureDTO> list = new ArrayList<PhotoFurnitureDTO>();
 
     try {
-      ps.setInt(1, photoId);
+      ps.setInt(1, furnitureId);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           PhotoFurnitureDTO photoFurniture = fullFillPhotoFurniture(rs);

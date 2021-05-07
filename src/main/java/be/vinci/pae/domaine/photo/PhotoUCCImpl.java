@@ -6,6 +6,7 @@ import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.PhotoDAO;
 import be.vinci.pae.services.PhotoFurnitureDAO;
+import be.vinci.pae.services.PhotoVisitDAO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response.Status;
 
@@ -19,6 +20,9 @@ public class PhotoUCCImpl implements PhotoUCC {
 
   @Inject
   private PhotoFurnitureDAO photoFurnitureDAO;
+
+  @Inject
+  private PhotoVisitDAO photoVisitDAO;
 
 
 
@@ -57,7 +61,7 @@ public class PhotoUCCImpl implements PhotoUCC {
   }
 
   @Override
-  public List<PhotoDTO> addMultiple(List<PhotoDTO> photos,
+  public List<PhotoDTO> addMultiplePhotosForFurniture(List<PhotoDTO> photos,
       List<PhotoFurnitureDTO> photosFurniture) {
     dalservices.startTransaction();
 
@@ -78,6 +82,38 @@ public class PhotoUCCImpl implements PhotoUCC {
       if (photoFurnitureDTO == null) {
         dalservices.rollbackTransaction();
         throw new BusinessException("Photo_Furniture doesn't add", Status.BAD_REQUEST);
+      }
+      addedPhotos.add(photoDTO);
+
+      i++;
+    }
+
+    dalservices.commitTransaction();
+    return addedPhotos;
+  }
+
+  @Override
+  public List<PhotoDTO> addMultiplePhotosForVisit(List<PhotoDTO> photos,
+      List<PhotoVisitDTO> photosVisit) {
+    dalservices.startTransaction();
+
+    int i = 0;
+    List<PhotoDTO> addedPhotos = new ArrayList<>();
+    while (i < photos.size()) {
+      PhotoDTO photo = photos.get(i);
+      PhotoVisitDTO photoVisit = photosVisit.get(i);
+      PhotoDTO photoDTO = photoDAO.add(photo);
+      if (photoDTO == null) {
+        dalservices.rollbackTransaction();
+        throw new BusinessException("Photo doesn't add", Status.BAD_REQUEST);
+      }
+
+      // Link to photo.
+      photoVisit.setPhotoId(photoDTO.getId());
+      photoVisit = photoVisitDAO.add(photoVisit);
+      if (photoVisit == null) {
+        dalservices.rollbackTransaction();
+        throw new BusinessException("Photo_Visit doesn't add", Status.BAD_REQUEST);
       }
       addedPhotos.add(photoDTO);
 
