@@ -60,7 +60,7 @@ public class TestUser {
   }
 
   /**
-   * Success Test :
+   * Success Test : login method of UserUcc. Correct username=Jo123, password=123 .
    */
   @Test
   public void testLoginV2() {
@@ -72,7 +72,7 @@ public class TestUser {
   }
 
   /**
-   * Fail Test :
+   * Fail Test : login method of UserUcc. Correct username=Jo123, password=123 .
    */
   @Test
   public void testLoginV3() {
@@ -84,7 +84,7 @@ public class TestUser {
   }
 
   /**
-   * Success test :
+   * Success test : register method of UserUcc. All informations are well filled.
    */
   @Test
   public void testRegisterV1() {
@@ -97,7 +97,7 @@ public class TestUser {
   }
 
   /**
-   * Fail test :
+   * Fail test : register method of UserUcc. BusinessException has been throw.
    */
   @Test
   public void testRegisterV2() {
