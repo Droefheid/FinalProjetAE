@@ -2,6 +2,8 @@ package be.vinci.pae;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.util.ArrayList;
+import java.util.List;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,10 +13,8 @@ import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.address.AddressDTO;
 import be.vinci.pae.domaine.user.UserDTO;
-import be.vinci.pae.domaine.user.UserUCC;
 import be.vinci.pae.domaine.visit.VisitDTO;
 import be.vinci.pae.domaine.visit.VisitUCC;
-import be.vinci.pae.services.UserDAO;
 import be.vinci.pae.services.VisitDAO;
 
 public class TestVisit {
@@ -26,9 +26,7 @@ public class TestVisit {
   private VisitDTO visitDTO;
   private VisitDAO visitDAO;
 
-  private UserUCC userUCC;
   private UserDTO userDTO;
-  private UserDAO userDAO;
 
   private AddressDTO addressDTO;
 
@@ -36,11 +34,8 @@ public class TestVisit {
   void initAll() {
     ServiceLocator locator = ServiceLocatorUtilities.bind(new MockApplicationBinder());
     this.domaineFactory = locator.getService(DomaineFactory.class);
-    this.userUCC = locator.getService(UserUCC.class);
-    this.userDAO = locator.getService(UserDAO.class);
     this.visitUCC = locator.getService(VisitUCC.class);
     this.visitDAO = locator.getService(VisitDAO.class);
-
 
     userDTO = domaineFactory.getUserDTO();
     addressDTO = domaineFactory.getAdressDTO();
@@ -51,7 +46,7 @@ public class TestVisit {
    * Success Test :
    */
   @Test
-  public void testIntroduceOptionV1() {
+  public void testIntroduceVisitV1() {
     Mockito.when(visitDAO.introduceVisit(visitDTO)).thenReturn(visitDTO);
     assertEquals(visitDTO, visitUCC.introduceVisit(visitDTO, addressDTO, userDTO));
   }
@@ -60,7 +55,7 @@ public class TestVisit {
    * Fail Test :
    */
   @Test
-  public void testIntroduceOptionV2() {
+  public void testIntroduceVisitV2() {
     Mockito.when(visitDAO.introduceVisit(visitDTO)).thenReturn(null);
     assertThrows(BusinessException.class,
         () -> visitUCC.introduceVisit(visitDTO, addressDTO, userDTO));
@@ -77,12 +72,35 @@ public class TestVisit {
   }
 
   /**
-   * Fail Test :
+   * Fail Test : visit doesn't exist.
    */
   @Test
   public void testGetVisitV2() {
+    visitDTO.setId(-1);
     Mockito.when(visitDAO.findById(visitDTO.getId())).thenReturn(null);
     assertThrows(BusinessException.class, () -> visitUCC.getVisit(visitDTO.getId()));
+  }
+
+  /**
+   * Success test :
+   */
+  @Test
+  public void testGetAllVisitV1() {
+    List<VisitDTO> list = new ArrayList<VisitDTO>();
+
+    Mockito.when(visitDAO.getAll()).thenReturn(list);
+    assertEquals(list, visitUCC.getAll());
+  }
+
+  /**
+   * Success test :
+   */
+  @Test
+  public void testGetAllVisitNotConfirmedV1() {
+    List<VisitDTO> list = new ArrayList<VisitDTO>();
+
+    Mockito.when(visitDAO.getAllNotConfirmed()).thenReturn(list);
+    assertEquals(list, visitUCC.getAllNotConfirmed());
   }
 
 

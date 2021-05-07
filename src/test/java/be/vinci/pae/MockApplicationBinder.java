@@ -8,6 +8,12 @@ import be.vinci.pae.domaine.furniture.FurnitureUCC;
 import be.vinci.pae.domaine.furniture.FurnitureUCCImpl;
 import be.vinci.pae.domaine.option.OptionUCC;
 import be.vinci.pae.domaine.option.OptionUCCImpl;
+import be.vinci.pae.domaine.photo.PhotoFurnitureUCC;
+import be.vinci.pae.domaine.photo.PhotoFurnitureUCCImpl;
+import be.vinci.pae.domaine.photo.PhotoUCC;
+import be.vinci.pae.domaine.photo.PhotoUCCImpl;
+import be.vinci.pae.domaine.type.TypeUCC;
+import be.vinci.pae.domaine.type.TypeUCCImpl;
 import be.vinci.pae.domaine.user.UserUCC;
 import be.vinci.pae.domaine.user.UserUCCImpl;
 import be.vinci.pae.domaine.visit.VisitUCC;
@@ -54,6 +60,9 @@ public class MockApplicationBinder extends AbstractBinder {
     bind(FurnitureUCCImpl.class).to(FurnitureUCC.class).in(Singleton.class);
     bind(OptionUCCImpl.class).to(OptionUCC.class).in(Singleton.class);
     bind(VisitUCCImpl.class).to(VisitUCC.class).in(Singleton.class);
+    bind(TypeUCCImpl.class).to(TypeUCC.class).in(Singleton.class);
+    bind(PhotoUCCImpl.class).to(PhotoUCC.class).in(Singleton.class);
+    bind(PhotoFurnitureUCCImpl.class).to(PhotoFurnitureUCC.class).in(Singleton.class);
     bind(DalServicesImpl.class).to(DalBackendServices.class).in(Singleton.class);
   }
 }

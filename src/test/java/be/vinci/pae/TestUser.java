@@ -1,6 +1,5 @@
 package be.vinci.pae;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -48,8 +47,7 @@ public class TestUser {
   }
 
   /**
-   * Tests login method of UserUcc using UserDAOImp. Correct username=Jo123, password=123 .
-   * 
+   * Fail Test : login method of UserUcc using UserDAOImp. Correct username=Jo123, password=123 .
    */
 
   @Test
@@ -61,15 +59,21 @@ public class TestUser {
     assertThrows(BusinessException.class, () -> userUCC.login("root", "123"));
   }
 
+  /**
+   * Success Test :
+   */
   @Test
   public void testLoginV2() {
     userDTO.setUserName("Jo123");
     user = (User) userDTO;
     user.setPassword(user.hashPassword("123"));
-    Mockito.when(userDAO.findByUserName("Jo123")).thenReturn(userDTO);
+    Mockito.when(userDAO.findByUserName(userDTO.getUserName())).thenReturn(userDTO);
     assertEquals(userDTO, userUCC.login("Jo123", "123"));
   }
 
+  /**
+   * Fail Test :
+   */
   @Test
   public void testLoginV3() {
     userDTO.setUserName("Jo123");
@@ -80,18 +84,30 @@ public class TestUser {
   }
 
   /**
-   * Test register method.
+   * Success test :
    */
   @Test
-  public void testRegister() {
+  public void testRegisterV1() {
     Mockito.when(userDAO.getAddressByInfo(addressDTO.getStreet(), addressDTO.getBuildingNumber(),
-        addressDTO.getCommune(), addressDTO.getCountry())).thenReturn(1, -1);
+        addressDTO.getCommune(), addressDTO.getCountry())).thenReturn(1);
     Mockito.when(userDAO.registerAddress(addressDTO)).thenReturn(1);
-    Mockito.when(userDAO.registerUser(userDTO)).thenReturn(userDTO, (UserDTO) null);
+    Mockito.when(userDAO.registerUser(userDTO)).thenReturn(userDTO);
 
-    assertAll(() -> assertEquals(userDTO, userUCC.register(userDTO, addressDTO)),
-        () -> assertThrows(BusinessException.class, () -> userUCC.register(userDTO, addressDTO)),
-        () -> assertThrows(BusinessException.class, () -> userUCC.register(userDTO, addressDTO)));
+    assertEquals(userDTO, userUCC.register(userDTO, addressDTO));
+  }
+
+  /**
+   * Fail test :
+   */
+  @Test
+  public void testRegisterV2() {
+    Mockito.when(userDAO.getAddressByInfo(addressDTO.getStreet(), addressDTO.getBuildingNumber(),
+        addressDTO.getCommune(), addressDTO.getCountry())).thenReturn(-1);
+    Mockito.when(userDAO.registerAddress(addressDTO)).thenReturn(1);
+    Mockito.when(userDAO.registerUser(userDTO)).thenReturn((UserDTO) null);
+
+    assertThrows(BusinessException.class, () -> userUCC.register(userDTO, addressDTO));
+
   }
 
 }

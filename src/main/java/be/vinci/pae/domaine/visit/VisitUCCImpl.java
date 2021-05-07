@@ -53,7 +53,6 @@ public class VisitUCCImpl implements VisitUCC {
 
     visit.setUserId(userDTO.getID());
 
-
     visit = visitDao.introduceVisit(visit);
     if (visit == null) {
       dalservices.rollbackTransaction();
