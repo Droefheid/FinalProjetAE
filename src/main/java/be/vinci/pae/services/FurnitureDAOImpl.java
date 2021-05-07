@@ -240,6 +240,11 @@ public class FurnitureDAOImpl implements FurnitureDAO {
             + " date_of_sale, sale_withdrawal_date, seller, pick_up_date"
             + " FROM projet.furnitures WHERE buyer=? ORDER BY furniture_id");
 
+    return getFurniture(ps, userID);
+  }
+
+  private List<FurnitureDTO> getFurniture(PreparedStatement ps, int userID) {
+
     List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
     try {
       ps.setInt(1, userID);
@@ -256,7 +261,6 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     }
     return list;
   }
-
 
   @Override
   public List<FurnitureDTO> searchFurniture(String search, int typeID, int minPrice, int maxPrice) {

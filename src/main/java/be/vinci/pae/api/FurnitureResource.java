@@ -49,6 +49,11 @@ public class FurnitureResource {
   private UserResource userRessource;
 
 
+  /**
+   * get a list of the types
+   * 
+   * @return list of the types
+   */
   @GET
   @Path("/getTypes")
   public Response getType() {
