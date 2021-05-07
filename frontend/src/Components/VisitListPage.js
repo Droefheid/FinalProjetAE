@@ -2,6 +2,7 @@ import { RedirectUrl } from "./Router.js";
 import { getTokenSessionDate } from "../utils/session";
 import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
+import { getCoordinates } from "../utils/map.js";
 
 let page = document.querySelector("#page");
 
@@ -164,9 +165,12 @@ const afficherListAvecAddress = (address, description) =>{
 
   let descriptionFinal = description;
   descriptionFinal +=`
-  <p>Street : ${address.address.street} </p>
+  <div id="map"></div>
+  <div id="popup" class="ol-popup">
+     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+     <div id="popup-content"></div>
   </div>`;
-
+  getCoordinates(address);
   info.innerHTML = descriptionFinal;
 };
 
