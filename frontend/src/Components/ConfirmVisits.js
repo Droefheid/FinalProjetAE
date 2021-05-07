@@ -170,7 +170,7 @@ const visitDescription = (user, data) => {
 
 const onConfirmVisit = (e) => {
   e.preventDefault();
-  let visit_id = document.getElementById("id").value;
+  /*let visit_id = document.getElementById("id").value;
   let user_id = document.getElementById("id_user").value;
   let confirm = true;
   let visit = {
@@ -190,8 +190,38 @@ const onConfirmVisit = (e) => {
   }).then((response) => {
     if (!response.ok) {
       return response.text().then((err) => onError(err));
+    } else return onConfirm();
+  });
+
+  */
+};
+
+const onConfirm = () => {
+  /*let visit_id = document.getElementById("id").value;
+  let user_id = document.getElementById("id_user").value;
+  let explanatory_note = document.getElementById("explanatory_note").value;
+
+  let visit = {
+    visitId: visit_id,
+    userId: user_id,
+    explanatoryNote: explanatory_note,
+  };
+
+  let id = getTokenSessionDate();
+  fetch(API_URL + "visits/", {
+    method: "PUT",
+    body: JSON.stringify(visit),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: id,
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((err) => onError(err));
     } else return onConfirmedVisit();
   });
+
+  */
 };
 
 const onDenyVisit = (e) => {
@@ -204,10 +234,12 @@ const onDenyVisit = (e) => {
   let description = `
   <a href="#" class="previous">&laquo; Previous</a>
   <div id="messageBoardForm"></div>
+  Explanatory note
+  <br>
   <input type="textarea" id="explanatory_note" >
   <input type="hidden" id="id" value="${visitID}">
   <input type="hidden" id="id_user" value="${userID}">
-  <button id="button_confirmedDeny" class="btn btn-success" >Yes</button>
+  <button id="button_confirmedDeny" class="btn btn-success" >Submit</button>
   `;
   info.innerHTML = description;
   let confirmDeny = document.getElementById("button_confirmedDeny");
