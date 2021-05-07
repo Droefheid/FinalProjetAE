@@ -23,7 +23,7 @@ public class PhotoVisitDAOImpl implements PhotoVisitDAO {
   @Override
   public PhotoVisitDTO findByPhotoId(int idPhoto) {
     PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
-        "SELECT photo," + " visit" + " FROM projet.photos_visit " + " WHERE photo = ?");
+        "SELECT photo," + " visit" + " FROM projet.photos_visits " + " WHERE photo = ?");
 
     PhotoVisitDTO photo = null;
     try {
@@ -43,7 +43,7 @@ public class PhotoVisitDAOImpl implements PhotoVisitDAO {
   @Override
   public List<PhotoVisitDTO> getAllForVisit(int visitId) {
     PreparedStatement ps = this.dalBackendServices.getPreparedStatement("SELECT photo," + " visit"
-        + " FROM projet.photos_visit WHERE visit = ?" + " ORDER BY photo");
+        + " FROM projet.photos_visits WHERE visit = ?" + " ORDER BY photo");
 
     List<PhotoVisitDTO> list = new ArrayList<>();
 
@@ -68,7 +68,7 @@ public class PhotoVisitDAOImpl implements PhotoVisitDAO {
   @Override
   public PhotoVisitDTO add(PhotoVisitDTO photoVisit) {
     PreparedStatement ps = this.dalBackendServices
-        .getPreparedStatement("INSERT INTO projet.photos_visit" + " VALUES(?,?)");
+        .getPreparedStatement("INSERT INTO projet.photos_visits" + " VALUES(?,?)");
 
     try {
       ps = setAllPsAttributNotNull(ps, photoVisit);
@@ -76,7 +76,7 @@ public class PhotoVisitDAOImpl implements PhotoVisitDAO {
       ps.executeUpdate();
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException("Error add photo_furniture", e);
+      throw new FatalException("Error add photo_visit", e);
     }
     return findByPhotoId(photoVisit.getPhotoId());
   }

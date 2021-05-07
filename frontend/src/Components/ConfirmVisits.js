@@ -141,6 +141,12 @@ const visitDescription = (user,data) => {
     <input type="hidden" id="id" value="${data.visit.id}">
   <input class="btn btn-primary" type="button" id="button_confirmed" value="Confirm">
   </div>`;
+  //console.log(data);
+  let photos = data.photos;
+  for (let i = 0; i < photos.length; i++) {
+    //console.log(photos[i]);
+    description += `<img src="` + photos[i].picture + `" style="width: 100%" alt="` + photos[i].name +`" />`;
+  }
   getAdresse(data.visit.addressId,description);
 }; 
 

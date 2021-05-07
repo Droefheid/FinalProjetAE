@@ -98,9 +98,9 @@ public class PhotoDAOImpl implements PhotoDAO {
   @Override
   public List<PhotoDTO> getAllForVisit(int id) {
     PreparedStatement ps =
-        this.dalBackendServices.getPreparedStatement("SELECT p.photo," + " p.pictures, p.name"
-            + " FROM projet.photos p, projet.photos_visits pv WHERE p.photo = pv.photo"
-            + " AND pv.visit = ?" + " ORDER BY p.photo");
+        this.dalBackendServices.getPreparedStatement("SELECT p.photo_id," + " p.pictures, p.name"
+            + " FROM projet.photos p, projet.photos_visits pv WHERE p.photo_id = pv.photo"
+            + " AND pv.visit = ?" + " ORDER BY p.photo_id");
 
     List<PhotoDTO> list = new ArrayList<PhotoDTO>();
 
@@ -113,11 +113,11 @@ public class PhotoDAOImpl implements PhotoDAO {
         }
       } catch (SQLException e) {
         ((DalServices) dalBackendServices).rollbackTransaction();
-        throw new FatalException("Error getAllForFurniture", e);
+        throw new FatalException("Error getAllForVisit", e);
       }
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException("Error setInt in getAllForFurniture", e);
+      throw new FatalException("Error setInt in getAllForVisit", e);
     }
     return list;
   }

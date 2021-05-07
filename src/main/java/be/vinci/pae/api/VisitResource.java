@@ -68,7 +68,8 @@ public class VisitResource {
     PhotoResource.transformAllURLOfThePhotosIntoBase64Image((List<PhotoDTO>) listOfAll[1]);
 
     int i = 0;
-    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("visit", listOfAll[i++]);
+    return ResponseMaker.createResponseWithObjectNodeWith3PutPOJO("visit", listOfAll[i++], "photos",
+        listOfAll[i++], "photosVisit", listOfAll[i++]);
   }
 
   /**
@@ -119,9 +120,9 @@ public class VisitResource {
 
 
 
-    visitUcc.introduceVisit(visit, addressDTO, currentUser);
+    visit = visitUcc.introduceVisit(visit, addressDTO, currentUser);
 
-    return Response.ok().build();
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("visit", visit);
   }
 
   /**
