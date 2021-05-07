@@ -50,6 +50,31 @@ public class FurnitureResource {
 
 
   /**
+   * get the furniture with constraints searchBar, type, minPrice and maxPrice.
+   * 
+   * @return list of 2 lists bought and sold furniture.
+   */
+  @GET
+  @Path("/searchFurniture")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeBoss
+  public Response searchBarFurniture(JsonNode json) {
+
+    if (!json.hasNonNull("type")) {
+      throw new PresentationException("type not selected");
+    }
+
+    if (json.get("minPrice").asInt() <= json.get("maxPrice").asInt()) {
+      throw new PresentationException("user id is incorrect");
+    }
+
+    List<FurnitureDTO> list = furnitureUCC.searchFurniture(json.get("searchBar").asText(),
+        json.get("type").asInt(), json.get("minPrice").asInt(), json.get("maxPrice").asInt());
+
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", list);
+  }
+
+  /**
    * get all furnitures.
    * 
    * @return list of all furnitures.

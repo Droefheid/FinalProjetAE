@@ -145,7 +145,9 @@ const furnitureInfo = (lists,descripton) => {
     e.preventDefault();
     onSeller(lists.seller)});
   let buyerButton = document.querySelector("#buyer");
-  buyerButton.addEventListener("submit", onBuyer);
+  buyerButton.addEventListener("submit", function(e){
+    e.preventDefault();
+    onBuyer(lists.buyer)});
 };
 
 const onSeller = (furnitures) => {
@@ -153,12 +155,13 @@ const onSeller = (furnitures) => {
     list:furnitures
   };
   onFurnitureList(data);
-  
-
 };
 
-const onBuyer = (e) => {
-  e.preventDefault();
+const onBuyer = (furnitures) => {
+  let data = {
+    list:furnitures
+  };
+  onFurnitureList(data);
 }
 
 
@@ -194,7 +197,7 @@ table += `
   const viewFurnitures = document.querySelectorAll("li");
   viewFurnitures.forEach((elem) =>{
   elem.addEventListener("click", onClickFurniture);
-  })
+  });
 }
 
 const onClickFurniture = (e) => {
@@ -225,6 +228,8 @@ const onClickFurniture = (e) => {
 
 const onFurnitureDescription = (data) => {
   let info = document.querySelector("#userInfo");
+  let test = document.querySelector("#description_furniture");
+  if(test) test.innerHTML="";
   let html = info.innerHTML;
   let description = `
   <div id="description_furniture">
@@ -234,9 +239,15 @@ const onFurnitureDescription = (data) => {
        State : ${data.furniture.state}
          </p>
   </div>`;
-
+  console.log(info.innerHTML);
   info.innerHTML = description; 
-  info.innerHTML+=html;
+  info.innerHTML +=html;
+
+  
+  const viewFurnitures = document.querySelectorAll("li");
+  viewFurnitures.forEach((elem) =>{
+  elem.addEventListener("click", onClickFurniture);
+  });
 };
 
 const createTimeStamp = (dateString) => {

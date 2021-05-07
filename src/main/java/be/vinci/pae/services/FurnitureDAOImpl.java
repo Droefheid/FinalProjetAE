@@ -256,4 +256,54 @@ public class FurnitureDAOImpl implements FurnitureDAO {
     }
     return list;
   }
+
+
+  @Override
+  public List<FurnitureDTO> searchFurniture(String search, int typeID, int minPrice, int maxPrice) {
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
+        "SELECT * FROM projet.furnitures" + " WHERE lower(furniture_title) LIKE lower(?) "
+            + "AND type=? AND selling_price >=? AND selling_price <=? ");
+
+    List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
+    try {
+      ps.setString(1, '%' + search + '%');
+      ps.setInt(2, typeID);
+      ps.setInt(3, minPrice);
+      ps.setInt(4, maxPrice);
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
+        fullFillFurnitures(rs, furniture);
+        list.add(furniture);
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("error searchFurniture", e);
+    }
+    return list;
+  }
+
+  @Override
+  public List<FurnitureDTO> searchFurnitureWithoutType(String search, int minPrice, int maxPrice) {
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
+        "SELECT * FROM projet.furnitures" + " WHERE lower(furniture_title) LIKE lower(?) "
+            + " AND selling_price >=? AND selling_price <=? ");
+
+    List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
+    try {
+      ps.setString(1, '%' + search + '%');
+      ps.setInt(2, minPrice);
+      ps.setInt(3, maxPrice);
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        FurnitureDTO furniture = domaineFactory.getFurnitureDTO();
+        fullFillFurnitures(rs, furniture);
+        list.add(furniture);
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("error searchFurniture", e);
+    }
+    return list;
+  }
 }
