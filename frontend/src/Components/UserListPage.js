@@ -58,8 +58,6 @@ const UserListPage = async () => {
 
 const onSearchListUser = () => {
   let searchWord = document.getElementById("searchBar").value;
-  console.log(searchWord);
-
   if(searchWord === undefined || searchWord == null || searchWord.length <= 0){
     UserListPage();
   }else {

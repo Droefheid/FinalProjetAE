@@ -119,6 +119,7 @@ public class UserResource {
     List<UserDTO> listUsers = new ArrayList<UserDTO>();
     listUsers = userUcc.getAllSearchedUser(search);
 
+
     return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listUsers);
   }
 

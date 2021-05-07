@@ -221,9 +221,10 @@ public class UserDAOImpl implements UserDAO {
 
     List<UserDTO> list = new ArrayList<UserDTO>();
     try {
-      ps.setString(1, '%' + search + '%');
-      ps.setString(2, '%' + search + '%');
-      ps.setString(3, '%' + search + '%');
+      search = '%' + search + '%';
+      ps.setString(1, search);
+      ps.setString(2, search);
+      ps.setString(3, search);
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
         UserDTO user = domaineFactory.getUserDTO();
