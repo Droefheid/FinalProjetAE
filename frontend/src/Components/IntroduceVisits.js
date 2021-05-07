@@ -217,7 +217,7 @@ const onIntroduceVisits = (e) => {
 
 const onVisitAdded = (data) => {
 	let visitId = data.visit.id;
-	console.log(data,visitId);
+	//console.log(data,visitId);
 
 	const input = document.getElementById('files');
 	const formData = new FormData();
