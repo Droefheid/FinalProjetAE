@@ -2,6 +2,7 @@ import { RedirectUrl } from "./Router.js";
 import { getTokenSessionDate } from "../utils/session";
 import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
+import { getCoordinates } from "../utils/map.js";
 
 let page = document.querySelector("#page");
 
@@ -37,6 +38,7 @@ const ConfirmUserPage = async () => {
 };
 
 const onUserList = (data) => {
+  Sidebar(true);
   let userList = document.querySelector("#list");
 
   if (!data) return;
@@ -94,6 +96,7 @@ const onClick = (e) => {
   });
 };
 
+
 const onConfirmUserDescription = (data) => {
   let info = document.querySelector("#confirmUserDesc");
   let description = `
@@ -115,13 +118,45 @@ const onConfirmUserDescription = (data) => {
     <label class="form-check-label" for="is_boss">Is Boss </label>
   <br>
   <input class="btn btn-primary" type="button" id="button_confirmed" value="Submit">
-  </div>`;
+  `;
+  getAdresse(data.user.adressID,description);
+};
 
-  info.innerHTML = description;
 
+const getAdresse = (address_id, description) => {
+  let id = getTokenSessionDate();
+
+  fetch(API_URL + "users/" + "getAddress/"+ address_id, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": id,
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.text().then((err) => onError(err));
+      }
+      else
+        return response.json().then((obj) => afficherListAvecAddress(obj,description));
+    });
+};
+const afficherListAvecAddress = (address, description) =>{
+  let info = document.querySelector("#confirmUserDesc");
+
+  let descriptionFinal = description;
+  descriptionFinal +=`
+  <div id="map"></div>
+  <div id="popup" class="ol-popup">
+     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+     <div id="popup-content"></div>
+ </div>`;
+  getCoordinates(address);
+  info.innerHTML = descriptionFinal;
   let btn = document.getElementById("button_confirmed");
   btn.addEventListener("click", onConfirmUser);
 };
+
 
 const onConfirmUser = (e) => {
   e.preventDefault();
@@ -150,6 +185,7 @@ const onConfirmUser = (e) => {
       return response.text().then((err) => onError(err));
     } else return onConfirmedUser();
   });
+
 };
 
 const onConfirmedUser = () => {

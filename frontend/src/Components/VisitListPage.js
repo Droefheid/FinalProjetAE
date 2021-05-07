@@ -2,6 +2,7 @@ import { RedirectUrl } from "./Router.js";
 import { getTokenSessionDate } from "../utils/session";
 import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
+import { getCoordinates } from "../utils/map.js";
 
 let page = document.querySelector("#page");
 
@@ -16,7 +17,7 @@ const VisitListPage = () => {
   <div class="col-sm-3" id="list"> </div>
   </div>
   </div>
-  <div class="col-sm-3"  id="confirmVisitDesc"></div>
+  <div class="col-sm-3 pb-5"  id="confirmVisitDesc"></div>
   <div id="messageBoardForm"></div>
   </div>
   </div>
@@ -136,10 +137,42 @@ const visitDescription = (user,data) => {
   <p> Request Date: ${data.visit.requestDate }</p>
   <p> Time slot: ${data.visit.timeSlot }</p>
   <p> Explanatory note: ${data.visit.explanatoryNote }</p>
-  </div>`;
+    `;
 
-  info.innerHTML = description;
+  getAdresse(data.visit.addressId,description);
 }; 
+
+const getAdresse = (address_id, description) => {
+  let id = getTokenSessionDate();
+
+  fetch(API_URL + "users/" + "getAddress/"+ address_id, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": id,
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.text().then((err) => onError(err));
+      }
+      else
+        return response.json().then((obj) => afficherListAvecAddress(obj,description));
+    });
+};
+const afficherListAvecAddress = (address, description) =>{
+  let info = document.querySelector("#confirmVisitDesc");
+
+  let descriptionFinal = description;
+  descriptionFinal +=`
+  <div id="map"></div>
+  <div id="popup" class="ol-popup">
+     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+     <div id="popup-content"></div>
+  </div>`;
+  getCoordinates(address);
+  info.innerHTML = descriptionFinal;
+};
 
 const onError = (err) => {
   let messageBoard = document.querySelector("#messageBoardForm");

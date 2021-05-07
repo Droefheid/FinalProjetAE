@@ -281,5 +281,33 @@ public class UserDAOImpl implements UserDAO {
     return user;
   }
 
+  @Override
+  public AddressDTO getAddressById(int id) {
+    PreparedStatement ps =
+        this.dalBackendServices.getPreparedStatement("SELECT address_id ,street ,building_number,"
+            + "postcode,commune , country,unit_number FROM projet.addresses WHERE address_id=?");
+    AddressDTO addresse = domaineFactory.getAdressDTO();
+    try {
+      ps.setInt(1, id);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          addresse.setID(rs.getInt(1));
+          addresse.setStreet(rs.getString(2));
+          addresse.setBuildingNumber(rs.getString(3));
+          addresse.setPostCode(rs.getString(4));
+          addresse.setCommune(rs.getString(5));
+          addresse.setCountry(rs.getString(6));
+          addresse.setUnitNumber(rs.getString(7));
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+
+    return addresse;
+  }
+
 
 }

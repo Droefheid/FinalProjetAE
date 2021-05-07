@@ -34,7 +34,7 @@ public interface UserDAO {
 
   List<UserDTO> getAll();
 
-
+  AddressDTO getAddressById(int id);
 
   void updateConfirmed(UserDTO user);
 

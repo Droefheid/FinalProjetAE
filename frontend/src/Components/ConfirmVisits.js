@@ -2,6 +2,7 @@ import { RedirectUrl } from "./Router.js";
 import { getTokenSessionDate } from "../utils/session";
 import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
+import { getCoordinates } from "../utils/map.js";
 
 let page = document.querySelector("#page");
 
@@ -44,7 +45,7 @@ const onVisitList = (data) => {
 };
 
 const showVisitList = (users,visits) =>{
-  
+  Sidebar(true);
   let visitList = document.querySelector("#list");
   let table = `
   <nav id="nav_visit">
@@ -141,11 +142,7 @@ const visitDescription = (user,data) => {
     <input type="hidden" id="id" value="${data.visit.id}">
   <input class="btn btn-primary" type="button" id="button_confirmed" value="Confirm">
   </div>`;
-
-  info.innerHTML = description;
-
-  let btn = document.getElementById("button_confirmed");
-  btn.addEventListener("click", onConfirmVisit);
+  getAdresse(data.visit.addressId,description);
 }; 
 
 const onConfirmVisit = (e) => {
@@ -170,6 +167,42 @@ const onConfirmVisit = (e) => {
     } else return onConfirmedVisit();
   });
 };
+
+const getAdresse = (address_id, description) => {
+  let id = getTokenSessionDate();
+
+  fetch(API_URL + "users/" + "getAddress/"+ address_id, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": id,
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.text().then((err) => onError(err));
+      }
+      else
+        return response.json().then((obj) => afficherListAvecAddress(obj,description));
+    });
+};
+const afficherListAvecAddress = (address, description) =>{
+  let info = document.querySelector("#confirmVisitDesc");
+
+  let descriptionFinal = description;
+  descriptionFinal +=`
+  <div id="map"></div>
+  <div id="popup" class="ol-popup">
+     <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+     <div id="popup-content"></div>
+  </div>`;
+
+  info.innerHTML = descriptionFinal;
+  getCoordinates(address);
+  let btn = document.getElementById("button_confirmed");
+  btn.addEventListener("click", onConfirmVisit);
+};
+
 
 const onConfirmedVisit = () => {
   alert("Visit has been confirmed")
