@@ -50,9 +50,9 @@ public class FurnitureResource {
 
 
   /**
-   * get a list of the types
+   * get a list of the types.
    * 
-   * @return list of the types
+   * @return list of the types.
    */
   @GET
   @Path("/getTypes")
