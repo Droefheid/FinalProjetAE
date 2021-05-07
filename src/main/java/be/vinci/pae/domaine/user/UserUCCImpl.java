@@ -70,6 +70,16 @@ public class UserUCCImpl implements UserUCC {
   }
 
   @Override
+  public List<UserDTO> getAllSearchedUser(String search) {
+    dalservices.startTransaction();
+    List<UserDTO> list = userDao.getAllSearchedUser(search);
+    dalservices.commitTransaction();
+    return list;
+  }
+
+
+
+  @Override
   public List<UserDTO> getAllNotConfirmed() {
     dalservices.startTransaction();
     List<UserDTO> list = userDao.getAllConfirmed();
