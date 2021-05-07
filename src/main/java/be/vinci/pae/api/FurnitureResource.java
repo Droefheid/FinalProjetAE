@@ -62,6 +62,25 @@ public class FurnitureResource {
     return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
   }
 
+  /**
+   * get the furniture bought and sold by client as 2 lists.
+   * 
+   * @return list of 2 lists bought and sold furniture.
+   */
+  @GET
+  @Path("clientFurnitures/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @AuthorizeBoss
+  public Response allClientFurnitures(@PathParam("id") int id) {
+    if (id <= 0) {
+      throw new PresentationException("user id is incorrect");
+    }
+    Object[] listFurnitures = new Object[2];
+    listFurnitures = furnitureUCC.getClientFurnitures(id);
+
+    return ResponseMaker.createResponseWithObjectNodeWith2PutPOJO("seller", listFurnitures[0],
+        "buyer", listFurnitures[1]);
+  }
 
   /**
    * get a clients furniture.

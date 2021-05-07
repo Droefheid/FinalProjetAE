@@ -208,3 +208,8 @@ img {
 #flexbox > div {
   flex: auto;
 }
+
+#map {
+  width: 200px;
+  height: 300px;
+}

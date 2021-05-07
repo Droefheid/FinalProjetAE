@@ -296,7 +296,8 @@ public class UserDAOImpl implements UserDAO {
           addresse.setBuildingNumber(rs.getString(3));
           addresse.setPostCode(rs.getString(4));
           addresse.setCommune(rs.getString(5));
-          addresse.setUnitNumber(rs.getString(6));
+          addresse.setCountry(rs.getString(6));
+          addresse.setUnitNumber(rs.getString(7));
         }
       }
     } catch (SQLException e) {
