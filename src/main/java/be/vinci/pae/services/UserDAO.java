@@ -40,6 +40,8 @@ public interface UserDAO {
 
   List<UserDTO> getAllConfirmed();
 
+  List<UserDTO> getAllSearchedUser(String search);
+
 
 
   // UserDTO updateBoss(UserDTO user, boolean is_boss);

@@ -211,6 +211,33 @@ public class UserDAOImpl implements UserDAO {
     return list;
   }
 
+
+  @Override
+  public List<UserDTO> getAllSearchedUser(String search) {
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
+        "SELECT * FROM projet.users u, projet.addresses a " + "WHERE u.address = a.address_id AND"
+            + " (lower(u.last_name) LIKE lower(?) OR lower(a.commune) LIKE lower(?)"
+            + " OR lower(a.postcode) LIKE lower(?))");
+
+    List<UserDTO> list = new ArrayList<UserDTO>();
+    try {
+      ps.setString(1, '%' + search + '%');
+      ps.setString(2, '%' + search + '%');
+      ps.setString(3, '%' + search + '%');
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        UserDTO user = domaineFactory.getUserDTO();
+        fullFillListUsers(rs, user);
+        list.add(user);
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("error fullFillUsers", e);
+    }
+    return list;
+  }
+
+
   @Override
   public List<UserDTO> getAllConfirmed() {
     PreparedStatement ps =
@@ -237,7 +264,6 @@ public class UserDAOImpl implements UserDAO {
 
     return list;
   }
-
 
 
   @Override
