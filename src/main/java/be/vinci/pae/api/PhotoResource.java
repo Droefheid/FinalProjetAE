@@ -89,7 +89,7 @@ public class PhotoResource {
       throw new PresentationException("Furniture doesn't exist", Status.BAD_REQUEST);
     }
 
-    // System.out.println("InputStream: " + file + "\nFormDataContentDisposition: " + fileDisposition);
+    // System.out.println("InputStream: "+file+"\nFormDataContentDisposition: "+fileDisposition);
 
     String uploadedFileLocation = Config.getProperty("PhotosPath") + fileDisposition.getFileName();
     // System.out.println("URL : " + System.getProperty("user.dir") + uploadedFileLocation);
@@ -112,7 +112,7 @@ public class PhotoResource {
   }
 
   /**
-   * save in a folder all the photos from FormDataMultipart given for a furniture. Must be Authorize.
+   * save all the photos from FormDataMultipart given for a furniture. Must be Authorize.
    * 
    * @param request header with the token.
    * @param multiPart the FormDataMultipart with photo inside.
@@ -175,7 +175,7 @@ public class PhotoResource {
   }
 
   /**
-   * save in a folder all the photo from FormDataMultipart given for a visit. Must be Authorize.
+   * save all the photo from FormDataMultipart given for a visit. Must be Authorize.
    * 
    * @param request header with the token.
    * @param multiPart the FormDataMultipart with photo inside.
