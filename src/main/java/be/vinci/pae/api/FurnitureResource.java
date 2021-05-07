@@ -16,6 +16,7 @@ import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.domaine.furniture.FurnitureUCC;
 import be.vinci.pae.domaine.photo.PhotoDTO;
+import be.vinci.pae.domaine.type.TypeDTO;
 import be.vinci.pae.domaine.type.TypeUCC;
 import be.vinci.pae.domaine.user.UserDTO;
 import jakarta.inject.Inject;
@@ -48,6 +49,14 @@ public class FurnitureResource {
   private UserResource userRessource;
 
 
+  @GET
+  @Path("/getTypes")
+  public Response getType() {
+
+    List<TypeDTO> type = typeUCC.getAll();
+
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("type", type);
+  }
 
   /**
    * get the furniture with constraints searchBar, type, minPrice and maxPrice.

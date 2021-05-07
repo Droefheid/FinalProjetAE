@@ -26,11 +26,27 @@ const FurniturePage = async () => {
         return response.text().then((err) => onError(err));
       }
       else
-        return response.json().then((data) => onFurnitureList(data));
+        return response.json().then((data) => getTypeNames(data));
     })
 };
 
-const onFurnitureList = (data) => {
+const getTypeNames = (data) => {
+  fetch(API_URL + "furnitures/getTypes", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.text().then((err) => onError(err));
+      }
+      else
+        return response.json().then((types) => onFurnitureList(types,data));
+    });
+}
+
+const onFurnitureList = (types,data) => {
 
   let furnitureList = document.querySelector("#list");
 
@@ -46,7 +62,9 @@ const onFurnitureList = (data) => {
           <nav id="nav_furniture">
             <ul class="list-group">`;
   const user = getUserSessionData();
+  console.log(types.type);
   data.list.forEach(element => {
+    let type = types.type[element.type-1];
     if(element.state && (element.state != "ER" || user.isBoss)){
       table += `
         <li id="${element.furnitureId}" class="list-group-item" data-toggle="collapse"
@@ -59,7 +77,7 @@ const onFurnitureList = (data) => {
             <div class="col-sm-">
               <p>
                 <h5>${element.furnitureTitle}</h5>
-                Type : ${element.type}
+                Type : ${type.name}
               </p>
             </div>
           </div>
