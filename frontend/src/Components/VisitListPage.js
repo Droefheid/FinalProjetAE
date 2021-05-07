@@ -40,7 +40,7 @@ const VisitListPage = () => {
 
 const onVisitList = (data) => {
   if (!data) return;
- showVisitList(data.users,data.visits);
+  showVisitList(data.users,data.visits);
 };
 
 const showVisitList = (users,visits) =>{
@@ -125,7 +125,9 @@ const onConfirmVisitDescription = (data) => {
           return response.json().then((obj) => visitDescription(obj.user,data));
       });
 };
+
 const visitDescription = (user,data) => {
+  //console.log(data);
   data.visit.requestDate = createTimeStamp(data.visit.requestDate);
   let info = document.querySelector("#confirmVisitDesc");
   let description = `
@@ -138,6 +140,11 @@ const visitDescription = (user,data) => {
   <p> Time slot: ${data.visit.timeSlot }</p>
   <p> Explanatory note: ${data.visit.explanatoryNote }</p>
     `;
+  let photos = data.photos;
+  for (let i = 0; i < photos.length; i++) {
+    //console.log(photos[i]);
+    description += `<img src="` + photos[i].picture + `" style="width: 100%" alt="` + photos[i].name +`" />`;
+  }
 
   getAdresse(data.visit.addressId,description);
 }; 

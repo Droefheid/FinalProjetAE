@@ -179,7 +179,7 @@ const onFurnitureAdded = (data) => {
 
   let id = getTokenSessionDate();
 
-  fetch(API_URL + "photos/uploadPhotos", {
+  fetch(API_URL + "photos/uploadPhotosFurniture", {
     method: "POST",
     body: formData,
     headers:{

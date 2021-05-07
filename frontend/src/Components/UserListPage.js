@@ -8,35 +8,78 @@ let page = document.querySelector("#page");
 const UserListPage = async () => {
     Sidebar(true, true);
   let list = `
-  <div id="container" class="containerForm">
-<div class="d-flex justify-content-center h-100 mt-4">
-  <div class="card">
-    <div class="card-header">
-  <div class="col-sm-3" id="list"> </div>
-  </div>
-  </div>
-  <div class="col-sm-7"  id="userInfo"></div>
-  <div id="messageBoardForm"></div>
-  </div>
+  <div class="input-group" style="margin-bottom:10px;">
+    <div class="form-outline">
+      <input type="search" id="searchBar" class="form-control" placeholder="Search" />
+    </div>
+    <button type="button" id="submitSearch" class="btn btn-primary">
+      <i class="fas fa-search"></i>
+    </button>
   </div>
   `;
-  let id = getTokenSessionDate();
-  page.innerHTML = list;
-  fetch(API_URL + "users/", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": id,
-    },
-  })
-    .then((response) => {
-      if (!response.ok) {
-        return response.text().then((err) => onError(err));
-      }
-      else
-        return response.json().then((data) => onUserList(data));
-    })
+
+
+      list += `
+      <div id="container" class="containerForm">
+      
+      <div class="d-flex justify-content-center h-100 mt-4">
+      <div class="card">
+        <div class="card-header">
+        
+      <div class="col-sm-3" id="list"> </div>
+      </div>
+      </div>
+      <div class="col-sm-7"  id="userInfo"></div>
+      <div id="messageBoardForm"></div>
+      </div>
+      </div>
+      `;
+      let id = getTokenSessionDate();
+      page.innerHTML = list;
+      fetch(API_URL + "users/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": id,
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            return response.text().then((err) => onError(err));
+          }
+          else
+            return response.json().then((data) => onUserList(data));
+        })
+
+        let buttonSearch = document.getElementById("submitSearch");
+        buttonSearch.addEventListener("click", onSearchListUser);
+    
 };
+
+const onSearchListUser = () => {
+  let searchWord = document.getElementById("searchBar").value;
+  if(searchWord === undefined || searchWord == null || searchWord.length <= 0){
+    UserListPage();
+  }else {
+    let id = getTokenSessionDate();
+
+    fetch(API_URL + "users/search/" + searchWord, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": id,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then((err) => onError(err));
+        }
+        else
+          return response.json().then((data) => onUserList(data));
+      })
+  }
+
+}
 
 const onUserList = (data) => {
   Sidebar(true);

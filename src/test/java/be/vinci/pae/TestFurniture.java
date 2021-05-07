@@ -3,6 +3,7 @@ package be.vinci.pae;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.util.ArrayList;
 import java.util.List;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
@@ -103,7 +104,7 @@ class TestFurniture {
    */
   @Test
   public void testGetAllFurnitureV1() {
-    List<FurnitureDTO> list = null;
+    List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
     Mockito.when(furnitureDAO.getAll()).thenReturn(list);
     assertEquals(list, furnitureUCC.getAll());
   }
@@ -134,8 +135,6 @@ class TestFurniture {
     allLists[2] = listUser;
 
     Object[] test = furnitureUCC.getAllInfosForUpdate(furnitureDTO.getFurnitureId());
-
-
 
     assertAll(() -> assertEquals(allLists[0], test[0]), () -> assertEquals(allLists[1], test[1]),
         () -> assertEquals(allLists[2], test[2]));

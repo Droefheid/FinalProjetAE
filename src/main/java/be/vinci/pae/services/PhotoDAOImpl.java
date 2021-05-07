@@ -94,6 +94,34 @@ public class PhotoDAOImpl implements PhotoDAO {
     return list;
   }
 
+
+  @Override
+  public List<PhotoDTO> getAllForVisit(int id) {
+    PreparedStatement ps =
+        this.dalBackendServices.getPreparedStatement("SELECT p.photo_id," + " p.pictures, p.name"
+            + " FROM projet.photos p, projet.photos_visits pv WHERE p.photo_id = pv.photo"
+            + " AND pv.visit = ?" + " ORDER BY p.photo_id");
+
+    List<PhotoDTO> list = new ArrayList<PhotoDTO>();
+
+    try {
+      ps.setInt(1, id);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          PhotoDTO photoFurniture = fullFillPhoto(rs);
+          list.add(photoFurniture);
+        }
+      } catch (SQLException e) {
+        ((DalServices) dalBackendServices).rollbackTransaction();
+        throw new FatalException("Error getAllForVisit", e);
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("Error setInt in getAllForVisit", e);
+    }
+    return list;
+  }
+
   @Override
   public PhotoDTO add(PhotoDTO photo) {
     PreparedStatement ps = this.dalBackendServices

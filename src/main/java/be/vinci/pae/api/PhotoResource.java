@@ -28,6 +28,9 @@ import be.vinci.pae.domaine.photo.PhotoDTO;
 import be.vinci.pae.domaine.photo.PhotoFurnitureDTO;
 import be.vinci.pae.domaine.photo.PhotoFurnitureUCC;
 import be.vinci.pae.domaine.photo.PhotoUCC;
+import be.vinci.pae.domaine.photo.PhotoVisitDTO;
+import be.vinci.pae.domaine.visit.VisitDTO;
+import be.vinci.pae.domaine.visit.VisitUCC;
 import be.vinci.pae.utils.Config;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -47,6 +50,9 @@ import jakarta.ws.rs.core.Response.Status;
 public class PhotoResource {
 
   @Inject
+  private VisitUCC visitUCC;
+
+  @Inject
   private FurnitureUCC furnitureUCC;
 
   @Inject
@@ -60,53 +66,68 @@ public class PhotoResource {
 
 
   /**
-   * save in a folder the photo given. Must be Authorize.
+   * save in a folder the photo given for a furniture. Must be Authorize.
    * 
    * @param file the photo to save.
    * @param fileDisposition information about the photo.
    * @return Response.ok if everything is going fine.
    */
   @POST
-  @Path("/uploadPhoto")
+  @Path("/uploadPhotoFurniture")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Authorize
-  public Response uploadOnePhoto(@FormDataParam("photo0") InputStream file,
+  public Response uploadOnePhotoFurniture(@Context ContainerRequest request,
+      @FormDataParam("photo0") InputStream file,
       @FormDataParam("photo0") FormDataContentDisposition fileDisposition) {
-    System.out.println("Coucou1");
-    System.out.println("InputStream: " + file + "\nFormDataContentDisposition: " + fileDisposition);
+    // Check about the furniture to link.
+    int furnitureId = Integer.valueOf(request.getHeaderString("furnitureId"));
+    if (furnitureId < 1) {
+      throw new PresentationException("Furniture id cannot be under 1", Status.BAD_REQUEST);
+    }
+    FurnitureDTO furniture = this.furnitureUCC.findById(furnitureId);
+    if (furniture == null) {
+      throw new PresentationException("Furniture doesn't exist", Status.BAD_REQUEST);
+    }
 
-    String uploadedFileLocation = System.getProperty("user.dir") + Config.getProperty("PhotosPath")
-        + fileDisposition.getFileName();
-    System.out.println(uploadedFileLocation);
+    // System.out.println("InputStream: "+file+"\nFormDataContentDisposition: "+fileDisposition);
 
-    // save it
-    writeToFile(file, uploadedFileLocation);
+    String uploadedFileLocation = Config.getProperty("PhotosPath") + fileDisposition.getFileName();
+    // System.out.println("URL : " + System.getProperty("user.dir") + uploadedFileLocation);
 
+    // save it.
+    writeToFile(file, System.getProperty("user.dir") + uploadedFileLocation);
 
-    // Test for return
-    String encodstring = encodeFileToBase64Binary(uploadedFileLocation);
-    // System.out.println(encodstring.substring(0, 200));
+    // For the return.
+    List<String> paths = new ArrayList<>();
+    List<PhotoDTO> photos = new ArrayList<>();
+    List<PhotoFurnitureDTO> photosFurniture = new ArrayList<>();
+    photos.add(createPhotoDTOWith(uploadedFileLocation, fileDisposition.getFileName()));
+    photosFurniture.add(createFullFillPhotoFurniture(-1, furniture.getFurnitureId(), false, false));
+    List<PhotoDTO> allPhotos = this.photoUCC.addMultiplePhotosForFurniture(photos, photosFurniture);
+    for (PhotoDTO photoDTO : allPhotos) {
+      paths.add(encodeFileToBase64Binary(photoDTO.getPicture()));
+    }
 
-    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("furniture", encodstring);
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("photos", paths);
   }
 
   /**
-   * save in a folder all the photo in the FormDataMultipart given. Must be Authorize.
+   * save all the photos from FormDataMultipart given for a furniture. Must be Authorize.
    * 
    * @param request header with the token.
    * @param multiPart the FormDataMultipart with photo inside.
    * @return Response.ok if everything is going fine.
    */
   @POST
-  @Path("/uploadPhotos")
+  @Path("/uploadPhotosFurniture")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   @Authorize
-  public Response uploadMultiplePhotos(@Context ContainerRequest request,
+  public Response uploadMultiplePhotosFurniture(@Context ContainerRequest request,
       final FormDataMultiPart multiPart) {
     // Check about the furniture to link.
     int furnitureId = Integer.valueOf(request.getHeaderString("furnitureId"));
     if (furnitureId < 1) {
-      throw new PresentationException("Furntirure id cannot be under 1", Status.BAD_REQUEST);
+      throw new PresentationException("Furniture id cannot be under 1", Status.BAD_REQUEST);
     }
     FurnitureDTO furniture = this.furnitureUCC.findById(furnitureId);
     if (furniture == null) {
@@ -130,13 +151,13 @@ public class PhotoResource {
         // System.out.println(formDataBodyPart.getHeaders().get("Content-Disposition"));
         String fileName = getFilenameOfImageFrom(formDataBodyPart);
         // System.out.println("Name : " + fileName);
-        String uploadedFileLocation =
-            System.getProperty("user.dir") + Config.getProperty("PhotosPath") + fileName;
-        // System.out.println("URL : " + uploadedFileLocation);
+        String uploadedFileLocation = Config.getProperty("PhotosPath") + fileName;
+        // System.out.println("URL : " + System.getProperty("user.dir") + uploadedFileLocation);
 
         // Save it.
-        writeToFile(formDataBodyPart.getValueAs(InputStream.class), uploadedFileLocation);
-        photos.add(createFullFillPhoto(uploadedFileLocation, fileName));
+        writeToFile(formDataBodyPart.getValueAs(InputStream.class),
+            System.getProperty("user.dir") + uploadedFileLocation);
+        photos.add(createPhotoDTOWith(uploadedFileLocation, fileName));
         photosFurniture
             .add(createFullFillPhotoFurniture(-1, furniture.getFurnitureId(), false, false));
 
@@ -145,7 +166,57 @@ public class PhotoResource {
       }
     }
 
-    List<PhotoDTO> allPhotos = this.photoUCC.addMultiple(photos, photosFurniture);
+    List<PhotoDTO> allPhotos = this.photoUCC.addMultiplePhotosForFurniture(photos, photosFurniture);
+    for (PhotoDTO photoDTO : allPhotos) {
+      paths.add(encodeFileToBase64Binary(photoDTO.getPicture()));
+    }
+
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("photos", paths);
+  }
+
+  /**
+   * save all the photo from FormDataMultipart given for a visit. Must be Authorize.
+   * 
+   * @param request header with the token.
+   * @param multiPart the FormDataMultipart with photo inside.
+   * @return Response.ok if everything is going fine.
+   */
+  @POST
+  @Path("/uploadPhotosVisit")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  @Authorize
+  public Response uploadMultiplePhotosVisit(@Context ContainerRequest request,
+      final FormDataMultiPart multiPart) {
+    // Check about the furniture to link.
+    int visitId = Integer.valueOf(request.getHeaderString("visitId"));
+    if (visitId < 1) {
+      throw new PresentationException("Visit id cannot be under 1", Status.BAD_REQUEST);
+    }
+    VisitDTO visit = this.visitUCC.getVisit(visitId);
+    if (visit == null) {
+      throw new PresentationException("Visit doesn't exist", Status.BAD_REQUEST);
+    }
+
+    // Save all photo include.
+    Map<String, List<FormDataBodyPart>> fields = multiPart.getFields();
+    List<String> paths = new ArrayList<>();
+    List<PhotoDTO> photos = new ArrayList<>();
+    List<PhotoVisitDTO> photosVisit = new ArrayList<>();
+    for (String keyField : fields.keySet()) {
+      List<FormDataBodyPart> values = fields.get(keyField);
+      for (FormDataBodyPart formDataBodyPart : values) {
+        String fileName = getFilenameOfImageFrom(formDataBodyPart);
+        String uploadedFileLocation = Config.getProperty("PhotosPath") + fileName;
+
+        // Save it.
+        writeToFile(formDataBodyPart.getValueAs(InputStream.class),
+            System.getProperty("user.dir") + uploadedFileLocation);
+        photos.add(createPhotoDTOWith(uploadedFileLocation, fileName));
+        photosVisit.add(createAPhotoVisitWith(visit.getId()));
+      }
+    }
+
+    List<PhotoDTO> allPhotos = this.photoUCC.addMultiplePhotosForVisit(photos, photosVisit);
     for (PhotoDTO photoDTO : allPhotos) {
       paths.add(encodeFileToBase64Binary(photoDTO.getPicture()));
     }
@@ -274,11 +345,11 @@ public class PhotoResource {
   /**
    * Return a Image into a Base64 at the location given.
    * 
-   * @param uploadedFileLocation the path to locate the file.
+   * @param uploadedFileLocation the path to locate the access file.
    * @return a Base64 Image.
    */
   public static String encodeFileToBase64Binary(String uploadedFileLocation) {
-    File file = new File(uploadedFileLocation);
+    File file = new File(System.getProperty("user.dir") + uploadedFileLocation);
 
     String encodedfile = null;
     try (FileInputStream fileInputStreamReader = new FileInputStream(file)) {
@@ -294,11 +365,23 @@ public class PhotoResource {
     return "data:image/png;base64," + encodedfile;
   }
 
+  /**
+   * Transform the url (into Picture) from all the pictures into a Base64 Image.
+   * 
+   * @param photosList the list who contains all the photo to transform.
+   */
+  public static void transformAllURLOfThePhotosIntoBase64Image(List<PhotoDTO> photosList) {
+    for (PhotoDTO photo : photosList) {
+      String encodstring = encodeFileToBase64Binary(photo.getPicture());
+      photo.setPicture(encodstring);
+    }
+  }
+
 
 
   // ******************** Private's Methods ********************
 
-  private PhotoDTO createFullFillPhoto(String picture, String name) {
+  private PhotoDTO createPhotoDTOWith(String picture, String name) {
     PhotoDTO photo = domaineFactory.getPhotoDTO();
 
     photo.setPicture(picture);
@@ -317,6 +400,14 @@ public class PhotoResource {
     photoFurniture.setFavourite(isFavourite);
 
     return photoFurniture;
+  }
+
+  private PhotoVisitDTO createAPhotoVisitWith(int visitId) {
+    PhotoVisitDTO photoVisit = domaineFactory.getPhotoVisitDTO();
+
+    photoVisit.setVisitId(visitId);
+
+    return photoVisit;
   }
 
   /**

@@ -250,11 +250,7 @@ public class FurnitureResource {
 
     Object[] listOfAll = furnitureUCC.getAllInfosForUpdate(id);
 
-    // Transform all URL into Base64 Image.
-    for (PhotoDTO photo : (List<PhotoDTO>) listOfAll[3]) {
-      String encodstring = PhotoResource.encodeFileToBase64Binary(photo.getPicture());
-      photo.setPicture(encodstring);
-    }
+    PhotoResource.transformAllURLOfThePhotosIntoBase64Image((List<PhotoDTO>) listOfAll[3]);
 
     int i = 0;
     return ResponseMaker.createResponseWithObjectNodeWith6PutPOJO("furniture", listOfAll[i++],

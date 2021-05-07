@@ -5,6 +5,8 @@ import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.domaine.address.AddressDTO;
 import be.vinci.pae.domaine.user.UserDTO;
 import be.vinci.pae.services.DalServices;
+import be.vinci.pae.services.PhotoDAO;
+import be.vinci.pae.services.PhotoVisitDAO;
 import be.vinci.pae.services.UserDAO;
 import be.vinci.pae.services.VisitDAO;
 import jakarta.inject.Inject;
@@ -14,7 +16,10 @@ public class VisitUCCImpl implements VisitUCC {
 
   @Inject
   private VisitDAO visitDao;
-
+  @Inject
+  private PhotoDAO photoDAO;
+  @Inject
+  private PhotoVisitDAO photoVisitDAO;
   @Inject
   private UserDAO userDao;
   @Inject
@@ -53,7 +58,6 @@ public class VisitUCCImpl implements VisitUCC {
 
     visit.setUserId(userDTO.getID());
 
-
     visit = visitDao.introduceVisit(visit);
     if (visit == null) {
       dalservices.rollbackTransaction();
@@ -73,6 +77,22 @@ public class VisitUCCImpl implements VisitUCC {
     }
     dalservices.commitTransaction();
     return (VisitDTO) visit;
+  }
+
+  @Override
+  public Object[] getAllInfosOfVisit(int id) {
+    dalservices.startTransaction();
+    Object[] allLists = new Object[3];
+    int i = 0;
+    allLists[i++] = visitDao.findById(id);
+    if (allLists[0] == null) {
+      dalservices.rollbackTransaction();
+      throw new BusinessException("Visit doesn't exist", Status.BAD_REQUEST);
+    }
+    allLists[i++] = photoDAO.getAllForVisit(id);
+    allLists[i++] = photoVisitDAO.getAllForVisit(id);
+    dalservices.commitTransaction();
+    return allLists;
   }
 
   @Override

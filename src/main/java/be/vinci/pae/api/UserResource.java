@@ -107,6 +107,22 @@ public class UserResource {
   }
 
 
+  /**
+   * get all users with a search request.
+   * 
+   * @return list of users searched.
+   */
+  @GET
+  @Path("/search/{search}")
+  @AuthorizeBoss
+  public Response allSearchUser(@PathParam("search") String search) {
+    List<UserDTO> listUsers = new ArrayList<UserDTO>();
+    listUsers = userUcc.getAllSearchedUser(search);
+
+
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listUsers);
+  }
+
 
   /**
    * register a user if correct parameters are sent.
