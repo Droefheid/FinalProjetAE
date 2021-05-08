@@ -372,9 +372,15 @@ public class PhotoResource {
    */
   public static void transformAllURLOfThePhotosIntoBase64Image(List<PhotoDTO> photosList) {
     for (PhotoDTO photo : photosList) {
-      String encodstring = encodeFileToBase64Binary(photo.getPicture());
-      photo.setPicture(encodstring);
+      if (photo != null && photo.getPicture().startsWith("/src")) {
+        transformTheURLOfThePhotoIntoBase64Image(photo);
+      }
     }
+  }
+
+  public static void transformTheURLOfThePhotoIntoBase64Image(PhotoDTO photo) {
+    String encodstring = encodeFileToBase64Binary(photo.getPicture());
+    photo.setPicture(encodstring);
   }
 
 

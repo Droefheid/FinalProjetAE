@@ -173,7 +173,7 @@ data.list.forEach(element => {
       aria-expanded="false" aria-controls="collapse${element.furnitureId}">
         <div class="row" id="${element.furnitureId}" >
           <div class="col-sm-4" id="${element.furnitureId}">
-            <img src="assets/Images/Bureau_1.png" class="rounded" style="width:100%;"/>
+            <img src="assets/Images/Bureau_1.png" class="rounded max_width" />
           </div>
           <div class="col-sm-">
             <p>
@@ -229,7 +229,7 @@ const onFurnitureDescription = (data) => {
   let description = `
   <div id="description_furniture">
     <h4>${data.furniture.furnitureTitle}</h4>
-    <img src="assets/Images/Bureau_1.png" style="width:15%;"/>
+    <img src="assets/Images/Bureau_1.png" class="width-15"/>
     <p>Type : ${data.furniture.type} </br>
        State : ${data.furniture.state}
          </p>

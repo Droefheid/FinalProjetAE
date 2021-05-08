@@ -39,6 +39,25 @@ public class PhotoUCCImpl implements PhotoUCC {
   }
 
   @Override
+  public PhotoDTO getFavouritePhotoForFurniture(int furnitureId) {
+    dalservices.startTransaction();
+    PhotoDTO photoDTO = photoDAO.getFavouritePhotoForFurniture(furnitureId);
+    if (photoDTO == null) {
+      photoDTO = photoDAO.getOneVisiblePhotoForFurniture(furnitureId);
+    }
+    dalservices.commitTransaction();
+    return photoDTO;
+  }
+
+  @Override
+  public List<PhotoDTO> getAllVisiblePhotosFor(int furnitureId, int client) {
+    dalservices.startTransaction();
+    List<PhotoDTO> photoDTO = photoDAO.getAllVisiblePhotosFor(furnitureId, client);
+    dalservices.commitTransaction();
+    return photoDTO;
+  }
+
+  @Override
   public PhotoDTO add(PhotoDTO photo, PhotoFurnitureDTO photoFurniture) {
     dalservices.startTransaction();
 

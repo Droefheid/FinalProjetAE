@@ -25,13 +25,22 @@
 #carouselExampleIndicators {
   margin-right: 150px;
   margin-bottom: 25px;
-}
-img {
   width: 300px;
+}
+#carouselExampleIndicators img {
+  width: 100%;
   margin: auto;
 }
+.carouselArrow {
+  font-size:48px;
+  color: blueviolet;
+}
+.carouselCircle {
+  color: blueviolet;
+  opacity: 0.33;
+}
 
-/* Placements */
+/*************** Placements ***************/
 .absolute {
   position: absolute;
 }
@@ -51,14 +60,22 @@ img {
   width: 200px;
 }
 
-/* Button resizing */
+/*************** Button resizing ***************/
 .samebutton {
   width: 180px;
 }
 
-/* Images resizing */
+/*************** Images resizing ***************/
 .logo_size {
   width: 70px;
+}
+
+.width-15 {
+  width: 15%;
+}
+
+.max_width {
+  width: 100%;
 }
 
 /*************** SideBar ***************/
@@ -102,7 +119,7 @@ img {
   color: #f1f1f1;
 }
 
-/* Button Of the SideBar */
+/*************** Button Of the SideBar ***************/
 .transitionButton {
   position: absolute;
   transition: 0.5s;
@@ -148,7 +165,7 @@ img {
   }
 }
 
-/* VOIR TOUT LES USER CSS */
+/*************** VOIR TOUT LES USER CSS ***************/
 #nav_user {
   display: inline-block;
 }
@@ -158,7 +175,7 @@ img {
   text-align: center;
 }
 
-/* VOIR TOUT LES MEUBLES CSS */
+/*************** VOIR TOUT LES MEUBLES CSS ***************/
 
 #nav_furniture {
   float: left;
@@ -186,20 +203,20 @@ img {
   text-align: center;
 }
 
-/* HOME PAGE */
+/*************** HOME PAGE ***************/
 
 .centrer {
   padding: 30px 200px;
 }
 
-/* AJOUTER UN MEUBLE */
+/*************** AJOUTER UN MEUBLE ***************/
 #addFurniture {
   display: block;
   margin-bottom: 200px;
   width: 600px;
   margin-top: 0px;
 }
-/* ViSIT FORM*/
+/*************** VISIT FORM ***************/
 
 #flexbox {
   column-gap: 50px;
@@ -209,6 +226,8 @@ img {
   flex: auto;
 }
 
+
+/*************** MAP ***************/
 #map {
   width: 200px;
   height: 300px;

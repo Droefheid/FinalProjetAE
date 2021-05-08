@@ -37,19 +37,23 @@ public abstract class AuthorizeAbstract {
           .entity("A token is needed to access this resource").build());
       return null;
     } else {
-      if (token.startsWith("\"") && token.endsWith("\"")) {
-        token = token.substring(1, token.length() - 1);
-      }
-      DecodedJWT decodedToken = null;
-      try {
-        decodedToken = this.jwtVerifier.verify(token);
-      } catch (TokenExpiredException e) {
-        throw new PresentationException("Expired token", e, Status.UNAUTHORIZED);
-      } catch (Exception e) {
-        throw new PresentationException("Malformed token", e, Status.UNAUTHORIZED);
-      }
-      return this.userUCC.getUser(decodedToken.getClaim("user").asInt());
+      return decodeIfToken(token);
     }
+  }
+
+  public UserDTO decodeIfToken(String token) {
+    if (token.startsWith("\"") && token.endsWith("\"")) {
+      token = token.substring(1, token.length() - 1);
+    }
+    DecodedJWT decodedToken = null;
+    try {
+      decodedToken = this.jwtVerifier.verify(token);
+    } catch (TokenExpiredException e) {
+      throw new PresentationException("Expired token", e, Status.UNAUTHORIZED);
+    } catch (Exception e) {
+      throw new PresentationException("Malformed token", e, Status.UNAUTHORIZED);
+    }
+    return this.userUCC.getUser(decodedToken.getClaim("user").asInt());
   }
 
 }
