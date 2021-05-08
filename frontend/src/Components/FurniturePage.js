@@ -65,7 +65,7 @@ const onFurnitureList = (types,data) => {
   let photos = data.photos;
   let furnitures = data.furnitures;
   for (let i = 0; i < furnitures.length; i++) {
-    let type = types.type[element.type-1];
+    let type = types.type[furnitures[i].type-1];
     if(furnitures[i].state && (furnitures[i].state != "ER" || (user && user.isBoss))){
       table += `
       <li id="${furnitures[i].furnitureId}" class="list-group-item" data-toggle="collapse"
@@ -177,7 +177,7 @@ const onFurnitureDescription = (data) => {
    updateButton.addEventListener("submit", onUpdate);
   }
 
-  if(data.furniture.state === "EV") {
+  if(user && data.furniture.state === "EV") {
     let divOption = document.querySelector("#optionform");
     divOption.innerHTML+= `<form class="btn" id="option">
     <input id="idOption" value="${data.furniture.furnitureId}" hidden>
