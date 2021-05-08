@@ -1,12 +1,22 @@
 
-import { getTokenSessionDate } from "../utils/session";
+import { getUserSessionData, getTokenSessionDate } from "../utils/session";
 import { API_URL } from "../utils/server.js";
+import { RedirectUrl } from "./Router.js";
 import Sidebar from "./SideBar.js";
+import Navbar from "./Navbar.js";
 
 let page = document.querySelector("#page");
 
 const UserListPage = async () => {
-    Sidebar(true, true);
+  const user = getUserSessionData();
+  if (!user || !user.isBoss) {
+    // re-render the navbar for the authenticated user.
+    Navbar();
+    RedirectUrl("/");
+    return;
+  }
+
+  Sidebar(true, true);
   let list = `
   <div class="input-group" style="margin-bottom:10px;">
     <div class="form-outline">

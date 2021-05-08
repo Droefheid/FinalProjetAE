@@ -5,7 +5,8 @@ import LogoutComponent from "./LogoutComponent.js";
 import OptionComponent from "./OptionComponent.js";
 import ErrorPage from "./ErrorPage.js";
 import ModificationFurniturePage from "./ModificationFurniturePage.js";
-import FurniturePage from "./FurnituresPage.js";
+import FurniturePage from "./FurniturePage.js";
+import FurnituresPage from "./FurnituresPage.js";
 import ConfirmUserPage from "./ConfirmUserPage.js";
 import AddFurniturePage from "./AddFurniturePage.js";
 import IntroduceVisits from "./IntroduceVisits.js";
@@ -21,6 +22,7 @@ const routes = {
   "/logout": LogoutComponent,
   "/introduceOption": OptionComponent,
   "/furniture": FurniturePage,
+  "/furnitures": FurnituresPage,
   "/confirmUser": ConfirmUserPage,
   "/userList": UserListPage,
   "/seeMyFurniture": MyFurniturePage,

@@ -6,14 +6,9 @@ import { getTokenSessionDate, getUserSessionData } from "../utils/session.js";
 
 let page = document.querySelector("#page");
 
-const FurniturePage = async () => {
+const FurnituresPage = async () => {
   Sidebar(true, true);
-
-  page.innerHTML = `
-    <div id="messageBoardForm"></div>
-    <div id="list"></div>
-    <div id="furnitureDesc"></div> 
-    `;
+  page.innerHTML = `<div class="loader"></div>`;  
 
   fetch(API_URL + "furnitures/", {
     method: "GET",
@@ -31,7 +26,7 @@ const FurniturePage = async () => {
 };
 
 const getTypeNames = (data) => {
-  fetch(API_URL + "furnitures/getTypes", {
+  fetch(API_URL + "types/", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -47,6 +42,11 @@ const getTypeNames = (data) => {
 }
 
 const onFurnitureList = (types,data) => {
+  page.innerHTML = `
+    <div id="messageBoardForm"></div>
+    <div id="list"></div>
+    <div id="furnitureDesc"></div> 
+    `;
 
   let furnitureList = document.querySelector("#list");
 
@@ -65,7 +65,7 @@ const onFurnitureList = (types,data) => {
   let photos = data.photos;
   let furnitures = data.furnitures;
   for (let i = 0; i < furnitures.length; i++) {
-    let type = types.type[furnitures[i].type-1];
+    let type = types.types[furnitures[i].type-1];
     if(furnitures[i].state && (furnitures[i].state != "ER" || (user && user.isBoss))){
       table += `
       <li id="${furnitures[i].furnitureId}" class="list-group-item" data-toggle="collapse"
@@ -163,7 +163,7 @@ const onFurnitureDescription = (data) => {
   let photos = data.photos;
   let showImg = document.getElementById('showImg');
   photos.forEach(photo => {
-    showImg.innerHTML += `<img class="width-15" src="` + photo.picture + `" alt="First slide" >`;
+    showImg.innerHTML += `<img class="width-200px" src="${photo.picture}" alt="${photo.name}" >`;
   });
 
   const user = getUserSessionData();
@@ -185,7 +185,7 @@ const onFurnitureDescription = (data) => {
     </form>`;
     let optionButton = document.querySelector("#option");
     optionButton.addEventListener("submit", onOption);
-  }else if(data.furniture.state === "O"){
+  }else if(user && data.furniture.state === "O"){
     let id = getTokenSessionDate();
     fetch(API_URL + "options/"+ data.furniture.furnitureId, {
       method: "GET",
@@ -194,13 +194,13 @@ const onFurnitureDescription = (data) => {
         "Authorization":id
       },
     })
-      .then((response) => {
-        if (!response.ok) {
-           return;
-        }
-        else
-           return response.json().then((data) => showStopOptionButton(data));
-      })
+    .then((response) => {
+      if (!response.ok) {
+          return;
+      }
+      else
+          return response.json().then((data) => showStopOptionButton(data));
+    });
   }
 };
 
@@ -263,4 +263,4 @@ const onError = (err) => {
   messageBoard.innerHTML = err;
 };
 
-export default FurniturePage;
+export default FurnituresPage;

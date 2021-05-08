@@ -1,9 +1,14 @@
 import { API_URL, ALERT_BOX } from "../utils/server.js";
+import { RedirectUrl } from "./Router.js";
 import Sidebar from "./SideBar";
+import { user_me } from "../index.js";
+import { getUserSessionData, getTokenSessionDate } from "../utils/session";
 
 let page = document.querySelector("#page");
 
 const HomePage = () => { 
+  const user = getUserSessionData();
+   console.log(user);
   page.innerHTML = `<div class="loader"></div>`;  
   fetch(API_URL + "furnitures/", {
     method: "GET",
@@ -39,7 +44,7 @@ const onFurnitureList = (data) => {
     }
     homePage += `</ol>
     <div class="carousel-inner">`;
-    //console.log(photos);
+    console.log(photos);
     isAnActiveAlready = false;
     for (let i = 0; i < photos.length; i++) {
       if(photos[i] && photos[i].picture.startsWith("data")){
@@ -48,8 +53,10 @@ const onFurnitureList = (data) => {
           homePage += ` active`;
           isAnActiveAlready = true;
         }
-        homePage += `"><img class="d-block" src="` + photos[i].picture + `" alt="First slide" >
-        </div>`;
+        homePage += `"><a href="" id="${data.furnitures[i].furnitureId}" class="imageButton">
+              <img class="d-block" src="${photos[i].picture}" alt="${photos[i].name}" >
+            </a>
+          </div>`;
       }else if(photos[i] && !photos[i].picture.startsWith("data")){
         homePage += `<div class="carousel-item`;
         if(!isAnActiveAlready) {
@@ -71,8 +78,18 @@ const onFurnitureList = (data) => {
       </a>
     </div>`;
 
-   Sidebar(true, true);
-   return page.innerHTML = homePage;
+  Sidebar(true, true);
+  page.innerHTML = homePage;
+
+  let imageButton = document.querySelector(".imageButton");
+  imageButton.addEventListener("click", onImageSelect);
+};
+
+const onImageSelect = (e) => {
+  e.preventDefault();
+  console.log(document.activeElement.id);
+  user_me.furnitureId = document.activeElement.id;
+  RedirectUrl("/furniture");
 }
 
 const onError = (err) => {
