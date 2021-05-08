@@ -6,6 +6,10 @@ public interface PhotoUCC {
 
   PhotoDTO findById(int id);
 
+  PhotoDTO getFavouritePhotoForFurniture(int furnitureId);
+
+  List<PhotoDTO> getAllVisiblePhotosFor(int furnitureId, int client);
+
   PhotoDTO add(PhotoDTO photo, PhotoFurnitureDTO photoFurniture);
 
   List<PhotoDTO> addMultiplePhotosForFurniture(List<PhotoDTO> photo,

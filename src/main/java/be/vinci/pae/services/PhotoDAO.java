@@ -9,11 +9,17 @@ public interface PhotoDAO {
 
   PhotoDTO findById(int id);
 
+  PhotoDTO getFavouritePhotoForFurniture(int furnitureId);
+
+  PhotoDTO getOneVisiblePhotoForFurniture(int furnitureId);
+
   List<PhotoDTO> getAll();
 
-  List<PhotoDTO> getAllForFurniture(int id);
+  List<PhotoDTO> getAllVisiblePhotosFor(int furnitureId, int client);
 
-  List<PhotoDTO> getAllForVisit(int id);
+  List<PhotoDTO> getAllForFurniture(int furnitureId);
+
+  List<PhotoDTO> getAllForVisit(int visitId);
 
   PhotoDTO add(PhotoDTO photo);
 

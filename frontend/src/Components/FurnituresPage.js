@@ -21,13 +21,13 @@ const FurniturePage = async () => {
       "Content-Type": "application/json",
     },
   })
-    .then((response) => {
-      if (!response.ok) {
-        return response.text().then((err) => onError(err));
-      }
-      else
-        return response.json().then((data) => getTypeNames(data));
-    })
+  .then((response) => {
+    if (!response.ok) {
+      return response.text().then((err) => onError(err));
+    }
+    else
+      return response.json().then((data) => getTypeNames(data));
+  });
 };
 
 const getTypeNames = (data) => {
@@ -62,28 +62,29 @@ const onFurnitureList = (types,data) => {
           <nav id="nav_furniture">
             <ul class="list-group">`;
   const user = getUserSessionData();
-  console.log(types.type);
-  data.list.forEach(element => {
-    let type = types.type[element.type-1];
-    if(element.state && (element.state != "ER" || user.isBoss)){
+  let photos = data.photos;
+  let furnitures = data.furnitures;
+  for (let i = 0; i < furnitures.length; i++) {
+    let type = types.type[furnitures[i].type-1];
+    if(furnitures[i].state && (furnitures[i].state != "ER" || (user && user.isBoss))){
       table += `
-        <li id="${element.furnitureId}" class="list-group-item" data-toggle="collapse"
-        href="#collapse${element.furnitureId}" role="button"
-        aria-expanded="false" aria-controls="collapse${element.furnitureId}">
-          <div class="row" id="${element.furnitureId}" >
-            <div class="col-sm-4" id="${element.furnitureId}">
-              <img src="assets/Images/Bureau_1.png" class="rounded" style="width:100%;"/>
-            </div>
-            <div class="col-sm-">
-              <p>
-                <h5>${element.furnitureTitle}</h5>
-                Type : ${type.name}
-              </p>
-            </div>
+      <li id="${furnitures[i].furnitureId}" class="list-group-item" data-toggle="collapse"
+      href="#collapse${furnitures[i].furnitureId}" role="button"
+      aria-expanded="false" aria-controls="collapse${furnitures[i].furnitureId}">
+        <div class="row" id="${furnitures[i].furnitureId}" >
+          <div class="col-sm-4" id="${furnitures[i].furnitureId}">`;
+          if(photos[i] && photos[i].picture.startsWith("data")) table += `<img class="rounded max_width" src="` + photos[i].picture + `" alt="` + photos[i].name +`" />`;
+          table += `</div>
+          <div class="col-sm-">
+            <p>
+              <h5>${furnitures[i].furnitureTitle}</h5>
+              Type : ${type.name}
+            </p>
           </div>
-        </li>`;
+        </div>
+      </li>`;
     }
-  });
+  }
 
   table += `  
         </ul>
@@ -99,28 +100,47 @@ const onFurnitureList = (types,data) => {
  
 const onClick = (e) => {
   let furnitureId = -1;
-    if(e.target.id){
-      furnitureId = e.target.id;
-    }else {
-      furnitureId = e.target.parentElement.parentElement.id;
-    }
+  if(e.target.id){
+    furnitureId = e.target.id;
+  }else {
+    furnitureId = e.target.parentElement.parentElement.id;
+  }
 
-    if(furnitureId == 'nav_furniture') return;
-    if(furnitureId == null ) return;
-  
+  if(furnitureId == 'nav_furniture') return;
+  if(furnitureId == null ) return;
+
+
+  let id = getTokenSessionDate();
+  if(id){
+    fetch(API_URL + "furnitures/" + furnitureId, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": id,
+      },
+    })
+    .then((response) => {
+      if (!response.ok) {
+        return response.text().then((err) => onError(err));
+      }
+      else
+        return response.json().then((data) => onFurnitureDescription(data));
+    });
+  } else {
     fetch(API_URL + "furnitures/" + furnitureId, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     })
-      .then((response) => {
-        if (!response.ok) {
-          return response.text().then((err) => onError(err));
-        }
-        else
-          return response.json().then((data) => onFurnitureDescription(data));
-      })
+    .then((response) => {
+      if (!response.ok) {
+        return response.text().then((err) => onError(err));
+      }
+      else
+        return response.json().then((data) => onFurnitureDescription(data));
+    });
+  }
 };
 
 const onFurnitureDescription = (data) => {
@@ -129,19 +149,25 @@ const onFurnitureDescription = (data) => {
   let description = `
   <div id="description_furniture">
     <h4>${data.furniture.furnitureTitle}</h4>
-    <img src="assets/Images/Bureau_1.png" style="width:15%;"/>
+    <div id="showImg"></div>
     <p>Type : ${data.furniture.type} </br>
        State : ${data.furniture.state}
          </p>
-         <span id="optionform"> </span>
+         <span id="optionform"></span>
          <span id="updateForm"></span>
      
   </div>`;
-
+  
   info.innerHTML = description; 
+  
+  let photos = data.photos;
+  let showImg = document.getElementById('showImg');
+  photos.forEach(photo => {
+    showImg.innerHTML += `<img class="width-15" src="` + photo.picture + `" alt="First slide" >`;
+  });
 
   const user = getUserSessionData();
-  if(user.isBoss){
+  if(user && user.isBoss){
     let updateFurniture = document.querySelector("#updateForm");
     updateFurniture.innerHTML += `<form class="btn" id="updateB">
     <input id="idUpdate" value="${data.furniture.furnitureId}" hidden>
@@ -151,7 +177,7 @@ const onFurnitureDescription = (data) => {
    updateButton.addEventListener("submit", onUpdate);
   }
 
-  if(data.furniture.state === "EV") {
+  if(user && data.furniture.state === "EV") {
     let divOption = document.querySelector("#optionform");
     divOption.innerHTML+= `<form class="btn" id="option">
     <input id="idOption" value="${data.furniture.furnitureId}" hidden>

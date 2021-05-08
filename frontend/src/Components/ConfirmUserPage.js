@@ -7,7 +7,7 @@ import { getCoordinates } from "../utils/map.js";
 let page = document.querySelector("#page");
 
 const ConfirmUserPage = async () => {
-  Sidebar(true, true);
+  Sidebar(true, false);
 
   let list = `
   <div class="containerForm">
@@ -38,7 +38,7 @@ const ConfirmUserPage = async () => {
 };
 
 const onUserList = (data) => {
-  Sidebar(true);
+  Sidebar(true, false);
   let userList = document.querySelector("#list");
 
   if (!data) return;

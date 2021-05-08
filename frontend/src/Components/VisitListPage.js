@@ -7,7 +7,7 @@ import { getCoordinates } from "../utils/map.js";
 let page = document.querySelector("#page");
 
 const VisitListPage = () => {
-  Sidebar(true);
+  Sidebar(true, false);
 
   let list = `
   <div class="containerForm">

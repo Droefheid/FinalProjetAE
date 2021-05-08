@@ -62,9 +62,86 @@ public class PhotoDAOImpl implements PhotoDAO {
   }
 
   @Override
+  public PhotoDTO getFavouritePhotoForFurniture(int furnitureId) {
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement("SELECT p.photo_id,"
+        + " p.pictures, p.name" + " FROM projet.photos p, projet.photos_furniture pf "
+        + " WHERE p.photo_id = pf.photo_id"
+        + " AND pf.furniture = ? AND pf.is_favourite_photo = ?");
+
+    PhotoDTO photo = null;
+    try {
+      ps.setInt(1, furnitureId);
+      ps.setBoolean(2, true);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          photo = fullFillPhoto(rs);
+        }
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("Error getFavoritePhoto", e);
+    }
+    return photo;
+  }
+
+  @Override
+  public PhotoDTO getOneVisiblePhotoForFurniture(int furnitureId) {
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement("SELECT p.photo_id,"
+        + " p.pictures, p.name" + " FROM projet.photos p, projet.photos_furniture pf "
+        + " WHERE p.photo_id = pf.photo_id" + " AND pf.furniture = ? AND pf.is_visible = ?");
+
+    PhotoDTO photo = null;
+    try {
+      ps.setInt(1, furnitureId);
+      ps.setBoolean(2, true);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          photo = fullFillPhoto(rs);
+        }
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("Error getOneVisiblePhoto", e);
+    }
+    return photo;
+  }
+
+  @Override
   public List<PhotoDTO> getAll() {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Not implemented yet!");
+  }
+
+  @Override
+  public List<PhotoDTO> getAllVisiblePhotosFor(int furnitureId, int client) {
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement("SELECT p.photo_id,"
+        + " p.pictures, p.name"
+        + " FROM projet.photos p JOIN projet.photos_furniture pf ON p.photo_id = pf.photo_id"
+        + " LEFT JOIN projet.furnitures f ON pf.furniture = f.furniture_id"
+        + " LEFT JOIN projet.visits v ON v.users = f.seller"
+        + " LEFT JOIN projet.photos_visits pv ON pv.visit = v.visit_id AND pv.photo = pf.photo_id"
+        + " WHERE pf.furniture = ? AND (pf.is_visible = TRUE OR f.seller = ?)"
+        + " ORDER BY p.photo_id");
+
+    List<PhotoDTO> list = new ArrayList<PhotoDTO>();
+
+    try {
+      ps.setInt(1, furnitureId);
+      ps.setInt(2, client);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          PhotoDTO photoFurniture = fullFillPhoto(rs);
+          list.add(photoFurniture);
+        }
+      } catch (SQLException e) {
+        ((DalServices) dalBackendServices).rollbackTransaction();
+        throw new FatalException("Error getAllVisiblePhotosFor", e);
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("Error setInt in getAllForFurniture", e);
+    }
+    return list;
   }
 
   @Override

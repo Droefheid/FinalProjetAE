@@ -23,15 +23,15 @@ const ModificationFurniturePage = () => {
             headers: {
               "Content-Type": "application/json",
             },
-          })
-            .then((response) => {
-              if (!response.ok) {
-                return response.text().then((err) => onError(err));
-              }
-              else
-                return response.json().then((data) => onPageCreate(data));
-            });
-    }
+        })
+        .then((response) => {
+            if (!response.ok) {
+            return response.text().then((err) => onError(err));
+            }
+            else
+            return response.json().then((data) => onPageCreate(data));
+        });
+}
 };
 
 const onPageCreate = (data) => {
@@ -190,7 +190,7 @@ const onPageCreate = (data) => {
                     //console.log(photos[i]);
                     modifPage += `<div class="card" style="width: 90px">
                         <input id="photoId" value="${photos[i].id}" hidden>
-                        <img class="card-img-top" src="` + photos[i].picture + `" style="width: 100%" alt="` + photos[i].name +`" />`;
+                        <img class="card-img-top max_width" src="` + photos[i].picture + `" alt="` + photos[i].name +`" />`;
                     if(furniture.state != "V" && furniture.state != "RE"){
                         modifPage += `<div class="card-body">
                                 <button id="${photos[i].id}" type="submit" name="delettePhoto" class="btn btn-danger">
@@ -348,7 +348,7 @@ const onSubmitPhoto = () => {
 
     let furnitureId = document.getElementById("furnitureId").value;
     let id = getTokenSessionDate();
-    fetch(API_URL + "photos/uploadPhotos", {
+    fetch(API_URL + "photos/uploadPhotosFurniture", {
         method: "POST", 
         body: formData, 
         headers: {

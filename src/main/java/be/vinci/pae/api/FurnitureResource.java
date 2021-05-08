@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.fasterxml.jackson.databind.JsonNode;
+import be.vinci.pae.api.filters.AnonymousOrAuthorize;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeBoss;
 import be.vinci.pae.api.utils.PresentationException;
@@ -16,6 +17,7 @@ import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.domaine.furniture.FurnitureUCC;
 import be.vinci.pae.domaine.photo.PhotoDTO;
+import be.vinci.pae.domaine.photo.PhotoUCC;
 import be.vinci.pae.domaine.type.TypeDTO;
 import be.vinci.pae.domaine.type.TypeUCC;
 import be.vinci.pae.domaine.user.UserDTO;
@@ -41,6 +43,9 @@ public class FurnitureResource {
 
   @Inject
   private FurnitureUCC furnitureUCC;
+
+  @Inject
+  private PhotoUCC photoUCC;
 
   @Inject
   private DomaineFactory domaineFactory;
@@ -97,8 +102,15 @@ public class FurnitureResource {
   public Response allFurnitures() {
     List<FurnitureDTO> listFurnitures = new ArrayList<FurnitureDTO>();
     listFurnitures = furnitureUCC.getAll();
+    List<PhotoDTO> photos = new ArrayList<>();
 
-    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
+    for (FurnitureDTO furnitureDTO : listFurnitures) {
+      photos.add(photoUCC.getFavouritePhotoForFurniture(furnitureDTO.getFurnitureId()));
+    }
+    PhotoResource.transformAllURLOfThePhotosIntoBase64Image(photos);
+
+    return ResponseMaker.createResponseWithObjectNodeWith2PutPOJO("furnitures", listFurnitures,
+        "photos", photos);
   }
 
   /**
@@ -137,7 +149,14 @@ public class FurnitureResource {
     List<FurnitureDTO> listFurnitures = new ArrayList<FurnitureDTO>();
     listFurnitures = furnitureUCC.getMyFurniture(currentUser.getID());
 
-    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
+    List<PhotoDTO> photos = new ArrayList<>();
+    for (FurnitureDTO furnitureDTO : listFurnitures) {
+      photos.add(photoUCC.getFavouritePhotoForFurniture(furnitureDTO.getFurnitureId()));
+    }
+    PhotoResource.transformAllURLOfThePhotosIntoBase64Image(photos);
+
+    return ResponseMaker.createResponseWithObjectNodeWith2PutPOJO("list", listFurnitures, "photos",
+        photos);
   }
 
   /**
@@ -199,8 +218,6 @@ public class FurnitureResource {
     return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("furniture", furnitureDTO);
   }
 
-
-
   /**
    * update a furniture.
    * 
@@ -239,14 +256,24 @@ public class FurnitureResource {
    */
   @GET
   @Path("/{id}")
-  public Response getFurnitureById(@PathParam("id") int id) {
+  @AnonymousOrAuthorize
+  public Response getFurnitureById(@PathParam("id") int id, @Context ContainerRequest request) {
     // Check credentials.
     if (id < 1) {
       throw new PresentationException("Id cannot be under 1", Status.BAD_REQUEST);
     }
     FurnitureDTO furniture = this.furnitureUCC.findById(id);
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    if (currentUser == null) {
+      currentUser = domaineFactory.getUserDTO();
+      currentUser.setID(-1);
+    }
 
-    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("furniture", furniture);
+    List<PhotoDTO> photos = photoUCC.getAllVisiblePhotosFor(id, currentUser.getID());
+    PhotoResource.transformAllURLOfThePhotosIntoBase64Image(photos);
+
+    return ResponseMaker.createResponseWithObjectNodeWith2PutPOJO("furniture", furniture, "photos",
+        photos);
   }
 
   /**
