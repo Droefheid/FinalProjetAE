@@ -235,6 +235,13 @@ public class VisitResource {
       visit.setIsConfirmed(confirmed);
     }
 
+    if (json.get("dateTime").asText() != "") {
+
+      String term = json.get("dateTime").asText();
+      LocalDateTime parsed = LocalDateTime.parse(term);
+      visit.setDateAndHoursVisit(Timestamp.valueOf(parsed));
+    }
+
 
     if (json.get("explanatoryNote").asText() != "" && json.hasNonNull("explanatoryNote")) {
       visit.setExplanatoryNote(json.get("explanatoryNote").asText());

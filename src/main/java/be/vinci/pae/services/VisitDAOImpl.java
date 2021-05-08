@@ -136,13 +136,15 @@ public class VisitDAOImpl implements VisitDAO {
 
   @Override
   public void updateConfirmed(VisitDTO visit) {
-    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
-        "UPDATE projet.visits SET is_confirmed = ? , " + "explanatory_note=? WHERE visit_id = ?");
+    PreparedStatement ps =
+        this.dalBackendServices.getPreparedStatement("UPDATE projet.visits SET is_confirmed = ? , "
+            + "explanatory_note=? , " + "date_and_hours_visit=? WHERE visit_id = ?");
 
     try {
       ps.setBoolean(1, visit.getIsConfirmed());
       ps.setString(2, visit.getExplanatoryNote());
-      ps.setInt(3, visit.getId());
+      ps.setTimestamp(3, visit.getDateAndHoursVisit());
+      ps.setInt(4, visit.getId());
       ps.executeUpdate();
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
@@ -154,10 +156,11 @@ public class VisitDAOImpl implements VisitDAO {
 
   @Override
   public List<VisitDTO> getAllNotConfirmed() {
+    // explanatory note and dateAndHoursVisit should be empty
     PreparedStatement ps = this.dalBackendServices
         .getPreparedStatement("SELECT visit_id, request_date, time_slot, date_and_hours_visit,"
             + " explanatory_note, label_furniture, is_confirmed," + " users, address"
-            + " FROM projet.visits WHERE is_confirmed = ?");
+            + " FROM projet.visits WHERE is_confirmed = ? AND (date_and_hours_visit IS NULL AND explanatory_note IS NULL)");
 
 
     List<VisitDTO> list = new ArrayList<VisitDTO>();
