@@ -153,7 +153,14 @@ public class FurnitureResource {
     List<FurnitureDTO> listFurnitures = new ArrayList<FurnitureDTO>();
     listFurnitures = furnitureUCC.getMyFurniture(currentUser.getID());
 
-    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listFurnitures);
+    List<PhotoDTO> photos = new ArrayList<>();
+    for (FurnitureDTO furnitureDTO : listFurnitures) {
+      photos.add(photoUCC.getFavouritePhotoForFurniture(furnitureDTO.getFurnitureId()));
+    }
+    PhotoResource.transformAllURLOfThePhotosIntoBase64Image(photos);
+
+    return ResponseMaker.createResponseWithObjectNodeWith2PutPOJO("list", listFurnitures, "photos",
+        photos);
   }
 
   /**
@@ -214,8 +221,6 @@ public class FurnitureResource {
 
     return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("furniture", furnitureDTO);
   }
-
-
 
   /**
    * update a furniture.
