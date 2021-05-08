@@ -17,7 +17,6 @@ import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.domaine.furniture.FurnitureUCC;
 import be.vinci.pae.domaine.photo.PhotoDTO;
-import be.vinci.pae.domaine.photo.PhotoFurnitureUCC;
 import be.vinci.pae.domaine.photo.PhotoUCC;
 import be.vinci.pae.domaine.type.TypeDTO;
 import be.vinci.pae.domaine.type.TypeUCC;
@@ -47,9 +46,6 @@ public class FurnitureResource {
 
   @Inject
   private PhotoUCC photoUCC;
-
-  @Inject
-  private PhotoFurnitureUCC photoFurnitureUCC;
 
   @Inject
   private DomaineFactory domaineFactory;

@@ -5,7 +5,7 @@ import LogoutComponent from "./LogoutComponent.js";
 import OptionComponent from "./OptionComponent.js";
 import ErrorPage from "./ErrorPage.js";
 import ModificationFurniturePage from "./ModificationFurniturePage.js";
-import FurniturePage from "./FurniturePage.js";
+import FurniturePage from "./FurnituresPage.js";
 import ConfirmUserPage from "./ConfirmUserPage.js";
 import AddFurniturePage from "./AddFurniturePage.js";
 import IntroduceVisits from "./IntroduceVisits.js";

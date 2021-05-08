@@ -40,14 +40,6 @@ public class AnonymousOrAuthorizationRequest extends AuthorizeAbstract
   @Override
   public void filter(ContainerRequestContext requestContext) throws IOException {
     String token = requestContext.getHeaderString("Authorization");
-    /*
-     * if (token != null) { DecodedJWT decodedToken = null; try { if (token.startsWith("\"") && token.endsWith("\"")) { token = token.substring(1,
-     * token.length() - 1); } decodedToken = this.jwtVerifier.verify(token); } catch (TokenExpiredException e) { throw new
-     * PresentationException("Expired token", e, Status.UNAUTHORIZED); } catch (Exception e) { throw new PresentationException("Malformed token.", e,
-     * Status.UNAUTHORIZED); } requestContext.setProperty("user", userUCC.getUser(decodedToken.getClaim("user").asInt())); } else {
-     * requestContext.setProperty("user", null); }
-     */
-
     if (token != null) {
       requestContext.setProperty("user", decodeIfToken(token));
     } else {
