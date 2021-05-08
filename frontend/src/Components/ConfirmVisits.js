@@ -170,40 +170,37 @@ const visitDescription = (user, data) => {
 
 const onConfirmVisit = (e) => {
   e.preventDefault();
-  /*let visit_id = document.getElementById("id").value;
+  let info = document.querySelector("#confirmVisitDesc");
+  let visitID = document.getElementById("id").value;
+  let userID = document.getElementById("id_user").value;
+  let confirm = true;
+
+  let description = `
+  <a href="#" class="previous">&laquo; Previous</a>
+  <div id="messageBoardForm"></div>
+  Date of visit 
+  <br>
+  <input placeholder="Please input the date of the visit" class="textbox-n" type="text" onfocus="(this.type='datetime-local')" onblur="(this.type='datetime-local')" id="datetime-local" />
+  <input type="hidden" id="id" value="${visitID}">
+  <input type="hidden" id="id_user" value="${userID}">
+  <button id="button_confirmed" class="btn btn-success" >Submit</button>
+  `;
+  info.innerHTML = description;
+  let confirmed = document.getElementById("button_confirmed");
+  confirmed.addEventListener("click", onConfirm);
+};
+
+const onConfirm = () => {
+  let visit_id = document.getElementById("id").value;
   let user_id = document.getElementById("id_user").value;
   let confirm = true;
+  let date_time = document.getElementById("datetime-local").value;
+  let explanatory_note = "";
   let visit = {
     visitId: visit_id,
     userId: user_id,
     isConfirmed: confirm,
-  };
-
-  let id = getTokenSessionDate();
-  fetch(API_URL + "visits/", {
-    method: "PUT",
-    body: JSON.stringify(visit),
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: id,
-    },
-  }).then((response) => {
-    if (!response.ok) {
-      return response.text().then((err) => onError(err));
-    } else return onConfirm();
-  });
-
-  */
-};
-
-const onConfirm = () => {
-  /*let visit_id = document.getElementById("id").value;
-  let user_id = document.getElementById("id_user").value;
-  let explanatory_note = document.getElementById("explanatory_note").value;
-
-  let visit = {
-    visitId: visit_id,
-    userId: user_id,
+    dateTime: date_time,
     explanatoryNote: explanatory_note,
   };
 
@@ -220,8 +217,6 @@ const onConfirm = () => {
       return response.text().then((err) => onError(err));
     } else return onConfirmedVisit();
   });
-
-  */
 };
 
 const onDenyVisit = (e) => {
@@ -250,11 +245,13 @@ const onConfirmDeny = () => {
   let visit_id = document.getElementById("id").value;
   let user_id = document.getElementById("id_user").value;
   let explanatory_note = document.getElementById("explanatory_note").value;
+  let date_time = "";
 
   let visit = {
     visitId: visit_id,
     userId: user_id,
     explanatoryNote: explanatory_note,
+    dateTime: date_time,
   };
 
   let id = getTokenSessionDate();
