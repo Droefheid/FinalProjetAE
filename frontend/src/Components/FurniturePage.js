@@ -48,7 +48,6 @@ const onFurnitureList = (data) => {
   const user = getUserSessionData();
   let photos = data.photos;
   let furnitures = data.furnitures;
-  console.log(photos);
   for (let i = 0; i < furnitures.length; i++) {
     if(furnitures[i].state && (furnitures[i].state != "ER" || (user && user.isBoss))){
       table += `
@@ -96,7 +95,6 @@ const onClick = (e) => {
 
   let id = getTokenSessionDate();
   if(id){
-    console.log("avec id ", id);
     fetch(API_URL + "furnitures/" + furnitureId, {
       method: "GET",
       headers: {
@@ -112,7 +110,6 @@ const onClick = (e) => {
         return response.json().then((data) => onFurnitureDescription(data));
     });
   } else {
-    console.log("sans id ", id);
     fetch(API_URL + "furnitures/" + furnitureId, {
       method: "GET",
       headers: {
@@ -139,13 +136,14 @@ const onFurnitureDescription = (data) => {
     <p>Type : ${data.furniture.type} </br>
        State : ${data.furniture.state}
          </p>
-         <span id="optionform"> </span>
+         <span id="optionform"></span>
          <span id="updateForm"></span>
      
   </div>`;
   
   info.innerHTML = description; 
   
+  let photos = data.photos;
   let showImg = document.getElementById('showImg');
   photos.forEach(photo => {
     showImg.innerHTML += `<img class="width-15" src="` + photo.picture + `" alt="First slide" >`;
