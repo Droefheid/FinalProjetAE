@@ -8,7 +8,7 @@ import { post } from "jquery";
 let page = document.querySelector("#page");
 
 const AddFurniturePage = () => {   
-   Sidebar(true);
+   Sidebar(true, false);
 
    const user = getUserSessionData();
    if (!user || !user.isBoss) {

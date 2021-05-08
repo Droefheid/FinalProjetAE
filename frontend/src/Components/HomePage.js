@@ -38,7 +38,7 @@ const onFurnitureList = (data) => {
     }
     homePage += `</ol>
     <div class="carousel-inner">`;
-    console.log(photos);
+    //console.log(photos);
     isAnActiveAlready = false;
     for (let i = 0; i < photos.length; i++) {
       if(photos[i] && photos[i].picture.startsWith("data")){

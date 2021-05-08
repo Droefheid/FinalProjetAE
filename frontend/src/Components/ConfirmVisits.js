@@ -7,7 +7,7 @@ import { getCoordinates } from "../utils/map.js";
 let page = document.querySelector("#page");
 
 const ConfirmVisits = () => {
-  Sidebar(true);
+  Sidebar(true, false);
 
   let list = `
   <div class="containerForm">
@@ -45,7 +45,7 @@ const onVisitList = (data) => {
 };
 
 const showVisitList = (users,visits) =>{
-  Sidebar(true);
+  Sidebar(true, false);
   let visitList = document.querySelector("#list");
   let table = `
   <nav id="nav_visit">

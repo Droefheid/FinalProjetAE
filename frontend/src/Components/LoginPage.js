@@ -48,7 +48,7 @@ let loginPage = `<div class="containerForm">
 </div>`;
 
 const LoginPage = () => {
-  Sidebar();
+  Sidebar(false, false);
 
   let page = document.querySelector("#page");
   page.innerHTML = loginPage;

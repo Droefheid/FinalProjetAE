@@ -158,7 +158,7 @@ const IntroduceVisits = () => {
 		Navbar();
 		RedirectUrl(`/`);
 	}else{
-  Sidebar();
+  Sidebar(true, false);
   let page = document.querySelector("#page");
   page.innerHTML = introduceVisits;
   let introduceVisitsForm = document.querySelector("form");
