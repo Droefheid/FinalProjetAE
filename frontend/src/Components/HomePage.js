@@ -3,7 +3,8 @@ import Sidebar from "./SideBar";
 
 let page = document.querySelector("#page");
 
-const HomePage = () => {   
+const HomePage = () => { 
+  page.innerHTML = `<div class="loader"></div>`;  
   fetch(API_URL + "furnitures/", {
     method: "GET",
     headers: {
