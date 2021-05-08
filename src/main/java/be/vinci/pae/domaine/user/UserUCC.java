@@ -19,6 +19,8 @@ public interface UserUCC {
 
   AddressDTO getAddressById(int id);
 
+  List<UserDTO> getAllSearchedUser(String search);
+
 
 
 }

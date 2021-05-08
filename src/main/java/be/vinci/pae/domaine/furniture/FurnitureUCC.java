@@ -20,4 +20,5 @@ public interface FurnitureUCC {
 
   Object[] getClientFurnitures(int id);
 
+  List<FurnitureDTO> searchFurniture(String searchBar, int typeID, int minPrice, int maxPrice);
 }

@@ -19,5 +19,8 @@ public interface FurnitureDAO {
 
   List<FurnitureDTO> getBoughtFurniture(int id);
 
+  List<FurnitureDTO> searchFurniture(String searchBar, int typeID, int minPrice, int maxPrice);
+
+  List<FurnitureDTO> searchFurnitureWithoutType(String search, int minPrice, int maxPrice);
 
 }

@@ -26,11 +26,27 @@ const FurniturePage = async () => {
       return response.text().then((err) => onError(err));
     }
     else
-      return response.json().then((data) => onFurnitureList(data));
+      return response.json().then((data) => getTypeNames(data));
   });
 };
 
-const onFurnitureList = (data) => {
+const getTypeNames = (data) => {
+  fetch(API_URL + "furnitures/getTypes", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.text().then((err) => onError(err));
+      }
+      else
+        return response.json().then((types) => onFurnitureList(types,data));
+    });
+}
+
+const onFurnitureList = (types,data) => {
 
   let furnitureList = document.querySelector("#list");
 
@@ -49,6 +65,7 @@ const onFurnitureList = (data) => {
   let photos = data.photos;
   let furnitures = data.furnitures;
   for (let i = 0; i < furnitures.length; i++) {
+    let type = types.type[element.type-1];
     if(furnitures[i].state && (furnitures[i].state != "ER" || (user && user.isBoss))){
       table += `
       <li id="${furnitures[i].furnitureId}" class="list-group-item" data-toggle="collapse"
@@ -61,7 +78,7 @@ const onFurnitureList = (data) => {
           <div class="col-sm-">
             <p>
               <h5>${furnitures[i].furnitureTitle}</h5>
-              Type : ${furnitures[i].type}
+              Type : ${type.name}
             </p>
           </div>
         </div>

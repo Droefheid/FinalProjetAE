@@ -8,35 +8,78 @@ let page = document.querySelector("#page");
 const UserListPage = async () => {
     Sidebar(true, true);
   let list = `
-  <div id="container" class="containerForm">
-<div class="d-flex justify-content-center h-100 mt-4">
-  <div class="card">
-    <div class="card-header">
-  <div class="col-sm-3" id="list"> </div>
-  </div>
-  </div>
-  <div class="col-sm-7"  id="userInfo"></div>
-  <div id="messageBoardForm"></div>
-  </div>
+  <div class="input-group" style="margin-bottom:10px;">
+    <div class="form-outline">
+      <input type="search" id="searchBar" class="form-control" placeholder="Search" />
+    </div>
+    <button type="button" id="submitSearch" class="btn btn-primary">
+      <i class="fas fa-search"></i>
+    </button>
   </div>
   `;
-  let id = getTokenSessionDate();
-  page.innerHTML = list;
-  fetch(API_URL + "users/", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": id,
-    },
-  })
-    .then((response) => {
-      if (!response.ok) {
-        return response.text().then((err) => onError(err));
-      }
-      else
-        return response.json().then((data) => onUserList(data));
-    })
+
+
+      list += `
+      <div id="container" class="containerForm">
+      
+      <div class="d-flex justify-content-center h-100 mt-4">
+      <div class="card">
+        <div class="card-header">
+        
+      <div class="col-sm-3" id="list"> </div>
+      </div>
+      </div>
+      <div class="col-sm-7"  id="userInfo"></div>
+      <div id="messageBoardForm"></div>
+      </div>
+      </div>
+      `;
+      let id = getTokenSessionDate();
+      page.innerHTML = list;
+      fetch(API_URL + "users/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": id,
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            return response.text().then((err) => onError(err));
+          }
+          else
+            return response.json().then((data) => onUserList(data));
+        })
+
+        let buttonSearch = document.getElementById("submitSearch");
+        buttonSearch.addEventListener("click", onSearchListUser);
+    
 };
+
+const onSearchListUser = () => {
+  let searchWord = document.getElementById("searchBar").value;
+  if(searchWord === undefined || searchWord == null || searchWord.length <= 0){
+    UserListPage();
+  }else {
+    let id = getTokenSessionDate();
+
+    fetch(API_URL + "users/search/" + searchWord, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": id,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then((err) => onError(err));
+        }
+        else
+          return response.json().then((data) => onUserList(data));
+      })
+  }
+
+}
 
 const onUserList = (data) => {
   Sidebar(true, true);
@@ -145,7 +188,9 @@ const furnitureInfo = (lists,descripton) => {
     e.preventDefault();
     onSeller(lists.seller)});
   let buyerButton = document.querySelector("#buyer");
-  buyerButton.addEventListener("submit", onBuyer);
+  buyerButton.addEventListener("submit", function(e){
+    e.preventDefault();
+    onBuyer(lists.buyer)});
 };
 
 const onSeller = (furnitures) => {
@@ -153,12 +198,13 @@ const onSeller = (furnitures) => {
     list:furnitures
   };
   onFurnitureList(data);
-  
-
 };
 
-const onBuyer = (e) => {
-  e.preventDefault();
+const onBuyer = (furnitures) => {
+  let data = {
+    list:furnitures
+  };
+  onFurnitureList(data);
 }
 
 
@@ -194,7 +240,7 @@ table += `
   const viewFurnitures = document.querySelectorAll("li");
   viewFurnitures.forEach((elem) =>{
   elem.addEventListener("click", onClickFurniture);
-  })
+  });
 }
 
 const onClickFurniture = (e) => {
@@ -225,6 +271,8 @@ const onClickFurniture = (e) => {
 
 const onFurnitureDescription = (data) => {
   let info = document.querySelector("#userInfo");
+  let test = document.querySelector("#description_furniture");
+  if(test) test.innerHTML="";
   let html = info.innerHTML;
   let description = `
   <div id="description_furniture">
@@ -234,9 +282,15 @@ const onFurnitureDescription = (data) => {
        State : ${data.furniture.state}
          </p>
   </div>`;
-
+  console.log(info.innerHTML);
   info.innerHTML = description; 
-  info.innerHTML+=html;
+  info.innerHTML +=html;
+
+  
+  const viewFurnitures = document.querySelectorAll("li");
+  viewFurnitures.forEach((elem) =>{
+  elem.addEventListener("click", onClickFurniture);
+  });
 };
 
 const createTimeStamp = (dateString) => {
