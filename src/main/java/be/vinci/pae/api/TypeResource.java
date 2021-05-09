@@ -2,7 +2,6 @@ package be.vinci.pae.api;
 
 import java.util.List;
 import be.vinci.pae.api.utils.ResponseMaker;
-import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.type.TypeDTO;
 import be.vinci.pae.domaine.type.TypeUCC;
 import jakarta.inject.Inject;
@@ -17,9 +16,6 @@ public class TypeResource {
 
   @Inject
   private TypeUCC typeUCC;
-
-  @Inject
-  private DomaineFactory domaineFactory;
 
 
 

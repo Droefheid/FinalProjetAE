@@ -211,6 +211,13 @@ public class VisitResource {
     return Response.ok().build();
   }
 
+  /**
+   * delete the visit if it belong to the user requesting it.
+   * 
+   * @param id of the visit to delete
+   * @param request contains the token of the user.
+   * @return empty response.
+   */
   @DELETE
   @Path("/{id}")
   @Consumes(MediaType.APPLICATION_JSON)
