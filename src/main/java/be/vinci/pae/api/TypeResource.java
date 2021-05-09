@@ -29,7 +29,6 @@ public class TypeResource {
    * @return list of the types.
    */
   @GET
-  @Path("/")
   public Response getAll() {
 
     List<TypeDTO> types = typeUCC.getAll();

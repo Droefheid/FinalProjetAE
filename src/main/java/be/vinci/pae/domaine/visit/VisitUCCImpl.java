@@ -3,7 +3,6 @@ package be.vinci.pae.domaine.visit;
 import java.util.List;
 import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.domaine.address.AddressDTO;
-import be.vinci.pae.domaine.user.UserDTO;
 import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.PhotoDAO;
 import be.vinci.pae.services.PhotoVisitDAO;
@@ -46,7 +45,7 @@ public class VisitUCCImpl implements VisitUCC {
 
 
   @Override
-  public VisitDTO introduceVisit(VisitDTO visitDTO, AddressDTO addressDTO, UserDTO userDTO) {
+  public VisitDTO introduceVisit(VisitDTO visitDTO, AddressDTO addressDTO, int user) {
     dalservices.startTransaction();
     int addressId = userDao.getAddressByInfo(addressDTO.getStreet(), addressDTO.getBuildingNumber(),
         addressDTO.getCommune(), addressDTO.getCountry());
@@ -56,7 +55,7 @@ public class VisitUCCImpl implements VisitUCC {
     VisitDTO visit = visitDTO;
     visit.setAddressId(addressId);
 
-    visit.setUserId(userDTO.getID());
+    visit.setUserId(user);
 
     visit = visitDao.introduceVisit(visit);
     if (visit == null) {

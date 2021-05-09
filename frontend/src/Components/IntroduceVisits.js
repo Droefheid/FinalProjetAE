@@ -31,14 +31,19 @@ let introduceVisits = `
 						</h5>
 						<hr>
 							<form>
-								<div class="input-group form-group">
-									<div class="input-group-prepend">
-										<span class="input-group-text">
-											<i class="fa fa-calendar" aria-hidden="true"></i>
-										</span>
+								<div class="row">
+									<div class="col-sm">
+										<div id="user" class="col-sm"></div>
+										<div class="input-group form-group">
+											<div class="input-group-prepend">
+												<span class="input-group-text">
+													<i class="fa fa-calendar" aria-hidden="true"></i>
+												</span>
+											</div>
+											<input placeholder="Date of visit" class="textbox-n" type="text" onfocus="(this.type='datetime-local')" onblur="(this.type='datetime-local')" id="datetime-local" />
+											<!--   <input class = "form-control mb-3 " type="datetime-local" value = "2021-01-01T13:00:00" id="datetime-local" >   -->
+										</div>
 									</div>
-									<input placeholder="Date of visit" class="textbox-n" type="text" onfocus="(this.type='datetime-local')" onblur="(this.type='datetime-local')" id="datetime-local" />
-									<!--   <input class = "form-control mb-3 " type="datetime-local" value = "2021-01-01T13:00:00" id="datetime-local" >   -->
 								</div>
 								<div class="row">
 									<div class="col-sm">
@@ -153,20 +158,58 @@ let introduceVisits = `
 
 const IntroduceVisits = () => {
 	const user = getUserSessionData();
-	if (!user || !user.isBoss ) {
-		// re-render the navbar for the authenticated user.
+	if (!user) {
 		Navbar();
 		RedirectUrl(`/`);
 	}else{
-  Sidebar(true, false);
-  let page = document.querySelector("#page");
-  page.innerHTML = introduceVisits;
-  let introduceVisitsForm = document.querySelector("form");
-  introduceVisitsForm.addEventListener("submit", onIntroduceVisits);
-  let uploadImage = document.querySelector("#files");
-    uploadImage.addEventListener("change", onUpload);
- }
+		if(user.isBoss){
+			let page = document.querySelector("#page");
+			page.innerHTML = introduceVisits;
+
+			let id = getTokenSessionDate();
+			fetch(API_URL + "users/", {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": id,
+				},
+			}).then((response) => {
+				if (!response.ok) {
+					return response.text().then((err) => onError(err));
+				} else return response.json().then((data) => onCreatePage(data));
+			});
+		}else{
+			onCreatePage();
+		}
+ 	}
 };
+
+const onCreatePage = (data) => {
+	Sidebar(true, false);
+
+	let users = document.getElementById("user");
+	const userSession = getUserSessionData();
+	if(data){
+		let input = ` <div class="form-group">
+		<select class="form-control" id="user_id" name="user_id">`;
+		data.list.forEach(user => {
+			input += `<option value="${user.id}"`;
+			if(userSession.id == user.id) input += ` selected`;
+			input += `>${user.username}</option>`;
+		});
+		input += `
+			</select>
+		</div>`;
+		users.innerHTML = input;
+	}else{
+		users.innerHTML = `<input id="user_id" value="-1" hidden>`;
+	}
+
+	let introduceVisitsForm = document.querySelector("form");
+	introduceVisitsForm.addEventListener("submit", onIntroduceVisits);
+	let uploadImage = document.querySelector("#files");
+	uploadImage.addEventListener("change", onUpload);
+}
 
 const onUpload = (e) => {
     let files = e.target.files;
@@ -199,6 +242,7 @@ const onIntroduceVisits = (e) => {
     unit_number: document.getElementById("unit_number").value,
     time_slot: document.getElementById("time_slot").value,
     label_furniture: document.getElementById("label_furniture").value,
+	user_id: document.getElementById("user_id").value
   };
   let id = getTokenSessionDate();
   fetch(API_URL + "visits/introduceVisits", {

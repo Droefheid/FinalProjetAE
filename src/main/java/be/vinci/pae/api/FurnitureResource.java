@@ -59,7 +59,7 @@ public class FurnitureResource {
    * 
    * @return list of 2 lists bought and sold furniture.
    */
-  @GET
+  @POST
   @Path("/searchFurniture")
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeBoss

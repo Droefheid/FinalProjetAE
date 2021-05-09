@@ -106,7 +106,7 @@ public class VisitResource {
     visit.setLabelFurniture(json.get("label_furniture").asText());
 
     UserDTO currentUser = (UserDTO) request.getProperty("user");
-    if (currentUser == null || !currentUser.isBoss()) {
+    if (currentUser == null) {
       throw new PresentationException("You dont have the permission.", Status.BAD_REQUEST);
     }
 
@@ -120,8 +120,15 @@ public class VisitResource {
     addressDTO.setCountry(json.get("country").asText());
 
 
-
-    visit = visitUcc.introduceVisit(visit, addressDTO, currentUser);
+    if (currentUser.isBoss()) {
+      int id = json.get("user_id").asInt();
+      if (id < 1 || userUcc.getUser(id) == null) {
+        throw new PresentationException("User doesn't exist.", Status.BAD_REQUEST);
+      }
+      visit = visitUcc.introduceVisit(visit, addressDTO, id);
+    } else {
+      visit = visitUcc.introduceVisit(visit, addressDTO, currentUser.getID());
+    }
 
     return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("visit", visit);
   }
