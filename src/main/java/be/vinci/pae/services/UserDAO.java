@@ -38,7 +38,7 @@ public interface UserDAO {
 
   void updateConfirmed(UserDTO user);
 
-  List<UserDTO> getAllConfirmed();
+  List<UserDTO> getAllConfirmed(boolean isConfirmed);
 
   List<UserDTO> getAllSearchedUser(String search);
 
