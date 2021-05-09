@@ -160,7 +160,8 @@ public class VisitDAOImpl implements VisitDAO {
     PreparedStatement ps = this.dalBackendServices
         .getPreparedStatement("SELECT visit_id, request_date, time_slot, date_and_hours_visit,"
             + " explanatory_note, label_furniture, is_confirmed," + " users, address"
-            + " FROM projet.visits WHERE is_confirmed = ? AND (date_and_hours_visit IS NULL AND explanatory_note IS NULL)");
+            + " FROM projet.visits WHERE is_confirmed = ?"
+            + " AND (date_and_hours_visit IS NULL AND explanatory_note IS NULL)");
 
 
     List<VisitDTO> list = new ArrayList<VisitDTO>();
