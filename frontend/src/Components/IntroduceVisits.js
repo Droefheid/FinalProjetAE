@@ -237,7 +237,7 @@ const onVisitAdded = (data) => {
 	})
 	.then((response) => {
 		if (!response.ok) {
-			return response.text().then((err) => onError(err));
+			return response.text().then((err) => onDeleteVisit(visitId));
 		}
 		else
 			return response.json().then((data) => onVisitRequest());
@@ -248,6 +248,19 @@ const onVisitRequest = () => {
   alert("Your request has been sent. An admin must now confirm your visit.");
   RedirectUrl("/");
 };
+
+const onDeleteVisit = (visitId) => {
+	let id = getTokenSessionDate();
+	fetch(API_URL + "visits/delete/" + visitId, {
+		method: "DELETE",
+		headers:{
+			"Authorization": id,
+		}
+	})
+	.then((response) => {
+		return onError("Missing photos.");
+	});
+}
 
 const onError = (err) => {
   let messageBoard = document.querySelector("#messageBoardForm");

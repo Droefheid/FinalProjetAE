@@ -21,4 +21,6 @@ public interface VisitUCC {
 
   List<VisitDTO> getAllConfirmed();
 
+  void delete(int visitId);
+
 }

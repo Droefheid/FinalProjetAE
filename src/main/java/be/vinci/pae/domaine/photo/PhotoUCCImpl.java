@@ -7,6 +7,7 @@ import be.vinci.pae.services.DalServices;
 import be.vinci.pae.services.PhotoDAO;
 import be.vinci.pae.services.PhotoFurnitureDAO;
 import be.vinci.pae.services.PhotoVisitDAO;
+import be.vinci.pae.services.VisitDAO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response.Status;
 
@@ -17,6 +18,9 @@ public class PhotoUCCImpl implements PhotoUCC {
 
   @Inject
   private PhotoDAO photoDAO;
+
+  @Inject
+  private VisitDAO visitDAO;
 
   @Inject
   private PhotoFurnitureDAO photoFurnitureDAO;
@@ -113,8 +117,15 @@ public class PhotoUCCImpl implements PhotoUCC {
 
   @Override
   public List<PhotoDTO> addMultiplePhotosForVisit(List<PhotoDTO> photos,
-      List<PhotoVisitDTO> photosVisit) {
+      List<PhotoVisitDTO> photosVisit, int visitId) {
     dalservices.startTransaction();
+
+    // if photos.lenght < 1 delete the visit.
+    if (photos.size() < 1) {
+      visitDAO.delete(visitId);
+      dalservices.commitTransaction();
+      throw new BusinessException("Need at least one photo for a visit.", Status.BAD_REQUEST);
+    }
 
     int i = 0;
     List<PhotoDTO> addedPhotos = new ArrayList<>();
@@ -124,6 +135,7 @@ public class PhotoUCCImpl implements PhotoUCC {
       PhotoDTO photoDTO = photoDAO.add(photo);
       if (photoDTO == null) {
         dalservices.rollbackTransaction();
+        // Start transaction to delete the visit that might exist.
         throw new BusinessException("Photo doesn't add", Status.BAD_REQUEST);
       }
 
@@ -132,6 +144,7 @@ public class PhotoUCCImpl implements PhotoUCC {
       photoVisit = photoVisitDAO.add(photoVisit);
       if (photoVisit == null) {
         dalservices.rollbackTransaction();
+        // Start transaction to delete the visit that might exist.
         throw new BusinessException("Photo_Visit doesn't add", Status.BAD_REQUEST);
       }
       addedPhotos.add(photoDTO);

@@ -22,6 +22,7 @@ import be.vinci.pae.domaine.visit.VisitUCC;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -83,15 +84,15 @@ public class VisitResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Authorize
   public Response introduceVisit(@Context ContainerRequest request, JsonNode json) {
-    if (json.get("request_date").asText().equals("")) {
+    if (!json.hasNonNull("request_date") || json.get("request_date").asText().equals("")) {
       throw new PresentationException("Request date is needed ", Status.BAD_REQUEST);
     }
-    if (json.get("explanatory_note").asText().equals("")) {
+    if (!json.hasNonNull("explanatory_note") || json.get("explanatory_note").asText().equals("")) {
       throw new PresentationException("explanatory note is needed", Status.BAD_REQUEST);
     }
     checkJsonAddress(json);
 
-    if (json.get("time_slot").asText().equals("")) {
+    if (!json.hasNonNull("time_slot") || json.get("time_slot").asText().equals("")) {
       throw new PresentationException("time slot is needed ", Status.BAD_REQUEST);
     }
     VisitDTO visit = domaineFactory.getVisitDTO();
@@ -187,7 +188,7 @@ public class VisitResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeBoss
   public Response updateConfirmed(@Context ContainerRequest request, JsonNode json) {
-    if (json.get("visit_id").asText().equals("")) {
+    if (!json.hasNonNull("visit_id") || json.get("visit_id").asText().equals("")) {
       throw new PresentationException("Visit id is needed ", Status.BAD_REQUEST);
     }
 
@@ -200,7 +201,30 @@ public class VisitResource {
     visit = visitUcc.getVisit(json.get("visit_id").asInt());
     visit.setIsConfirmed(true);
     this.visitUcc.updateConfirmed(visit);
-    return Response.ok(MediaType.APPLICATION_JSON).build();
+    return Response.ok().build();
+  }
+
+  @DELETE
+  @Path("/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Authorize
+  public Response delete(@PathParam("id") int id, @Context ContainerRequest request) {
+    if (id < 1) {
+      throw new PresentationException("Id cannot be under 1", Status.BAD_REQUEST);
+    }
+
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    if (currentUser == null) {
+      throw new PresentationException("User not found", Status.BAD_REQUEST);
+    }
+
+    VisitDTO visit = visitUcc.getVisit(id);
+    if (visit == null || visit.getUserId() != currentUser.getID()) {
+      throw new PresentationException("You can't delete this visit.", Status.BAD_REQUEST);
+    }
+
+    visitUcc.delete(id);
+    return Response.ok().build();
   }
 
 
@@ -213,22 +237,22 @@ public class VisitResource {
    * @param json node with required objects.
    */
   public static void checkJsonAddress(JsonNode json) {
-    if (json.get("street").asText().equals("")) {
+    if (!json.hasNonNull("street") || json.get("street").asText().equals("")) {
       throw new PresentationException("street is needed ", Status.BAD_REQUEST);
     }
-    if (json.get("building_number").asText().equals("")) {
+    if (!json.hasNonNull("building_number") || json.get("building_number").asText().equals("")) {
       throw new PresentationException("building number is needed ", Status.BAD_REQUEST);
     }
-    if (json.get("postcode").asText().equals("")) {
+    if (!json.hasNonNull("postcode") || json.get("postcode").asText().equals("")) {
       throw new PresentationException("postcode is needed ", Status.BAD_REQUEST);
     }
-    if (json.get("commune").asText().equals("")) {
+    if (!json.hasNonNull("commune") || json.get("commune").asText().equals("")) {
       throw new PresentationException("commune is needed ", Status.BAD_REQUEST);
     }
-    if (json.get("country").asText().equals("")) {
+    if (!json.hasNonNull("country") || json.get("country").asText().equals("")) {
       throw new PresentationException("country is needed ", Status.BAD_REQUEST);
     }
-    if (json.get("unit_number").asText().equals("")) {
+    if (!json.hasNonNull("unit_number") || json.get("unit_number").asText().equals("")) {
       throw new PresentationException("unit number is needed ", Status.BAD_REQUEST);
     }
   }

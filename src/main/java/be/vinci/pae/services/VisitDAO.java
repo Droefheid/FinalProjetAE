@@ -24,4 +24,7 @@ public interface VisitDAO {
 
 
   List<VisitDTO> getAllConfirmed();
+
+  void delete(int visitId);
+
 }

@@ -111,6 +111,13 @@ public class VisitUCCImpl implements VisitUCC {
     return list;
   }
 
+  @Override
+  public void delete(int visitId) {
+    dalservices.startTransaction();
+    visitDao.delete(visitId);
+    dalservices.commitTransaction();
+  }
+
 
 
 }

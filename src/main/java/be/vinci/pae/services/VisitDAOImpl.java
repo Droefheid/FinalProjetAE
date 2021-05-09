@@ -202,5 +202,19 @@ public class VisitDAOImpl implements VisitDAO {
 
     return list;
   }
+
+  @Override
+  public void delete(int visitId) {
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("DELETE FROM projet.visits WHERE visit_id = ?");
+    try {
+      ps.setInt(1, visitId);
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
 }
 
