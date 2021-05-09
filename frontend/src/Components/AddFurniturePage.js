@@ -7,7 +7,6 @@ import Navbar from "./Navbar.js";
 let page = document.querySelector("#page");
 
 const AddFurniturePage = () => {   
-   Sidebar(true, false);
    const user = getUserSessionData();
    if (!user || !user.isBoss) {
       Navbar();
@@ -30,6 +29,7 @@ const AddFurniturePage = () => {
    }
 }
 const onCreateAddPage = (data) => { 
+  Sidebar(true, false);
 
 
    let addFurniturePage = `

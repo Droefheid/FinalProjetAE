@@ -23,11 +23,11 @@ const Sidebar = (needed, secondNeeded) => {
     sidebar += `
     <div class="onLeft">
       <div class="navbar navbar-nav ml-auto mr-auto pt-3">
-        <button class="btn btn-info mb-1 samebutton" id="confirmUser">List of inscriptions</button>
-        <button class="btn btn-info mb-1 samebutton" id="userList">List of clients</button>
-        <button class="btn btn-info mb-1 samebutton" id="addFurniture">Add furniture</button>
-        <button class="btn btn-info mb-1 samebutton" id="confirmVisits">Confirm visits</button>
-        <button class="btn btn-info mb-1 samebutton" id="visitListPage">List of visits</button>
+        <a id="/confirmUser" class="btn btn-info mb-1 samebutton" href="#">List of inscriptions</a>
+        <a class="btn btn-info mb-1 samebutton" href="#" id="/userList">List of clients</a>
+        <a class="btn btn-info mb-1 samebutton" href="#" id="/addFurniture">Add furniture</a>
+        <a class="btn btn-info mb-1 samebutton" href="#" id="/confirmVisits">Confirm visits</a>
+        <a class="btn btn-info mb-1 samebutton" href="#" id="/visitListPage">List of visits</a>
       </div>
     </div>`;
   }
@@ -104,40 +104,19 @@ const Sidebar = (needed, secondNeeded) => {
   }
 
   // Create listener.
-  if(secondNeeded && user && user.isBoss){
-    /*document.getElementById("confirmUser").removeEventListener("click", getConfirmUser);
-    document.getElementById("userList").removeEventListener("click", getUserList);
-    document.getElementById("addFurniture").removeEventListener("click", getAddFurniture);
-    document.getElementById("confirmVisits").removeEventListener("click", getConfirmVisits);
-    document.getElementById("visitListPage").removeEventListener("click", getVisitListPage);*/
-
-
-    document.getElementById("confirmUser").addEventListener("click", getConfirmUser);
-    document.getElementById("userList").addEventListener("click", getUserList);
-    document.getElementById("addFurniture").addEventListener("click", getAddFurniture);
-    document.getElementById("confirmVisits").addEventListener("click", getConfirmVisits);
-    document.getElementById("visitListPage").addEventListener("click", getVisitListPage);
+  if(user && user.isBoss){
+    document.getElementById("/confirmUser").addEventListener("click", onTest);
+    document.getElementById("/userList").addEventListener("click", onTest);
+    document.getElementById("/addFurniture").addEventListener("click", onTest);
+    document.getElementById("/confirmVisits").addEventListener("click", onTest);
+    document.getElementById("/visitListPage").addEventListener("click", onTest);
   }
 };
 
-const getConfirmUser = () => {
-  RedirectUrl("/confirmUser");
-}
-
-const getUserList = () => {
-  RedirectUrl("/userList");
-}
-
-const getAddFurniture = () => {
-  RedirectUrl("/addFurniture");
-}
-
-const getConfirmVisits = () => {
-  RedirectUrl("/confirmVisits");
-}
-
-const getVisitListPage = () => {
-  RedirectUrl("/visitListPage");
+const onTest = (e) => {
+  e.preventDefault();
+  console.log(e, document.activeElement, document.activeElement.id);
+  RedirectUrl(document.activeElement.id);
 }
 
 export default Sidebar;

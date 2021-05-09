@@ -15,7 +15,6 @@ const ConfirmVisits = () => {
     return;
   }
   
-  Sidebar(true, false);
 
   let list = `
   <div class="containerForm">

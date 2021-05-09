@@ -16,8 +16,6 @@ const ConfirmUserPage = async () => {
     return;
  }
 
-  Sidebar(true, false);
-
   let list = `
   <div class="containerForm">
 <div class="d-flex justify-content-center h-100 mt-4">

@@ -16,7 +16,6 @@ const UserListPage = async () => {
     return;
   }
 
-  Sidebar(true, true);
   let list = `
   <div class="input-group" style="margin-bottom:10px;">
     <div class="form-outline">

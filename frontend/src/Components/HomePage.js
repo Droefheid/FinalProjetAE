@@ -8,7 +8,6 @@ let page = document.querySelector("#page");
 
 const HomePage = () => { 
   const user = getUserSessionData();
-   console.log(user);
   page.innerHTML = `<div class="loader"></div>`;  
   fetch(API_URL + "furnitures/", {
     method: "GET",
@@ -44,7 +43,7 @@ const onFurnitureList = (data) => {
     }
     homePage += `</ol>
     <div class="carousel-inner">`;
-    console.log(photos);
+    //console.log(photos);
     isAnActiveAlready = false;
     for (let i = 0; i < photos.length; i++) {
       if(photos[i] && photos[i].picture.startsWith("data")){
@@ -87,7 +86,6 @@ const onFurnitureList = (data) => {
 
 const onImageSelect = (e) => {
   e.preventDefault();
-  console.log(document.activeElement.id);
   user_me.furnitureId = document.activeElement.id;
   RedirectUrl("/furniture");
 }
