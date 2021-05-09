@@ -1,13 +1,20 @@
 import { RedirectUrl } from "./Router.js";
-import { getTokenSessionDate } from "../utils/session";
+import { getUserSessionData, getTokenSessionDate } from "../utils/session";
 import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
+import Navbar from "./Navbar.js";
 import { getCoordinates } from "../utils/map.js";
 
 let page = document.querySelector("#page");
 
 const ConfirmUserPage = async () => {
-  Sidebar(true, false);
+  const user = getUserSessionData();
+  if (!user || !user.isBoss) {
+    // re-render the navbar for the authenticated user.
+    Navbar();
+    RedirectUrl("/");
+    return;
+ }
 
   let list = `
   <div class="containerForm">

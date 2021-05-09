@@ -18,7 +18,6 @@ import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.domaine.furniture.FurnitureUCC;
 import be.vinci.pae.domaine.photo.PhotoDTO;
 import be.vinci.pae.domaine.photo.PhotoUCC;
-import be.vinci.pae.domaine.type.TypeDTO;
 import be.vinci.pae.domaine.type.TypeUCC;
 import be.vinci.pae.domaine.user.UserDTO;
 import jakarta.inject.Inject;
@@ -54,26 +53,13 @@ public class FurnitureResource {
   private UserResource userRessource;
 
 
-  /**
-   * get a list of the types.
-   * 
-   * @return list of the types.
-   */
-  @GET
-  @Path("/getTypes")
-  public Response getType() {
-
-    List<TypeDTO> type = typeUCC.getAll();
-
-    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("type", type);
-  }
 
   /**
    * get the furniture with constraints searchBar, type, minPrice and maxPrice.
    * 
    * @return list of 2 lists bought and sold furniture.
    */
-  @GET
+  @POST
   @Path("/searchFurniture")
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeBoss
@@ -84,7 +70,8 @@ public class FurnitureResource {
     }
 
     if (json.get("minPrice").asInt() <= json.get("maxPrice").asInt()) {
-      throw new PresentationException("user id is incorrect");
+      throw new PresentationException(
+          "The minimum price has to be smaller then the maximum price.");
     }
 
     List<FurnitureDTO> list = furnitureUCC.searchFurniture(json.get("searchBar").asText(),
@@ -172,26 +159,28 @@ public class FurnitureResource {
 
     // Check credentials
 
-    if (json.get("title").asText().equals("")) {
+    if (!json.hasNonNull("title") || json.get("title").asText().equals("")) {
       throw new PresentationException("Title cannot be empty", Status.BAD_REQUEST);
     }
-    if (json.get("purchasePrice").asText().equals("") || json.get("purchasePrice").asInt() <= 0) {
+    if (!json.hasNonNull("purchasePrice") || json.get("purchasePrice").asText().equals("")
+        || json.get("purchasePrice").asInt() <= 0) {
       throw new PresentationException("Purchase Price is needed or incorrect.", Status.BAD_REQUEST);
     }
-    if (json.get("state").asText().equals("")) {
+    if (!json.hasNonNull("state") || json.get("state").asText().equals("")) {
       throw new PresentationException("State is needed.", Status.BAD_REQUEST);
     }
-    if (json.get("seller").asText().equals("")) {
+    if (!json.hasNonNull("seller") || json.get("seller").asText().equals("")) {
       throw new PresentationException("Seller is needed.", Status.BAD_REQUEST);
     }
     int sellerId = json.get("seller").asInt();
     if (sellerId < 1 || userRessource.getUserById(sellerId) == null) {
       throw new PresentationException("Seller does not exist.", Status.BAD_REQUEST);
     }
-    if (json.get("type").asText().equals("") || json.get("type").asInt() <= 0) {
+    if (!json.hasNonNull("type") || json.get("type").asText().equals("")
+        || json.get("type").asInt() <= 0) {
       throw new PresentationException("Type is incorrect or needed.", Status.BAD_REQUEST);
     }
-    if (json.get("pickUpDate").asText().equals("")) {
+    if (!json.hasNonNull("pickUpDate") || json.get("pickUpDate").asText().equals("")) {
       throw new PresentationException("Pick-up date is needed.", Status.BAD_REQUEST);
     }
 
@@ -321,30 +310,33 @@ public class FurnitureResource {
 
   private void checkAllCredentialFurniture(JsonNode json) {
     // Required Field.
-    if (json.get("furnitureId").asText().equals("") || json.get("furnitureId").asInt() < 1) {
+    if (!json.hasNonNull("furnitureId") || json.get("furnitureId").asText().equals("")
+        || json.get("furnitureId").asInt() < 1) {
       throw new PresentationException("Id is needed or incorrect.", Status.BAD_REQUEST);
     }
-    if (json.get("title").asText().equals("")) {
+    if (!json.hasNonNull("title") || json.get("title").asText().equals("")) {
       throw new PresentationException("Title is needed.", Status.BAD_REQUEST);
     }
-    if (json.get("state").asText().equals("")) {
+    if (!json.hasNonNull("state") || json.get("state").asText().equals("")) {
       throw new PresentationException("State is needed.", Status.BAD_REQUEST);
     }
-    if (json.get("purchasePrice").asText().equals("") || json.get("purchasePrice").asInt() <= 0) {
+    if (!json.hasNonNull("purchasePrice") || json.get("purchasePrice").asText().equals("")
+        || json.get("purchasePrice").asInt() <= 0) {
       throw new PresentationException("Purchase Price is needed or incorrect.", Status.BAD_REQUEST);
     }
-    if (json.get("seller").asText().equals("")) {
+    if (!json.hasNonNull("seller") || json.get("seller").asText().equals("")) {
       throw new PresentationException("Seller is needed.", Status.BAD_REQUEST);
     }
     int sellerId = json.get("seller").asInt();
     if (sellerId < 1 || userRessource.getUserById(sellerId) == null) {
       throw new PresentationException("Seller does not exist.", Status.BAD_REQUEST);
     }
-    if (json.get("pickUpDate").asText().equals("")) {
+    if (!json.hasNonNull("pickUpDate") || json.get("pickUpDate").asText().equals("")) {
       throw new PresentationException("Pick-up date is needed.", Status.BAD_REQUEST);
     }
     checkTimestampPattern("Pick-up date", json.get("pickUpDate").asText());
-    if (json.get("type").asText().equals("") || json.get("type").asInt() < 1) {
+    if (!json.hasNonNull("type") || json.get("type").asText().equals("")
+        || json.get("type").asInt() < 1) {
       throw new PresentationException("Type is needed ", Status.BAD_REQUEST);
     }
     this.typeUCC.findById(json.get("type").asInt());
@@ -352,14 +344,15 @@ public class FurnitureResource {
 
     // Check when the furniture is in restoration.
     String state = json.get("state").asText();
-    if (state.equals("ER") && !json.get("depositDate").asText().equals("")) {
+    if (state.equals("ER") && json.hasNonNull("depositDate")) {
       throw new PresentationException(
           "You cant have a deposit date if the state is in restoration.", Status.BAD_REQUEST);
     }
 
 
     // Check when the furniture is in the shop.
-    if (json.get("depositDate").asText().equals("") && !state.equals("ER")) {
+    if ((!json.hasNonNull("depositDate") || json.get("depositDate").asText().equals(""))
+        && !state.equals("ER")) {
       throw new PresentationException("A deposit date is needed if is not anymore in restoration.",
           Status.BAD_REQUEST);
     }

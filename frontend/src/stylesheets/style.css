@@ -62,7 +62,7 @@
 
 /*************** Button resizing ***************/
 .samebutton {
-  width: 180px;
+  width: 180px !important;
 }
 
 /*************** Images resizing ***************/
@@ -76,6 +76,10 @@
 
 .max_width {
   width: 100%;
+}
+
+.width-200px {
+  width: 200px;
 }
 
 /*************** SideBar ***************/

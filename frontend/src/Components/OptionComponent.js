@@ -28,29 +28,32 @@ const OptionPage = () => {
 };
 
 const onFurnitureDescription = (data) => {
+  console.log(data);
   let optionPage = `
-  <div id="option">
-  <div id="messageBoardForm"></div>
-    <img class="img-fluid" src="assets/Images/Bureau_1.png"  style="width:350px;">
-  
+  <div id="option" class="mb-5">
+    <div id="messageBoardForm"></div>
     <div class="row">
-      <div id="furniture" class="column">
-          <img class="img-fluid"  src="assets/Images/Bureau_1.png"  style="width:200px;">
-          <img class="img-fluid"  src="assets/Images/Bureau_1.png"  style="width:200px;">
-      </div>
+      <div id="showImg" class="column"></div>
       <div class="column">
-          <h4 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"> Types : ${data.furniture.type} </h4>
+        <h4> Types : ${data.furniture.type} </h4>
         <label for="datetime-local" >Date de fin de l'option</label>
-       <input class="form-control" type="datetime-local" value="2021-08-19T13:45:00" id="datetime-local">
-       <form class="btn" id="introduceOption">
-       <input type="submit" value="Introduce option" class="btn btn-info"></input>
-       </form>
+        <input class="form-control" type="datetime-local" value="2021-08-19T13:45:00" id="datetime-local">
+        <form class="btn" id="introduceOption">
+          <input type="submit" value="Introduce option" class="btn btn-info"></input>
+        </form>
       </div>
-  </div>
-  `;
+    </div>
+  </div>`;
 
   let page = document.querySelector("#page");
   page.innerHTML = optionPage;
+  
+  let photos = data.photos;
+  let showImg = document.getElementById('showImg');
+  for (let i = 0; i < photos.length; i++) {
+    showImg.innerHTML += `<img class="img-fluid width-200px" src="${photos[i].picture}" alt="${photos[i].name}" >`;
+  }
+
   let optionForm = document.querySelector("#introduceOption");
   optionForm.addEventListener("submit", introduceOption);
 }
@@ -85,7 +88,7 @@ const introduceOption = (e) => {
 
 const onOptionIntroduced = () => {
   alert("An option has been introduced");
-  RedirectUrl(`/furniture`);
+  RedirectUrl(`/furnitures`);
 };
 
 const onError = (err) => {

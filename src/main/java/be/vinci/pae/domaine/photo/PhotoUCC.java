@@ -15,7 +15,8 @@ public interface PhotoUCC {
   List<PhotoDTO> addMultiplePhotosForFurniture(List<PhotoDTO> photo,
       List<PhotoFurnitureDTO> photoFurniture);
 
-  List<PhotoDTO> addMultiplePhotosForVisit(List<PhotoDTO> photo, List<PhotoVisitDTO> photoVisit);
+  List<PhotoDTO> addMultiplePhotosForVisit(List<PhotoDTO> photo, List<PhotoVisitDTO> photoVisit,
+      int visitId);
 
   void delete(int id);
 

@@ -216,7 +216,8 @@ public class PhotoResource {
       }
     }
 
-    List<PhotoDTO> allPhotos = this.photoUCC.addMultiplePhotosForVisit(photos, photosVisit);
+    List<PhotoDTO> allPhotos =
+        this.photoUCC.addMultiplePhotosForVisit(photos, photosVisit, visit.getId());
     for (PhotoDTO photoDTO : allPhotos) {
       paths.add(encodeFileToBase64Binary(photoDTO.getPicture()));
     }
