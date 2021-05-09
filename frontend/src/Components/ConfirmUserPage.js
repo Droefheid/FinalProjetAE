@@ -17,18 +17,14 @@ const ConfirmUserPage = async () => {
  }
 
   let list = `
-  <div class="containerForm">
-<div class="d-flex justify-content-center h-100 mt-4">
-  <div class="card">
-    <div class="card-header">
-  <div class="col-sm-3" id="list"> </div>
-  </div>
-  </div>
-  <div class="col-sm-3"  id="confirmUserDesc"></div>
-  <div id="messageBoardForm"></div>
-  </div>
-  </div>
-  `;
+  <div class="d-flex justify-content-center containerForm">
+    <div class="card">
+      <div class="card-header d-flex justify-content-center" id="confirmUserDesc">
+        <div class="col-sm-3" id="list"> </div>
+      </div>
+    </div>
+    <div id="messageBoardForm"></div>
+  </div>`;
   let id = getTokenSessionDate();
   page.innerHTML = list;
   fetch(API_URL + "users/notConfirmed", {
@@ -50,29 +46,35 @@ const onUserList = (data) => {
 
   if (!data) return;
 
+  if (data.list.length == 0) {
+    page.innerHTML = "<h3> There aren't any users to confirm </h3>";
+    return;
+  }
   let table = `
-          <nav id="nav_user">
-            <ul class="list-group">`;
+<nav id="nav_user">
+  <ul class="list-group ">`;
   data.list.forEach((element) => {
     table += `
-        <li id="${element.id}" class="list-group-item" data-toggle="collapse"
-              href="#collapse${element.id}" role="button"
-              aria-expanded="false" aria-controls="collapse${element.id}">
-                <div class="row" id="${element.id}" >
-                
-                  <div class="col-sm-">
-                    <p>
-                      <h5>${element.username}</h5>
-                    </p>
-                  </div>
-                </div>
-        </li>`;
+    <li id="${element.id}" class="list-group-item" data-toggle="collapse"
+    href="#collapse${element.id}" role="button"
+    aria-expanded="false" aria-controls="collapse${element.id}">
+      <div class="row" id="${element.id}" >
+       
+          <img src="assets/Images/pic.jpg" class="rounded" style="width:100%;"/>
+     
+        <div class="col-sm-">
+          <p>
+            <h5>${element.username}</h5>
+           
+          </p>
+        </div>
+      </div>
+    </li>`;
   });
 
   table += `  
         </ul>
-      </nav>
-`;
+      </nav>`;
   userList.innerHTML = table;
 
   const viewUsers = document.querySelectorAll("li");
@@ -106,25 +108,37 @@ const onClick = (e) => {
 
 const onConfirmUserDescription = (data) => {
   let info = document.querySelector("#confirmUserDesc");
+  info.className = `card-header`;
   let description = `
-  <div id="description_user">
-  <p> Username: ${data.user.username}</p>
-  <p> Lastname: ${data.user.lastName}</p>
-  <p> Firstname: ${data.user.firstName}</p>
-  <p> Email: ${data.user.email}</p>
-    <input type="hidden" id="id" value="${data.user.id}">
-    <br>
-
-    <input class="form-check-input" type="checkbox" id="is_confirmed" >
-    <label class="form-check-label" for="is_confirmed">Is confirmed </label>
-    <br>
-    <input class="form-check-input" type="checkbox" id="is_antique_dealer" >
-    <label class="form-check-label" for="is_antique_dealer">Is antique dealer </label>
-    <br>
-    <input class="form-check-input" type="checkbox" id="is_boss" >
-    <label class="form-check-label" for="is_boss">Is Boss </label>
+  <a href="#" class="previous">&laquo; Previous</a>
+  <table id="description_user" class="table table-striped table-bordered" style="width:100%" >
+  <input type="hidden" id="id" value="${data.user.id}">
+  <thead>
+            <tr>
+                <th>Username</th>
+                <th>Lastname</th>
+                <th>Firstname</th>
+                <th>Email</th>  
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>${data.user.username}</td>
+                <td>${data.user.lastName}</td>
+                <td>${data.user.firstName}</td>
+                <td>${data.user.email}</td>
+            </tr>
+            <tr>
+                <td><input class="form-check-input" type="checkbox" id="is_antique_dealer" >
+                <label class="form-check-label" for="is_antique_dealer">Is antique dealer </label></td>
+                <td><input class="form-check-input" type="checkbox" id="is_boss" >
+                <label class="form-check-label" for="is_boss">Is Boss </label></td>
+                <td></td>
+            </tr>
+       </tbody>
+  </table>
   <br>
-  <input class="btn btn-primary" type="button" id="button_confirmed" value="Submit">
+  <input class="btn btn-primary" type="button" id="button_confirmed" value="Confirm">
   `;
   getAdresse(data.user.adressID,description);
 };
@@ -168,7 +182,7 @@ const afficherListAvecAddress = (address, description) =>{
 const onConfirmUser = (e) => {
   e.preventDefault();
   let userID = document.getElementById("id").value;
-  let confirmed = document.getElementById("is_confirmed").checked;
+  let confirmed = true;
   let antique_dealer = document.getElementById("is_antique_dealer").checked;
   let is_boss = document.getElementById("is_boss").checked;
 

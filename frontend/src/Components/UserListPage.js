@@ -17,52 +17,31 @@ const UserListPage = async () => {
   }
 
   let list = `
-  <div class="input-group" style="margin-bottom:10px;">
-    <div class="form-outline">
-      <input type="search" id="searchBar" class="form-control" placeholder="Search" />
+  <div class="containerForm mb-5">
+    <center><h4>List of users </h4></center>
+    <span id="previous"></span>
+    <div class="d-flex justify-content-center h-100 mt-4" id="userInfo" >
+      <div class="col-sm-6" id="list"></div>
     </div>
-    <button type="button" id="submitSearch" class="btn btn-primary">
-      <i class="fas fa-search"></i>
-    </button>
   </div>
-  `;
+  <div id="messageBoardForm"></div>`;
 
-
-      list += `
-      <div id="container" class="containerForm">
-      
-      <div class="d-flex justify-content-center h-100 mt-4">
-      <div class="card">
-        <div class="card-header">
-        
-      <div class="col-sm-3" id="list"> </div>
-      </div>
-      </div>
-      <div class="col-sm-7"  id="userInfo"></div>
-      <div id="messageBoardForm"></div>
-      </div>
-      </div>
-      `;
-      let id = getTokenSessionDate();
-      page.innerHTML = list;
-      fetch(API_URL + "users/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": id,
-        },
-      })
-        .then((response) => {
-          if (!response.ok) {
-            return response.text().then((err) => onError(err));
-          }
-          else
-            return response.json().then((data) => onUserList(data));
-        })
-
-        let buttonSearch = document.getElementById("submitSearch");
-        buttonSearch.addEventListener("click", onSearchListUser);
-    
+  let id = getTokenSessionDate();
+  page.innerHTML = list;
+  fetch(API_URL + "users/", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": id,
+    },
+  })
+  .then((response) => {
+    if (!response.ok) {
+      return response.text().then((err) => onError(err));
+    }
+    else
+      return response.json().then((data) => onUserList(data));
+  });
 };
 
 const onSearchListUser = () => {
@@ -95,23 +74,42 @@ const onUserList = (data) => {
   let userList = document.querySelector("#list");
 
   if (!data) return;
-  
+
+  if (data.list.length == 0) {
+    page.innerHTML = "<h3> There aren't any users </h3>";
+    return;
+  }
+
   let table = `
+          
+  <div class="input-group" style="margin-bottom:10px;">
+  <div class="form-outline">
+    <input type="search" id="searchBar" class="form-control" placeholder="Search" />
+  </div>
+  <button type="button" id="submitSearch" class="btn btn-primary">
+    <i class="fas fa-search"></i>
+  </button>
+</div>
           <nav id="nav_user">
             <ul class="list-group">`;
-  data.list.forEach(element => {
-          table += `
+
+  data.list.forEach((element) => {
+    table += `
+
         <li id="${element.id}" class="list-group-item" data-toggle="collapse"
-              href="#collapse${element.id}" role="button"
-              aria-expanded="false" aria-controls="collapse${element.id}">
-                <div class="row" id="${element.id}" >
-                
-                  <div class="col-sm-">
-                    <p>
-                      <h5>${element.username}</h5>
-                    </p>
-                  </div>
-                </div>
+        href="#collapse${element.id}" role="button"
+        aria-expanded="false" aria-controls="collapse${element.id}">
+          <div class="row" id="${element.id}" >
+            <div class="col-sm-4" id="${element.id}">
+              <img src="assets/Images/pic.jpg" class="rounded" style="width:100%;"/>
+            </div>
+            <div class="col-sm-">
+              <p>
+                <h5>${element.username}</h5>
+               
+              </p>
+            </div>
+          </div>
         </li>`;
   });
 
@@ -121,47 +119,57 @@ const onUserList = (data) => {
 `;
   userList.innerHTML = table;
 
+  let buttonSearch = document.getElementById("submitSearch");
+  buttonSearch.addEventListener("click", onSearchListUser);
+
   const viewUsers = document.querySelectorAll("li");
-  viewUsers.forEach((elem) =>{
+  viewUsers.forEach((elem) => {
     elem.addEventListener("click", onClick);
-  })
-}
- 
+  });
+};
+
 const onClick = (e) => {
   e.preventDefault();
-    const userId = e.target.parentElement.parentElement.id;
-    if(userId == 'nav_user') return;
+  const userId = e.target.parentElement.parentElement.id;
+  if (userId == "nav_user") return;
 
-    if(userId == null) return;
-  
-    let id = getTokenSessionDate();
-    fetch(API_URL + "users/" + userId, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": id,
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.text().then((err) => onError(err));
-        }
-        else
-          return response.json().then((data) => onConfirmUserDescription(data));
-      })
+  if (userId == null) return;
+
+  let id = getTokenSessionDate();
+  fetch(API_URL + "users/" + userId, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: id,
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((err) => onError(err));
+    } else
+      return response.json().then((data) => onConfirmUserDescription(data));
+  });
 };
 
 const onConfirmUserDescription = (data) => {
   let description = `
-  <div id="description_user">
-  <p> Username: ${data.user.username}</p>
-  <p> Lastname: ${data.user.lastName}</p>
-  <p> Firstname: ${data.user.firstName}</p>
-  <p> Email: ${data.user.email}</p>
-  <p> Registration date: ${createTimeStamp(data.user.registrationDate)}</p>
-  <p> is a boss : ${data.user.isBoss}</p>
-  <p> is an antique dealer: ${data.user.isAntiqueDealer}</p>
-`;
+  <table id="description_user" class="table table-striped table-bordered" style="width:100%" >
+    <thead>
+      <tr>
+          <th>Username</th>
+          <th>Lastname</th>
+          <th>Firstname</th>
+          <th>Email</th> 
+          <th>Furniture sold</th>
+          <th>Furniture bought</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+          <td>${data.user.username}</td>
+          <td>${data.user.lastName}</td>
+          <td>${data.user.firstName}</td>
+          <td>${data.user.email}</td>
+      `;
 
   let id = getTokenSessionDate();
   fetch(API_URL + "furnitures/clientFurnitures/" + data.user.id, {
@@ -181,16 +189,29 @@ const onConfirmUserDescription = (data) => {
 };
 
 const furnitureInfo = (lists,descripton) => {
-  let info = document.querySelector("#userInfo");
+  let info = document.querySelector("#list");
+  console.log(info);
+
   let descriptionFinal = descripton;
-  descriptionFinal += `
-    <p> furniture sold :${lists.seller.length} </p>  <form class="btn" id="seller">
-    <input class="btn-primary" type="submit" value="See furniture">
-    </form>
-    <p> furniture bought : ${lists.buyer.length}  </p><form class="btn" id="buyer">
-    <input class="btn-primary" type="submit" value="See furniture">
-    </form>
-    </div>`;
+
+  descriptionFinal += `<td>${lists.seller.length}
+      <form class="btn" id="seller">
+        <input class="btn-primary" type="submit" value="See furniture">
+      </form>
+    </td>  
+    <td>${lists.buyer.length}
+      <form class="btn" id="buyer">
+        <input class="btn-primary" type="submit" value="See furniture">
+      </form>
+    </td>
+    </tr>
+    </tbody>
+  </table>`;
+
+  document.querySelector("#previous").innerHTML += `<div class="row"><a href="#" class="previous">&laquo; Previous</a></div>`;
+
+  info.className = "d-flex h-100 mt-4";
+
   info.innerHTML = descriptionFinal; 
   let sellerButton = document.querySelector("#seller");
   sellerButton.addEventListener("submit", function(e){
@@ -312,6 +333,5 @@ const onError = (err) => {
   let messageBoard = document.querySelector("#messageBoardForm");
   messageBoard.innerHTML = err;
 };
-
 
 export default UserListPage;
