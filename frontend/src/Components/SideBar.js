@@ -115,7 +115,6 @@ const Sidebar = (needed, secondNeeded) => {
 
 const onTest = (e) => {
   e.preventDefault();
-  console.log(e, document.activeElement, document.activeElement.id);
   RedirectUrl(document.activeElement.id);
 }
 

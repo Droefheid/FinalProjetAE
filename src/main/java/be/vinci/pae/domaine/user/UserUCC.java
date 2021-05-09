@@ -15,7 +15,7 @@ public interface UserUCC {
 
   void updateConfirmed(UserDTO userDTO);
 
-  List<UserDTO> getAllNotConfirmed();
+  List<UserDTO> getAllConfirmed(boolean isConfirmed);
 
   AddressDTO getAddressById(int id);
 

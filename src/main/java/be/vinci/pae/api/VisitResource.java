@@ -97,11 +97,10 @@ public class VisitResource {
     }
     VisitDTO visit = domaineFactory.getVisitDTO();
 
-    String term = json.get("request_date").asText();
-    LocalDateTime parsed = LocalDateTime.parse(term);
-    visit.setRequestDate(Timestamp.valueOf(parsed));
+    LocalDateTime dateNow = LocalDateTime.now();
+    visit.setRequestDate(Timestamp.valueOf(dateNow));
 
-    visit.setExplanatoryNote(json.get("explanatory_note").asText());
+
     visit.setTimeSlot(json.get("time_slot").asText());
     visit.setLabelFurniture(json.get("label_furniture").asText());
 
@@ -195,7 +194,7 @@ public class VisitResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeBoss
   public Response updateConfirmed(@Context ContainerRequest request, JsonNode json) {
-    if (!json.hasNonNull("visit_id") || json.get("visit_id").asText().equals("")) {
+    if (!json.hasNonNull("visitId") || json.get("visitId").asText().equals("")) {
       throw new PresentationException("Visit id is needed ", Status.BAD_REQUEST);
     }
 
@@ -205,8 +204,25 @@ public class VisitResource {
       throw new PresentationException("User not found", Status.BAD_REQUEST);
     }
     VisitDTO visit = domaineFactory.getVisitDTO();
-    visit = visitUcc.getVisit(json.get("visit_id").asInt());
-    visit.setIsConfirmed(true);
+    visit = visitUcc.getVisit(json.get("visitId").asInt());
+
+    if (json.hasNonNull("isConfirmed")) {
+      boolean confirmed = json.get("isConfirmed").asBoolean();
+      visit.setIsConfirmed(confirmed);
+    }
+
+    if (json.get("dateTime").asText() != "") {
+
+      String term = json.get("dateTime").asText();
+      LocalDateTime parsed = LocalDateTime.parse(term);
+      visit.setDateAndHoursVisit(Timestamp.valueOf(parsed));
+    }
+
+
+    if (json.get("explanatoryNote").asText() != "" && json.hasNonNull("explanatoryNote")) {
+      visit.setExplanatoryNote(json.get("explanatoryNote").asText());
+    }
+
     this.visitUcc.updateConfirmed(visit);
     return Response.ok().build();
   }
