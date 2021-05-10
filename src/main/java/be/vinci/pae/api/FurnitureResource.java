@@ -65,11 +65,16 @@ public class FurnitureResource {
   @AuthorizeBoss
   public Response searchBarFurniture(JsonNode json) {
 
-    if (!json.hasNonNull("type")) {
-      throw new PresentationException("type not selected");
+    if (!json.hasNonNull("searchBar")) {
+      throw new PresentationException("searchbar is null");
     }
 
-    if (json.get("minPrice").asInt() <= json.get("maxPrice").asInt()) {
+    if (!json.hasNonNull("type") || json.get("type").asInt() == 0) {
+      throw new PresentationException("type not selected");
+    }
+    int min = json.get("minPrice").asInt();
+    int max = json.get("maxPrice").asInt();
+    if (!json.hasNonNull("maxPrice") || !json.hasNonNull("minPrice") || min >= max) {
       throw new PresentationException(
           "The minimum price has to be smaller then the maximum price.");
     }
@@ -77,7 +82,13 @@ public class FurnitureResource {
     List<FurnitureDTO> list = furnitureUCC.searchFurniture(json.get("searchBar").asText(),
         json.get("type").asInt(), json.get("minPrice").asInt(), json.get("maxPrice").asInt());
 
-    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", list);
+    List<PhotoDTO> photos = new ArrayList<>();
+    for (FurnitureDTO furnitureDTO : list) {
+      photos.add(photoUCC.getFavouritePhotoForFurniture(furnitureDTO.getFurnitureId()));
+    }
+    PhotoResource.transformAllURLOfThePhotosIntoBase64Image(photos);
+
+    return ResponseMaker.createResponseWithObjectNodeWith2PutPOJO("list", list, "photos", photos);
   }
 
   /**

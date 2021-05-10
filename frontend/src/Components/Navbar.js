@@ -47,11 +47,15 @@ const Navbar = () => {
   <nav class="navbar navbar-expand-sm bg-light navbar-light pt-0" id="navBar">
 	  <div class="absolute"><a class="navbar-brand" href="#" data-uri="/">Livi Satcho</a></div>
     <div class="navbar navbar-nav ml-auto mr-auto pt-3" >
-      <a class="btn btn-info" href="#" data-uri="/furnitures" style="margin:15px;">See all the furnitures</a>
-      <a class="btn btn-info" href="#" data-uri="/seeMyFurniture" style="margin:15px;">See my furniture</a>  
-      <a class="btn btn-info" href="#" data-uri="/seeMyVisits" style="margin:15px;">See my visits</a>  
-      <a class="btn btn-info" href="#" data-uri="/introduceVisits" style="margin:15px;">Introduce a visit</a>
-    </div>
+      <a class="btn btn-info" href="#" data-uri="/furnitures" style="margin:15px;">See all the furnitures</a>`;
+  if(user){
+    navbar +=`
+    <a class="btn btn-info" href="#" data-uri="/seeMyFurniture" style="margin:15px;">See my furniture</a>  
+    <a class="btn btn-info" href="#" data-uri="/seeMyVisits" style="margin:15px;">See my visits</a>  
+    <a class="btn btn-info" href="#" data-uri="/introduceVisits" style="margin:15px;">Introduce a visit</a>
+    `;
+  }
+    navbar+= `</div>
   </nav>`;
 
   return (navBar.innerHTML = navbar);
