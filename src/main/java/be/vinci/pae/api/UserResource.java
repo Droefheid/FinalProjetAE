@@ -161,13 +161,10 @@ public class UserResource {
     user.setPassword(json.get("password").asText());
 
     AddressDTO addressDTO = domaineFactory.getAdressDTO();
-
-    addressDTO.setBuildingNumber(json.get("building_number").asText());
-    addressDTO.setCommune(json.get("commune").asText());
-    addressDTO.setPostCode(json.get("postcode").asText());
-    addressDTO.setStreet(json.get("street").asText());
-    addressDTO.setUnitNumber(json.get("unit_number").asText());
-    addressDTO.setCountry(json.get("country").asText());
+    addressDTO = VisitResource.createFullFillAddress(addressDTO, -1,
+        json.get("building_number").asText(), json.get("commune").asText(),
+        json.get("postcode").asText(), json.get("street").asText(),
+        json.get("unit_number").asText(), json.get("country").asText());
     LocalDateTime now = LocalDateTime.now();
     Timestamp timestamp = Timestamp.valueOf(now);
     user.setRegistrationDate(timestamp);
