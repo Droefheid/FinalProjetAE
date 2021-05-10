@@ -79,6 +79,11 @@ public class VisitResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Authorize
   public Response introduceVisit(@Context ContainerRequest request, JsonNode json) {
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    if (currentUser == null) {
+      throw new PresentationException("You dont have the permission.", Status.BAD_REQUEST);
+    }
+
     checkJsonAddress(json);
 
     if (!json.hasNonNull("time_slot") || json.get("time_slot").asText().equals("")) {
@@ -88,15 +93,8 @@ public class VisitResource {
 
     LocalDateTime dateNow = LocalDateTime.now();
     visit.setRequestDate(Timestamp.valueOf(dateNow));
-
-
     visit.setTimeSlot(json.get("time_slot").asText());
     visit.setLabelFurniture(json.get("label_furniture").asText());
-
-    UserDTO currentUser = (UserDTO) request.getProperty("user");
-    if (currentUser == null) {
-      throw new PresentationException("You dont have the permission.", Status.BAD_REQUEST);
-    }
 
     AddressDTO addressDTO = domaineFactory.getAdressDTO();
 
@@ -106,7 +104,6 @@ public class VisitResource {
     addressDTO.setStreet(json.get("street").asText());
     addressDTO.setUnitNumber(json.get("unit_number").asText());
     addressDTO.setCountry(json.get("country").asText());
-
 
     if (currentUser.isBoss()) {
       int id = json.get("user_id").asInt();
