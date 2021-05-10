@@ -14,6 +14,8 @@ public interface VisitUCC {
 
   List<VisitDTO> getAll();
 
+  List<VisitDTO> getAllMyVisits(int userId);
+
   void updateConfirmed(VisitDTO visitDTO);
 
   List<VisitDTO> getAllNotConfirmed();

@@ -35,6 +35,14 @@ public class VisitUCCImpl implements VisitUCC {
   }
 
   @Override
+  public List<VisitDTO> getAllMyVisits(int userId) {
+    dalservices.startTransaction();
+    List<VisitDTO> list = visitDao.getAllMyVisits(userId);
+    dalservices.commitTransaction();
+    return list;
+  }
+
+  @Override
   public List<VisitDTO> getAllNotConfirmed() {
     dalservices.startTransaction();
     List<VisitDTO> list = visitDao.getAllNotConfirmed();

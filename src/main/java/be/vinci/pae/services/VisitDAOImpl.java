@@ -118,17 +118,44 @@ public class VisitDAOImpl implements VisitDAO {
 
 
     List<VisitDTO> list = new ArrayList<VisitDTO>();
-    VisitDTO visit = domaineFactory.getVisitDTO();
 
     try {
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
+        VisitDTO visit = domaineFactory.getVisitDTO();
         fullFillVisitFromResulSet(visit, rs);
         list.add(visit);
       }
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException("error fullFillUsers", e);
+      throw new FatalException("error fullFillVisits", e);
+    }
+
+    return list;
+  }
+
+  @Override
+  public List<VisitDTO> getAllMyVisits(int userId) {
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("SELECT visit_id, request_date, time_slot, date_and_hours_visit,"
+            + " explanatory_note, label_furniture, is_confirmed," + " users, address"
+            + " FROM projet.visits WHERE users = ?");
+
+
+    List<VisitDTO> list = new ArrayList<VisitDTO>();
+
+    try {
+      ps.setInt(1, userId);
+
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        VisitDTO visit = domaineFactory.getVisitDTO();
+        visit = fullFillVisitFromResulSet(visit, rs);
+        list.add(visit);
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("error fullFillMyVisits", e);
     }
 
     return list;
@@ -222,5 +249,6 @@ public class VisitDAOImpl implements VisitDAO {
       throw new FatalException(e.getMessage(), e);
     }
   }
+
 }
 
