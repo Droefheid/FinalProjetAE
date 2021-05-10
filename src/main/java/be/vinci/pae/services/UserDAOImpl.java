@@ -240,7 +240,7 @@ public class UserDAOImpl implements UserDAO {
 
 
   @Override
-  public List<UserDTO> getAllConfirmed() {
+  public List<UserDTO> getAllConfirmed(boolean isConfirmed) {
     PreparedStatement ps =
         this.dalBackendServices.getPreparedStatement("SELECT user_id , last_name , "
             + "first_name,username ,password , address , email , is_boss ,"
@@ -251,7 +251,7 @@ public class UserDAOImpl implements UserDAO {
     List<UserDTO> list = new ArrayList<UserDTO>();
 
     try {
-      ps.setBoolean(1, false);
+      ps.setBoolean(1, isConfirmed);
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
         UserDTO user = domaineFactory.getUserDTO();

@@ -24,7 +24,7 @@ public abstract class AuthorizeAbstract {
   private UserUCC userUCC;
 
   /**
-   * get a user from the token.
+   * get a user from the token or abort the request.
    * 
    * @param requestContext contains in header the token as "Authorization".
    * @return a user or null if the token isn't there.
@@ -37,19 +37,30 @@ public abstract class AuthorizeAbstract {
           .entity("A token is needed to access this resource").build());
       return null;
     } else {
-      if (token.startsWith("\"") && token.endsWith("\"")) {
-        token = token.substring(1, token.length() - 1);
-      }
-      DecodedJWT decodedToken = null;
-      try {
-        decodedToken = this.jwtVerifier.verify(token);
-      } catch (TokenExpiredException e) {
-        throw new PresentationException("Expired token", e, Status.UNAUTHORIZED);
-      } catch (Exception e) {
-        throw new PresentationException("Malformed token", e, Status.UNAUTHORIZED);
-      }
-      return this.userUCC.getUser(decodedToken.getClaim("user").asInt());
+      return decodeIfToken(token);
     }
+  }
+
+  /**
+   * get a user from a token.
+   * 
+   * @param token contains the id of the user.
+   * @return a user or null if the user doesn't exist.
+   * @throws PresentationException if Expired or Malformed token.
+   */
+  public UserDTO decodeIfToken(String token) {
+    if (token.startsWith("\"") && token.endsWith("\"")) {
+      token = token.substring(1, token.length() - 1);
+    }
+    DecodedJWT decodedToken = null;
+    try {
+      decodedToken = this.jwtVerifier.verify(token);
+    } catch (TokenExpiredException e) {
+      throw new PresentationException("Expired token", e, Status.UNAUTHORIZED);
+    } catch (Exception e) {
+      throw new PresentationException("Malformed token", e, Status.UNAUTHORIZED);
+    }
+    return this.userUCC.getUser(decodedToken.getClaim("user").asInt());
   }
 
 }

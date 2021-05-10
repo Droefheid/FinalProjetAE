@@ -216,7 +216,8 @@ public class PhotoResource {
       }
     }
 
-    List<PhotoDTO> allPhotos = this.photoUCC.addMultiplePhotosForVisit(photos, photosVisit);
+    List<PhotoDTO> allPhotos =
+        this.photoUCC.addMultiplePhotosForVisit(photos, photosVisit, visit.getId());
     for (PhotoDTO photoDTO : allPhotos) {
       paths.add(encodeFileToBase64Binary(photoDTO.getPicture()));
     }
@@ -372,9 +373,15 @@ public class PhotoResource {
    */
   public static void transformAllURLOfThePhotosIntoBase64Image(List<PhotoDTO> photosList) {
     for (PhotoDTO photo : photosList) {
-      String encodstring = encodeFileToBase64Binary(photo.getPicture());
-      photo.setPicture(encodstring);
+      if (photo != null && photo.getPicture().startsWith("/src")) {
+        transformTheURLOfThePhotoIntoBase64Image(photo);
+      }
     }
+  }
+
+  public static void transformTheURLOfThePhotoIntoBase64Image(PhotoDTO photo) {
+    String encodstring = encodeFileToBase64Binary(photo.getPicture());
+    photo.setPicture(encodstring);
   }
 
 

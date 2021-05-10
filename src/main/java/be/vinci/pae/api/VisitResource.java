@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeBoss;
 import be.vinci.pae.api.utils.PresentationException;
@@ -22,6 +20,7 @@ import be.vinci.pae.domaine.visit.VisitUCC;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -35,9 +34,6 @@ import jakarta.ws.rs.core.Response.Status;
 @Singleton
 @Path("/visits")
 public class VisitResource {
-
-  private final ObjectMapper jsonMapper = new ObjectMapper();
-
 
   @Inject
   private VisitUCC visitUcc;
@@ -83,29 +79,28 @@ public class VisitResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Authorize
   public Response introduceVisit(@Context ContainerRequest request, JsonNode json) {
-    if (json.get("request_date").asText().equals("")) {
+    if (!json.hasNonNull("request_date") || json.get("request_date").asText().equals("")) {
       throw new PresentationException("Request date is needed ", Status.BAD_REQUEST);
     }
-    if (json.get("explanatory_note").asText().equals("")) {
+    if (!json.hasNonNull("explanatory_note") || json.get("explanatory_note").asText().equals("")) {
       throw new PresentationException("explanatory note is needed", Status.BAD_REQUEST);
     }
     checkJsonAddress(json);
 
-    if (json.get("time_slot").asText().equals("")) {
+    if (!json.hasNonNull("time_slot") || json.get("time_slot").asText().equals("")) {
       throw new PresentationException("time slot is needed ", Status.BAD_REQUEST);
     }
     VisitDTO visit = domaineFactory.getVisitDTO();
 
-    String term = json.get("request_date").asText();
-    LocalDateTime parsed = LocalDateTime.parse(term);
-    visit.setRequestDate(Timestamp.valueOf(parsed));
+    LocalDateTime dateNow = LocalDateTime.now();
+    visit.setRequestDate(Timestamp.valueOf(dateNow));
 
-    visit.setExplanatoryNote(json.get("explanatory_note").asText());
+
     visit.setTimeSlot(json.get("time_slot").asText());
     visit.setLabelFurniture(json.get("label_furniture").asText());
 
     UserDTO currentUser = (UserDTO) request.getProperty("user");
-    if (currentUser == null || !currentUser.isBoss()) {
+    if (currentUser == null) {
       throw new PresentationException("You dont have the permission.", Status.BAD_REQUEST);
     }
 
@@ -119,8 +114,15 @@ public class VisitResource {
     addressDTO.setCountry(json.get("country").asText());
 
 
-
-    visit = visitUcc.introduceVisit(visit, addressDTO, currentUser);
+    if (currentUser.isBoss()) {
+      int id = json.get("user_id").asInt();
+      if (id < 1 || userUcc.getUser(id) == null) {
+        throw new PresentationException("User doesn't exist.", Status.BAD_REQUEST);
+      }
+      visit = visitUcc.introduceVisit(visit, addressDTO, id);
+    } else {
+      visit = visitUcc.introduceVisit(visit, addressDTO, currentUser.getID());
+    }
 
     return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("visit", visit);
   }
@@ -136,8 +138,27 @@ public class VisitResource {
     List<VisitDTO> listVisits = new ArrayList<VisitDTO>();
     listVisits = visitUcc.getAll();
 
-    ObjectNode node = jsonMapper.createObjectNode().putPOJO("list", listVisits);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listVisits);
+  }
+
+  /**
+   * get all my visits.
+   * 
+   * @return list of all visits.
+   */
+  @GET
+  @Path("/myVisits")
+  @Authorize
+  public Response allMyVisits(@Context ContainerRequest request) {
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    if (currentUser == null) {
+      throw new PresentationException("User not found", Status.BAD_REQUEST);
+    }
+
+    List<VisitDTO> listVisits = new ArrayList<VisitDTO>();
+    listVisits = visitUcc.getAllMyVisits(currentUser.getID());
+
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listVisits);
   }
 
   /**
@@ -187,7 +208,7 @@ public class VisitResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @AuthorizeBoss
   public Response updateConfirmed(@Context ContainerRequest request, JsonNode json) {
-    if (json.get("visit_id").asText().equals("")) {
+    if (!json.hasNonNull("visitId") || json.get("visitId").asText().equals("")) {
       throw new PresentationException("Visit id is needed ", Status.BAD_REQUEST);
     }
 
@@ -197,10 +218,57 @@ public class VisitResource {
       throw new PresentationException("User not found", Status.BAD_REQUEST);
     }
     VisitDTO visit = domaineFactory.getVisitDTO();
-    visit = visitUcc.getVisit(json.get("visit_id").asInt());
-    visit.setIsConfirmed(true);
+    visit = visitUcc.getVisit(json.get("visitId").asInt());
+
+    if (json.hasNonNull("isConfirmed")) {
+      boolean confirmed = json.get("isConfirmed").asBoolean();
+      visit.setIsConfirmed(confirmed);
+    }
+
+    if (json.get("dateTime").asText() != "") {
+
+      String term = json.get("dateTime").asText();
+      LocalDateTime parsed = LocalDateTime.parse(term);
+      visit.setDateAndHoursVisit(Timestamp.valueOf(parsed));
+    }
+
+
+    if (json.get("explanatoryNote").asText() != "" && json.hasNonNull("explanatoryNote")) {
+      visit.setExplanatoryNote(json.get("explanatoryNote").asText());
+    }
+
     this.visitUcc.updateConfirmed(visit);
-    return Response.ok(MediaType.APPLICATION_JSON).build();
+    return Response.ok().build();
+  }
+
+  /**
+   * delete the visit if it belong to the user requesting it.
+   * 
+   * @param id of the visit to delete
+   * @param request contains the token of the user.
+   * @return empty response.
+   */
+  @DELETE
+  @Path("/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Authorize
+  public Response delete(@PathParam("id") int id, @Context ContainerRequest request) {
+    if (id < 1) {
+      throw new PresentationException("Id cannot be under 1", Status.BAD_REQUEST);
+    }
+
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    if (currentUser == null) {
+      throw new PresentationException("User not found", Status.BAD_REQUEST);
+    }
+
+    VisitDTO visit = visitUcc.getVisit(id);
+    if (visit == null || visit.getUserId() != currentUser.getID()) {
+      throw new PresentationException("You can't delete this visit.", Status.BAD_REQUEST);
+    }
+
+    visitUcc.delete(id);
+    return Response.ok().build();
   }
 
 
@@ -213,22 +281,22 @@ public class VisitResource {
    * @param json node with required objects.
    */
   public static void checkJsonAddress(JsonNode json) {
-    if (json.get("street").asText().equals("")) {
+    if (!json.hasNonNull("street") || json.get("street").asText().equals("")) {
       throw new PresentationException("street is needed ", Status.BAD_REQUEST);
     }
-    if (json.get("building_number").asText().equals("")) {
+    if (!json.hasNonNull("building_number") || json.get("building_number").asText().equals("")) {
       throw new PresentationException("building number is needed ", Status.BAD_REQUEST);
     }
-    if (json.get("postcode").asText().equals("")) {
+    if (!json.hasNonNull("postcode") || json.get("postcode").asText().equals("")) {
       throw new PresentationException("postcode is needed ", Status.BAD_REQUEST);
     }
-    if (json.get("commune").asText().equals("")) {
+    if (!json.hasNonNull("commune") || json.get("commune").asText().equals("")) {
       throw new PresentationException("commune is needed ", Status.BAD_REQUEST);
     }
-    if (json.get("country").asText().equals("")) {
+    if (!json.hasNonNull("country") || json.get("country").asText().equals("")) {
       throw new PresentationException("country is needed ", Status.BAD_REQUEST);
     }
-    if (json.get("unit_number").asText().equals("")) {
+    if (!json.hasNonNull("unit_number") || json.get("unit_number").asText().equals("")) {
       throw new PresentationException("unit number is needed ", Status.BAD_REQUEST);
     }
   }

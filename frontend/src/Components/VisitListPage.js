@@ -1,19 +1,28 @@
 import { RedirectUrl } from "./Router.js";
-import { getTokenSessionDate } from "../utils/session";
+import { getUserSessionData, getTokenSessionDate } from "../utils/session";
 import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
+import Navbar from "./Navbar.js";
 import { getCoordinates } from "../utils/map.js";
 
 let page = document.querySelector("#page");
 
 const VisitListPage = () => {
-  Sidebar(true);
+  const user = getUserSessionData();
+  if (!user || !user.isBoss) {
+    Navbar();
+    RedirectUrl("/");
+    return;
+  }
+
+  Sidebar(true, false);
 
   let list = `
   <div class="containerForm">
+  <h4>List of visits</h4>
 <div class="d-flex justify-content-center h-100 mt-4">
   <div class="card">
-    <div class="card-header">
+    <div class="card-header" id="confirmVisitDesc">
   <div class="col-sm-3" id="list"> </div>
   </div>
   </div>
@@ -33,33 +42,39 @@ const VisitListPage = () => {
   }).then((response) => {
     if (!response.ok) {
       return response.text().then((err) => onError(err));
-    }
-     else return response.json().then((data) => onVisitList(data));
+    } else return response.json().then((data) => onVisitList(data));
   });
 };
 
 const onVisitList = (data) => {
   if (!data) return;
-  showVisitList(data.users,data.visits);
+  showVisitList(data.users, data.visits);
 };
 
-const showVisitList = (users,visits) =>{
-  
+const showVisitList = (users, visits) => {
   let visitList = document.querySelector("#list");
-  let table = `
-  <nav id="nav_visit">
-    <ul class="list-group">`;
+
+  if (!visits) return;
+  if (visits == 0) {
+    page.innerHTML = "<h3> There aren't any visits to confirm </h3>";
+    return;
+  }
+
+  let table = `<nav id="nav_user">
+  <ul class="list-group">`;
+
+  //console.log(visits);
+  //console.log(users);
 
   let name;
   visits.forEach((element) => {
-
     users.forEach((user) => {
-      if(user.id == element.userId) {
-        name=user.username;
+      if (user.id == element.userId) {
+        name = user.username;
       }
     });
 
-    table +=`
+    table += `
     <li id="${element.id}" class="list-group-item" data-toggle="collapse"
     href="#collapse${element.id}" role="button"
     aria-expanded="false" aria-controls="collapse${element.id}">
@@ -108,38 +123,52 @@ const onClick = (e) => {
 };
 
 const onConfirmVisitDescription = (data) => {
-
   let id = getTokenSessionDate();
-    fetch(API_URL + "users/" + data.visit.userId, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": id,
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.text().then((err) => onError(err));
-        }
-        else
-          return response.json().then((obj) => visitDescription(obj.user,data));
-      });
+  fetch(API_URL + "users/" + data.visit.userId, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: id,
+    },
+  }).then((response) => {
+    if (!response.ok) {
+      return response.text().then((err) => onError(err));
+    } else
+      return response.json().then((obj) => visitDescription(obj.user, data));
+  });
 };
 
 const visitDescription = (user,data) => {
   //console.log(data);
   data.visit.requestDate = createTimeStamp(data.visit.requestDate);
-  let info = document.querySelector("#confirmVisitDesc");
+  //let info = document.querySelector("#confirmVisitDesc");
   let description = `
-  <div id="description_user">
-  <p> Username: ${user.username}</p>
-  <p> Lastname: ${user.lastName}</p>
-  <p> Firstname: ${user.firstName}</p>
-  <p> Email: ${user.email}</p>
-  <p> Request Date: ${data.visit.requestDate }</p>
-  <p> Time slot: ${data.visit.timeSlot }</p>
-  <p> Explanatory note: ${data.visit.explanatoryNote }</p>
-    `;
+  <a href="#" class="previous">&laquo; Previous</a>
+  <table id="description_user" class="table table-striped table-bordered" style="width:100%" >
+  <thead>
+            <tr>
+                <th>Username</th>
+                <th>Lastname</th>
+                <th>Firstname</th>
+                <th>Email</th> 
+                <th>Request Date</th>  
+                <th>Time slot</th> 
+                <th>Explanatory note</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>${user.username}</td>
+                <td>${user.lastName}</td>
+                <td>${user.firstName}</td>
+                <td>${user.email}</td>
+                <td>${data.visit.requestDate}</td>
+                <td>${data.visit.timeSlot}</td>
+                <td>${data.visit.explanatoryNote}</td>
+          
+            </tr>
+       </tbody>
+  </table>`;
   let photos = data.photos;
   for (let i = 0; i < photos.length; i++) {
     //console.log(photos[i]);
@@ -189,7 +218,15 @@ const onError = (err) => {
 const createTimeStamp = (dateString) => {
   let Timestamp = new Date(dateString);
   let timeSplit = Timestamp.toLocaleString().split("/");
-  return timeSplit[2].substr(0, 4) + "-" + timeSplit[1] + "-" + timeSplit[0] + " " + Timestamp.toLocaleTimeString();
-}
+  return (
+    timeSplit[2].substr(0, 4) +
+    "-" +
+    timeSplit[1] +
+    "-" +
+    timeSplit[0] +
+    " " +
+    Timestamp.toLocaleTimeString()
+  );
+};
 
 export default VisitListPage;

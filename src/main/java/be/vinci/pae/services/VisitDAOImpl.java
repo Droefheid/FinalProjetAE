@@ -118,17 +118,44 @@ public class VisitDAOImpl implements VisitDAO {
 
 
     List<VisitDTO> list = new ArrayList<VisitDTO>();
-    VisitDTO visit = domaineFactory.getVisitDTO();
 
     try {
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
+        VisitDTO visit = domaineFactory.getVisitDTO();
         fullFillVisitFromResulSet(visit, rs);
         list.add(visit);
       }
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException("error fullFillUsers", e);
+      throw new FatalException("error fullFillVisits", e);
+    }
+
+    return list;
+  }
+
+  @Override
+  public List<VisitDTO> getAllMyVisits(int userId) {
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("SELECT visit_id, request_date, time_slot, date_and_hours_visit,"
+            + " explanatory_note, label_furniture, is_confirmed," + " users, address"
+            + " FROM projet.visits WHERE users = ?");
+
+
+    List<VisitDTO> list = new ArrayList<VisitDTO>();
+
+    try {
+      ps.setInt(1, userId);
+
+      ResultSet rs = ps.executeQuery();
+      while (rs.next()) {
+        VisitDTO visit = domaineFactory.getVisitDTO();
+        visit = fullFillVisitFromResulSet(visit, rs);
+        list.add(visit);
+      }
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("error fullFillMyVisits", e);
     }
 
     return list;
@@ -136,12 +163,15 @@ public class VisitDAOImpl implements VisitDAO {
 
   @Override
   public void updateConfirmed(VisitDTO visit) {
-    PreparedStatement ps = this.dalBackendServices
-        .getPreparedStatement("UPDATE projet.visits SET is_confirmed = ? WHERE visit_id = ?");
+    PreparedStatement ps =
+        this.dalBackendServices.getPreparedStatement("UPDATE projet.visits SET is_confirmed = ? , "
+            + "explanatory_note=? , " + "date_and_hours_visit=? WHERE visit_id = ?");
 
     try {
       ps.setBoolean(1, visit.getIsConfirmed());
-      ps.setInt(2, visit.getId());
+      ps.setString(2, visit.getExplanatoryNote());
+      ps.setTimestamp(3, visit.getDateAndHoursVisit());
+      ps.setInt(4, visit.getId());
       ps.executeUpdate();
     } catch (SQLException e) {
       ((DalServices) dalBackendServices).rollbackTransaction();
@@ -153,19 +183,21 @@ public class VisitDAOImpl implements VisitDAO {
 
   @Override
   public List<VisitDTO> getAllNotConfirmed() {
+    // explanatory note and dateAndHoursVisit should be empty
     PreparedStatement ps = this.dalBackendServices
         .getPreparedStatement("SELECT visit_id, request_date, time_slot, date_and_hours_visit,"
             + " explanatory_note, label_furniture, is_confirmed," + " users, address"
-            + " FROM projet.visits WHERE is_confirmed = ?");
+            + " FROM projet.visits WHERE is_confirmed = ?"
+            + " AND (date_and_hours_visit IS NULL AND explanatory_note IS NULL)");
 
 
     List<VisitDTO> list = new ArrayList<VisitDTO>();
-    VisitDTO visit = domaineFactory.getVisitDTO();
 
     try {
       ps.setBoolean(1, false);
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
+        VisitDTO visit = domaineFactory.getVisitDTO();
         fullFillVisitFromResulSet(visit, rs);
         list.add(visit);
       }
@@ -186,12 +218,13 @@ public class VisitDAOImpl implements VisitDAO {
 
 
     List<VisitDTO> list = new ArrayList<VisitDTO>();
-    VisitDTO visit = domaineFactory.getVisitDTO();
+
 
     try {
       ps.setBoolean(1, true);
       ResultSet rs = ps.executeQuery();
       while (rs.next()) {
+        VisitDTO visit = domaineFactory.getVisitDTO();
         fullFillVisitFromResulSet(visit, rs);
         list.add(visit);
       }
@@ -202,5 +235,20 @@ public class VisitDAOImpl implements VisitDAO {
 
     return list;
   }
+
+  @Override
+  public void delete(int visitId) {
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("DELETE FROM projet.visits WHERE visit_id = ?");
+    try {
+      ps.setInt(1, visitId);
+      ps.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+  }
+
 }
 

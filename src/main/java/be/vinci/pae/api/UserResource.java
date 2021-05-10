@@ -200,9 +200,9 @@ public class UserResource {
   @GET
   @Path("/notConfirmed")
   @AuthorizeBoss
-  public Response allUsersConfirmed() {
+  public Response allUsersNotConfirmed() {
     List<UserDTO> listUsers = new ArrayList<UserDTO>();
-    listUsers = userUcc.getAllNotConfirmed();
+    listUsers = userUcc.getAllConfirmed(false);
 
     return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listUsers);
   }

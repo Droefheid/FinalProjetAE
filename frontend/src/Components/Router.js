@@ -6,6 +6,7 @@ import OptionComponent from "./OptionComponent.js";
 import ErrorPage from "./ErrorPage.js";
 import ModificationFurniturePage from "./ModificationFurniturePage.js";
 import FurniturePage from "./FurniturePage.js";
+import FurnituresPage from "./FurnituresPage.js";
 import ConfirmUserPage from "./ConfirmUserPage.js";
 import AddFurniturePage from "./AddFurniturePage.js";
 import IntroduceVisits from "./IntroduceVisits.js";
@@ -13,6 +14,7 @@ import ConfirmVisits from "./ConfirmVisits.js";
 import UserListPage from "./UserListPage.js";
 import MyFurniturePage from "./MyFurniturePage.js";
 import VisitListPage from "./VisitListPage.js";
+import MyVisitsPage from "./MyVisitsPage.js";
 
 const routes = {
   "/": HomePage,
@@ -21,6 +23,7 @@ const routes = {
   "/logout": LogoutComponent,
   "/introduceOption": OptionComponent,
   "/furniture": FurniturePage,
+  "/furnitures": FurnituresPage,
   "/confirmUser": ConfirmUserPage,
   "/userList": UserListPage,
   "/seeMyFurniture": MyFurniturePage,
@@ -30,6 +33,7 @@ const routes = {
   "/introduceVisits": IntroduceVisits,
   "/visitListPage": VisitListPage ,
   "/confirmVisits": ConfirmVisits,
+  "/seeMyVisits": MyVisitsPage,
 };
 
 let page = document.querySelector("#page");

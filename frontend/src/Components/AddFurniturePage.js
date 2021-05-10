@@ -3,18 +3,14 @@ import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
 import { getUserSessionData, getTokenSessionDate } from "../utils/session";
 import Navbar from "./Navbar.js";
-import { post } from "jquery";
 
 let page = document.querySelector("#page");
 
 const AddFurniturePage = () => {   
-   Sidebar(true);
-
    const user = getUserSessionData();
    if (!user || !user.isBoss) {
-       // re-render the navbar for the authenticated user.
-       Navbar();
-       RedirectUrl("/");
+      Navbar();
+      RedirectUrl("/");
    } else {
        // Fetch pour recup
        fetch(API_URL + "furnitures/infosAdd/", {
@@ -33,6 +29,7 @@ const AddFurniturePage = () => {
    }
 }
 const onCreateAddPage = (data) => { 
+  Sidebar(true, false);
 
 
    let addFurniturePage = `

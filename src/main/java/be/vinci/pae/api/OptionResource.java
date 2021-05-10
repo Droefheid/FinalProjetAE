@@ -62,7 +62,7 @@ public class OptionResource {
       throw new PresentationException("User not found.", Status.BAD_REQUEST);
     }
 
-    FurnitureDTO furnitureDTO = furnitureUCC.findById(json.get("furnitureID").asInt());
+    FurnitureDTO furnitureDTO = this.furnitureUCC.findById(json.get("furnitureID").asInt());
     if (furnitureDTO == null
         || !furnitureDTO.getState().equals(FurnitureDTO.STATES.ON_SALE.getValue())) {
       throw new PresentationException("An option cannot be introduced on this furniture.");
@@ -146,7 +146,7 @@ public class OptionResource {
       throw new PresentationException("User not found.", Status.BAD_REQUEST);
     }
 
-    FurnitureDTO furniture = furnitureUCC.findById(id);
+    FurnitureDTO furniture = this.furnitureUCC.findById(id);
 
     if (!furniture.getState().equals(FurnitureDTO.STATES.UNDER_OPTION.getValue())) {
       throw new PresentationException("There is no option currently on this furniture");
