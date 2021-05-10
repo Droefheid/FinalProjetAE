@@ -74,7 +74,7 @@ public class FurnitureResource {
     }
     int min = json.get("minPrice").asInt();
     int max = json.get("maxPrice").asInt();
-    if ((!json.hasNonNull("maxPrice") || !json.hasNonNull("minPrice")) || min >= max) {
+    if (!json.hasNonNull("maxPrice") || !json.hasNonNull("minPrice") || min >= max) {
       throw new PresentationException(
           "The minimum price has to be smaller then the maximum price.");
     }
