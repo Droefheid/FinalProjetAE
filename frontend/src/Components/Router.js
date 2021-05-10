@@ -14,6 +14,7 @@ import ConfirmVisits from "./ConfirmVisits.js";
 import UserListPage from "./UserListPage.js";
 import MyFurniturePage from "./MyFurniturePage.js";
 import VisitListPage from "./VisitListPage.js";
+import MyVisitsPage from "./MyVisitsPage.js";
 
 const routes = {
   "/": HomePage,
@@ -32,6 +33,7 @@ const routes = {
   "/introduceVisits": IntroduceVisits,
   "/visitListPage": VisitListPage ,
   "/confirmVisits": ConfirmVisits,
+  "/seeMyVisits": MyVisitsPage,
 };
 
 let page = document.querySelector("#page");

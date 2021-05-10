@@ -1,12 +1,20 @@
 import { RedirectUrl } from "./Router.js";
 import { API_URL } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
+import Navbar from "./Navbar.js";
 import { user_me } from "../index.js";
 import { getTokenSessionDate, getUserSessionData } from "../utils/session.js";
 
 let page = document.querySelector("#page");
 
 const MyFurniturePage = async () => {
+  const user = getUserSessionData();
+	if (!user) {
+		Navbar();
+		RedirectUrl(`/`);
+    return;
+  }
+
   Sidebar(true, false);
 
   page.innerHTML = `

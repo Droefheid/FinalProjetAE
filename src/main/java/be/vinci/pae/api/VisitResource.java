@@ -7,7 +7,6 @@ import java.util.List;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeBoss;
 import be.vinci.pae.api.utils.PresentationException;
@@ -143,8 +142,27 @@ public class VisitResource {
     List<VisitDTO> listVisits = new ArrayList<VisitDTO>();
     listVisits = visitUcc.getAll();
 
-    ObjectNode node = jsonMapper.createObjectNode().putPOJO("list", listVisits);
-    return Response.ok(node, MediaType.APPLICATION_JSON).build();
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listVisits);
+  }
+
+  /**
+   * get all my visits.
+   * 
+   * @return list of all visits.
+   */
+  @GET
+  @Path("/myVisits")
+  @Authorize
+  public Response allMyVisits(@Context ContainerRequest request) {
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    if (currentUser == null) {
+      throw new PresentationException("User not found", Status.BAD_REQUEST);
+    }
+
+    List<VisitDTO> listVisits = new ArrayList<VisitDTO>();
+    listVisits = visitUcc.getAllMyVisits(currentUser.getID());
+
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listVisits);
   }
 
   /**

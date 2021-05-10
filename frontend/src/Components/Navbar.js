@@ -28,8 +28,6 @@ const Navbar = () => {
       <div class="navbar navbar-nav ml-auto pt-2">
         <a class="nav-item nav-link" href="#">${user.username}</a>
         <a class="nav-item nav-link" href="#" data-uri="/logout">Logout</a>
-        <a class="btn btn-info" href="#" data-uri="/seeMyFurniture" style="margin:15px;">See my furniture</a>  
-      <a class="btn btn-info" href="#" data-uri="/introduceVisits" style="margin:15px;">Introduce a visit</a>
       </div>
     </div>
   </nav>`;
@@ -50,6 +48,9 @@ const Navbar = () => {
 	  <div class="absolute"><a class="navbar-brand" href="#" data-uri="/">Livi Satcho</a></div>
     <div class="navbar navbar-nav ml-auto mr-auto pt-3" >
       <a class="btn btn-info" href="#" data-uri="/furnitures" style="margin:15px;">See all the furnitures</a>
+      <a class="btn btn-info" href="#" data-uri="/seeMyFurniture" style="margin:15px;">See my furniture</a>  
+      <a class="btn btn-info" href="#" data-uri="/seeMyVisits" style="margin:15px;">See my visits</a>  
+      <a class="btn btn-info" href="#" data-uri="/introduceVisits" style="margin:15px;">Introduce a visit</a>
     </div>
   </nav>`;
 
