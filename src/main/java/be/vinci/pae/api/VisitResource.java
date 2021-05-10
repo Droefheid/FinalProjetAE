@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.glassfish.jersey.server.ContainerRequest;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import be.vinci.pae.api.filters.Authorize;
 import be.vinci.pae.api.filters.AuthorizeBoss;
 import be.vinci.pae.api.utils.PresentationException;
@@ -35,9 +34,6 @@ import jakarta.ws.rs.core.Response.Status;
 @Singleton
 @Path("/visits")
 public class VisitResource {
-
-  private final ObjectMapper jsonMapper = new ObjectMapper();
-
 
   @Inject
   private VisitUCC visitUcc;
