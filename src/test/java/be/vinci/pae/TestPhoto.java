@@ -13,12 +13,9 @@ import be.vinci.pae.api.utils.BusinessException;
 import be.vinci.pae.domaine.DomaineFactory;
 import be.vinci.pae.domaine.photo.PhotoDTO;
 import be.vinci.pae.domaine.photo.PhotoFurnitureDTO;
-import be.vinci.pae.domaine.photo.PhotoFurnitureUCC;
 import be.vinci.pae.domaine.photo.PhotoUCC;
-import be.vinci.pae.domaine.photo.PhotoVisitDTO;
 import be.vinci.pae.services.PhotoDAO;
 import be.vinci.pae.services.PhotoFurnitureDAO;
-import be.vinci.pae.services.PhotoVisitDAO;
 
 public class TestPhoto {
 
@@ -28,9 +25,6 @@ public class TestPhoto {
   private PhotoUCC photoUCC;
   private PhotoFurnitureDAO photoFurnitureDAO;
   private PhotoFurnitureDTO photoFurnitureDTO;
-  private PhotoFurnitureUCC photoFurnitureUCC;
-  private PhotoVisitDAO photoVisitDAO;
-  private PhotoVisitDTO photoVisitDTO;
 
   @BeforeEach
   void initAll() {
@@ -39,7 +33,7 @@ public class TestPhoto {
     this.photoDAO = locator.getService(PhotoDAO.class);
     this.photoUCC = locator.getService(PhotoUCC.class);
     this.photoFurnitureDAO = locator.getService(PhotoFurnitureDAO.class);
-    this.photoVisitDAO = locator.getService(PhotoVisitDAO.class);
+
 
     photoDTO = domaineFactory.getPhotoDTO();
     photoFurnitureDTO = domaineFactory.getPhotoFurnitureDTO();
@@ -101,7 +95,7 @@ public class TestPhoto {
   }
 
   /**
-   * Success test :
+   * Success test : Photo is well added and linked to photoFurniture.
    */
   @Test
   public void testAddV1() {
@@ -133,7 +127,7 @@ public class TestPhoto {
   }
 
   /**
-   * Success Test :
+   * Success Test : All photos are well added and linked to photoFurniture.
    */
   @Test
   public void testAddMultiplePhotosForFurnitureV1() {
@@ -152,7 +146,7 @@ public class TestPhoto {
   }
 
   /**
-   * Fail Test :
+   * Fail Test : Photo_Furniture doesn't add.
    */
   @Test
   public void testAddMultiplePhotosForFurnitureV2() {
