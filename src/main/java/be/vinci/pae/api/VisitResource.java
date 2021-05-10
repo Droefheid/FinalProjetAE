@@ -79,12 +79,11 @@ public class VisitResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Authorize
   public Response introduceVisit(@Context ContainerRequest request, JsonNode json) {
-    if (!json.hasNonNull("request_date") || json.get("request_date").asText().equals("")) {
-      throw new PresentationException("Request date is needed ", Status.BAD_REQUEST);
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    if (currentUser == null) {
+      throw new PresentationException("You dont have the permission.", Status.BAD_REQUEST);
     }
-    if (!json.hasNonNull("explanatory_note") || json.get("explanatory_note").asText().equals("")) {
-      throw new PresentationException("explanatory note is needed", Status.BAD_REQUEST);
-    }
+
     checkJsonAddress(json);
 
     if (!json.hasNonNull("time_slot") || json.get("time_slot").asText().equals("")) {
@@ -94,25 +93,13 @@ public class VisitResource {
 
     LocalDateTime dateNow = LocalDateTime.now();
     visit.setRequestDate(Timestamp.valueOf(dateNow));
-
-
     visit.setTimeSlot(json.get("time_slot").asText());
     visit.setLabelFurniture(json.get("label_furniture").asText());
 
-    UserDTO currentUser = (UserDTO) request.getProperty("user");
-    if (currentUser == null) {
-      throw new PresentationException("You dont have the permission.", Status.BAD_REQUEST);
-    }
-
     AddressDTO addressDTO = domaineFactory.getAdressDTO();
-
-    addressDTO.setBuildingNumber(json.get("building_number").asText());
-    addressDTO.setCommune(json.get("commune").asText());
-    addressDTO.setPostCode(json.get("postcode").asText());
-    addressDTO.setStreet(json.get("street").asText());
-    addressDTO.setUnitNumber(json.get("unit_number").asText());
-    addressDTO.setCountry(json.get("country").asText());
-
+    addressDTO = createFullFillAddress(addressDTO, -1, json.get("building_number").asText(),
+        json.get("commune").asText(), json.get("postcode").asText(), json.get("street").asText(),
+        json.get("unit_number").asText(), json.get("country").asText());
 
     if (currentUser.isBoss()) {
       int id = json.get("user_id").asInt();
@@ -299,6 +286,34 @@ public class VisitResource {
     if (!json.hasNonNull("unit_number") || json.get("unit_number").asText().equals("")) {
       throw new PresentationException("unit number is needed ", Status.BAD_REQUEST);
     }
+  }
+
+  /**
+   * create a full filled address.
+   * 
+   * @param addressDTO the address to fill.
+   * @param id of the address.
+   * @param buildingNumber of the address.
+   * @param commune of the address.
+   * @param postcode of the address.
+   * @param street of the address.
+   * @param unitNumber of the address.
+   * @param country of the address.
+   * @return the address full filled.
+   */
+  public static AddressDTO createFullFillAddress(AddressDTO addressDTO, int id,
+      String buildingNumber, String commune, String postcode, String street, String unitNumber,
+      String country) {
+
+    addressDTO.setID(id);
+    addressDTO.setBuildingNumber(buildingNumber);
+    addressDTO.setCommune(commune);
+    addressDTO.setPostCode(postcode);
+    addressDTO.setStreet(street);
+    addressDTO.setUnitNumber(unitNumber);
+    addressDTO.setCountry(country);
+
+    return addressDTO;
   }
 
 }

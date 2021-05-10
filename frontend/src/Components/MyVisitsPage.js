@@ -40,7 +40,7 @@ const onVisitList = (data) => {
 
     let visitList = `<div id="messageBoardForm"></div>
     <div id="list" class="table-responsive mb-5">
-        <table id="description_user" class="table table-striped table-bordered" style="width:790px" >
+        <table id="description_user" class="table table-striped table-bordered" style="width:790px; height: 300px;" >
             <thead>
             <tr>
                 <th>labelFurniture</th> 

@@ -115,9 +115,11 @@ const AfficherSidebar = (needed, secondNeeded,data) => {
 
   // Create listener.
   if(user && user.isBoss){
-    document.getElementById("rechercher").addEventListener("click", function(e){
-      e.preventDefault();
-      getListMeuble(data.types)});
+    if(secondNeeded){
+      document.getElementById("rechercher").addEventListener("click", function(e){
+        e.preventDefault();
+        getListMeuble(data.types)});
+    }
     document.getElementById("/confirmUser").addEventListener("click", onTest);
     document.getElementById("/userList").addEventListener("click", onTest);
     document.getElementById("/addFurniture").addEventListener("click", onTest);
