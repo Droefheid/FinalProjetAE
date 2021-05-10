@@ -250,8 +250,12 @@ public class FurnitureDAOImpl implements FurnitureDAO {
 
   @Override
   public List<FurnitureDTO> searchFurniture(String search, int typeID, int minPrice, int maxPrice) {
-    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
-        "SELECT * FROM projet.furnitures" + " WHERE lower(furniture_title) LIKE lower(?) "
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("SELECT furniture_id, type, buyer, furniture_title, "
+            + "purchase_price, furniture_date_collection ,selling_price,"
+            + "special_sale_price,delivery,state_furniture,deposit_date,"
+            + "date_of_sale, sale_withdrawal_date, seller, pick_up_date " + "FROM projet.furnitures"
+            + " WHERE lower(furniture_title) LIKE lower(?) "
             + "AND type=? AND selling_price >=? AND selling_price <=? ");
 
     List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
