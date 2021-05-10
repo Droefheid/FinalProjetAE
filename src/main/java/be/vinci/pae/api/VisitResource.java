@@ -79,12 +79,6 @@ public class VisitResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Authorize
   public Response introduceVisit(@Context ContainerRequest request, JsonNode json) {
-    if (!json.hasNonNull("request_date") || json.get("request_date").asText().equals("")) {
-      throw new PresentationException("Request date is needed ", Status.BAD_REQUEST);
-    }
-    if (!json.hasNonNull("explanatory_note") || json.get("explanatory_note").asText().equals("")) {
-      throw new PresentationException("explanatory note is needed", Status.BAD_REQUEST);
-    }
     checkJsonAddress(json);
 
     if (!json.hasNonNull("time_slot") || json.get("time_slot").asText().equals("")) {
