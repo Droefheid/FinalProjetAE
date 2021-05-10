@@ -20,7 +20,7 @@ const MyFurniturePage = async () => {
   page.innerHTML = `
     <div id="messageBoardForm"></div>
     <div id="list"></div>
-    <div id="furnitureDesc"></div> 
+    <div id="furnitureDesc" class="mb-5"></div> 
     `;
   let id = getTokenSessionDate();
 

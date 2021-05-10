@@ -79,9 +79,10 @@ const onFurnitureList = (data) => {
 
   Sidebar(true, true);
   page.innerHTML = homePage;
-
-  let imageButton = document.querySelector(".imageButton");
-  imageButton.addEventListener("click", onImageSelect);
+  if(photos.length>0){
+    let imageButton = document.querySelector(".imageButton");
+    imageButton.addEventListener("click", onImageSelect);
+  }
 };
 
 const onImageSelect = (e) => {

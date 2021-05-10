@@ -18,6 +18,7 @@ const Sidebar = (needed,secondNeeded) => {
     else
       return response.json().then((data) => AfficherSidebar(needed,secondNeeded,data));
   });
+
 } 
 
 const AfficherSidebar = (needed, secondNeeded,data) => {
@@ -59,10 +60,18 @@ const AfficherSidebar = (needed, secondNeeded,data) => {
       <form class="mb-5 pb-4">
       <input type="search" class="form-control rounded" placeholder="Search" id="search" />
       `;
+      let isAlreadyOneActive = false;
+
       data.types.forEach(element => {
         sidebar+=`
         <div class="form-check">
-            <input type="checkbox" id="${element.typeId}" class="radio"> 
+            <input type="radio" name="choice" id="${element.typeId}" class="radio" `;
+            if(!isAlreadyOneActive){
+              isAlreadyOneActive = true;
+              sidebar+=`checked`;
+            } 
+
+            sidebar+=`> 
             <label for="type" class="form-check-label">
             ${element.name}
             </label>
@@ -71,9 +80,9 @@ const AfficherSidebar = (needed, secondNeeded,data) => {
      
      sidebar +=`
      <label for="min">Min Price</label>
-     <input type="number" id="minPrice" name="min">
+     <input type="number" id="minPrice" name="min" value="0">
      <label for="quantity">Max Price</label>
-     <input type="number" id="maxPrice" name="max">
+     <input type="number" id="maxPrice" name="max" value="1000">
     `;
 
     sidebar +=`
@@ -141,6 +150,7 @@ const getListMeuble = (types) =>{
       break;
     }
   };
+
   let specifications ={
     "minPrice" : min,
     "maxPrice" : max,

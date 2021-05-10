@@ -68,6 +68,7 @@ public class FurnitureResource {
     if (!json.hasNonNull("searchBar")) {
       throw new PresentationException("searchbar is null");
     }
+    System.out.println(json.get("type").asInt());
 
     if (!json.hasNonNull("type") || json.get("type").asInt() == 0) {
       throw new PresentationException("type not selected");
