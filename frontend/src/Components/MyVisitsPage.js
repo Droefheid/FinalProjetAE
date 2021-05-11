@@ -35,11 +35,10 @@ const MyVisitsPage = () => {
 };
 
 const getAddress = (oldData) => {
-    let id = getTokenSessionDate();
     let list = {
         "visits": oldData.list,
     }
-    console.log("Before fetch", list);
+    let id = getTokenSessionDate();
     fetch(API_URL + "users/getVisitsAddress", {
         method: "POST",
         body: JSON.stringify(list),
@@ -58,8 +57,6 @@ const getAddress = (oldData) => {
 };
 
 const onVisitList = (data, addressList) => {
-    console.log(data, addressList);
-
 
     let visitList = `<div id="messageBoardForm"></div>
     <div id="list" class="table-responsive mb-5">

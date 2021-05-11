@@ -268,7 +268,6 @@ public class UserResource {
     List<AddressDTO> address = new ArrayList<>();
 
     for (JsonNode jsonNode : json.get("visits").findValues("addressId")) {
-      System.out.println("ID " + jsonNode.asInt());
       address.add(userUcc.getVisitAddress(jsonNode.asInt(), currentUser.getID()));
     }
 
