@@ -13,7 +13,7 @@ import 'bootstrap';
 
 
 const HEADER_TITLE = "LiVi Satcho Antiquaire";
-const FOOTER_TEXT = `Contact : livisatcho@hotmail.com`;
+const FOOTER_TEXT = `Have a great day !`;
 
 let user_me = { itself: null, furnitureId: null };
 
