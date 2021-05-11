@@ -249,8 +249,7 @@ public class UserDAOImpl implements UserDAO {
       ps.setInt(1, id);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          address = fullFillAddress(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
-              rs.getString(5), rs.getString(6), rs.getString(7));
+          address = fullFillAddressFromResultSet(rs);
         }
       }
     } catch (SQLException e) {
@@ -275,8 +274,7 @@ public class UserDAOImpl implements UserDAO {
       ps.setInt(2, userId);
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          address = fullFillAddress(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
-              rs.getString(5), rs.getString(6), rs.getString(7));
+          address = fullFillAddressFromResultSet(rs);
         }
       }
     } catch (SQLException e) {
@@ -375,4 +373,13 @@ public class UserDAOImpl implements UserDAO {
     return address;
   }
 
+  private AddressDTO fullFillAddressFromResultSet(ResultSet rs) {
+    try {
+      return fullFillAddress(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
+          rs.getString(5), rs.getString(6), rs.getString(7));
+    } catch (SQLException e) {
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException("error fullFillAddress", e);
+    }
+  }
 }
