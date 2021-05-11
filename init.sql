@@ -499,7 +499,7 @@ INSERT INTO projet.photos_furniture(
 
 INSERT INTO projet.photos_furniture(
 	is_visible, is_favourite_photo, photo_id, furniture)
-	VALUES (FALSE, FALSE, 3, 2);
+	VALUES (TRUE, TRUE, 3, 2);
 
 INSERT INTO projet.photos_furniture(
 	is_visible, is_favourite_photo, photo_id, furniture)
@@ -519,11 +519,11 @@ INSERT INTO projet.photos_furniture(
 
 INSERT INTO projet.photos_furniture(
 	is_visible, is_favourite_photo, photo_id, furniture)
-	VALUES (FALSE, FALSE, 10, 6);
+	VALUES (TRUE, FALSE, 10, 6);
 
 INSERT INTO projet.photos_furniture(
 	is_visible, is_favourite_photo, photo_id, furniture)
-	VALUES (FALSE, FALSE, 11, 6);
+	VALUES (TRUE, TRUE, 11, 6);
 
 INSERT INTO projet.photos_furniture(
 	is_visible, is_favourite_photo, photo_id, furniture)
@@ -531,7 +531,7 @@ INSERT INTO projet.photos_furniture(
 
 INSERT INTO projet.photos_furniture(
 	is_visible, is_favourite_photo, photo_id, furniture)
-	VALUES (FALSE, FALSE, 13, 7);
+	VALUES (TRUE, TRUE, 13, 7);
 
 INSERT INTO projet.photos_furniture(
 	is_visible, is_favourite_photo, photo_id, furniture)
@@ -539,7 +539,7 @@ INSERT INTO projet.photos_furniture(
 
 INSERT INTO projet.photos_furniture(
 	is_visible, is_favourite_photo, photo_id, furniture)
-	VALUES (FALSE, FALSE, 15, 8);
+	VALUES (TRUE, TRUE, 15, 8);
 
 INSERT INTO projet.photos_furniture(
 	is_visible, is_favourite_photo, photo_id, furniture)
@@ -547,4 +547,4 @@ INSERT INTO projet.photos_furniture(
 
 INSERT INTO projet.photos_furniture(
 	is_visible, is_favourite_photo, photo_id, furniture)
-	VALUES (FALSE, FALSE, 17, 9);
+	VALUES (TRUE, TRUE, 17, 9);
