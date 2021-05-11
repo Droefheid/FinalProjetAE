@@ -1,8 +1,9 @@
 package be.vinci.pae;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.util.ArrayList;
+import java.util.List;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,14 +37,6 @@ public class TestUser {
 
     userDTO = domaineFactory.getUserDTO();
     addressDTO = domaineFactory.getAdressDTO();
-  }
-
-  /**
-   * Checks to see if userUCC is null or not.
-   */
-  @Test
-  public void demoTest() {
-    assertNotNull(this.userUCC);
   }
 
   /**
@@ -90,7 +83,6 @@ public class TestUser {
   public void testRegisterV1() {
     Mockito.when(userDAO.getAddressByInfo(addressDTO.getStreet(), addressDTO.getBuildingNumber(),
         addressDTO.getCommune(), addressDTO.getCountry())).thenReturn(1);
-    Mockito.when(userDAO.registerAddress(addressDTO)).thenReturn(1);
     Mockito.when(userDAO.registerUser(userDTO)).thenReturn(userDTO);
 
     assertEquals(userDTO, userUCC.register(userDTO, addressDTO));
@@ -109,5 +101,62 @@ public class TestUser {
     assertThrows(BusinessException.class, () -> userUCC.register(userDTO, addressDTO));
 
   }
+
+  /**
+   * Success test : register method of UserUcc.
+   */
+  @Test
+  public void testRegisterV3() {
+    Mockito.when(userDAO.getAddressByInfo(addressDTO.getStreet(), addressDTO.getBuildingNumber(),
+        addressDTO.getCommune(), addressDTO.getCountry())).thenReturn(-1);
+    Mockito.when(userDAO.registerAddress(addressDTO)).thenReturn(1);
+    Mockito.when(userDAO.registerUser(userDTO)).thenReturn(userDTO);
+
+    assertEquals(userDTO, userUCC.register(userDTO, addressDTO));
+
+  }
+
+  /**
+   * Success test : getUser return an existing User.
+   */
+  @Test
+  public void testGetUserV1() {
+    int id = userDTO.getID();
+    Mockito.when(userDAO.findById(id)).thenReturn(userDTO);
+    assertEquals(userDTO, userUCC.getUser(id));
+  }
+
+  /**
+   * Fail test : getUser return null because the user is not found.
+   */
+  @Test
+  public void testGetUserV2() {
+    int id = -1;
+    Mockito.when(userDAO.findById(id)).thenReturn(null);
+    assertThrows(BusinessException.class, () -> userUCC.getUser(id));
+  }
+
+  /**
+   * Success test : return a list with all users.
+   */
+  @Test
+  public void testGetAllV1() {
+    List<UserDTO> list = new ArrayList<UserDTO>();
+    Mockito.when(userDAO.getAll()).thenReturn(list);
+    assertEquals(list, userUCC.getAll());
+  }
+
+  /**
+   * Success test : get the address with his id.
+   */
+  @Test
+  public void testGetAddressByIdV1() {
+    int id = addressDTO.getID();
+    Mockito.when(userDAO.getAddressById(id)).thenReturn(addressDTO);
+    assertEquals(addressDTO, userUCC.getAddressById(id));
+
+  }
+
+
 
 }

@@ -18,6 +18,7 @@ const Sidebar = (needed,secondNeeded) => {
     else
       return response.json().then((data) => AfficherSidebar(needed,secondNeeded,data));
   });
+
 } 
 
 const AfficherSidebar = (needed, secondNeeded,data) => {
@@ -143,6 +144,7 @@ const getListMeuble = (types) =>{
       break;
     }
   };
+
   let specifications ={
     "minPrice" : min,
     "maxPrice" : max,

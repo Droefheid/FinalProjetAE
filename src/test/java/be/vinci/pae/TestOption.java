@@ -15,9 +15,7 @@ import be.vinci.pae.domaine.furniture.FurnitureDTO;
 import be.vinci.pae.domaine.option.OptionDTO;
 import be.vinci.pae.domaine.option.OptionUCC;
 import be.vinci.pae.domaine.user.UserDTO;
-import be.vinci.pae.services.FurnitureDAO;
 import be.vinci.pae.services.OptionDAO;
-import be.vinci.pae.services.UserDAO;
 
 public class TestOption {
 
@@ -26,9 +24,8 @@ public class TestOption {
   private OptionDTO optionDTO;
   private OptionDAO optionDAO;
   private UserDTO userDTO;
-  private UserDAO userDAO;
   private FurnitureDTO furnitureDTO;
-  private FurnitureDAO furnitureDAO;
+
 
   @BeforeEach
   void initAll() {
@@ -36,8 +33,6 @@ public class TestOption {
     this.domaineFactory = locator.getService(DomaineFactory.class);
     this.optionUCC = locator.getService(OptionUCC.class);
     this.optionDAO = locator.getService(OptionDAO.class);
-    this.userDAO = locator.getService(UserDAO.class);
-    this.furnitureDAO = locator.getService(FurnitureDAO.class);
 
     optionDTO = domaineFactory.getOptionDTO();
     userDTO = domaineFactory.getUserDTO();
@@ -51,11 +46,10 @@ public class TestOption {
   public void testGetOptionV1() {
     Mockito.when(optionDAO.findOptionByID(optionDTO.getId())).thenReturn(optionDTO);
     assertEquals(optionDTO, optionUCC.getOption(optionDTO.getId()));
-
   }
 
   /**
-   * Failed test : don't get the option by id.
+   * Failed test : Option doesn't exist.
    */
   @Test
   public void testGetOptionV2() {
@@ -70,11 +64,12 @@ public class TestOption {
   public void testFindOptionV1() {
     LocalDateTime date = LocalDateTime.now();
     optionDTO.setBeginningOptionDate(Timestamp.valueOf(date));
+    int furnitureID = furnitureDTO.getFurnitureId();
+    int userID = userDTO.getID();
 
-    Mockito.when(optionDAO.findOptionByFurnitureIdANDCustomerId(furnitureDTO.getFurnitureId(),
-        userDTO.getID())).thenReturn(optionDTO);
-    assertEquals(optionDTO, optionUCC.findOption(furnitureDTO.getFurnitureId(), userDTO.getID()));
-
+    Mockito.when(optionDAO.findOptionByFurnitureIdANDCustomerId(furnitureID, userID))
+        .thenReturn(optionDTO);
+    assertEquals(optionDTO, optionUCC.findOption(furnitureID, userID));
   }
 
   /**
@@ -83,11 +78,11 @@ public class TestOption {
   @Test
   public void testFindOptionV2() {
     optionDTO.setBeginningOptionDate(null);
-    Mockito.when(optionDAO.findOptionByFurnitureIdANDCustomerId(furnitureDTO.getFurnitureId(),
-        userDTO.getID())).thenReturn(optionDTO);
-    assertThrows(BusinessException.class,
-        () -> optionUCC.findOption(furnitureDTO.getFurnitureId(), userDTO.getID()));
-
+    int furnitureID = furnitureDTO.getFurnitureId();
+    int userID = userDTO.getID();
+    Mockito.when(optionDAO.findOptionByFurnitureIdANDCustomerId(furnitureID, userID))
+        .thenReturn(optionDTO);
+    assertThrows(BusinessException.class, () -> optionUCC.findOption(furnitureID, userID));
   }
 
 

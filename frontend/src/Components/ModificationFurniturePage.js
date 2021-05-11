@@ -179,11 +179,9 @@ const onPageCreate = (data) => {
                 </div>
                 <br>
                 <input type="file" id="files" name="files" multiple`;
-                if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
                 modifPage += `>
                 <p class="text-muted">* Veuillez selectionner toutes les photos en une seule fois.</p>
                 <div id="showImg"></div>`;
-                if(furniture.state != "V" && furniture.state != "RE") 
                     modifPage += `<button type="submit" name="submitPhoto" class="btn btn-primary mb-2"><i class="fas fa-save"></i></button>`;
                 modifPage += `<div class="card-columns">`;
                 for (let i = 0; i < photos.length; i++) {
@@ -191,7 +189,7 @@ const onPageCreate = (data) => {
                     modifPage += `<div class="card" style="width: 90px">
                         <input id="photoId" value="${photos[i].id}" hidden>
                         <img class="card-img-top max_width" src="` + photos[i].picture + `" alt="` + photos[i].name +`" />`;
-                    if(furniture.state != "V" && furniture.state != "RE"){
+                  
                         modifPage += `<div class="card-body">
                                 <button id="${photos[i].id}" type="submit" name="delettePhoto" class="btn btn-danger">
                                     <i class="material-icons">delete</i>
@@ -208,7 +206,7 @@ const onPageCreate = (data) => {
                                 modifPage += `"></i>
                                 </button>
                             </div>`;
-                    }
+                    
                     modifPage += `</div>`;
                 };
                 modifPage += `</div>

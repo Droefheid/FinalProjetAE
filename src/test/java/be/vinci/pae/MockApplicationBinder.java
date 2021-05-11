@@ -25,6 +25,7 @@ import be.vinci.pae.services.FurnitureDAO;
 import be.vinci.pae.services.OptionDAO;
 import be.vinci.pae.services.PhotoDAO;
 import be.vinci.pae.services.PhotoFurnitureDAO;
+import be.vinci.pae.services.PhotoVisitDAO;
 import be.vinci.pae.services.TypeDAO;
 import be.vinci.pae.services.UserDAO;
 import be.vinci.pae.services.VisitDAO;
@@ -42,6 +43,7 @@ public class MockApplicationBinder extends AbstractBinder {
   private PhotoDAO photoDAO = Mockito.mock(PhotoDAO.class);
   private PhotoFurnitureDAO photoFurnitureDAO = Mockito.mock(PhotoFurnitureDAO.class);
   private VisitDAO visitDAO = Mockito.mock(VisitDAO.class);
+  private PhotoVisitDAO photoVisitDAO = Mockito.mock(PhotoVisitDAO.class);
 
 
 
@@ -55,6 +57,7 @@ public class MockApplicationBinder extends AbstractBinder {
     bind(photoDAO).to(PhotoDAO.class);
     bind(photoFurnitureDAO).to(PhotoFurnitureDAO.class);
     bind(visitDAO).to(VisitDAO.class);
+    bind(photoVisitDAO).to(PhotoVisitDAO.class);
     bind(dalServices).to(DalServices.class);
     bind(UserUCCImpl.class).to(UserUCC.class).in(Singleton.class);
     bind(FurnitureUCCImpl.class).to(FurnitureUCC.class).in(Singleton.class);
