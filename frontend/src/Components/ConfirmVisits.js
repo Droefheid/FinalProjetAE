@@ -18,6 +18,7 @@ const ConfirmVisits = () => {
 
   let list = `
   <div class="containerForm" id="confirmVisitDesc">
+  <h4>Confirm visits</h4>
 <div class="d-flex justify-content-center h-100 mt-4">
   <div class="card">
     <div class="card-header" >
@@ -199,7 +200,7 @@ const onConfirmVisit = (e) => {
   <input type="hidden" id="id_user" value="${userID}">
   <button id="button_confirmed" class="btn btn-success" >Submit</button>
   `;
-  console.log(visitID);
+
   info.innerHTML = description;
   let confirmed = document.getElementById("button_confirmed");
   confirmed.addEventListener("click", onConfirm);
@@ -325,7 +326,7 @@ const onConfirmDeny = () => {
 };
 
 const onConfirmedDenyVisit = () => {
-  alert("Visit has not been confirmed");
+  alert("Visit has been denied");
   RedirectUrl("/confirmVisits");
 };
 

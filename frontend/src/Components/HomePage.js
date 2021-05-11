@@ -45,8 +45,10 @@ const onFurnitureList = (data) => {
     <div class="carousel-inner">`;
     //console.log(photos);
     isAnActiveAlready = false;
+    let nbrPhoto = 0;
     for (let i = 0; i < photos.length; i++) {
       if(photos[i] && photos[i].picture.startsWith("data")){
+        nbrPhoto++;
         homePage += `<div class="carousel-item`;
         if(!isAnActiveAlready) {
           homePage += ` active`;
@@ -79,7 +81,7 @@ const onFurnitureList = (data) => {
 
   Sidebar(true, true);
   page.innerHTML = homePage;
-  if(photos.length>0){
+  if(photos.length > 0 && nbrPhoto > 0){
     let imageButton = document.querySelector(".imageButton");
     imageButton.addEventListener("click", onImageSelect);
   }

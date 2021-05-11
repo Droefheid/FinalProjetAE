@@ -41,7 +41,6 @@ const fetchTypes = (oldData) => {
 }
 
 const onFurnitureDescription = (data, types) => {
-    console.log(data, types);
     let furniture = data.furniture;
     let photos = data.photos;
 

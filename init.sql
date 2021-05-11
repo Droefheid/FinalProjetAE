@@ -158,7 +158,7 @@ INSERT INTO projet.users(
 
 INSERT INTO projet.addresses(
 	address_id, street, building_number, postcode, commune, country, unit_number)
-	VALUES (DEFAULT, 'Lammerskreuzstraße ** ', '6', '52159', 'Roetgen', 'Allemagne', '0');
+	VALUES (DEFAULT, 'Lammerskreuzstraße', '6', '52159', 'Roetgen', 'Allemagne', '0');
 
 INSERT INTO projet.users(
 	user_id, last_name, first_name, username, password, address, email, is_boss, is_antique_dealer, is_confirmed, registration_date)
@@ -169,7 +169,7 @@ INSERT INTO projet.users(
 
 INSERT INTO projet.users(
 	user_id, last_name, first_name, username, password, address, email, is_boss, is_antique_dealer, is_confirmed, registration_date)
-	VALUES (DEFAULT, 'Ile', 'Theophile', 'theo', '$2a$10$4JHq0Pqj0S1MIBQ4U.2B.e3we47d2smcGDxDn.9FMB99Sqbph4fye', 4, 'theo.phile@proximus.be', FALSE, TRUE, TRUE, '2021-03-30 00:00:01');
+	VALUES (DEFAULT, 'Ile', 'Theophile', 'Theo', '$2a$10$4JHq0Pqj0S1MIBQ4U.2B.e3we47d2smcGDxDn.9FMB99Sqbph4fye', 4, 'theo.phile@proximus.be', FALSE, TRUE, TRUE, '2021-03-30 00:00:01');
 
 
 ----------USERS CHARLINE---------
@@ -192,7 +192,6 @@ INSERT INTO projet.addresses(
 	address_id, street, building_number, postcode, commune, country, unit_number)
 	VALUES (DEFAULT, 'Rue Victor Bouillenne', '9bte', '4800', 'Verviers', 'Belgique', '4C');
 
-
 INSERT INTO projet.visits(
 	visit_id, request_date, time_slot, date_and_hours_visit, explanatory_note, label_furniture, is_confirmed, users, address)
 	VALUES (DEFAULT, '2021-03-24 00:00:01', 'lundi de 18h à 22h', '2021-03-29 20:00:00', NULL, 'Bahut et Bureau', TRUE, 4, 4);
@@ -200,7 +199,6 @@ INSERT INTO projet.visits(
 INSERT INTO projet.visits(
 	visit_id, request_date, time_slot, date_and_hours_visit, explanatory_note, label_furniture, is_confirmed, users, address)
 	VALUES (DEFAULT, '2021-03-25 00:00:01', 'lundi de 18h à 22h', NULL, 'Meuble trop récent', 'Table', FALSE, 4, 4);
-
 
 INSERT INTO projet.visits(
 	visit_id, request_date, time_slot, date_and_hours_visit, explanatory_note, label_furniture, is_confirmed, users, address)
@@ -303,9 +301,9 @@ INSERT INTO projet.photos_visits(
 	visit, photo)
 	VALUES (1, 2);
 
-INSERT INTO projet.photos_visits(
-	visit, photo)
-	VALUES (1, 3);
+---INSERT INTO projet.photos_visits(---
+	---visit, photo)---
+	---VALUES (1, 3);---
 
 INSERT INTO projet.photos_visits(
 	visit, photo)
@@ -331,37 +329,37 @@ INSERT INTO projet.photos_visits(
 	visit, photo)
 	VALUES (5, 9);
 
-INSERT INTO projet.photos_visits(
-	visit, photo)
-	VALUES (5, 10);
+---INSERT INTO projet.photos_visits(---
+	---visit, photo)---
+	---VALUES (5, 10);---
 
-INSERT INTO projet.photos_visits(
-	visit, photo)
-	VALUES (5, 11);
+---INSERT INTO projet.photos_visits(---
+	---visit, photo)---
+	---VALUES (5, 11);---
 
 INSERT INTO projet.photos_visits(
 	visit, photo)
 	VALUES (5, 12);
 
-INSERT INTO projet.photos_visits(
-	visit, photo)
-	VALUES (5, 13);
+---INSERT INTO projet.photos_visits(---
+	---visit, photo)---
+	---VALUES (5, 13);---
 
 INSERT INTO projet.photos_visits(
 	visit, photo)
 	VALUES (5, 14);
 
-INSERT INTO projet.photos_visits(
-	visit, photo)
-	VALUES (5, 15);
+---INSERT INTO projet.photos_visits(---
+	---visit, photo)---
+	---VALUES (5, 15);---
 
 INSERT INTO projet.photos_visits(
 	visit, photo)
 	VALUES (5, 16);
 
-INSERT INTO projet.photos_visits(
-	visit, photo)
-	VALUES (5, 17);
+---INSERT INTO projet.photos_visits(---
+	---visit, photo)---
+	---VALUES (5, 17);---
 
 
 ------------------
@@ -453,7 +451,6 @@ INSERT INTO projet.furnitures(
 	furniture_id, furniture_title, purchase_price, furniture_date_collection, selling_price, special_sale_price, state_furniture, deposit_date, date_of_sale, sale_withdrawal_date, delivery, type, buyer, seller, pick_up_date)
 	VALUES (DEFAULT, 'Bahut profond', 200, NULL, 0, 0, 'M', '2021-03-30 00:00:01', NULL, NULL, NULL, 2, NULL, 4, '2021-03-30 00:00:01');
 
-
 INSERT INTO projet.furnitures(
 	furniture_id, furniture_title, purchase_price, furniture_date_collection, selling_price, special_sale_price, state_furniture, deposit_date, date_of_sale, sale_withdrawal_date, delivery, type, buyer, seller, pick_up_date)
 	VALUES (DEFAULT, 'Large Bureau', 159, NULL, 299, 0, 'EV', '2021-03-30 00:00:01', NULL, NULL, NULL, 6, NULL, 4, '2021-03-30 00:00:01');
@@ -464,11 +461,11 @@ INSERT INTO projet.furnitures(
 
 INSERT INTO projet.furnitures(
 	furniture_id, furniture_title, purchase_price, furniture_date_collection, selling_price, special_sale_price, state_furniture, deposit_date, date_of_sale, sale_withdrawal_date, delivery, type, buyer, seller, pick_up_date)
-	VALUES (DEFAULT, 'Sécretaire en acajou', 90, NULL, 0, 0, 'M', '2021-03-29 00:00:01', NULL, NULL, NULL, 20, NULL, 5, '2021-03-30 00:00:01');
+	VALUES (DEFAULT, 'Sécretaire en acajou marqueterie', 90, NULL, 0, 0, 'M', '2021-03-29 00:00:01', NULL, NULL, NULL, 20, NULL, 5, '2021-03-30 00:00:01');
 
 INSERT INTO projet.furnitures(
 	furniture_id, furniture_title, purchase_price, furniture_date_collection, selling_price, special_sale_price, state_furniture, deposit_date, date_of_sale, sale_withdrawal_date, delivery, type, buyer, seller, pick_up_date)
-	VALUES (DEFAULT, 'Bureau en bois ciré', 220, NULL, 0, 0, 'ER', '2021-03-27 00:00:01', NULL, NULL, NULL, 6, NULL, 3, '2021-03-27 00:00:01');
+	VALUES (DEFAULT, 'Bureau en bois ciré', 220, NULL, 0, 0, 'ER', NULL, NULL, NULL, NULL, 6, NULL, 3, '2021-03-27 00:00:01');
 
 INSERT INTO projet.furnitures(
 	furniture_id, furniture_title, purchase_price, furniture_date_collection, selling_price, special_sale_price, state_furniture, deposit_date, date_of_sale, sale_withdrawal_date, delivery, type, buyer, seller, pick_up_date)
@@ -486,3 +483,68 @@ INSERT INTO projet.furnitures(
 	furniture_id, furniture_title, purchase_price, furniture_date_collection, selling_price, special_sale_price, state_furniture, deposit_date, date_of_sale, sale_withdrawal_date, delivery, type, buyer, seller, pick_up_date)
 	VALUES (DEFAULT, 'Coiffeuse marqueterie ', 145, NULL, 199, 0, 'EV', '2021-03-27 00:00:01', NULL, NULL, NULL, 10, NULL, 3, '2021-03-27 00:00:01');
 
+
+----------------------------
+---INSERT PHOTO-FURNITURE---
+----------------------------
+----------------------------
+
+INSERT INTO projet.photos_furniture(
+	is_visible, is_favourite_photo, photo_id, furniture)
+	VALUES (FALSE, FALSE, 1, 1);
+
+INSERT INTO projet.photos_furniture(
+	is_visible, is_favourite_photo, photo_id, furniture)
+	VALUES (FALSE, FALSE, 2, 2);
+
+INSERT INTO projet.photos_furniture(
+	is_visible, is_favourite_photo, photo_id, furniture)
+	VALUES (TRUE, TRUE, 3, 2);
+
+INSERT INTO projet.photos_furniture(
+	is_visible, is_favourite_photo, photo_id, furniture)
+	VALUES (FALSE, FALSE, 5, 3);
+
+INSERT INTO projet.photos_furniture(
+	is_visible, is_favourite_photo, photo_id, furniture)
+	VALUES (FALSE, FALSE, 6, 4);
+
+INSERT INTO projet.photos_furniture(
+	is_visible, is_favourite_photo, photo_id, furniture)
+	VALUES (FALSE, FALSE, 8, 5);
+
+INSERT INTO projet.photos_furniture(
+	is_visible, is_favourite_photo, photo_id, furniture)
+	VALUES (FALSE, FALSE, 9, 6);
+
+INSERT INTO projet.photos_furniture(
+	is_visible, is_favourite_photo, photo_id, furniture)
+	VALUES (TRUE, FALSE, 10, 6);
+
+INSERT INTO projet.photos_furniture(
+	is_visible, is_favourite_photo, photo_id, furniture)
+	VALUES (TRUE, TRUE, 11, 6);
+
+INSERT INTO projet.photos_furniture(
+	is_visible, is_favourite_photo, photo_id, furniture)
+	VALUES (FALSE, FALSE, 12, 7);
+
+INSERT INTO projet.photos_furniture(
+	is_visible, is_favourite_photo, photo_id, furniture)
+	VALUES (TRUE, TRUE, 13, 7);
+
+INSERT INTO projet.photos_furniture(
+	is_visible, is_favourite_photo, photo_id, furniture)
+	VALUES (FALSE, FALSE, 14, 8);
+
+INSERT INTO projet.photos_furniture(
+	is_visible, is_favourite_photo, photo_id, furniture)
+	VALUES (TRUE, TRUE, 15, 8);
+
+INSERT INTO projet.photos_furniture(
+	is_visible, is_favourite_photo, photo_id, furniture)
+	VALUES (FALSE, FALSE, 16, 9);
+
+INSERT INTO projet.photos_furniture(
+	is_visible, is_favourite_photo, photo_id, furniture)
+	VALUES (TRUE, TRUE, 17, 9);

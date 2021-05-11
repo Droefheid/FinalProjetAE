@@ -118,10 +118,12 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   @Override
   public Object[] getClientFurnitures(int id) {
     dalservices.startTransaction();
-    Object[] list = new Object[2];
+    Object[] list = new Object[4];
     int i = 0;
     list[i++] = furnitureDAO.getMyFurniture(id);
     list[i++] = furnitureDAO.getBoughtFurniture(id);
+    list[i++] = photoDAO.getFavouritePhotoForFurniture(id);
+    list[i++] = photoDAO.getAllForFurniture(id);
     dalservices.commitTransaction();
     return list;
   }

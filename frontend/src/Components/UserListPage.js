@@ -190,7 +190,7 @@ const onConfirmUserDescription = (data) => {
 
 const furnitureInfo = (lists,descripton) => {
   let info = document.querySelector("#list");
-  console.log(info);
+  console.log(lists);
 
   let descriptionFinal = descripton;
 
@@ -216,30 +216,50 @@ const furnitureInfo = (lists,descripton) => {
   let sellerButton = document.querySelector("#seller");
   sellerButton.addEventListener("submit", function(e){
     e.preventDefault();
-    onSeller(lists.seller)});
+    onSeller(lists.seller, lists.favouritePhoto, lists.photos)});
   let buyerButton = document.querySelector("#buyer");
   buyerButton.addEventListener("submit", function(e){
     e.preventDefault();
-    onBuyer(lists.buyer)});
+    onBuyer(lists.buyer, lists.favouritePhoto, lists.photos)});
 };
 
-const onSeller = (furnitures) => {
+const onSeller = (furnitures, favouritePhoto, photoList) => {
   let data = {
-    list:furnitures
+    list:furnitures,
+    favourite: favouritePhoto,
+    photos: photoList,
   };
-  onFurnitureList(data);
+  getTypes(data);
 };
 
-const onBuyer = (furnitures) => {
+const onBuyer = (furnitures, favouritePhoto, photoList) => {
   let data = {
-    list:furnitures
+    list:furnitures,
+    favourite: favouritePhoto,
+    photos: photoList,
   };
-  onFurnitureList(data);
+  getTypes(data);
 }
 
+const getTypes = (oldData) => {
+  fetch(API_URL + "types/", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+  .then((response) => {
+    if (!response.ok) {
+      return response.text().then((err) => onError(err));
+    }
+    else
+      return response.json().then((data) => onFurnitureList(oldData,data.types));
+  });
+}
 
-const onFurnitureList = (data) => {
+const onFurnitureList = (data, types) => {
   let furnitureList = document.querySelector("#userInfo"); 
+  console.log(data);
   if (!data) return;
   let table= `<div id ="furnitureList">`;
 data.list.forEach(element => {
@@ -248,14 +268,17 @@ data.list.forEach(element => {
       href="#collapse${element.furnitureId}" role="button"
       aria-expanded="false" aria-controls="collapse${element.furnitureId}">
         <div class="row" id="${element.furnitureId}" >
-          <div class="col-sm-4" id="${element.furnitureId}">
-            <img src="assets/Images/Bureau_1.png" class="rounded max_width" />
-          </div>
+          <div class="col-sm-4" id="${element.furnitureId}">`;
+            if(data.favourite) table += `<img class="width-100px" src="${data.favourite.picture}" alt="${data.favourite.name}" >`;
+          table += `</div>
           <div class="col-sm-">
             <p>
               <h5>${element.furnitureTitle}</h5>
-              Type : ${element.type}
-            </p>
+              Type : `;
+              types.forEach(type => {
+                if(type.typeId == element.type) table += `${type.name}`;
+              });
+            table += `</p>
           </div>
         </div>
       </li>`;
@@ -269,11 +292,11 @@ table += `
 
   const viewFurnitures = document.querySelectorAll("li");
   viewFurnitures.forEach((elem) =>{
-  elem.addEventListener("click", onClickFurniture);
+  elem.addEventListener("click", function(e){ onClickFurniture(e, data.photos, types) });
   });
 }
 
-const onClickFurniture = (e) => {
+const onClickFurniture = (e, photos, types) => {
   let furnitureId = -1;
     if(e.target.id){
       furnitureId = e.target.id;
@@ -295,24 +318,31 @@ const onClickFurniture = (e) => {
           return response.text().then((err) => onError(err));
         }
         else
-          return response.json().then((data) => onFurnitureDescription(data));
+          return response.json().then((data) => onFurnitureDescription(data, photos, types));
       })
 };
 
-const onFurnitureDescription = (data) => {
+const onFurnitureDescription = (data, photos, types) => {
   let info = document.querySelector("#userInfo");
   let test = document.querySelector("#description_furniture");
   if(test) test.innerHTML="";
   let html = info.innerHTML;
   let description = `
   <div id="description_furniture">
-    <h4>${data.furniture.furnitureTitle}</h4>
-    <img src="assets/Images/Bureau_1.png" class="width-15"/>
-    <p>Type : ${data.furniture.type} </br>
+    <h4>${data.furniture.furnitureTitle}</h4>`;
+    if(photos && photos.length > 0){
+      photos.forEach(photo => {
+        description += `<img class="width-100px" src="${photo.picture}" alt="${photo.name}" >`;
+      });
+    }
+    description += `<p>Type : `;
+    types.forEach(type => {
+      if(type.typeId == data.furniture.type) description += `${type.name}`;
+    });
+    description += `</br>
        State : ${data.furniture.state}
          </p>
   </div>`;
-  console.log(info.innerHTML);
   info.innerHTML = description; 
   info.innerHTML +=html;
 

@@ -66,11 +66,12 @@ public class FurnitureResource {
   @POST
   @Path("/searchFurniture")
   @Consumes(MediaType.APPLICATION_JSON)
-  @Authorize
+  @AnonymousOrAuthorize
   public Response searchBarFurniture(@Context ContainerRequest request, JsonNode json) {
     UserDTO currentUser = (UserDTO) request.getProperty("user");
     if (currentUser == null) {
-      throw new PresentationException("You dont have the permission.", Status.BAD_REQUEST);
+      currentUser = domaineFactory.getUserDTO();
+      currentUser.setBoss(false);
     }
 
     if (!json.hasNonNull("searchBar")) {
@@ -133,11 +134,16 @@ public class FurnitureResource {
     if (id <= 0) {
       throw new PresentationException("user id is incorrect");
     }
-    Object[] listFurnitures = new Object[2];
-    listFurnitures = furnitureUCC.getClientFurnitures(id);
+    Object[] listFurnitures = furnitureUCC.getClientFurnitures(id);
 
-    return ResponseMaker.createResponseWithObjectNodeWith2PutPOJO("seller", listFurnitures[0],
-        "buyer", listFurnitures[1]);
+    if (listFurnitures[2] != null) {
+      PhotoResource.transformTheURLOfThePhotoIntoBase64Image((PhotoDTO) listFurnitures[2]);
+    }
+    PhotoResource.transformAllURLOfThePhotosIntoBase64Image((List<PhotoDTO>) listFurnitures[3]);
+
+    return ResponseMaker.createResponseWithObjectNodeWith4PutPOJO("seller", listFurnitures[0],
+        "buyer", listFurnitures[1], "favouritePhoto", listFurnitures[2], "photos",
+        listFurnitures[3]);
   }
 
   /**
@@ -478,7 +484,7 @@ public class FurnitureResource {
 
     if (json.hasNonNull("specialSalePrice") && !json.get("specialSalePrice").asText().equals("")
         && !json.get("specialSalePrice").asText().equals("0")
-        && !userUCC.getUser(buyerId).isBoss()) {
+        && !userUCC.getUser(buyerId).isAntiqueDealer()) {
       throw new PresentationException(
           "Buyer need to be a antique dealer if a special sale price is specify.",
           Status.BAD_REQUEST);

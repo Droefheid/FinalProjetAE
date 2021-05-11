@@ -33,8 +33,8 @@ const onCreateAddPage = (data) => {
 
 
    let addFurniturePage = `
+   <center><h4>Add a furniture</h4></center>
    <form id="addFurniture">
-
       <div class="input-group mb-3 ">
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1">Title</span>
@@ -164,7 +164,6 @@ const onAddFurniture = () => {
 const onFurnitureAdded = (data) => {
   
   let furnitureId = data.furniture.furnitureId;
-  console.log(data,furnitureId);
   
   const input = document.getElementById('files');
   const formData = new FormData();

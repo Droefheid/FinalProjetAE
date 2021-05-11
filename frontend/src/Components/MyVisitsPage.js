@@ -69,6 +69,7 @@ const onVisitList = (data, addressList) => {
                 <th>address</th>
                 <th>isConfirmed</th>
                 <th>dateAndHoursVisit</th>
+                <th>explanatoryNote</th>
             </tr>
             </thead>
             <tbody>`;
@@ -89,6 +90,13 @@ const onVisitList = (data, addressList) => {
             <td><input type="datetime-local" class="form-control" id="pickUpDate" value="`;
             if(visit.dateAndHoursVisit) visitList += `${createTimeStamp(visit.dateAndHoursVisit)}`;
             visitList += `" name="pickUpDate" step="1" disabled></td>
+            <td>`;
+            if(visit.explanatoryNote) visitList += `${visit.explanatoryNote}`;
+            else {
+                if(visit.isConfirmed) visitList += `Confirmed`;
+                else visitList += `In progress`;
+            }
+            visitList += `</td>
         </tr>`;
     });
 
