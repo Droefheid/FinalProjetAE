@@ -134,11 +134,16 @@ public class FurnitureResource {
     if (id <= 0) {
       throw new PresentationException("user id is incorrect");
     }
-    Object[] listFurnitures = new Object[2];
-    listFurnitures = furnitureUCC.getClientFurnitures(id);
+    Object[] listFurnitures = furnitureUCC.getClientFurnitures(id);
 
-    return ResponseMaker.createResponseWithObjectNodeWith2PutPOJO("seller", listFurnitures[0],
-        "buyer", listFurnitures[1]);
+    if (listFurnitures[2] != null) {
+      PhotoResource.transformTheURLOfThePhotoIntoBase64Image((PhotoDTO) listFurnitures[2]);
+    }
+    PhotoResource.transformAllURLOfThePhotosIntoBase64Image((List<PhotoDTO>) listFurnitures[3]);
+
+    return ResponseMaker.createResponseWithObjectNodeWith4PutPOJO("seller", listFurnitures[0],
+        "buyer", listFurnitures[1], "favouritePhoto", listFurnitures[2], "photos",
+        listFurnitures[3]);
   }
 
   /**

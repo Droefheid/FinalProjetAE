@@ -216,23 +216,27 @@ const furnitureInfo = (lists,descripton) => {
   let sellerButton = document.querySelector("#seller");
   sellerButton.addEventListener("submit", function(e){
     e.preventDefault();
-    onSeller(lists.seller)});
+    onSeller(lists.seller, lists.favouritePhoto, lists.photos)});
   let buyerButton = document.querySelector("#buyer");
   buyerButton.addEventListener("submit", function(e){
     e.preventDefault();
-    onBuyer(lists.buyer)});
+    onBuyer(lists.buyer, lists.favouritePhoto, lists.photos)});
 };
 
-const onSeller = (furnitures) => {
+const onSeller = (furnitures, favouritePhoto, photoList) => {
   let data = {
-    list:furnitures
+    list:furnitures,
+    favourite: favouritePhoto,
+    photos: photoList,
   };
   onFurnitureList(data);
 };
 
-const onBuyer = (furnitures) => {
+const onBuyer = (furnitures, favouritePhoto, photoList) => {
   let data = {
-    list: furnitures
+    list:furnitures,
+    favourite: favouritePhoto,
+    photos: photoList,
   };
   onFurnitureList(data);
 }
@@ -240,6 +244,7 @@ const onBuyer = (furnitures) => {
 
 const onFurnitureList = (data) => {
   let furnitureList = document.querySelector("#userInfo"); 
+  console.log(data);
   if (!data) return;
   let table= `<div id ="furnitureList">`;
 data.list.forEach(element => {
@@ -248,9 +253,9 @@ data.list.forEach(element => {
       href="#collapse${element.furnitureId}" role="button"
       aria-expanded="false" aria-controls="collapse${element.furnitureId}">
         <div class="row" id="${element.furnitureId}" >
-          <div class="col-sm-4" id="${element.furnitureId}">
-            <img src="assets/Images/Bureau_1.png" class="rounded max_width" />
-          </div>
+          <div class="col-sm-4" id="${element.furnitureId}">`;
+            if(data.favourite) table += `<img class="width-100px" src="${data.favourite.picture}" alt="${data.favourite.name}" >`;
+          table += `</div>
           <div class="col-sm-">
             <p>
               <h5>${element.furnitureTitle}</h5>
@@ -269,11 +274,11 @@ table += `
 
   const viewFurnitures = document.querySelectorAll("li");
   viewFurnitures.forEach((elem) =>{
-  elem.addEventListener("click", onClickFurniture);
+  elem.addEventListener("click", function(e){ onClickFurniture(e, data.photos) });
   });
 }
 
-const onClickFurniture = (e) => {
+const onClickFurniture = (e, photos) => {
   let furnitureId = -1;
     if(e.target.id){
       furnitureId = e.target.id;
@@ -295,20 +300,24 @@ const onClickFurniture = (e) => {
           return response.text().then((err) => onError(err));
         }
         else
-          return response.json().then((data) => onFurnitureDescription(data));
+          return response.json().then((data) => onFurnitureDescription(data, photos));
       })
 };
 
-const onFurnitureDescription = (data) => {
+const onFurnitureDescription = (data, photos) => {
   let info = document.querySelector("#userInfo");
   let test = document.querySelector("#description_furniture");
   if(test) test.innerHTML="";
   let html = info.innerHTML;
   let description = `
   <div id="description_furniture">
-    <h4>${data.furniture.furnitureTitle}</h4>
-    <img src="assets/Images/Bureau_1.png" class="width-15"/>
-    <p>Type : ${data.furniture.type} </br>
+    <h4>${data.furniture.furnitureTitle}</h4>`;
+    if(photos && photos.length > 0){
+      photos.forEach(photo => {
+        description += `<img class="width-100px" src="${photo.picture}" alt="${photo.name}" >`;
+      });
+    }
+    description += `<p>Type : ${data.furniture.type} </br>
        State : ${data.furniture.state}
          </p>
   </div>`;

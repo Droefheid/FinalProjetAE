@@ -120,7 +120,6 @@ public class UserResource {
     return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("list", listUsers);
   }
 
-
   /**
    * register a user if correct parameters are sent.
    * 
@@ -169,8 +168,6 @@ public class UserResource {
 
     return Response.ok().build();
   }
-
-
 
   /**
    * get all users.
