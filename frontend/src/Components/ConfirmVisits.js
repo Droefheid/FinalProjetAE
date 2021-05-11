@@ -177,7 +177,7 @@ const visitDescription = (user, data) => {
   let photos = data.photos;
   for (let i = 0; i < photos.length; i++) {
     //console.log(photos[i]);
-    description += `<img src="` + photos[i].picture + `" style="width: 100%" alt="` + photos[i].name +`" />`;
+    description += `<img src="` + photos[i].picture + `" class="width-200px" alt="` + photos[i].name +`" />`;
   }
   getAdresse(data.visit.addressId,description);
 };

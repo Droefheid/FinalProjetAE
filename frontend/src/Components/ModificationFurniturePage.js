@@ -217,7 +217,9 @@ const onPageCreate = (data) => {
                 if(furniture.depositDate) modifPage += ` value="${furniture.depositDate}"`;
                 modifPage += `" name="depositDate" step="1"`;
                 if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
-                modifPage += `><button id="depositDateButton"><i class="material-icons">delete</i></button>
+                modifPage += `><button id="depositDateButton"`;
+                if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
+                modifPage += `><i class="material-icons">delete</i></button>
                 </div>
                 <!--<label for="furnitureDateCollection">Date emporter: </label>-->
                 <input type="datetime-local" class="form-control" id="furnitureDateCollection"`;
@@ -230,7 +232,9 @@ const onPageCreate = (data) => {
                 if(furniture.dateOfSale) modifPage += ` value="${furniture.dateOfSale}"`;
                 modifPage += ` name="dateOfSale" step="1"`;
                 if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
-                modifPage += `><button id="dateOfSaleButton"><i class="material-icons">delete</i></button>
+                modifPage += `><button id="dateOfSaleButton"`;
+                if(furniture.state == "V" || furniture.state == "RE") modifPage += ` disabled`;
+                modifPage += `><i class="material-icons">delete</i></button>
                 </div>`;
                 if(furniture.state == "EV" || furniture.state == "RE") modifPage += `<label for="saleWithdrawalDate">Date de retrait: </label>
                 <div class="input-group">`;

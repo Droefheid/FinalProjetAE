@@ -78,6 +78,10 @@
   width: 100%;
 }
 
+.width-100px {
+  width: 100px;
+}
+
 .width-200px {
   width: 200px;
 }
@@ -98,7 +102,7 @@
 }
 
 .patron {
-  top: 55%;
+  top: 60%;
 }
 
 .sidenav a {
@@ -147,7 +151,7 @@
 
 .smoothTransition {
   transition: 0.5s;
-  padding-left: 170px;
+  padding-left: 220px;
 }
 
 .noPaddingForSideBar {

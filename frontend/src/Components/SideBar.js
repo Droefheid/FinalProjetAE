@@ -58,20 +58,14 @@ const AfficherSidebar = (needed, secondNeeded,data) => {
     sidebar += `sidenav`;
     sidebar += `">
       <form class="mb-5 pb-4">
-      <input type="search" class="form-control rounded" placeholder="Search" id="search" />
-      `;
-      let isAlreadyOneActive = false;
-
+        <input type="search" class="form-control rounded" placeholder="Search" id="search" />
+          <div class="form-check">
+            <input type="radio" name="choice" id="-1" class="radio" checked> 
+            <label for="type" class="form-check-label">Tout</label>
+          </div>`;
       data.types.forEach(element => {
-        sidebar+=`
-        <div class="form-check">
-            <input type="radio" name="choice" id="${element.typeId}" class="radio" `;
-            if(!isAlreadyOneActive){
-              isAlreadyOneActive = true;
-              sidebar+=`checked`;
-            } 
-
-            sidebar+=`> 
+        sidebar+=`<div class="form-check">
+            <input type="radio" name="choice" id="${element.typeId}" class="radio"> 
             <label for="type" class="form-check-label">
             ${element.name}
             </label>
@@ -104,7 +98,7 @@ const AfficherSidebar = (needed, secondNeeded,data) => {
         }else{
             // Open
             document.getElementById("mySidenav").style.width = "300px";
-            document.getElementById("mySidenavButton").style.marginLeft = "150px";
+            document.getElementById("mySidenavButton").style.marginLeft = "300px";
             i++;
         }
     '>&#9776;</a>
@@ -124,16 +118,16 @@ const AfficherSidebar = (needed, secondNeeded,data) => {
 
   // Create listener.
   if(user && user.isBoss){
-    if(secondNeeded){
-      document.getElementById("rechercher").addEventListener("click", function(e){
-        e.preventDefault();
-        getListMeuble(data.types)});
-    }
     document.getElementById("/confirmUser").addEventListener("click", onTest);
     document.getElementById("/userList").addEventListener("click", onTest);
     document.getElementById("/addFurniture").addEventListener("click", onTest);
     document.getElementById("/confirmVisits").addEventListener("click", onTest);
     document.getElementById("/visitListPage").addEventListener("click", onTest);
+  }
+  if(secondNeeded){
+    document.getElementById("rechercher").addEventListener("click", function(e){
+      e.preventDefault();
+      getListMeuble(data.types)});
   }
 };
 
@@ -141,7 +135,7 @@ const getListMeuble = (types) =>{
   let search =document.getElementById("search").value;
   let min = document.getElementById("minPrice").value;
   let max = document.getElementById("maxPrice").value;
-  let type ;
+  let type = -1;
   let checked;
   for(let i =0;i<types.length;i++){
     checked = document.getElementById(types[i].typeId).checked;
@@ -184,13 +178,6 @@ const onFurnitureList = (data) => {
     return;
   }
   let table = `
-  <div class="input-group rounded" id="search_furniture_list">
-  <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
-  aria-describedby="search-addon" />
-  <span class="input-group-text border-0" id="search-addon">
-  <i class="fas fa-search"></i>
-  </span>
-  </div>
   <nav id="nav_furniture">
   <ul class="list-group">`;
   let furnitures = data.list;

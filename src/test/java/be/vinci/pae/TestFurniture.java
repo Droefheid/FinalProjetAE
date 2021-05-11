@@ -220,11 +220,12 @@ class TestFurniture {
   @Test
   public void testSearchFurnitureV1() {
     List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
+    Boolean isBoss = false;
     String search = "armoire";
     int max = 100;
     int min = 50;
     Mockito.when(furnitureDAO.searchFurnitureWithoutType(search, min, max)).thenReturn(list);
-    assertEquals(list, furnitureUCC.searchFurniture(search, -1, min, max));
+    assertEquals(list, furnitureUCC.searchFurniture(isBoss, search, -1, min, max));
   }
 
   /**
@@ -233,11 +234,12 @@ class TestFurniture {
   @Test
   public void testSearchFurnitureV2() {
     List<FurnitureDTO> list = new ArrayList<FurnitureDTO>();
+    Boolean isBoss = false;
     String search = "armoire";
     int max = 100;
     int min = 50;
     Mockito.when(furnitureDAO.searchFurniture(search, 1, min, max)).thenReturn(list);
-    assertEquals(list, furnitureUCC.searchFurniture(search, 1, min, max));
+    assertEquals(list, furnitureUCC.searchFurniture(isBoss, search, 1, min, max));
   }
 
 

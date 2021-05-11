@@ -1,5 +1,5 @@
 import { RedirectUrl } from "./Router.js";
-import { API_URL } from "../utils/server.js";
+import { API_URL, ALERT_BOX } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
 import { user_me } from "../index.js";
 import { getTokenSessionDate, getUserSessionData } from "../utils/session.js";
@@ -8,7 +8,8 @@ let page = document.querySelector("#page");
 
 const FurnituresPage = async () => {
   Sidebar(true, true);
-  page.innerHTML = `<div class="loader"></div>`;  
+  page.innerHTML = `<div id="messageBoardForm"></div>
+  <div class="loader"></div>`;  
 
   fetch(API_URL + "furnitures/", {
     method: "GET",
@@ -52,13 +53,6 @@ const onFurnitureList = (types,data) => {
 
   if (!data) return;
   let table = `
-          <div class="input-group rounded" id="search_furniture_list">
-            <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
-              aria-describedby="search-addon" />
-            <span class="input-group-text border-0" id="search-addon">
-              <i class="fas fa-search"></i>
-            </span>
-          </div>
           <nav id="nav_furniture">
             <ul class="list-group">`;
   const user = getUserSessionData();
@@ -163,7 +157,7 @@ const onFurnitureDescription = (data) => {
   let photos = data.photos;
   let showImg = document.getElementById('showImg');
   photos.forEach(photo => {
-    showImg.innerHTML += `<img class="width-200px" src="${photo.picture}" alt="${photo.name}" >`;
+    showImg.innerHTML += `<img class="width-100px" src="${photo.picture}" alt="${photo.name}" >`;
   });
 
   const user = getUserSessionData();
@@ -259,8 +253,10 @@ const stopOption = (e) => {
 
 
 const onError = (err) => {
-  let messageBoard = document.querySelector("#messageBoardForm");
-  messageBoard.innerHTML = err;
+  page.innerHTML = `<div id="messageBoardForm">`;
+  let messageBoard = document.querySelector("#messageBoard");
+  if(err.message) ALERT_BOX(messageBoard, err.message);
+  else ALERT_BOX(messageBoard, err);
 };
 
 export default FurnituresPage;

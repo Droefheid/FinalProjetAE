@@ -52,9 +52,6 @@ public class UserResource {
     if (json.get("username").asText().equals("") && json.get("password").asText().equals("")) {
       throw new PresentationException("Username and password needed", Status.BAD_REQUEST);
     }
-    if (json.get("username").asText().equals("")) {
-      throw new PresentationException("Username ", Status.BAD_REQUEST);
-    }
     if (json.get("password").asText().equals("")) {
       throw new PresentationException("Password needed", Status.BAD_REQUEST);
     }

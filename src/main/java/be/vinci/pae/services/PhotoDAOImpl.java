@@ -114,14 +114,15 @@ public class PhotoDAOImpl implements PhotoDAO {
 
   @Override
   public List<PhotoDTO> getAllVisiblePhotosFor(int furnitureId, int client) {
-    PreparedStatement ps = this.dalBackendServices.getPreparedStatement("SELECT p.photo_id,"
-        + " p.pictures, p.name"
-        + " FROM projet.photos p JOIN projet.photos_furniture pf ON p.photo_id = pf.photo_id"
-        + " LEFT JOIN projet.furnitures f ON pf.furniture = f.furniture_id"
-        + " LEFT JOIN projet.visits v ON v.users = f.seller"
-        + " LEFT JOIN projet.photos_visits pv ON pv.visit = v.visit_id AND pv.photo = pf.photo_id"
-        + " WHERE pf.furniture = ? AND (pf.is_visible = TRUE OR f.seller = ?)"
-        + " ORDER BY p.photo_id");
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("SELECT DISTINCT p.photo_id," + " p.pictures, p.name"
+            + " FROM projet.photos p JOIN projet.photos_furniture pf ON p.photo_id = pf.photo_id"
+            + " LEFT JOIN projet.furnitures f ON pf.furniture = f.furniture_id"
+            + " LEFT JOIN projet.visits v ON v.users = f.seller"
+            + " LEFT JOIN projet.photos_visits pv ON pv.visit = v.visit_id"
+            + " AND pv.photo = pf.photo_id"
+            + " WHERE pf.furniture = ? AND (pf.is_visible = TRUE OR f.seller = ?)"
+            + " ORDER BY p.photo_id");
 
     List<PhotoDTO> list = new ArrayList<PhotoDTO>();
 
