@@ -16,7 +16,7 @@ let loginPage = `<div class="containerForm">
     <h3><center>Log in</center></h3>
     </div>
     <div class="card-body">
-      <form>
+      <form id="login">
         <div class="input-group form-group">
           <div class="input-group-prepend">
             <span class="input-group-text"><i class="fas fa-user"></i></span>
@@ -52,7 +52,7 @@ const LoginPage = () => {
 
   let page = document.querySelector("#page");
   page.innerHTML = loginPage;
-  let loginForm = document.querySelector("form");
+  let loginForm = document.getElementById("login");
   const user = getUserSessionData();
   if (user) {
     // re-render the navbar for the authenticated user.
