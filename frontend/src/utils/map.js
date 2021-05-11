@@ -1,7 +1,8 @@
 
 const getCoordinates = (obj) => {
     let address = obj.address;
-    let addressFinal= address.street+" " + address.buildingNumber+" " + address.country+" " + address.commune+" " + address.postCode;
+    let addressFinal= "street : " + address.street+" " + "building number : " + address.buildingNumber+" " 
+    + "country : " + address.country+" " + "commune : " + address.commune+" " + "postal code : " + address.postCode;
     let test = "Rue du duc 29 bruxelles"
     const Http = new XMLHttpRequest();
     const url=`http://api.positionstack.com/v1/forward?access_key=c9f2d2aaa769991d9e4d60e371687223&query=${test}`;

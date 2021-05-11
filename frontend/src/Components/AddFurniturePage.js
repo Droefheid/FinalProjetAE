@@ -196,7 +196,7 @@ const onFurnitureAdded = (data) => {
 const onFurnitureAndPhotoAdded = (data) => {
 
   alert("Furniture has been added");
-  RedirectUrl(`/furniture`);
+  RedirectUrl(`/furnitures`);
 }
 
 const onError = (err) => {
