@@ -165,12 +165,11 @@ const getListMeuble = (types) =>{
       return response.text().then((err) => onError(err));
     }
     else
-      return response.json().then((data) => onFurnitureList(data));
+      return response.json().then((data) => onFurnitureList(data, types));
   });
 }
   
-const onFurnitureList = (data) => {
-  console.log(data);
+const onFurnitureList = (data, types) => {
   let furnitureList = document.querySelector("#list"); 
   if (!data) return;
   if (data.list.length == 0) {
@@ -194,7 +193,7 @@ const onFurnitureList = (data) => {
           <div class="col-sm-">
             <p>
               <h5>${furnitures[i].furnitureTitle}</h5>
-              Type : ${furnitures[i].type}
+              Type : ${types[furnitures[i].type].name}
             </p>
           </div>
         </div>
@@ -209,11 +208,11 @@ const onFurnitureList = (data) => {
 
   const viewFurnitures = document.querySelectorAll("li");
   viewFurnitures.forEach((elem) => {
-    elem.addEventListener("click", onClick);
+    elem.addEventListener("click", function (e) { onClick(e, types); });
   });
 }
 
-const onClick = (e) => {
+const onClick = (e, types) => {
   let furnitureId = -1;
     if(e.target.id){
       furnitureId = e.target.id;
@@ -235,20 +234,18 @@ const onClick = (e) => {
         return response.text().then((err) => onError(err));
       }
       else
-        return response.json().then((data) => onFurnitureDescription(data));
+        return response.json().then((data) => onFurnitureDescription(data, types));
     });
 };
 
-const onFurnitureDescription = (data) => {
+const onFurnitureDescription = (data, types) => {
   let info = document.querySelector("#furnitureDesc");
-
-  console.log(data);
 
   let description = `
   <div id="description_furniture">
     <h4>${data.furniture.furnitureTitle}</h4>
     <div id="showImg"></div>
-    <p>Type : ${data.furniture.type} </br>
+    <p>Type : ${types[data.furniture.type].name} </br>
        State : ${data.furniture.state}
          </p>
          <span id="updateForm"></span>
