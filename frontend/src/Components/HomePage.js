@@ -2,7 +2,7 @@ import { API_URL, ALERT_BOX } from "../utils/server.js";
 import { RedirectUrl } from "./Router.js";
 import Sidebar from "./SideBar";
 import { user_me } from "../index.js";
-import { getUserSessionData, getTokenSessionDate } from "../utils/session";
+import { getUserSessionData } from "../utils/session";
 
 let page = document.querySelector("#page");
 
