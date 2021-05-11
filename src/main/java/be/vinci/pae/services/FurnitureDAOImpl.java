@@ -223,7 +223,7 @@ public class FurnitureDAOImpl implements FurnitureDAO {
             + "f.purchase_price, f.furniture_date_collection, f.selling_price,"
             + " f.special_sale_price, f.delivery,state_furniture, f.deposit_date,"
             + " f.date_of_sale, f.sale_withdrawal_date, f.seller, f.pick_up_date"
-            + " FROM projet.furnitures f," + " JOIN projet.users u ON f.seller = u.user_id"
+            + " FROM projet.furnitures f" + " JOIN projet.users u ON f.seller = u.user_id"
             + " WHERE (lower(f.furniture_title) LIKE lower(?)"
             + " OR lower(u.first_name) LIKE lower(?))"
             + " AND f.type = ? AND f.selling_price >= ? AND f.selling_price <= ? "
