@@ -8,7 +8,6 @@ let page = document.querySelector("#page");
 
 const FurniturePage = () => {
     Sidebar(true, false);
-    console.log(user_me.furnitureId);
 
     fetch(API_URL + "furnitures/" + user_me.furnitureId, {
         method: "GET",
