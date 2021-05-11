@@ -158,7 +158,7 @@ INSERT INTO projet.users(
 
 INSERT INTO projet.addresses(
 	address_id, street, building_number, postcode, commune, country, unit_number)
-	VALUES (DEFAULT, 'Lammerskreuzstraße ** ', '6', '52159', 'Roetgen', 'Allemagne', '0');
+	VALUES (DEFAULT, 'Lammerskreuzstraße', '6', '52159', 'Roetgen', 'Allemagne', '0');
 
 INSERT INTO projet.users(
 	user_id, last_name, first_name, username, password, address, email, is_boss, is_antique_dealer, is_confirmed, registration_date)
@@ -169,7 +169,7 @@ INSERT INTO projet.users(
 
 INSERT INTO projet.users(
 	user_id, last_name, first_name, username, password, address, email, is_boss, is_antique_dealer, is_confirmed, registration_date)
-	VALUES (DEFAULT, 'Ile', 'Theophile', 'theo', '$2a$10$4JHq0Pqj0S1MIBQ4U.2B.e3we47d2smcGDxDn.9FMB99Sqbph4fye', 4, 'theo.phile@proximus.be', FALSE, TRUE, TRUE, '2021-03-30 00:00:01');
+	VALUES (DEFAULT, 'Ile', 'Theophile', 'Theo', '$2a$10$4JHq0Pqj0S1MIBQ4U.2B.e3we47d2smcGDxDn.9FMB99Sqbph4fye', 4, 'theo.phile@proximus.be', FALSE, TRUE, TRUE, '2021-03-30 00:00:01');
 
 
 ----------USERS CHARLINE---------

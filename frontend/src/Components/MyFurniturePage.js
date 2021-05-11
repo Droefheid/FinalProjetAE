@@ -114,19 +114,37 @@ const onClick = (e, types) => {
       if(furnitureId == 'nav_furniture') return;
       if(furnitureId == null ) return;
     
-      fetch(API_URL + "furnitures/" + furnitureId, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        if (!response.ok) {
-          return response.text().then((err) => onError(err));
-        }
-        else
-          return response.json().then((data) => onFurnitureDescription(data, types));
-      });
+      let id = getTokenSessionDate();
+      if(id){
+        fetch(API_URL + "furnitures/" + furnitureId, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": id
+          },
+        })
+        .then((response) => {
+          if (!response.ok) {
+            return response.text().then((err) => onError(err));
+          }
+          else
+            return response.json().then((data) => onFurnitureDescription(data, types));
+        });
+      }else{
+        fetch(API_URL + "furnitures/" + furnitureId, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          if (!response.ok) {
+            return response.text().then((err) => onError(err));
+          }
+          else
+            return response.json().then((data) => onFurnitureDescription(data, types));
+        });
+      }
   };
   
   const onFurnitureDescription = (data, types) => {

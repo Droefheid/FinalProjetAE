@@ -66,11 +66,12 @@ public class FurnitureResource {
   @POST
   @Path("/searchFurniture")
   @Consumes(MediaType.APPLICATION_JSON)
-  @Authorize
+  @AnonymousOrAuthorize
   public Response searchBarFurniture(@Context ContainerRequest request, JsonNode json) {
     UserDTO currentUser = (UserDTO) request.getProperty("user");
     if (currentUser == null) {
-      throw new PresentationException("You dont have the permission.", Status.BAD_REQUEST);
+      currentUser = domaineFactory.getUserDTO();
+      currentUser.setBoss(false);
     }
 
     if (!json.hasNonNull("searchBar")) {
@@ -478,7 +479,7 @@ public class FurnitureResource {
 
     if (json.hasNonNull("specialSalePrice") && !json.get("specialSalePrice").asText().equals("")
         && !json.get("specialSalePrice").asText().equals("0")
-        && !userUCC.getUser(buyerId).isBoss()) {
+        && !userUCC.getUser(buyerId).isAntiqueDealer()) {
       throw new PresentationException(
           "Buyer need to be a antique dealer if a special sale price is specify.",
           Status.BAD_REQUEST);
