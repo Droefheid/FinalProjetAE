@@ -98,7 +98,7 @@ const AfficherSidebar = (needed, secondNeeded,data) => {
         }else{
             // Open
             document.getElementById("mySidenav").style.width = "300px";
-            document.getElementById("mySidenavButton").style.marginLeft = "150px";
+            document.getElementById("mySidenavButton").style.marginLeft = "300px";
             i++;
         }
     '>&#9776;</a>
