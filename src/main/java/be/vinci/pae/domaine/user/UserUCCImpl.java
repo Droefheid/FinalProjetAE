@@ -103,6 +103,12 @@ public class UserUCCImpl implements UserUCC {
     return address;
   }
 
-
+  @Override
+  public AddressDTO getVisitAddress(int addressId, int userId) {
+    dalservices.startTransaction();
+    AddressDTO address = userDao.getVisitAddress(addressId, userId);
+    dalservices.commitTransaction();
+    return address;
+  }
 
 }

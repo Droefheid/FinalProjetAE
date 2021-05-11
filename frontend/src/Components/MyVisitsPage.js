@@ -30,13 +30,33 @@ const MyVisitsPage = () => {
             return response.text().then((err) => onError(err));
         }
         else
-            return response.json().then((data) => onVisitList(data));
+            return response.json().then((data) => getAddress(data));
     });
 };
 
-const onVisitList = (data) => {
-    console.log(data);
+const getAddress = (oldData) => {
+    let list = {
+        "visits": oldData.list,
+    }
+    let id = getTokenSessionDate();
+    fetch(API_URL + "users/getVisitsAddress", {
+        method: "POST",
+        body: JSON.stringify(list),
+        headers: {
+        "Content-Type": "application/json",
+        "Authorization": id
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            return response.text().then((err) => onError(err));
+        }
+        else
+            return response.json().then((data) => onVisitList(oldData, data.address));
+    });
+};
 
+const onVisitList = (data, addressList) => {
 
     let visitList = `<div id="messageBoardForm"></div>
     <div id="list" class="table-responsive mb-5">
@@ -46,7 +66,7 @@ const onVisitList = (data) => {
                 <th>labelFurniture</th> 
                 <th>requestDate</th>
                 <th>timeSlot</th>
-                <th>addressId</th>
+                <th>address</th>
                 <th>isConfirmed</th>
                 <th>dateAndHoursVisit</th>
             </tr>
@@ -59,7 +79,12 @@ const onVisitList = (data) => {
             <td>${visit.labelFurniture}</td>
             <td><input type="datetime-local" class="form-control" id="pickUpDate" value="${createTimeStamp(visit.requestDate)}" name="pickUpDate" step="1" disabled></td>
             <td>${visit.timeSlot}</td>
-            <td>${visit.addressId}</td>
+            <td>`;
+            addressList.forEach(address => {
+                if(address.id == visit.addressId) visitList += `${address.country} ${address.postCode}, ${address.commune} 
+                ${address.street}, ${address.buildingNumber} bt ${address.unitNumber}`;
+            });
+            visitList += `</td>
             <td>${visit.isConfirmed}</td>
             <td><input type="datetime-local" class="form-control" id="pickUpDate" value="`;
             if(visit.dateAndHoursVisit) visitList += `${createTimeStamp(visit.dateAndHoursVisit)}`;
@@ -80,6 +105,7 @@ const createTimeStamp = (dateString) => {
 };
 
 const onError = (err) => {
+    page.innerHTML = `<div id="messageBoardForm">`;
     let messageBoard = document.querySelector("#messageBoard");
     if(err.message) ALERT_BOX(messageBoard, err.message);
     else ALERT_BOX(messageBoard, err);
