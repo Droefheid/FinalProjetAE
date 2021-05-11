@@ -465,7 +465,7 @@ INSERT INTO projet.furnitures(
 
 INSERT INTO projet.furnitures(
 	furniture_id, furniture_title, purchase_price, furniture_date_collection, selling_price, special_sale_price, state_furniture, deposit_date, date_of_sale, sale_withdrawal_date, delivery, type, buyer, seller, pick_up_date)
-	VALUES (DEFAULT, 'Bureau en bois ciré', 220, NULL, 0, 0, 'ER', '2021-03-27 00:00:01', NULL, NULL, NULL, 6, NULL, 3, '2021-03-27 00:00:01');
+	VALUES (DEFAULT, 'Bureau en bois ciré', 220, NULL, 0, 0, 'ER', NULL, NULL, NULL, NULL, 6, NULL, 3, '2021-03-27 00:00:01');
 
 INSERT INTO projet.furnitures(
 	furniture_id, furniture_title, purchase_price, furniture_date_collection, selling_price, special_sale_price, state_furniture, deposit_date, date_of_sale, sale_withdrawal_date, delivery, type, buyer, seller, pick_up_date)

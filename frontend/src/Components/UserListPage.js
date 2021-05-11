@@ -190,7 +190,7 @@ const onConfirmUserDescription = (data) => {
 
 const furnitureInfo = (lists,descripton) => {
   let info = document.querySelector("#list");
-  console.log(info);
+  console.log(lists);
 
   let descriptionFinal = descripton;
 
@@ -232,7 +232,7 @@ const onSeller = (furnitures) => {
 
 const onBuyer = (furnitures) => {
   let data = {
-    list:furnitures
+    list: furnitures
   };
   onFurnitureList(data);
 }
@@ -312,7 +312,6 @@ const onFurnitureDescription = (data) => {
        State : ${data.furniture.state}
          </p>
   </div>`;
-  console.log(info.innerHTML);
   info.innerHTML = description; 
   info.innerHTML +=html;
 

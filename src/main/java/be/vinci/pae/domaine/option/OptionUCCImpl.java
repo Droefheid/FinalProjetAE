@@ -97,7 +97,8 @@ public class OptionUCCImpl implements OptionUCC {
     OptionDTO option = optionDao.findOptionByFurnitureIdANDCustomerId(furnitureID, customerID);
     if (option.getBeginningOptionDate() == null) {
       dalservices.rollbackTransaction();
-      throw new BusinessException("There is no option currently on this furniture");
+      throw new BusinessException("There is no option currently on this furniture",
+          Status.BAD_REQUEST);
     }
     dalservices.commitTransaction();
     return option;

@@ -61,13 +61,6 @@ const onFurnitureList = (data, types) => {
   if (!data) return;
   
   let table = `
-  <div class="input-group rounded" id="search_furniture_list">
-  <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
-  aria-describedby="search-addon" />
-  <span class="input-group-text border-0" id="search-addon">
-  <i class="fas fa-search"></i>
-  </span>
-  </div>
   <nav id="nav_furniture">
   <ul class="list-group">`;
   let furnitures = data.list;
