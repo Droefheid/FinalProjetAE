@@ -127,11 +127,19 @@ public class FurnitureUCCImpl implements FurnitureUCC {
   }
 
   @Override
-  public List<FurnitureDTO> searchFurniture(String searchBar, int typeID, int minPrice,
-      int maxPrice) {
+  public List<FurnitureDTO> searchFurniture(boolean isBoss, String searchBar, int typeID,
+      int minPrice, int maxPrice) {
     dalservices.startTransaction();
     List<FurnitureDTO> list;
-    if (typeID <= 0) {
+    if (isBoss) {
+      if (typeID <= 0) {
+        list = furnitureDAO.searchFurnitureWithSellerWithoutType(searchBar, searchBar, minPrice,
+            maxPrice);
+      } else {
+        list = furnitureDAO.searchFurnitureWithSeller(searchBar, searchBar, typeID, minPrice,
+            maxPrice);
+      }
+    } else if (typeID <= 0) {
       list = furnitureDAO.searchFurnitureWithoutType(searchBar, minPrice, maxPrice);
     } else {
       list = furnitureDAO.searchFurniture(searchBar, typeID, minPrice, maxPrice);

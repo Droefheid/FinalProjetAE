@@ -1,5 +1,5 @@
 import { RedirectUrl } from "./Router.js";
-import { API_URL } from "../utils/server.js";
+import { API_URL, ALERT_BOX } from "../utils/server.js";
 import Sidebar from "./SideBar.js";
 import { user_me } from "../index.js";
 import { getTokenSessionDate, getUserSessionData } from "../utils/session.js";
@@ -8,7 +8,8 @@ let page = document.querySelector("#page");
 
 const FurnituresPage = async () => {
   Sidebar(true, true);
-  page.innerHTML = `<div class="loader"></div>`;  
+  page.innerHTML = `<div id="messageBoardForm"></div>
+  <div class="loader"></div>`;  
 
   fetch(API_URL + "furnitures/", {
     method: "GET",
@@ -163,7 +164,7 @@ const onFurnitureDescription = (data) => {
   let photos = data.photos;
   let showImg = document.getElementById('showImg');
   photos.forEach(photo => {
-    showImg.innerHTML += `<img class="width-200px" src="${photo.picture}" alt="${photo.name}" >`;
+    showImg.innerHTML += `<img class="width-100px" src="${photo.picture}" alt="${photo.name}" >`;
   });
 
   const user = getUserSessionData();
@@ -259,8 +260,10 @@ const stopOption = (e) => {
 
 
 const onError = (err) => {
-  let messageBoard = document.querySelector("#messageBoardForm");
-  messageBoard.innerHTML = err;
+  page.innerHTML = `<div id="messageBoardForm">`;
+  let messageBoard = document.querySelector("#messageBoard");
+  if(err.message) ALERT_BOX(messageBoard, err.message);
+  else ALERT_BOX(messageBoard, err);
 };
 
 export default FurnituresPage;

@@ -91,6 +91,7 @@ const onImageSelect = (e) => {
 }
 
 const onError = (err) => {
+  page.innerHTML = `<div id="messageBoardForm">`;
   let messageBoard = document.querySelector("#messageBoard");
   if(err.message) ALERT_BOX(messageBoard, err.message);
   else ALERT_BOX(messageBoard, err);

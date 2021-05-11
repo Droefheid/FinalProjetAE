@@ -57,12 +57,14 @@ const AfficherSidebar = (needed, secondNeeded,data) => {
     sidebar += `sidenav`;
     sidebar += `">
       <form class="mb-5 pb-4">
-      <input type="search" class="form-control rounded" placeholder="Search" id="search" />
-      `;
+        <input type="search" class="form-control rounded" placeholder="Search" id="search" />
+          <div class="form-check">
+            <input type="radio" name="choice" id="-1" class="radio" checked> 
+            <label for="type" class="form-check-label">Tout</label>
+          </div>`;
       data.types.forEach(element => {
-        sidebar+=`
-        <div class="form-check">
-            <input type="checkbox" id="${element.typeId}" class="radio"> 
+        sidebar+=`<div class="form-check">
+            <input type="radio" name="choice" id="${element.typeId}" class="radio"> 
             <label for="type" class="form-check-label">
             ${element.name}
             </label>
@@ -71,9 +73,9 @@ const AfficherSidebar = (needed, secondNeeded,data) => {
      
      sidebar +=`
      <label for="min">Min Price</label>
-     <input type="number" id="minPrice" name="min">
+     <input type="number" id="minPrice" name="min" value="0">
      <label for="quantity">Max Price</label>
-     <input type="number" id="maxPrice" name="max">
+     <input type="number" id="maxPrice" name="max" value="1000">
     `;
 
     sidebar +=`
@@ -115,16 +117,16 @@ const AfficherSidebar = (needed, secondNeeded,data) => {
 
   // Create listener.
   if(user && user.isBoss){
-    if(secondNeeded){
-      document.getElementById("rechercher").addEventListener("click", function(e){
-        e.preventDefault();
-        getListMeuble(data.types)});
-    }
     document.getElementById("/confirmUser").addEventListener("click", onTest);
     document.getElementById("/userList").addEventListener("click", onTest);
     document.getElementById("/addFurniture").addEventListener("click", onTest);
     document.getElementById("/confirmVisits").addEventListener("click", onTest);
     document.getElementById("/visitListPage").addEventListener("click", onTest);
+  }
+  if(secondNeeded){
+    document.getElementById("rechercher").addEventListener("click", function(e){
+      e.preventDefault();
+      getListMeuble(data.types)});
   }
 };
 
@@ -132,7 +134,7 @@ const getListMeuble = (types) =>{
   let search =document.getElementById("search").value;
   let min = document.getElementById("minPrice").value;
   let max = document.getElementById("maxPrice").value;
-  let type ;
+  let type = -1;
   let checked;
   for(let i =0;i<types.length;i++){
     checked = document.getElementById(types[i].typeId).checked;

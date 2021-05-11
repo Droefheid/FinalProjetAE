@@ -20,6 +20,7 @@ import be.vinci.pae.domaine.photo.PhotoDTO;
 import be.vinci.pae.domaine.photo.PhotoUCC;
 import be.vinci.pae.domaine.type.TypeUCC;
 import be.vinci.pae.domaine.user.UserDTO;
+import be.vinci.pae.domaine.user.UserUCC;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
@@ -36,6 +37,9 @@ import jakarta.ws.rs.core.Response.Status;
 @Singleton
 @Path("/furnitures")
 public class FurnitureResource {
+
+  @Inject
+  private UserUCC userUCC;
 
   @Inject
   private TypeUCC typeUCC;
@@ -62,8 +66,12 @@ public class FurnitureResource {
   @POST
   @Path("/searchFurniture")
   @Consumes(MediaType.APPLICATION_JSON)
-  @AuthorizeBoss
-  public Response searchBarFurniture(JsonNode json) {
+  @Authorize
+  public Response searchBarFurniture(@Context ContainerRequest request, JsonNode json) {
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    if (currentUser == null) {
+      throw new PresentationException("You dont have the permission.", Status.BAD_REQUEST);
+    }
 
     if (!json.hasNonNull("searchBar")) {
       throw new PresentationException("searchbar is null");
@@ -72,15 +80,16 @@ public class FurnitureResource {
     if (!json.hasNonNull("type") || json.get("type").asInt() == 0) {
       throw new PresentationException("type not selected");
     }
-    int min = json.get("minPrice").asInt();
-    int max = json.get("maxPrice").asInt();
-    if (!json.hasNonNull("maxPrice") || !json.hasNonNull("minPrice") || min >= max) {
+
+    if (!json.hasNonNull("maxPrice") || !json.hasNonNull("minPrice")
+        || json.get("minPrice").asInt() >= json.get("maxPrice").asInt()) {
       throw new PresentationException(
           "The minimum price has to be smaller then the maximum price.");
     }
 
-    List<FurnitureDTO> list = furnitureUCC.searchFurniture(json.get("searchBar").asText(),
-        json.get("type").asInt(), json.get("minPrice").asInt(), json.get("maxPrice").asInt());
+    List<FurnitureDTO> list =
+        furnitureUCC.searchFurniture(currentUser.isBoss(), json.get("searchBar").asText(),
+            json.get("type").asInt(), json.get("minPrice").asInt(), json.get("maxPrice").asInt());
 
     List<PhotoDTO> photos = new ArrayList<>();
     for (FurnitureDTO furnitureDTO : list) {
@@ -238,7 +247,6 @@ public class FurnitureResource {
     // System.out.println(json.get("formData").get("photo0"));
     // System.out.println(json.get("filesBase64").get(0));
 
-    // TODO Verifier son etat.
     checkAllCredentialFurniture(json); // pourrais renvoyer le type si besoin en dessous.
     FurnitureDTO furniture = createFullFillFurniture(json);
     checkIfRespectStateDiagram(furniture);
@@ -400,7 +408,7 @@ public class FurnitureResource {
       throw new PresentationException("Buyer is needed ", Status.BAD_REQUEST);
     }
     int buyerId = json.get("buyer").asInt();
-    if (buyerId != 0 && (buyerId < 1 || userRessource.getUserById(buyerId) == null)) {
+    if (buyerId != 0 && (buyerId < 1 || userUCC.getUser(buyerId) == null)) {
       throw new PresentationException("Buyer does not exist ", Status.BAD_REQUEST);
     }
     if (!json.get("buyer").asText().equals("") && !json.get("buyer").asText().equals("0")
@@ -465,6 +473,14 @@ public class FurnitureResource {
         && !json.get("specialSalePrice").asText().equals("0")
         && (json.get("buyer").asText().equals("") || json.get("buyer").asText().equals("0"))) {
       throw new PresentationException("Buyer is needed if a special sale price is specify.",
+          Status.BAD_REQUEST);
+    }
+
+    if (json.hasNonNull("specialSalePrice") && !json.get("specialSalePrice").asText().equals("")
+        && !json.get("specialSalePrice").asText().equals("0")
+        && !userUCC.getUser(buyerId).isBoss()) {
+      throw new PresentationException(
+          "Buyer need to be a antique dealer if a special sale price is specify.",
           Status.BAD_REQUEST);
     }
 
