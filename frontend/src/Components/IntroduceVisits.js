@@ -140,9 +140,9 @@ const IntroduceVisits = () => {
 		Navbar();
 		RedirectUrl(`/`);
 	}else{
+		let page = document.querySelector("#page");
+		page.innerHTML = introduceVisits;
 		if(user.isBoss){
-			let page = document.querySelector("#page");
-			page.innerHTML = introduceVisits;
 
 			let id = getTokenSessionDate();
 			fetch(API_URL + "users/", {
