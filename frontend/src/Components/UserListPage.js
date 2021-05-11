@@ -229,7 +229,7 @@ const onSeller = (furnitures, favouritePhoto, photoList) => {
     favourite: favouritePhoto,
     photos: photoList,
   };
-  onFurnitureList(data);
+  getTypes(data);
 };
 
 const onBuyer = (furnitures, favouritePhoto, photoList) => {
@@ -238,11 +238,26 @@ const onBuyer = (furnitures, favouritePhoto, photoList) => {
     favourite: favouritePhoto,
     photos: photoList,
   };
-  onFurnitureList(data);
+  getTypes(data);
 }
 
+const getTypes = (oldData) => {
+  fetch(API_URL + "types/", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+  .then((response) => {
+    if (!response.ok) {
+      return response.text().then((err) => onError(err));
+    }
+    else
+      return response.json().then((data) => onFurnitureList(oldData,data.types));
+  });
+}
 
-const onFurnitureList = (data) => {
+const onFurnitureList = (data, types) => {
   let furnitureList = document.querySelector("#userInfo"); 
   console.log(data);
   if (!data) return;
@@ -259,8 +274,11 @@ data.list.forEach(element => {
           <div class="col-sm-">
             <p>
               <h5>${element.furnitureTitle}</h5>
-              Type : ${element.type}
-            </p>
+              Type : `;
+              types.forEach(type => {
+                if(type.typeId == element.type) table += `${type.name}`;
+              });
+            table += `</p>
           </div>
         </div>
       </li>`;
@@ -274,11 +292,11 @@ table += `
 
   const viewFurnitures = document.querySelectorAll("li");
   viewFurnitures.forEach((elem) =>{
-  elem.addEventListener("click", function(e){ onClickFurniture(e, data.photos) });
+  elem.addEventListener("click", function(e){ onClickFurniture(e, data.photos, types) });
   });
 }
 
-const onClickFurniture = (e, photos) => {
+const onClickFurniture = (e, photos, types) => {
   let furnitureId = -1;
     if(e.target.id){
       furnitureId = e.target.id;
@@ -300,11 +318,11 @@ const onClickFurniture = (e, photos) => {
           return response.text().then((err) => onError(err));
         }
         else
-          return response.json().then((data) => onFurnitureDescription(data, photos));
+          return response.json().then((data) => onFurnitureDescription(data, photos, types));
       })
 };
 
-const onFurnitureDescription = (data, photos) => {
+const onFurnitureDescription = (data, photos, types) => {
   let info = document.querySelector("#userInfo");
   let test = document.querySelector("#description_furniture");
   if(test) test.innerHTML="";
@@ -317,7 +335,11 @@ const onFurnitureDescription = (data, photos) => {
         description += `<img class="width-100px" src="${photo.picture}" alt="${photo.name}" >`;
       });
     }
-    description += `<p>Type : ${data.furniture.type} </br>
+    description += `<p>Type : `;
+    types.forEach(type => {
+      if(type.typeId == data.furniture.type) description += `${type.name}`;
+    });
+    description += `</br>
        State : ${data.furniture.state}
          </p>
   </div>`;
