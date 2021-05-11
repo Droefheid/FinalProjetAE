@@ -19,6 +19,8 @@ public class UserDAOImpl implements UserDAO {
   @Inject
   private DalBackendServices dalBackendServices;
 
+
+
   @Override
   public UserDTO findByUserName(String username) {
     PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
@@ -58,33 +60,6 @@ public class UserDAOImpl implements UserDAO {
     return user;
   }
 
-  /**
-   * Fully fill the user with the ResultSet from de db. Or throws SQLException.
-   * 
-   * @param user empty, to be filled.
-   * @param ps the PreparedStatement already Set.
-   * @return the user filled.
-   * @throws SQLException if problems.
-   */
-  private UserDTO fullFillUserFromResulSet(UserDTO user, PreparedStatement ps) throws SQLException {
-    try (ResultSet rs = ps.executeQuery()) {
-      while (rs.next()) {
-        user.setID(rs.getInt(1));
-        user.setUserName(rs.getString(2));
-        user.setFirstName(rs.getString(3));
-        user.setLastName(rs.getString(4));
-        user.setAdressID(rs.getInt(5));
-        user.setEmail(rs.getString(6));
-        user.setBoss(rs.getBoolean(7));
-        user.setAntiqueDealer(rs.getBoolean(8));
-        user.setConfirmed(rs.getBoolean(9));
-        user.setRegistrationDate(rs.getTimestamp(10));
-        user.setPassword(rs.getString(11));
-      }
-    }
-    return user;
-  }
-
   @Override
   public UserDTO registerUser(UserDTO user) {
     if (findByUserName(user.getUserName()) != null) {
@@ -110,26 +85,6 @@ public class UserDAOImpl implements UserDAO {
       throw new FatalException(e.getMessage(), e);
     }
     return findByUserName(user.getUserName());
-  }
-
-  private UserDTO findByEmail(String email) {
-    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
-        "SELECT user_id, username, first_name, last_name, address, email, is_boss,"
-            + " is_antique_dealer, is_confirmed, registration_date, password"
-            + " FROM projet.users WHERE email = ?");
-    UserDTO user = domaineFactory.getUserDTO();
-    try {
-      ps.setString(1, email);
-      user = fullFillUserFromResulSet(user, ps);
-    } catch (SQLException e) {
-      e.printStackTrace();
-      ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException(e.getMessage(), e);
-    }
-    if (user.getEmail() == null) {
-      return null;
-    }
-    return user;
   }
 
   @Override
@@ -211,7 +166,6 @@ public class UserDAOImpl implements UserDAO {
     return list;
   }
 
-
   @Override
   public List<UserDTO> getAllSearchedUser(String search) {
     PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
@@ -237,7 +191,6 @@ public class UserDAOImpl implements UserDAO {
     }
     return list;
   }
-
 
   @Override
   public List<UserDTO> getAllConfirmed(boolean isConfirmed) {
@@ -266,7 +219,6 @@ public class UserDAOImpl implements UserDAO {
     return list;
   }
 
-
   @Override
   public void updateConfirmed(UserDTO user) {
     PreparedStatement ps = this.dalBackendServices
@@ -285,6 +237,106 @@ public class UserDAOImpl implements UserDAO {
       e.printStackTrace();
       throw new FatalException(e.getMessage(), e);
     }
+  }
+
+  @Override
+  public AddressDTO getAddressById(int id) {
+    PreparedStatement ps =
+        this.dalBackendServices.getPreparedStatement("SELECT address_id ,street ,building_number,"
+            + "postcode,commune , country,unit_number FROM projet.addresses WHERE address_id=?");
+    AddressDTO address = domaineFactory.getAdressDTO();
+    try {
+      ps.setInt(1, id);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          address = fullFillAddress(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
+              rs.getString(5), rs.getString(6), rs.getString(7));
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+
+    return address;
+  }
+
+  @Override
+  public AddressDTO getVisitAddress(int addressId, int userId) {
+    PreparedStatement ps = this.dalBackendServices
+        .getPreparedStatement("SELECT a.address_id, a.street, a.building_number,"
+            + " a.postcode, a.commune, a.country, a.unit_number" + " FROM projet.addresses a"
+            + " JOIN projet.visits v ON a.address_id = v.address"
+            + " WHERE a.address_id = ? AND v.users = ?");
+    AddressDTO address = domaineFactory.getAdressDTO();
+    try {
+      ps.setInt(1, addressId);
+      ps.setInt(2, userId);
+      try (ResultSet rs = ps.executeQuery()) {
+        while (rs.next()) {
+          address = fullFillAddress(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
+              rs.getString(5), rs.getString(6), rs.getString(7));
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+
+    return address;
+  }
+
+
+
+  // ******************** Private's Methods ********************
+
+  /**
+   * Fully fill the user with the ResultSet from de db. Or throws SQLException.
+   * 
+   * @param user empty, to be filled.
+   * @param ps the PreparedStatement already Set.
+   * @return the user filled.
+   * @throws SQLException if problems.
+   */
+  private UserDTO fullFillUserFromResulSet(UserDTO user, PreparedStatement ps) throws SQLException {
+    try (ResultSet rs = ps.executeQuery()) {
+      while (rs.next()) {
+        user.setID(rs.getInt(1));
+        user.setUserName(rs.getString(2));
+        user.setFirstName(rs.getString(3));
+        user.setLastName(rs.getString(4));
+        user.setAdressID(rs.getInt(5));
+        user.setEmail(rs.getString(6));
+        user.setBoss(rs.getBoolean(7));
+        user.setAntiqueDealer(rs.getBoolean(8));
+        user.setConfirmed(rs.getBoolean(9));
+        user.setRegistrationDate(rs.getTimestamp(10));
+        user.setPassword(rs.getString(11));
+      }
+    }
+    return user;
+  }
+
+  private UserDTO findByEmail(String email) {
+    PreparedStatement ps = this.dalBackendServices.getPreparedStatement(
+        "SELECT user_id, username, first_name, last_name, address, email, is_boss,"
+            + " is_antique_dealer, is_confirmed, registration_date, password"
+            + " FROM projet.users WHERE email = ?");
+    UserDTO user = domaineFactory.getUserDTO();
+    try {
+      ps.setString(1, email);
+      user = fullFillUserFromResulSet(user, ps);
+    } catch (SQLException e) {
+      e.printStackTrace();
+      ((DalServices) dalBackendServices).rollbackTransaction();
+      throw new FatalException(e.getMessage(), e);
+    }
+    if (user.getEmail() == null) {
+      return null;
+    }
+    return user;
   }
 
   private UserDTO fullFillListUsers(ResultSet rs, UserDTO user) {
@@ -308,64 +360,19 @@ public class UserDAOImpl implements UserDAO {
     return user;
   }
 
-  @Override
-  public AddressDTO getAddressById(int id) {
-    PreparedStatement ps =
-        this.dalBackendServices.getPreparedStatement("SELECT address_id ,street ,building_number,"
-            + "postcode,commune , country,unit_number FROM projet.addresses WHERE address_id=?");
-    AddressDTO addresse = domaineFactory.getAdressDTO();
-    try {
-      ps.setInt(1, id);
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-          addresse.setID(rs.getInt(1));
-          addresse.setStreet(rs.getString(2));
-          addresse.setBuildingNumber(rs.getString(3));
-          addresse.setPostCode(rs.getString(4));
-          addresse.setCommune(rs.getString(5));
-          addresse.setCountry(rs.getString(6));
-          addresse.setUnitNumber(rs.getString(7));
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-      ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException(e.getMessage(), e);
-    }
+  private AddressDTO fullFillAddress(int id, String street, String buildingNumber, String postCode,
+      String commune, String country, String unitNumber) {
+    AddressDTO address = domaineFactory.getAdressDTO();
 
-    return addresse;
+    address.setID(id);
+    address.setStreet(street);
+    address.setBuildingNumber(buildingNumber);
+    address.setPostCode(postCode);
+    address.setCommune(commune);
+    address.setCountry(country);
+    address.setUnitNumber(unitNumber);
+
+    return address;
   }
-
-  @Override
-  public AddressDTO getVisitAddress(int addressId, int userId) {
-    PreparedStatement ps = this.dalBackendServices
-        .getPreparedStatement("SELECT a.address_id, a.street, a.building_number,"
-            + " a.postcode, a.commune, a.country, a.unit_number" + " FROM projet.addresses a"
-            + " JOIN projet.visits v ON a.address_id = v.address"
-            + " WHERE a.address_id = ? AND v.users = ?");
-    AddressDTO addresse = domaineFactory.getAdressDTO();
-    try {
-      ps.setInt(1, addressId);
-      ps.setInt(2, userId);
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-          addresse.setID(rs.getInt(1));
-          addresse.setStreet(rs.getString(2));
-          addresse.setBuildingNumber(rs.getString(3));
-          addresse.setPostCode(rs.getString(4));
-          addresse.setCommune(rs.getString(5));
-          addresse.setCountry(rs.getString(6));
-          addresse.setUnitNumber(rs.getString(7));
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-      ((DalServices) dalBackendServices).rollbackTransaction();
-      throw new FatalException(e.getMessage(), e);
-    }
-
-    return addresse;
-  }
-
 
 }
