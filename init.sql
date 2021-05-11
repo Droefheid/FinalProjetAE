@@ -301,9 +301,9 @@ INSERT INTO projet.photos_visits(
 	visit, photo)
 	VALUES (1, 2);
 
-INSERT INTO projet.photos_visits(
-	visit, photo)
-	VALUES (1, 3);
+---INSERT INTO projet.photos_visits(---
+	---visit, photo)---
+	---VALUES (1, 3);---
 
 INSERT INTO projet.photos_visits(
 	visit, photo)
@@ -329,37 +329,37 @@ INSERT INTO projet.photos_visits(
 	visit, photo)
 	VALUES (5, 9);
 
-INSERT INTO projet.photos_visits(
-	visit, photo)
-	VALUES (5, 10);
+---INSERT INTO projet.photos_visits(---
+	---visit, photo)---
+	---VALUES (5, 10);---
 
-INSERT INTO projet.photos_visits(
-	visit, photo)
-	VALUES (5, 11);
+---INSERT INTO projet.photos_visits(---
+	---visit, photo)---
+	---VALUES (5, 11);---
 
 INSERT INTO projet.photos_visits(
 	visit, photo)
 	VALUES (5, 12);
 
-INSERT INTO projet.photos_visits(
-	visit, photo)
-	VALUES (5, 13);
+---INSERT INTO projet.photos_visits(---
+	---visit, photo)---
+	---VALUES (5, 13);---
 
 INSERT INTO projet.photos_visits(
 	visit, photo)
 	VALUES (5, 14);
 
-INSERT INTO projet.photos_visits(
-	visit, photo)
-	VALUES (5, 15);
+---INSERT INTO projet.photos_visits(---
+	---visit, photo)---
+	---VALUES (5, 15);---
 
 INSERT INTO projet.photos_visits(
 	visit, photo)
 	VALUES (5, 16);
 
-INSERT INTO projet.photos_visits(
-	visit, photo)
-	VALUES (5, 17);
+---INSERT INTO projet.photos_visits(---
+	---visit, photo)---
+	---VALUES (5, 17);---
 
 
 ------------------
