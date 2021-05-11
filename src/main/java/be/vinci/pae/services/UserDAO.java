@@ -42,7 +42,7 @@ public interface UserDAO {
 
   List<UserDTO> getAllSearchedUser(String search);
 
-
+  AddressDTO getVisitAddress(int addressId, int userId);
 
   // UserDTO updateBoss(UserDTO user, boolean is_boss);
 

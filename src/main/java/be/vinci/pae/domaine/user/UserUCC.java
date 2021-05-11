@@ -21,7 +21,7 @@ public interface UserUCC {
 
   List<UserDTO> getAllSearchedUser(String search);
 
-
+  AddressDTO getVisitAddress(int addressId, int userId);
 
 }
 

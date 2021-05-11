@@ -249,5 +249,30 @@ public class UserResource {
     return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("address", address);
   }
 
+  /**
+   * returns an address list corresponding if it belongs to you.
+   * 
+   * @param json object containing visits information.
+   * @return the address if it exists throws an exception otherwise.
+   */
+  @POST
+  @Path("/getVisitsAddress")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Authorize
+  public Response getVisitAddress(JsonNode json, @Context ContainerRequest request) {
+    UserDTO currentUser = (UserDTO) request.getProperty("user");
+    if (currentUser == null) {
+      throw new PresentationException("User not found", Status.BAD_REQUEST);
+    }
+
+    List<AddressDTO> address = new ArrayList<>();
+
+    for (JsonNode jsonNode : json.get("visits").findValues("addressId")) {
+      System.out.println("ID " + jsonNode.asInt());
+      address.add(userUcc.getVisitAddress(jsonNode.asInt(), currentUser.getID()));
+    }
+
+    return ResponseMaker.createResponseWithObjectNodeWith1PutPOJO("address", address);
+  }
 
 }
