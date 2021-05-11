@@ -41,7 +41,7 @@ public class TestPhoto {
   }
 
   /**
-   * Success test :
+   * Success test : the photo is found with his id.
    */
   @Test
   public void testFindByIdV1() {
@@ -73,7 +73,7 @@ public class TestPhoto {
 
 
   /**
-   * Success test : check if it exist a favorite photo. If it doesn't exist it return one visible photo.
+   * Success test : this method return a favorite photo.
    */
   @Test
   public void testGetFavouritePhotoForFurnitureV2() {
@@ -84,7 +84,7 @@ public class TestPhoto {
   }
 
   /**
-   * Success test :
+   * Success test : The method return a list of visible photo for user with id = 1.
    */
   @Test
   public void testGetAllVisiblePhotoForV1() {

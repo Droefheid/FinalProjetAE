@@ -138,7 +138,7 @@ class TestFurniture {
   }
 
   /**
-   * Success test :
+   * Success test : the method return a Object[6] with all infos for update.
    */
   @Test
   public void testGetAllInfosForUpdateV1() {
@@ -193,7 +193,7 @@ class TestFurniture {
 
 
   /**
-   * Success test : it returns an object list with two lists into. A listMyFurniture and a listBoughtFurniture.
+   * Success test : This method return 2 list of furnitures.
    */
   @Test
   public void testGetClientFurnituresV1() {
@@ -214,7 +214,8 @@ class TestFurniture {
   }
 
   /**
-   * Success test : return a list based on the search, the minimum price and the maximum price (type is not specified).
+   * Success test : return a list based on search, minimum and maximum price.
+   * 
    */
   @Test
   public void testSearchFurnitureV1() {
@@ -227,7 +228,7 @@ class TestFurniture {
   }
 
   /**
-   * Success test : return a list based on the search, the type, the minimum price and the maximum price.
+   * Success test : return a list based on price,search and type.
    */
   @Test
   public void testSearchFurnitureV2() {

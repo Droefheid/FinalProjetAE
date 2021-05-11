@@ -67,11 +67,11 @@ public class TestVisit {
    */
   @Test
   public void testIntroduceVisitV2() {
-    int userID = userDTO.getID();
     Mockito.when(userDAO.getAddressByInfo(addressDTO.getStreet(), addressDTO.getBuildingNumber(),
         addressDTO.getCommune(), addressDTO.getCountry())).thenReturn(-1);
     Mockito.when(userDAO.registerAddress(addressDTO)).thenReturn(1);
     Mockito.when(visitDAO.introduceVisit(visitDTO)).thenReturn(visitDTO);
+    int userID = userDTO.getID();
     assertEquals(visitDTO, visitUCC.introduceVisit(visitDTO, addressDTO, userID));
   }
 
@@ -80,11 +80,11 @@ public class TestVisit {
    */
   @Test
   public void testIntroduceVisitV3() {
-    int userID = userDTO.getID();
     Mockito.when(userDAO.getAddressByInfo(addressDTO.getStreet(), addressDTO.getBuildingNumber(),
         addressDTO.getCommune(), addressDTO.getCountry())).thenReturn(-1);
     Mockito.when(userDAO.registerAddress(addressDTO)).thenReturn(1);
     Mockito.when(visitDAO.introduceVisit(visitDTO)).thenReturn(null);
+    int userID = userDTO.getID();
     assertThrows(BusinessException.class,
         () -> visitUCC.introduceVisit(visitDTO, addressDTO, userID));
   }
